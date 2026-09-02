@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://vrdbatunwfyx"
+path="res://.godot/imported/死亡动画.skel-54b9b4034e193470a14e200ad344008b.spskel"
+
+[deps]
+
+source_file="res://素材/ui/死亡特效/死亡动画.skel"
+dest_files=["res://.godot/imported/死亡动画.skel-54b9b4034e193470a14e200ad344008b.spskel"]
+
+[params]
+

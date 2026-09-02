@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dyofshcao7anu"]
+
+[ext_resource type="PackedScene" uid="uid://jxh0t7fsy74o" path="res://场景/植物卡组/基础植物/基础植物.tscn" id="1_2ebvc"]
+[ext_resource type="Resource" uid="uid://c4wg47kjebwas" path="res://数据资源/植物数据/豌豆射手植物数据.tres" id="2_i11mx"]
+[ext_resource type="Texture2D" uid="uid://52o5rfk8m1db" path="res://场景/植物卡组/豌豆射手植物/43d3b20a-90b4-4a34-8d55-674b02a38dc1 #104810.png" id="3_pxu0n"]
+[ext_resource type="Texture2D" uid="uid://cy7jlcow8y872" path="res://素材/牌背、卡面/SEEDPACKET_FRONT.png" id="4_eypcs"]
+
+[node name="豌豆射手植物" unique_id=1711997362 instance=ExtResource("1_2ebvc")]
+plantData = ExtResource("2_i11mx")
+
+[node name="背景底版" parent="." index="2" unique_id=1752054253]
+position = Vector2(-10.909113, -1.6570091e-05)
+scale = Vector2(1.932, 1.98)
+
+[node name="植物图片" parent="." index="3" unique_id=1935681318]
+position = Vector2(-29.090906, 0)
+texture = ExtResource("3_pxu0n")
+
+[node name="卡框" parent="." index="4" unique_id=1555056847]
+texture = ExtResource("4_eypcs")

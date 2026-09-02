@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://d2ljs22kh3jv3"]
+
+[ext_resource type="PackedScene" uid="uid://b77yb2067vbco" path="res://场景/僵尸卡/基础僵尸/基础僵尸.tscn" id="1_j0yrq"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cf0msnh6vk01o" path="res://数据资源/僵尸动画/最终任务锦囊.tres" id="2_pbjwo"]
+[ext_resource type="Resource" uid="uid://dn62u0b5cf3aj" path="res://数据资源/僵尸数据/最终任务锦囊.tres" id="3_5reh1"]
+
+[sub_resource type="GDScript" id="GDScript_bba1p"]
+script/source = "extends BaseZombie
+func planIntro():
+	hide()
+	if type == BaseTarget.Type.Display_only:
+		show()
+		state.set_animation(\"intro\",false,0)
+		return
+	var tar = TurnManager.getAllTarget(PVZ.Type.PLANT)
+	var node:BasePlant = await ChooseManager.choose(tar,PVZ.Type.ZOMBIE)
+	var zombieTar = RoadList.list[line].zombie
+	state.set_animation(\"intro\",false,0)
+	show()
+	await zombie.animation_completed
+	position = node.position
+	await get_tree().create_timer(0.5).timeout
+	state.set_animation(\"hit\",false,0)
+	zombieTar.die()
+	await zombie.animation_completed
+	zombie.hide()
+	var len = AQ.getlen()
+	await node.hit(4)
+	AQ.addThread(len)
+	node.adjustDie()
+	await get_tree().create_timer(1).timeout
+func extraAnimationEvent(eventName):
+	match eventName:
+		\"effect\":
+			var effect:Node2D = load(\"res://场景/粒子特效/粒子特效.tscn\").instantiate()
+			var skeleton = zombie.get_skeleton()
+			var bone = skeleton.find_bone(\"骨骼\")
+			var root_bone = skeleton.find_bone(\"root\")
+			var bone_offset = bone.get_global_transform().origin - root_bone.get_global_transform().origin
+			add_child(effect)
+			effect.z_index = -1
+			var n_time:float = 0
+			CameraManager.tweenShake(20,3)
+			while n_time <= 2:
+				n_time += get_process_delta_time()
+				bone_offset = bone.get_global_transform().origin - root_bone.get_global_transform().origin + Vector2(0,10)
+				effect.position = to_local(zombie.global_position + zombie.global_transform.basis_xform(bone_offset))
+				await get_tree().process_frame
+			effect.part.emitting = false
+			await get_tree().create_timer(effect.part.lifetime).timeout
+			effect.queue_free()
+"
+
+[node name="最终任务锦囊" unique_id=1787449808 instance=ExtResource("1_j0yrq")]
+script = SubResource("GDScript_bba1p")
+zombie_data = ExtResource("3_5reh1")
+
+[node name="僵尸动画" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="0" unique_id=1964762294]
+skeleton_data_res = ExtResource("2_pbjwo")
+scale = Vector2(4.5, 4.5)

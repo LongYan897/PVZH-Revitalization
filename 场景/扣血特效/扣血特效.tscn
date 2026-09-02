@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://bdgp4lfqe5uyc"]
+
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="1_s8elm"]
+[ext_resource type="Script" uid="uid://dyxrfcy5mb5hy" path="res://脚本/扣血特效.gd" id="1_woe7v"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="2_woe7v"]
+
+[node name="扣血特效" type="Node2D" unique_id=1653905065]
+position = Vector2(407, 559)
+scale = Vector2(3, 3)
+script = ExtResource("1_woe7v")
+
+[node name="血量图片" type="Sprite2D" parent="." unique_id=181819312]
+texture = ExtResource("1_s8elm")
+
+[node name="文字" type="Label" parent="." unique_id=1521766978]
+offset_left = -33.999996
+offset_top = -45.999992
+offset_right = 26.000004
+offset_bottom = 43.000008
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("2_woe7v")
+theme_override_font_sizes/font_size = 80
+text = "-0"
+horizontal_alignment = 1
+vertical_alignment = 1

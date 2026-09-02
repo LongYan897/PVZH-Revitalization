@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://0vyqx6l06hdv"
+path="res://.godot/imported/skeleton.skel-f4c1a57b77aa3d1f37a6e0a6ea3fe664.spskel"
+
+[deps]
+
+source_file="res://场景/攻击特效/Base1/skeleton.skel"
+dest_files=["res://.godot/imported/skeleton.skel-f4c1a57b77aa3d1f37a6e0a6ea3fe664.spskel"]
+
+[params]
+

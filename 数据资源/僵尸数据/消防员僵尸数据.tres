@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ZombieData" format=3 uid="uid://bk2qylistkpsm"]
+
+[ext_resource type="Script" uid="uid://dsbl34qqgully" path="res://脚本（类）/ZombieData.gd" id="1_14f4n"]
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_ph04v"]
+
+[sub_resource type="Resource" id="Resource_5c7pl"]
+script = ExtResource("1_ph04v")
+metadata/_custom_type_script = "uid://cx84cbc1hy4wy"
+
+[resource]
+script = ExtResource("1_14f4n")
+name = "消防员僵尸"
+attack = 5
+health = 5
+buffList = Array[ExtResource("1_ph04v")]([SubResource("Resource_5c7pl")])
+rare = 1
+metadata/_custom_type_script = "uid://dsbl34qqgully"

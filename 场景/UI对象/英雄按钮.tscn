@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://ul14a441sw1t"]
+
+[ext_resource type="Script" uid="uid://byqitwdpbbxyn" path="res://脚本/英雄按钮.gd" id="1_ow8hk"]
+[ext_resource type="Texture2D" uid="uid://b60yg84w88lp5" path="res://素材/ui/英雄图片/cornerimage_BetaCarrotina.png" id="2_nsmft"]
+
+[node name="英雄按钮" type="Control" unique_id=134093112]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+script = ExtResource("1_ow8hk")
+
+[node name="textureButton" type="TextureButton" parent="." unique_id=97670129]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -113.5
+offset_top = -113.5
+offset_right = 113.5
+offset_bottom = 113.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("2_nsmft")
+
+[connection signal="button_down" from="textureButton" to="." method="_on_texture_button_button_down"]
+[connection signal="button_up" from="textureButton" to="." method="_on_texture_button_button_up"]
+[connection signal="pressed" from="textureButton" to="." method="_on_texture_button_pressed"]

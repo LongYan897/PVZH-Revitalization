@@ -1,0 +1,39 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://cjm1h8b6y7v73"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://djqmgiep3hbhg" path="res://场景/植物卡/基础植物/螺纹坚果.atlas" id="1_yju5h"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://c5u0ct0w6htug" path="res://场景/植物卡/基础植物/螺纹坚果.skel" id="2_h62x7"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_yju5h"]
+from = "intro"
+to = "idle"
+mix = 1.0
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_h62x7"]
+from = "idle"
+to = "die"
+mix = 0.3
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_dcycp"]
+from = "hit"
+to = "idle"
+mix = 1.0
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_shrql"]
+from = "idle"
+to = "attack"
+mix = 0.2
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_btok3"]
+from = "idle"
+to = "hit"
+mix = 0.2
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_kd26b"]
+from = "attack"
+to = "idle"
+mix = 0.5
+
+[resource]
+atlas_res = ExtResource("1_yju5h")
+skeleton_file_res = ExtResource("2_h62x7")
+animation_mixes = [SubResource("SpineAnimationMix_yju5h"), SubResource("SpineAnimationMix_h62x7"), SubResource("SpineAnimationMix_dcycp"), SubResource("SpineAnimationMix_shrql"), SubResource("SpineAnimationMix_btok3"), SubResource("SpineAnimationMix_kd26b")]

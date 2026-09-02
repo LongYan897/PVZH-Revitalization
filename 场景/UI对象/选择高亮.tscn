@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://b8miqquuaolch"]
+
+[ext_resource type="Script" uid="uid://qohmvaj2kc2r" path="res://脚本/选择高亮.gd" id="1_r2xpt"]
+[ext_resource type="Texture2D" uid="uid://d4ihrs2s4rf4q" path="res://素材/对象高亮框/单位.png" id="2_vatdr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mdw4x"]
+size = Vector2(240.00003, 207.5)
+
+[node name="选择高亮" type="Node2D" unique_id=430291149]
+top_level = true
+z_index = 6
+position = Vector2(364, 541)
+scale = Vector2(0.4, 0.4)
+script = ExtResource("1_r2xpt")
+
+[node name="ExSprite" type="Node2D" parent="." unique_id=2143985661]
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="高亮" type="Sprite2D" parent="ExSprite" unique_id=764712986]
+z_index = 7
+scale = Vector2(1.0000001, 1.0000001)
+texture = ExtResource("2_vatdr")
+
+[node name="检测" type="Area2D" parent="." unique_id=1986527284]
+
+[node name="碰撞" type="CollisionShape2D" parent="检测" unique_id=1266421982]
+position = Vector2(0, -1.25)
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("RectangleShape2D_mdw4x")
+
+[connection signal="mouse_entered" from="检测" to="." method="_on_检测_mouse_entered"]
+[connection signal="mouse_exited" from="检测" to="." method="_on_检测_mouse_exited"]

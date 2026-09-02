@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://b37tswou6tjlt"
+path="res://.godot/imported/血量.atlas-48515c0c688eeaf3479bfde40d676953.spatlas"
+
+[deps]
+
+source_file="res://素材/属性图片/血量.atlas"
+dest_files=["res://.godot/imported/血量.atlas-48515c0c688eeaf3479bfde40d676953.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

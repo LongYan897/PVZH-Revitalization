@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dbko58bnriyko"]
+
+[ext_resource type="Script" uid="uid://tkqsutxowjxx" path="res://脚本/英雄通用模板.gd" id="1_arxaf"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://uxvhsl2boc8s" path="res://素材/英雄素材/绿影侠/绿影侠.tres" id="2_4onjd"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cbia30g4r5efx" path="res://素材/英雄素材/超尸/超尸.tres" id="2_pvleb"]
+
+[node name="英雄通用模板" type="Node2D" unique_id=257512772]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+script = ExtResource("1_arxaf")
+type = 1
+dataResource = ExtResource("2_4onjd")
+size = Vector2(0.25, 0.25)
+specialTrack = 0
+
+[node name="英雄" type="SpineSprite" parent="." unique_id=1950411998]
+skeleton_data_res = ExtResource("2_pvleb")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(-4.7683716e-07, -4.7683716e-07)

@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dqf5fus6rthwy"
+path="res://.godot/imported/攻击.atlas-a7cce58b17aa71832b51622592f4a43f.spatlas"
+
+[deps]
+
+source_file="res://素材/属性图片/攻击.atlas"
+dest_files=["res://.godot/imported/攻击.atlas-a7cce58b17aa71832b51622592f4a43f.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

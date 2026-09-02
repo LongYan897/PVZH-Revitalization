@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://qhvjirvvet6y"
+path="res://.godot/imported/logo样板3.atlas-8c6472753ffd58bcb2cc9c4a98e7d4ac.spatlas"
+
+[deps]
+
+source_file="res://素材/ui/界面ui/logo样板3.atlas"
+dest_files=["res://.godot/imported/logo样板3.atlas-8c6472753ffd58bcb2cc9c4a98e7d4ac.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

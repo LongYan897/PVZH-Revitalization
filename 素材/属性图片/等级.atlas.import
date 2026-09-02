@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://psdkpefcpyhr"
+path="res://.godot/imported/等级.atlas-abf20ddfeb750013a6fd9ce8d556a3e7.spatlas"
+
+[deps]
+
+source_file="res://素材/属性图片/等级.atlas"
+dest_files=["res://.godot/imported/等级.atlas-abf20ddfeb750013a6fd9ce8d556a3e7.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

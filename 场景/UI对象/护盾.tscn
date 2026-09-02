@@ -1,0 +1,152 @@
+[gd_scene format=3 uid="uid://c5h40kyhmmcp5"]
+
+[ext_resource type="Script" uid="uid://c7o45aqdjatc8" path="res://脚本/英雄护盾.gd" id="1_4d5ej"]
+[ext_resource type="Texture2D" uid="uid://1bbe6aa8bmlh" path="res://素材/ui/护盾/shield_back.png" id="2_2tkjf"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://38rw6wkfuuf6" path="res://素材/ui/护盾/动画/护盾动画.tres" id="2_4d5ej"]
+[ext_resource type="Texture2D" uid="uid://cp0oo4158m4mj" path="res://素材/ui/护盾/shield_highlight.png" id="5_sylpr"]
+[ext_resource type="Texture2D" uid="uid://q08joomsn0ny" path="res://素材/ui/护盾/shieldframe.png" id="6_n8fm2"]
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="7_3e4b0"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="8_q4umq"]
+[ext_resource type="Texture2D" uid="uid://ck1u6uimcycib" path="res://素材/ui/护盾/pip_glow.png" id="9_2tkjf"]
+
+[sub_resource type="Shader" id="Shader_4d5ej"]
+code = "shader_type canvas_item;
+
+uniform float progress : hint_range(0.0, 1.0) = 0.0;
+uniform vec2 center = vec2(0.5, 0.5);
+uniform float start_angle = 0.0;
+uniform float feather : hint_range(0.0, 20.0) = 2.0;
+
+void fragment() {
+    vec2 uv = UV - center;
+    float angle = atan(uv.y, uv.x);
+    float radius = length(uv);
+    
+    // 弧度转角度
+    float angle_deg = degrees(angle);
+    
+    // 关键：270° 偏移，让 0° 对应正上方
+    angle_deg = angle_deg + 270.0;
+    
+    // 归一化
+    if (angle_deg >= 360.0) angle_deg -= 360.0;
+    
+    float end_angle = start_angle + progress * 360.0;
+    
+    float in_sector = 0.0;
+    
+    if (end_angle <= 360.0) {
+        if (angle_deg >= start_angle && angle_deg <= end_angle) {
+            in_sector = 1.0;
+        }
+    } else {
+        if (angle_deg >= start_angle || angle_deg <= end_angle - 360.0) {
+            in_sector = 1.0;
+        }
+    }
+    
+    if (feather > 0.0 && in_sector > 0.5) {
+        float edge_distance = 1000.0;
+        if (end_angle <= 360.0) {
+            float dist_to_start = abs(angle_deg - start_angle);
+            float dist_to_end = abs(angle_deg - end_angle);
+            edge_distance = min(dist_to_start, dist_to_end);
+        } else {
+            float dist_to_start = abs(angle_deg - start_angle);
+            float dist_to_end = abs(angle_deg - (end_angle - 360.0));
+            edge_distance = min(dist_to_start, dist_to_end);
+        }
+        if (edge_distance < feather) {
+            in_sector = edge_distance / feather;
+        }
+    }
+    
+    if (radius < 0.01) in_sector = 0.0;
+    
+    vec4 color = texture(TEXTURE, UV);
+    COLOR = color;
+    COLOR.a = color.a * in_sector;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4d5ej"]
+shader = SubResource("Shader_4d5ej")
+shader_parameter/progress = 0.0
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/start_angle = 180.0
+shader_parameter/feather = 2.0
+
+[node name="护盾" type="Node2D" unique_id=1287237271]
+position = Vector2(178, 977.00006)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_4d5ej")
+
+[node name="轮盘" type="SpineSprite" parent="." unique_id=175509068]
+skeleton_data_res = ExtResource("2_4d5ej")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(0, -70)
+scale = Vector2(0.38, 0.38)
+
+[node name="护盾特效" type="SpineSprite" parent="." unique_id=1703362631]
+skeleton_data_res = ExtResource("2_4d5ej")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+z_index = 9
+scale = Vector2(1.3, 1.3)
+
+[node name="底层" type="Sprite2D" parent="." unique_id=1902643783]
+texture = ExtResource("2_2tkjf")
+
+[node name="护盾" type="Sprite2D" parent="." unique_id=896019139]
+material = SubResource("ShaderMaterial_4d5ej")
+texture = ExtResource("5_sylpr")
+
+[node name="框" type="Sprite2D" parent="." unique_id=657335249]
+texture = ExtResource("6_n8fm2")
+
+[node name="血量" type="Sprite2D" parent="." unique_id=1047070250]
+position = Vector2(0, 7)
+scale = Vector2(1.35, 1.35)
+texture = ExtResource("7_3e4b0")
+
+[node name="伤害数值" type="Label" parent="血量" unique_id=580733425]
+offset_left = -44.642853
+offset_top = -35.714294
+offset_right = 44.642853
+offset_bottom = 31.285706
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("8_q4umq")
+theme_override_font_sizes/font_size = 60
+text = "20
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="打击特效" type="SpineSprite" parent="." unique_id=1108578907]
+skeleton_data_res = ExtResource("2_4d5ej")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+z_index = 20
+
+[node name="小护盾1" type="Sprite2D" parent="." unique_id=1541277333]
+position = Vector2(-60, 170)
+texture = ExtResource("9_2tkjf")
+metadata/_edit_lock_ = true
+
+[node name="小护盾2" type="Sprite2D" parent="." unique_id=967818235]
+position = Vector2(0, 170)
+texture = ExtResource("9_2tkjf")
+metadata/_edit_lock_ = true
+
+[node name="小护盾3" type="Sprite2D" parent="." unique_id=845164974]
+position = Vector2(60, 170)
+texture = ExtResource("9_2tkjf")
+metadata/_edit_lock_ = true

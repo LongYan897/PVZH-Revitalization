@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://n3qjnbpsttlf"]
+
+[ext_resource type="Script" uid="uid://bfvvp53ip6jyp" path="res://脚本/基础僵尸卡牌.gd" id="1_c8glh"]
+[ext_resource type="Texture2D" uid="uid://dopuc0tyuav36" path="res://素材/粒子特效/圆形渐变粒子.png" id="2_fdw1i"]
+[ext_resource type="Resource" uid="uid://d1mqt2trhnfv" path="res://数据资源/僵尸数据/基础僵尸数据.tres" id="2_m3dtj"]
+[ext_resource type="Texture2D" uid="uid://b8cjw4esrxadc" path="res://素材/牌背、卡面/背景底版1.png" id="3_qcwsi"]
+[ext_resource type="Texture2D" uid="uid://c5aq4onpg077v" path="res://素材/牌背、卡面/SEEDPACKET_BACK.png" id="4_oim0m"]
+[ext_resource type="Texture2D" uid="uid://dqem2vl74qp87" path="res://场景/僵尸卡组/基础僵尸/富兰克林.png" id="5_c8glh"]
+[ext_resource type="Texture2D" uid="uid://dnmb4cd5owl5b" path="res://素材/牌背、卡面/SEEDPACKET_R3.png" id="6_fdw1i"]
+[ext_resource type="PackedScene" uid="uid://rtw0id81dnn2" path="res://场景/属性场景/植物卡牌数值.tscn" id="7_ng8md"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_618t7"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_gthv1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_3nxtn"]
+curve = SubResource("Curve_gthv1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_5t5cu"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(120, 80, 0)
+angle_min = 1.0728835e-05
+angle_max = 360.00003
+spread = 180.0
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.04
+scale_max = 0.08
+color = Color(0, 0.9411765, 0.16078432, 1)
+alpha_curve = SubResource("CurveTexture_3nxtn")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7j71g"]
+size = Vector2(245.71428, 174.2857)
+
+[node name="基础僵尸卡组" type="Node2D" unique_id=1746621782]
+z_index = 20
+position = Vector2(382, 388)
+scale = Vector2(0.55, 0.55)
+script = ExtResource("1_c8glh")
+zombieData = ExtResource("2_m3dtj")
+
+[node name="粒子特效" type="GPUParticles2D" parent="." unique_id=1246489124]
+material = SubResource("CanvasItemMaterial_618t7")
+position = Vector2(-5.722046e-06, 0)
+scale = Vector2(0.9999994, 0.9999994)
+amount = 150
+texture = ExtResource("2_fdw1i")
+lifetime = 0.7
+process_material = SubResource("ParticleProcessMaterial_5t5cu")
+
+[node name="背景底版发光" type="Sprite2D" parent="." unique_id=193207412]
+position = Vector2(-9.999983, 2.857134)
+scale = Vector2(1.8817325, 1.9285715)
+texture = ExtResource("3_qcwsi")
+
+[node name="背景底版" type="Sprite2D" parent="." unique_id=1356810085]
+modulate = Color(0.5891919, 0.27672112, 0.5667794, 1)
+position = Vector2(-8.571411, 4.2142944)
+scale = Vector2(1.8817327, 1.9285717)
+texture = ExtResource("4_oim0m")
+
+[node name="僵尸图片" type="Sprite2D" parent="." unique_id=2089114447]
+position = Vector2(-14.545452, 0)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("5_c8glh")
+
+[node name="卡框" type="Sprite2D" parent="." unique_id=781609873]
+position = Vector2(-9.999999, 0)
+texture = ExtResource("6_fdw1i")
+
+[node name="僵尸卡牌数值" parent="." unique_id=1319696509 instance=ExtResource("7_ng8md")]
+position = Vector2(0, 0)
+scale = Vector2(0.9, 0.9)
+
+[node name="碰撞体积" type="Area2D" parent="." unique_id=232395631]
+z_index = 15
+position = Vector2(-9.999999, 0)
+
+[node name="碰撞形体" type="CollisionShape2D" parent="碰撞体积" unique_id=1623096597]
+visible = false
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("RectangleShape2D_7j71g")

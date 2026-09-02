@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c2t8umeq3rkdy"]
+
+[ext_resource type="StyleBox" uid="uid://bbtdrp8oqaxjf" path="res://数据资源/杂项/信息框.tres" id="1_dompl"]
+[ext_resource type="Script" uid="uid://h8ujx25mhvc3" path="res://脚本/信息框1.gd" id="2_xplaa"]
+
+[node name="信息框" type="Panel" unique_id=1943645632]
+clip_children = 2
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -148.0
+offset_top = -105.0
+offset_right = 256.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = ExtResource("1_dompl")
+script = ExtResource("2_xplaa")

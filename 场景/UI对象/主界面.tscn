@@ -1,0 +1,408 @@
+[gd_scene format=3 uid="uid://bn3qpdql1tnn2"]
+
+[ext_resource type="Script" uid="uid://qjxa2cvlj0g2" path="res://脚本/主界面.gd" id="1_4hjrq"]
+[ext_resource type="PackedScene" uid="uid://drvlexjo03b5o" path="res://场景/UI对象/背景图.tscn" id="1_mmhs2"]
+[ext_resource type="Texture2D" uid="uid://6hdiqcqisjcu" path="res://素材/ui/界面ui/collectionbutton.png" id="2_6mp1x"]
+[ext_resource type="Texture2D" uid="uid://cnh8xftbjgld5" path="res://素材/ui/界面ui/button_collection #165373.png" id="3_rmm70"]
+[ext_resource type="Texture2D" uid="uid://vnc01rbpilbn" path="res://素材/ui/界面ui/friendsbutton.png" id="4_ek180"]
+[ext_resource type="Texture2D" uid="uid://cb6v4ucf0lkow" path="res://素材/ui/界面ui/button_friends.png" id="5_s6aw8"]
+[ext_resource type="Texture2D" uid="uid://0b7q13tt6hoq" path="res://素材/ui/界面ui/packsbutton.png" id="6_s6aw8"]
+[ext_resource type="Texture2D" uid="uid://d1qad2d3x5mhc" path="res://素材/ui/界面ui/button_store.png" id="7_usmsc"]
+[ext_resource type="Texture2D" uid="uid://cophm26o1o4e" path="res://素材/ui/界面ui/Badge_Event.png" id="8_p7i20"]
+[ext_resource type="Texture2D" uid="uid://1mjkm3cumarw" path="res://素材/ui/界面ui/landingscreen_plants.png" id="10_ewwxc"]
+[ext_resource type="Texture2D" uid="uid://wrr2b522bbue" path="res://素材/ui/界面ui/按钮2.png" id="11_d4jie"]
+[ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="12_50odi"]
+[ext_resource type="Texture2D" uid="uid://vdebwuwdm4yq" path="res://素材/ui/界面ui/featureunlock_plantHQ.png" id="12_d4jie"]
+[ext_resource type="Texture2D" uid="uid://d0cw22xbrdrqa" path="res://素材/ui/界面ui/landingscreen_zombies.png" id="14_67t8n"]
+[ext_resource type="Texture2D" uid="uid://cdbn38w0t5erj" path="res://素材/ui/界面ui/按钮3.png" id="15_jq0fe"]
+[ext_resource type="Texture2D" uid="uid://bx3epq8oxb2ei" path="res://素材/ui/界面ui/featureunlock_zombiehq.png" id="16_7fku3"]
+[ext_resource type="Texture2D" uid="uid://w7edbn6x42ea" path="res://素材/ui/界面ui/按钮4.png" id="17_1d0hg"]
+[ext_resource type="Texture2D" uid="uid://dsnag66lhgvmy" path="res://素材/ui/界面ui/pvpimage_New.png" id="18_p6lmc"]
+[ext_resource type="Texture2D" uid="uid://br5nuly1nj771" path="res://素材/ui/界面ui/按钮5.png" id="19_yri0s"]
+[ext_resource type="Texture2D" uid="uid://djrnhsnaoecwq" path="res://素材/ui/界面ui/渐变纹理.png" id="20_bskb0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s6aw8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3xd07"]
+size = Vector2(228.75, 155)
+
+[sub_resource type="FontVariation" id="FontVariation_7fku3"]
+base_font = ExtResource("12_50odi")
+variation_opentype = {
+2003265652: 500
+}
+variation_embolden = 0.1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1d0hg"]
+bg_color = Color(0, 0, 0, 0.5568628)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.6431373)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="主界面" type="Node2D" unique_id=1214345611]
+script = ExtResource("1_4hjrq")
+
+[node name="背景图" parent="." unique_id=1932078031 instance=ExtResource("1_mmhs2")]
+
+[node name="活动" type="Sprite2D" parent="." unique_id=792812892]
+position = Vector2(91, 1205)
+scale = Vector2(0.7, 0.7)
+
+[node name="底" type="Sprite2D" parent="活动" unique_id=956490140]
+modulate = Color(0.79, 0.3856517, 0.13430002, 1)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("6_s6aw8")
+
+[node name="图片" type="Sprite2D" parent="活动" unique_id=1033385376]
+material = SubResource("ShaderMaterial_s6aw8")
+position = Vector2(7.1428127, -47.142857)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("8_p7i20")
+
+[node name="Label" type="Label" parent="活动" unique_id=249514623]
+offset_left = -76.25003
+offset_top = 19.999996
+offset_right = 79.74997
+offset_bottom = 74.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 39
+text = "每周活动"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="活动" unique_id=1584562029]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="活动/Area2D" unique_id=2078009378]
+position = Vector2(1.875, 0)
+scale = Vector2(0.99999976, 0.99999976)
+shape = SubResource("RectangleShape2D_3xd07")
+
+[node name="卡组" type="Sprite2D" parent="." unique_id=1927181928]
+position = Vector2(276.00003, 1205)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_6mp1x")
+
+[node name="图片" type="Sprite2D" parent="卡组" unique_id=1910990512]
+material = SubResource("ShaderMaterial_s6aw8")
+position = Vector2(-5, -46.25)
+scale = Vector2(0.645, 0.645)
+texture = ExtResource("3_rmm70")
+
+[node name="Label" type="Label" parent="卡组" unique_id=954767877]
+offset_left = -42.499996
+offset_top = 18.749996
+offset_right = 35.500004
+offset_bottom = 72.75
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 39
+text = "卡组"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="卡组" unique_id=803792662]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="卡组/Area2D" unique_id=813400815]
+position = Vector2(-1.25, 0)
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("RectangleShape2D_3xd07")
+
+[node name="开包" type="Sprite2D" parent="." unique_id=4532323]
+position = Vector2(447.00003, 1205)
+scale = Vector2(0.7, 0.7)
+
+[node name="底" type="Sprite2D" parent="开包" unique_id=644227409]
+modulate = Color(0.52156866, 0.3019608, 0.7019608, 1)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("6_s6aw8")
+
+[node name="图片" type="Sprite2D" parent="开包" unique_id=1960157910]
+material = SubResource("ShaderMaterial_s6aw8")
+position = Vector2(4.285713, -52.85714)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("7_usmsc")
+
+[node name="Label" type="Label" parent="开包" unique_id=1722193108]
+offset_left = -56.249992
+offset_top = 19.999996
+offset_right = 60.750008
+offset_bottom = 74.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 39
+text = "组合包"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="开包" unique_id=912141074]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="开包/Area2D" unique_id=398323416]
+position = Vector2(1.875, 0)
+scale = Vector2(0.99999976, 0.99999976)
+shape = SubResource("RectangleShape2D_3xd07")
+
+[node name="好友" type="Sprite2D" parent="." unique_id=901580790]
+position = Vector2(623, 1205)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("4_ek180")
+
+[node name="图片" type="Sprite2D" parent="好友" unique_id=1982421684]
+material = SubResource("ShaderMaterial_s6aw8")
+position = Vector2(3.749999, -55)
+texture = ExtResource("5_s6aw8")
+
+[node name="Label" type="Label" parent="好友" unique_id=921012815]
+offset_left = -31.249996
+offset_top = 19.999996
+offset_right = 46.750004
+offset_bottom = 74.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 39
+text = "好友"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="好友" unique_id=1132216139]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="好友/Area2D" unique_id=936532863]
+position = Vector2(1.875, 0)
+scale = Vector2(0.99999976, 0.99999976)
+shape = SubResource("RectangleShape2D_3xd07")
+
+[node name="植物战斗按钮" type="TextureButton" parent="." unique_id=490574892]
+offset_left = 95.0
+offset_top = 100.0
+offset_right = 362.0
+offset_bottom = 520.0
+scale = Vector2(0.9, 0.9)
+pivot_offset_ratio = Vector2(1, 0.5)
+texture_normal = ExtResource("10_ewwxc")
+
+[node name="底部栏" type="Sprite2D" parent="植物战斗按钮" unique_id=1213792630]
+self_modulate = Color(0.568, 1, 0.52, 1)
+position = Vector2(123, 346.5)
+scale = Vector2(1.43, 1.40625)
+texture = ExtResource("11_d4jie")
+
+[node name="植物任务" type="Label" parent="植物战斗按钮/底部栏" unique_id=762735943]
+offset_left = -90.20979
+offset_top = -47.28888
+offset_right = 99.30069
+offset_bottom = 47.28888
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = SubResource("FontVariation_7fku3")
+theme_override_font_sizes/font_size = 32
+text = "植物任务"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="植物属性" type="Sprite2D" parent="植物战斗按钮" unique_id=2006185374]
+position = Vector2(134, 250)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("12_d4jie")
+
+[node name="僵尸战斗按钮" type="TextureButton" parent="." unique_id=81097783]
+offset_left = 360.0
+offset_top = 100.0
+offset_right = 627.0
+offset_bottom = 520.0
+scale = Vector2(0.9, 0.9)
+pivot_offset_ratio = Vector2(0, 0.5)
+texture_normal = ExtResource("14_67t8n")
+
+[node name="底部栏" type="Sprite2D" parent="僵尸战斗按钮" unique_id=973606100]
+self_modulate = Color(0.60844016, 0.114799984, 0.82, 1)
+position = Vector2(143.33331, 346.6667)
+scale = Vector2(1.43, 1.40625)
+texture = ExtResource("15_jq0fe")
+
+[node name="僵尸任务" type="Label" parent="僵尸战斗按钮/底部栏" unique_id=905369714]
+offset_left = -96.3481
+offset_top = -47.407417
+offset_right = 93.162384
+offset_bottom = 47.17034
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = SubResource("FontVariation_7fku3")
+theme_override_font_sizes/font_size = 32
+text = "僵尸任务"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="僵尸属性" type="Sprite2D" parent="僵尸战斗按钮" unique_id=637849373]
+position = Vector2(134, 250)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("16_7fku3")
+
+[node name="今日挑战" type="TextureButton" parent="." unique_id=1369118612]
+self_modulate = Color(0.99, 0.4488, 0.19799998, 1)
+offset_left = 155.0
+offset_top = 520.0
+offset_right = 566.0003
+offset_bottom = 616.0
+scale = Vector2(1.25, 1.25)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("17_1d0hg")
+
+[node name="今日挑战" type="Label" parent="今日挑战" unique_id=1689419481]
+self_modulate = Color(0.8819366, 0.8819366, 0.88193655, 1)
+layout_mode = 0
+offset_top = -23.425
+offset_right = 410.0
+offset_bottom = 71.152756
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = SubResource("FontVariation_7fku3")
+theme_override_font_sizes/font_size = 22
+text = "今日挑战!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="提前获得" type="Label" parent="今日挑战" unique_id=69565775]
+layout_mode = 0
+offset_top = 8.48
+offset_right = 410.0
+offset_bottom = 103.057755
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = SubResource("FontVariation_7fku3")
+theme_override_font_sizes/font_size = 32
+text = "提前获得"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="提示框" type="Panel" parent="今日挑战" unique_id=1093724069]
+layout_mode = 0
+offset_left = 334.7
+offset_top = 15.199979
+offset_right = 391.50003
+offset_bottom = 80.79999
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_1d0hg")
+
+[node name="左边奖励图片" type="Sprite2D" parent="今日挑战" unique_id=587225850]
+position = Vector2(61.10002, 48.000004)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("8_p7i20")
+
+[node name="对战" type="TextureButton" parent="." unique_id=1416657380]
+self_modulate = Color(1, 1, 1, 0)
+offset_left = -152.0
+offset_top = 465.0
+offset_right = 866.0
+offset_bottom = 1175.0
+scale = Vector2(0.5, 0.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("18_p6lmc")
+
+[node name="卡片" type="Sprite2D" parent="对战" unique_id=104878624]
+clip_children = 2
+position = Vector2(512.6724, 223.00003)
+texture = ExtResource("18_p6lmc")
+
+[node name="紫色渐变" type="Sprite2D" parent="对战/卡片" unique_id=1350980682]
+self_modulate = Color(0.60784316, 0.11372549, 0.81960785, 1)
+position = Vector2(2.3275757, 66)
+scale = Vector2(1, 0.22015655)
+texture = ExtResource("20_bskb0")
+
+[node name="草坪战争" type="Label" parent="对战" unique_id=162272363]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 1.0000496
+offset_right = 1007.0
+offset_bottom = 369.00006
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 8
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 15
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = SubResource("FontVariation_7fku3")
+theme_override_font_sizes/font_size = 80
+text = "草坪战争"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="卡牌" type="Sprite2D" parent="对战" unique_id=1886031742]
+self_modulate = Color(0.97, 0.8742934, 0.2522, 1)
+clip_children = 2
+position = Vector2(511, 571)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("19_yri0s")
+
+[node name="紫色渐变" type="Sprite2D" parent="对战/卡牌" unique_id=2068470821]
+self_modulate = Color(0.97, 0.67091674, 0.2522, 1)
+position = Vector2(0.30906677, 22.399992)
+scale = Vector2(0.37872863, 0.08576323)
+texture = ExtResource("20_bskb0")
+
+[node name="战斗" type="Label" parent="对战" unique_id=652628413]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 395.0
+offset_right = 983.0
+offset_bottom = 723.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 12
+theme_override_constants/shadow_offset_y = 12
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_7fku3")
+theme_override_font_sizes/font_size = 87
+text = "战斗"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="input_event" from="活动/Area2D" to="." method="uiActInput"]
+[connection signal="mouse_exited" from="活动/Area2D" to="." method="uiActMouseExited"]
+[connection signal="input_event" from="卡组/Area2D" to="." method="uiCardInput"]
+[connection signal="mouse_exited" from="卡组/Area2D" to="." method="uiCardMouseExited"]
+[connection signal="input_event" from="开包/Area2D" to="." method="uiPackInput"]
+[connection signal="mouse_exited" from="开包/Area2D" to="." method="uiPackMouseExited"]
+[connection signal="input_event" from="好友/Area2D" to="." method="uiFriendInput"]
+[connection signal="mouse_exited" from="好友/Area2D" to="." method="uiFriendMouseExited"]
+[connection signal="button_down" from="植物战斗按钮" to="." method="_on_植物战斗按钮_button_down"]
+[connection signal="button_up" from="植物战斗按钮" to="." method="_on_植物战斗按钮_button_up"]
+[connection signal="button_down" from="僵尸战斗按钮" to="." method="_on_僵尸战斗按钮_button_down"]
+[connection signal="button_up" from="僵尸战斗按钮" to="." method="_on_僵尸战斗按钮_button_up"]
+[connection signal="button_down" from="今日挑战" to="." method="_on_今日挑战_button_down"]
+[connection signal="button_up" from="今日挑战" to="." method="_on_今日挑战_button_up"]
+[connection signal="button_down" from="对战" to="." method="_on_对战_button_down"]
+[connection signal="button_up" from="对战" to="." method="_on_对战_button_up"]
+[connection signal="pressed" from="对战" to="." method="_on_对战_pressed"]

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cfau4jjfqa2kw"]
+
+[ext_resource type="Script" uid="uid://clc71hmxgw826" path="res://脚本/花费特效.gd" id="1_px75s"]
+[ext_resource type="Texture2D" uid="uid://0v2jwbq7klbe" path="res://素材/卡牌属性图片/inhnd_brains.png" id="2_lig2x"]
+
+[node name="花费特效" type="Node2D" unique_id=947813025]
+script = ExtResource("1_px75s")
+
+[node name="图片" type="Sprite2D" parent="." unique_id=2043668226]
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_lig2x")

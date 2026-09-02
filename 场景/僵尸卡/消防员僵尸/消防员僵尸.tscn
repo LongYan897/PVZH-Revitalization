@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c72eo5clxohkf"]
+
+[ext_resource type="PackedScene" uid="uid://b77yb2067vbco" path="res://场景/僵尸卡/基础僵尸/基础僵尸.tscn" id="1_bwatj"]
+[ext_resource type="Script" uid="uid://4ba28iqq3me8" path="res://场景/僵尸卡/消防员僵尸/消防员僵尸.gd" id="2_spq3k"]
+[ext_resource type="Resource" uid="uid://bk2qylistkpsm" path="res://数据资源/僵尸数据/消防员僵尸数据.tres" id="3_gdmrq"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://ck5bk5ulyktam" path="res://数据资源/僵尸动画/消防员僵尸动画.tres" id="4_8kfut"]
+
+[node name="消防员僵尸" unique_id=1787449808 instance=ExtResource("1_bwatj")]
+script = ExtResource("2_spq3k")
+zombie_data = ExtResource("3_gdmrq")
+
+[node name="僵尸动画" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="0" unique_id=1964762294]
+skeleton_data_res = ExtResource("4_8kfut")
+scale = Vector2(3, 3)

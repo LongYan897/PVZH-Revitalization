@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://dy6m4j3d13u0i"
+path="res://.godot/imported/logo样板3.skel-8254fe835d8883e35c54b21ffd4d8bb6.spskel"
+
+[deps]
+
+source_file="res://素材/ui/界面ui/logo样板3.skel"
+dest_files=["res://.godot/imported/logo样板3.skel-8254fe835d8883e35c54b21ffd4d8bb6.spskel"]
+
+[params]
+

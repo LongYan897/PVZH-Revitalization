@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://2en3mjr35vpn"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://cu42fu53v065b" path="res://素材/墓碑/墓碑.atlas" id="1_k48lh"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://dpjlnf7v3kso6" path="res://素材/墓碑/墓碑.skel" id="2_f1sqn"]
+
+[resource]
+atlas_res = ExtResource("1_k48lh")
+skeleton_file_res = ExtResource("2_f1sqn")

@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dvv5jrg2iscob"]
+
+[ext_resource type="PackedScene" uid="uid://jxh0t7fsy74o" path="res://场景/植物卡组/基础植物/基础植物.tscn" id="1_t85lp"]
+[ext_resource type="Texture2D" uid="uid://dwpc70dnanreh" path="res://场景/植物卡组/向日葵植物/向日葵.png" id="2_5rw5o"]
+[ext_resource type="Resource" uid="uid://fdqo7ad50ahq" path="res://数据资源/植物数据/向日葵植物数据.tres" id="2_envs0"]
+[ext_resource type="Texture2D" uid="uid://cy7jlcow8y872" path="res://素材/牌背、卡面/SEEDPACKET_FRONT.png" id="3_envs0"]
+
+[node name="向日葵植物" unique_id=1711997362 instance=ExtResource("1_t85lp")]
+plantData = ExtResource("2_envs0")
+
+[node name="植物图片" parent="." index="3" unique_id=1935681318]
+position = Vector2(-30.909086, 0)
+texture = ExtResource("2_5rw5o")
+
+[node name="卡框" parent="." index="4" unique_id=1555056847]
+texture = ExtResource("3_envs0")

@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://b1vyhu0w6hy5h"
+path="res://.godot/imported/蔓越莓.skel-d7721d6b08d43050e5f615cffd3ab7f7.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/蔓越莓植物/蔓越莓.skel"
+dest_files=["res://.godot/imported/蔓越莓.skel-d7721d6b08d43050e5f615cffd3ab7f7.spskel"]
+
+[params]
+

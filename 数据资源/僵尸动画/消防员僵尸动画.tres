@@ -1,0 +1,9 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://ck5bk5ulyktam"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://oilk4vv03qaf" path="res://场景/僵尸卡/消防员僵尸/消防员僵尸.atlas" id="1_kuov0"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://bp7pvhfcakyrr" path="res://场景/僵尸卡/消防员僵尸/消防员僵尸.skel" id="2_mt0y6"]
+
+[resource]
+atlas_res = ExtResource("1_kuov0")
+skeleton_file_res = ExtResource("2_mt0y6")
+default_mix = 0.3

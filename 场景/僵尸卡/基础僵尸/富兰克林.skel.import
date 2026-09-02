@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://de80ybaeakfvc"
+path="res://.godot/imported/富兰克林.skel-230a12aca43606fe7144f5d9d306789c.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/基础僵尸/富兰克林.skel"
+dest_files=["res://.godot/imported/富兰克林.skel-230a12aca43606fe7144f5d9d306789c.spskel"]
+
+[params]
+

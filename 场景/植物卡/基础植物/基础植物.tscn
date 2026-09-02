@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://sbll833n7jjv"]
+
+[ext_resource type="Script" uid="uid://0bn1ys7ky03e" path="res://脚本/基础植物模板.gd" id="1_aw0mw"]
+[ext_resource type="Resource" uid="uid://6qrgf0mmtvna" path="res://数据资源/植物数据/基础植物数据.tres" id="2_ly8m4"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cjm1h8b6y7v73" path="res://数据资源/植物动画/基础植物动画.tres" id="3_bqx2e"]
+[ext_resource type="PackedScene" uid="uid://bfpdgp27r8j0p" path="res://场景/属性场景/伤害和血量.tscn" id="4_y6qtw"]
+[ext_resource type="PackedScene" uid="uid://dux6muhef85yw" path="res://场景/UI对象/死亡特效.tscn" id="5_ly8m4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3xd07"]
+size = Vector2(511.1112, 711.11096)
+
+[node name="基础植物模板" type="Node2D" unique_id=1775156101]
+top_level = true
+z_index = 6
+position = Vector2(347, 501)
+scale = Vector2(0.18, 0.18)
+script = ExtResource("1_aw0mw")
+plant_data = ExtResource("2_ly8m4")
+
+[node name="植物" type="Node2D" parent="." unique_id=1415467110]
+show_behind_parent = true
+position = Vector2(0, 233.33325)
+scale = Vector2(1.0000001, 1.0000001)
+
+[node name="植物动画" type="SpineSprite" parent="植物" unique_id=235776764]
+skeleton_data_res = ExtResource("3_bqx2e")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="伤害和血量" parent="植物" unique_id=120248237 instance=ExtResource("4_y6qtw")]
+show_behind_parent = true
+z_index = 1
+position = Vector2(-9, 105.608154)
+scale = Vector2(0.8999998, 0.8999998)
+metadata/_edit_lock_ = true
+
+[node name="死亡特效" parent="." unique_id=1063149028 instance=ExtResource("5_ly8m4")]
+visible = false
+
+[node name="碰撞体积" type="Area2D" parent="." unique_id=1456300002]
+
+[node name="碰撞形状" type="CollisionShape2D" parent="碰撞体积" unique_id=859053754]
+visible = false
+position = Vector2(5.555542, -5.555664)
+scale = Vector2(1.0000001, 1.0000001)
+shape = SubResource("RectangleShape2D_3xd07")

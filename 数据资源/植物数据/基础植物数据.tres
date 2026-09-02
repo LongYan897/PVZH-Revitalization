@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="PlantData" format=3 uid="uid://6qrgf0mmtvna"]
+
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_eiyh6"]
+[ext_resource type="Script" uid="uid://b1j56l025csm6" path="res://脚本（类）/PlantData.gd" id="2_mir5q"]
+
+[resource]
+script = ExtResource("2_mir5q")
+name = "基础植物"

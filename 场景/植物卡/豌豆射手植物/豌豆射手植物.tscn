@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://coi21iaw14wbv"]
+
+[ext_resource type="PackedScene" uid="uid://sbll833n7jjv" path="res://场景/植物卡/基础植物/基础植物.tscn" id="1_w6u55"]
+[ext_resource type="Script" uid="uid://u6mi7o870pio" path="res://场景/植物卡/豌豆射手植物/豌豆射手植物.gd" id="2_gh82w"]
+[ext_resource type="Resource" uid="uid://c4wg47kjebwas" path="res://数据资源/植物数据/豌豆射手植物数据.tres" id="3_p6ni4"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://wnyo1ea45qg1" path="res://数据资源/植物动画/豌豆射手植物动画.tres" id="4_h2ede"]
+
+[node name="豌豆射手植物" unique_id=1775156101 instance=ExtResource("1_w6u55")]
+script = ExtResource("2_gh82w")
+plant_data = ExtResource("3_p6ni4")
+
+[node name="植物动画" parent="植物" parent_id_path=PackedInt32Array(1415467110) index="0" unique_id=235776764]
+skeleton_data_res = ExtResource("4_h2ede")
+scale = Vector2(3, 3)

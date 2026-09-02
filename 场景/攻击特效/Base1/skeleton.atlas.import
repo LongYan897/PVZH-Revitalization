@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://cxa2f7ti6udii"
+path="res://.godot/imported/skeleton.atlas-333547c0701636bbdba89f5078f0b03c.spatlas"
+
+[deps]
+
+source_file="res://场景/攻击特效/Base1/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-333547c0701636bbdba89f5078f0b03c.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

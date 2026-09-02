@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://co3y483hww3h0"]
+
+[ext_resource type="PackedScene" uid="uid://n3qjnbpsttlf" path="res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn" id="1_i1d4n"]
+[ext_resource type="Script" uid="uid://dlr7umak516em" path="res://场景/僵尸卡组/最终任务锦囊/脚本.gd" id="2_j6lvk"]
+[ext_resource type="Resource" uid="uid://dn62u0b5cf3aj" path="res://数据资源/僵尸数据/最终任务锦囊.tres" id="2_s16b4"]
+[ext_resource type="Texture2D" uid="uid://c1aibvh1les3q" path="res://素材/牌背、卡面/SEEDPACKET_Back_onetime.png" id="2_v68au"]
+[ext_resource type="Texture2D" uid="uid://bvr2qpb2yqp12" path="res://场景/僵尸卡组/最终任务锦囊/Final Mission #73203.png" id="3_s16b4"]
+[ext_resource type="Texture2D" uid="uid://dch77wkb5duby" path="res://素材/牌背、卡面/SEEDPACKET_onetime_R3.png" id="4_j6lvk"]
+
+[node name="最终任务锦囊" unique_id=1746621782 instance=ExtResource("1_i1d4n")]
+script = ExtResource("2_j6lvk")
+zombieData = ExtResource("2_s16b4")
+
+[node name="背景底版" parent="." index="2" unique_id=1356810085]
+texture = ExtResource("2_v68au")
+
+[node name="僵尸图片" parent="." index="3" unique_id=2089114447]
+position = Vector2(-5.454545, 0)
+texture = ExtResource("3_s16b4")
+
+[node name="卡框" parent="." index="4" unique_id=781609873]
+texture = ExtResource("4_j6lvk")

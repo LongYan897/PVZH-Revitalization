@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ZombieData" format=3 uid="uid://dn62u0b5cf3aj"]
+
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_nox8o"]
+[ext_resource type="Script" uid="uid://dsbl34qqgully" path="res://脚本（类）/ZombieData.gd" id="2_k8um1"]
+
+[resource]
+script = ExtResource("2_k8um1")
+name = "最终任务锦囊"
+cost = 0
+attack = 0
+health = 0
+cardType = 1
+metadata/_custom_type_script = "uid://dsbl34qqgully"

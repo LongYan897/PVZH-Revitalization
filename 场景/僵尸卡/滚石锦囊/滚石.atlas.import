@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://c36gwa2qqppdw"
+path="res://.godot/imported/滚石.atlas-e8e677b555879650fbf7d934a8b2750d.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/滚石锦囊/滚石.atlas"
+dest_files=["res://.godot/imported/滚石.atlas-e8e677b555879650fbf7d934a8b2750d.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

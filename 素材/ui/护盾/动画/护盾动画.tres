@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://38rw6wkfuuf6"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://d0ouqareg7fdo" path="res://素材/ui/护盾/动画/护盾特效.atlas" id="1_xlpyh"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://dbgflnfvixf6c" path="res://素材/ui/护盾/动画/护盾特效.skel" id="2_tutkr"]
+
+[resource]
+atlas_res = ExtResource("1_xlpyh")
+skeleton_file_res = ExtResource("2_tutkr")

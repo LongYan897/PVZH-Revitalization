@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://c3lmrm6ngbirf"
+path="res://.godot/imported/绿影侠.skel-a1ba2c95d10aa5cc35a5b46bf2435a76.spskel"
+
+[deps]
+
+source_file="res://素材/英雄素材/绿影侠/绿影侠.skel"
+dest_files=["res://.godot/imported/绿影侠.skel-a1ba2c95d10aa5cc35a5b46bf2435a76.spskel"]
+
+[params]
+

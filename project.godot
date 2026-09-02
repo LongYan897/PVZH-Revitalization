@@ -1,0 +1,74 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="PVZH by 龙彦"
+run/main_scene="uid://bn3qpdql1tnn2"
+config/features=PackedStringArray("4.7", "Forward Plus")
+boot_splash/show_image=false
+config/icon="uid://cbfvp0frn80qp"
+
+[audio]
+
+buses/default_bus_layout="uid://b0bcsxeewyscg"
+
+[autoload]
+
+AQ="*uid://txe2pn3h5adi"
+DragManager="*uid://dk8caps8t4ojv"
+DrawCard="*uid://oflkaq8naciq"
+CardManager="*uid://cjpvtljr8pcf2"
+Enemy="*uid://b28xfb6o8lksb"
+RoadList="*uid://dry15mkpg02x3"
+TurnManager="*uid://b761qquwo6mdd"
+HeroManager="*uid://225dd3fv1fyb"
+SceneManager="*uid://j20v4cg7v8m1"
+MessageBox="*uid://b0t616ntnnppr"
+ChooseManager="*uid://wgbm36d4xr7h"
+AIManager="*uid://d121qf8yqhf32"
+WebSocketClient="*uid://dnn1hi7xujtqd"
+SoundManager="*uid://b2rqlnc407lr5"
+CameraManager="*uid://eleplmcq515q"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/size/initial_position_type=5
+window/size/resizable=false
+window/stretch/mode="canvas_items"
+window/handheld/orientation=1
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/SimpleMultiplayer/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/scene_manager/plugin.cfg", "res://addons/shader_library/plugin.cfg")
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"
+textures/vram_compression/import_etc2_astc=true
+
+[shader_library]
+
+internal/previous_shaders_folder="res://shaders/shaderlib/"

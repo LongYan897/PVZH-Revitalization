@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://cf0msnh6vk01o"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://3wxofpxo54ug" path="res://场景/僵尸卡/最终任务锦囊/最终任务.atlas" id="1_4btsu"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://x4ijttmivleo" path="res://场景/僵尸卡/最终任务锦囊/最终任务.skel" id="2_3jnx5"]
+
+[resource]
+atlas_res = ExtResource("1_4btsu")
+skeleton_file_res = ExtResource("2_3jnx5")

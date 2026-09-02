@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://bymkfloa25pq2"
+path="res://.godot/imported/滚石.skel-af9ab804b4092eb874742f6fb6d4aa3a.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/滚石锦囊/滚石.skel"
+dest_files=["res://.godot/imported/滚石.skel-af9ab804b4092eb874742f6fb6d4aa3a.spskel"]
+
+[params]
+

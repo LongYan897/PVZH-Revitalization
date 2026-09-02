@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://c11w0gbcjooid"
+path="res://.godot/imported/土坑.atlas-fd22c99ed8af06ced793cdcb14a7c5fa.spatlas"
+
+[deps]
+
+source_file="res://素材/ui/土坑/土坑.atlas"
+dest_files=["res://.godot/imported/土坑.atlas-fd22c99ed8af06ced793cdcb14a7c5fa.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

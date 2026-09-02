@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://drvlexjo03b5o"]
+
+[ext_resource type="Script" uid="uid://jucd748k1iqp" path="res://脚本/背景图.gd" id="1_fxr1s"]
+[ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="1_h38n1"]
+[ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="2_fxr1s"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y2ovv"]
+shader = ExtResource("1_h38n1")
+shader_parameter/direction = Vector2(4.2, 15.805)
+shader_parameter/speed_scale = 0.0
+shader_parameter/canvas_scaling = Vector2(2, 2)
+shader_parameter/canvas_rotation = 0.0
+shader_parameter/texture_spacing_x = 0.0
+shader_parameter/texture_spacing_y = 0.0
+shader_parameter/texture_scaling = Vector2(1, 1)
+shader_parameter/texture_rotation = 0.1
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+
+[node name="背景图" type="Node2D" unique_id=1932078031]
+script = ExtResource("1_fxr1s")
+color = Color(0.16790001, 0.58947504, 0.73, 1)
+
+[node name="图片" type="Sprite2D" parent="." unique_id=1273787503]
+modulate = Color(0.13725491, 0.53333336, 0.6745098, 1)
+material = SubResource("ShaderMaterial_y2ovv")
+position = Vector2(0, 427)
+texture = ExtResource("2_fxr1s")

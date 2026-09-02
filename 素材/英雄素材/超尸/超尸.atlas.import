@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://k43qqj322ncb"
+path="res://.godot/imported/超尸.atlas-14bc21544f5b1e69b06b17ffa9d38f10.spatlas"
+
+[deps]
+
+source_file="res://素材/英雄素材/超尸/超尸.atlas"
+dest_files=["res://.godot/imported/超尸.atlas-14bc21544f5b1e69b06b17ffa9d38f10.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

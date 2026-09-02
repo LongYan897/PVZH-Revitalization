@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://cu42fu53v065b"
+path="res://.godot/imported/墓碑.atlas-392f3ac23575794955d81103fcf4072b.spatlas"
+
+[deps]
+
+source_file="res://素材/墓碑/墓碑.atlas"
+dest_files=["res://.godot/imported/墓碑.atlas-392f3ac23575794955d81103fcf4072b.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

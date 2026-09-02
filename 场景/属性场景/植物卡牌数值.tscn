@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://rtw0id81dnn2"]
+
+[ext_resource type="Script" uid="uid://bnt2h241s7hob" path="res://脚本/植物卡牌数值.gd" id="1_vwdkj"]
+[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="1_x02ct"]
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="2_36fci"]
+[ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="2_k5nqi"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="2_vwdkj"]
+
+[node name="卡牌数值" type="Node2D" unique_id=1319696509]
+position = Vector2(303, 302.00003)
+scale = Vector2(0.6, 0.6)
+script = ExtResource("1_vwdkj")
+
+[node name="阳光" type="Sprite2D" parent="." unique_id=635084981]
+position = Vector2(100.00002, -74)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_k5nqi")
+
+[node name="阳光数值" type="Label" parent="阳光" unique_id=464209002]
+offset_left = -18.749971
+offset_top = -47.083393
+offset_right = 21.250029
+offset_bottom = 41.916607
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_vwdkj")
+theme_override_font_sizes/font_size = 74
+text = "9"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="血量" type="Sprite2D" parent="." unique_id=1595925788]
+position = Vector2(88.57143, 57.142807)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_36fci")
+
+[node name="血量数值" type="Label" parent="血量" unique_id=2105242283]
+offset_left = -44.642838
+offset_top = -37.500008
+offset_right = 44.642868
+offset_bottom = 29.499992
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = ExtResource("2_vwdkj")
+theme_override_font_sizes/font_size = 60
+text = "123"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="伤害" type="Sprite2D" parent="." unique_id=372746478]
+position = Vector2(12.857147, 55.714245)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("1_x02ct")
+
+[node name="伤害数值" type="Label" parent="伤害" unique_id=1616092275]
+offset_left = -44.642853
+offset_top = -35.714294
+offset_right = 44.642853
+offset_bottom = 31.285706
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = ExtResource("2_vwdkj")
+theme_override_font_sizes/font_size = 60
+text = "123"
+horizontal_alignment = 1
+vertical_alignment = 1

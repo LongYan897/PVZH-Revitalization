@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://dk5iqnymyusuv"]
+
+[ext_resource type="Texture2D" uid="uid://c7kyerl2cdca4" path="res://素材/ui/界面ui/options.png" id="1_esnl2"]
+[ext_resource type="Script" uid="uid://b7oreymwq7v0y" path="res://脚本/设置按钮.gd" id="1_f0ij6"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="3_kb10b"]
+[ext_resource type="Texture2D" uid="uid://dmyt3bgolc0cv" path="res://素材/ui/界面ui/icon_x.png" id="4_lpp61"]
+[ext_resource type="Texture2D" uid="uid://bdify4rkk00xq" path="res://素材/ui/界面ui/按钮1.png" id="5_m7ffd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f0ij6"]
+bg_color = Color(0.081, 0.3, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.35441908, 0.35441908, 0.23529412)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="设置按钮" type="TextureButton" unique_id=2042087439]
+z_index = 20
+offset_left = 600.0
+offset_top = 3.0
+offset_right = 725.0
+offset_bottom = 130.0
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("1_esnl2")
+script = ExtResource("1_f0ij6")
+metadata/_edit_lock_ = true
+
+[node name="界面" type="Panel" parent="." unique_id=745836302]
+top_level = true
+z_index = 99
+layout_mode = 0
+offset_top = 144.0
+offset_right = 720.0
+offset_bottom = 1280.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_f0ij6")
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="界面" unique_id=1676427037]
+layout_mode = 0
+offset_top = 159.0
+offset_right = 720.0
+offset_bottom = 251.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_fonts/font = ExtResource("3_kb10b")
+theme_override_font_sizes/font_size = 50
+text = "设置"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="关闭按钮" type="TextureButton" parent="界面" unique_id=898984427]
+layout_mode = 0
+offset_left = 630.0
+offset_top = 20.0
+offset_right = 704.0
+offset_bottom = 95.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("4_lpp61")
+metadata/_edit_lock_ = true
+
+[node name="返回界面" type="TextureButton" parent="界面" unique_id=1666846925]
+self_modulate = Color(1, 0.19999999, 0.19999999, 1)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_top = 810.0
+offset_right = 170.0
+offset_bottom = 975.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("5_m7ffd")
+
+[node name="Label" type="Label" parent="界面/返回界面" unique_id=84408434]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_right = 170.0
+offset_bottom = 165.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_fonts/font = ExtResource("3_kb10b")
+theme_override_font_sizes/font_size = 50
+text = "返回主界面"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="获取ai按钮" type="TextureButton" parent="界面" unique_id=872615344]
+self_modulate = Color(0.19999999, 1, 0.23999995, 1)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_top = 600.0
+offset_right = 170.0
+offset_bottom = 765.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("5_m7ffd")
+
+[node name="Label" type="Label" parent="界面/获取ai按钮" unique_id=1361083105]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_right = 170.0
+offset_bottom = 165.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_fonts/font = ExtResource("3_kb10b")
+theme_override_font_sizes/font_size = 50
+text = "获取Data"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]
+[connection signal="mouse_entered" from="界面/关闭按钮" to="." method="_on_关闭按钮_mouse_entered"]
+[connection signal="mouse_exited" from="界面/关闭按钮" to="." method="_on_关闭按钮_mouse_exited"]
+[connection signal="pressed" from="界面/关闭按钮" to="." method="_on_关闭按钮_pressed"]
+[connection signal="mouse_entered" from="界面/返回界面" to="." method="_on_返回界面_mouse_entered"]
+[connection signal="mouse_exited" from="界面/返回界面" to="." method="_on_返回界面_mouse_exited"]
+[connection signal="pressed" from="界面/返回界面" to="." method="_on_返回界面_pressed"]
+[connection signal="mouse_entered" from="界面/获取ai按钮" to="." method="_on_获取ai按钮_mouse_entered"]
+[connection signal="mouse_exited" from="界面/获取ai按钮" to="." method="_on_获取ai按钮_mouse_exited"]
+[connection signal="pressed" from="界面/获取ai按钮" to="." method="_on_获取ai按钮_pressed"]

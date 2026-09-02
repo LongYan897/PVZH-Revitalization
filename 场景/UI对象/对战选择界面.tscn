@@ -1,0 +1,478 @@
+[gd_scene format=3 uid="uid://gec85y1q12u1"]
+
+[ext_resource type="Script" uid="uid://bnc0uuyhfgxlo" path="res://脚本/对战选择界面.gd" id="1_fmxly"]
+[ext_resource type="PackedScene" uid="uid://drvlexjo03b5o" path="res://场景/UI对象/背景图.tscn" id="1_pfj2h"]
+[ext_resource type="Texture2D" uid="uid://bdify4rkk00xq" path="res://素材/ui/界面ui/按钮1.png" id="2_4i3bi"]
+[ext_resource type="Texture2D" uid="uid://ch3wbbhd3qoud" path="res://素材/ui/界面ui/backbutton.png" id="4_066s8"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="5_vqo5q"]
+[ext_resource type="Texture2D" uid="uid://cbfvp0frn80qp" path="res://素材/ui/图标/pack_bundle_lawnofdoom.png" id="6_0o25q"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vqo5q"]
+
+[node name="对战选择界面" type="Control" unique_id=1851124089]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fmxly")
+
+[node name="背景图" parent="." unique_id=1932078031 instance=ExtResource("1_pfj2h")]
+color = Color(0.62015986, 0.2356, 0.76, 1)
+
+[node name="单机" type="TextureButton" parent="." unique_id=1576777666]
+self_modulate = Color(0.061333276, 0.92, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -182.5
+offset_right = 170.0
+offset_bottom = -17.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("2_4i3bi")
+
+[node name="Label" type="Label" parent="单机" unique_id=985426825]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -82.0
+offset_right = 170.0
+offset_bottom = 83.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "单机"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="联机" type="TextureButton" parent="." unique_id=42563821]
+self_modulate = Color(0.98333335, 1, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = 17.5
+offset_right = 170.0
+offset_bottom = 182.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("2_4i3bi")
+
+[node name="Label" type="Label" parent="联机" unique_id=1899977877]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -82.0
+offset_right = 170.0
+offset_bottom = 83.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "联机"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="返回按钮" type="TextureButton" parent="." unique_id=829974779]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -112.0
+offset_right = 112.0
+grow_vertical = 0
+texture_normal = ExtResource("4_066s8")
+
+[node name="联机二级菜单" type="Panel" parent="." unique_id=1192756796]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -640.0
+offset_right = 360.0
+offset_bottom = 640.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_vqo5q")
+
+[node name="创建房间" type="TextureButton" parent="联机二级菜单" unique_id=164332085]
+self_modulate = Color(0.061333276, 0.92, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -352.0
+offset_top = 232.0
+offset_right = -12.0
+offset_bottom = 397.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("2_4i3bi")
+
+[node name="Label" type="Label" parent="联机二级菜单/创建房间" unique_id=1071900134]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -82.0
+offset_right = 170.0
+offset_bottom = 83.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "创建房间"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="加入房间" type="TextureButton" parent="联机二级菜单" unique_id=281420520]
+self_modulate = Color(0, 1, 0.9166665, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 16.0
+offset_top = 232.0
+offset_right = 356.0
+offset_bottom = 397.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(1, 0)
+texture_normal = ExtResource("2_4i3bi")
+
+[node name="Label" type="Label" parent="联机二级菜单/加入房间" unique_id=2117112176]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -82.0
+offset_right = 170.0
+offset_bottom = 83.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "加入房间"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="返回按钮" type="TextureButton" parent="联机二级菜单" unique_id=1536758092]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -112.0
+offset_right = 112.0
+grow_vertical = 0
+texture_normal = ExtResource("4_066s8")
+
+[node name="创建房间界面" type="Panel" parent="." unique_id=382392136]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -640.0
+offset_right = 360.0
+offset_bottom = 640.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_vqo5q")
+
+[node name="返回按钮" type="TextureButton" parent="创建房间界面" unique_id=1542868026]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -112.0
+offset_right = 112.0
+grow_vertical = 0
+texture_normal = ExtResource("4_066s8")
+
+[node name="输入框" type="LineEdit" parent="创建房间界面" unique_id=271144000]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -384.0
+offset_right = 150.0
+offset_bottom = -259.00012
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_uneditable_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("5_vqo5q")
+theme_override_font_sizes/font_size = 48
+placeholder_text = "等待创建"
+alignment = 1
+editable = false
+context_menu_enabled = false
+
+[node name="Label" type="Label" parent="创建房间界面/输入框" unique_id=683220601]
+layout_mode = 0
+offset_top = -104.0
+offset_right = 300.0
+offset_bottom = 21.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 42
+text = "房间号"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="对面框" type="Panel" parent="创建房间界面" unique_id=320713262]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -175.0
+offset_top = 192.0
+offset_right = 175.0
+offset_bottom = 272.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="头像框" type="TextureRect" parent="创建房间界面/对面框" unique_id=775946460]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -352.0
+offset_top = -176.0
+offset_right = -2.0000153
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.35, 0.35)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("6_0o25q")
+
+[node name="Label" type="Label" parent="创建房间界面/对面框" unique_id=1828096882]
+layout_mode = 0
+offset_right = 350.0
+offset_bottom = 80.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+text = "等待玩家加入"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="开始游戏" type="TextureButton" parent="创建房间界面" unique_id=736492479]
+self_modulate = Color(0.0627451, 0.92156863, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = 320.0
+offset_right = 170.0
+offset_bottom = 485.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("2_4i3bi")
+
+[node name="Label" type="Label" parent="创建房间界面/开始游戏" unique_id=2025746491]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -82.0
+offset_right = 170.0
+offset_bottom = 83.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "开始游戏"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="加入房间界面" type="Panel" parent="." unique_id=1349668351]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -640.0
+offset_right = 360.0
+offset_bottom = 640.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_vqo5q")
+
+[node name="输入框" type="LineEdit" parent="加入房间界面" unique_id=122396541]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -384.0
+offset_right = 150.0
+offset_bottom = -259.00012
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_uneditable_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("5_vqo5q")
+theme_override_font_sizes/font_size = 48
+placeholder_text = "请输入房间号"
+alignment = 1
+context_menu_enabled = false
+
+[node name="Label" type="Label" parent="加入房间界面/输入框" unique_id=819198312]
+layout_mode = 0
+offset_top = -104.0
+offset_right = 300.0
+offset_bottom = 21.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 42
+text = "房间号"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="进入房间" type="TextureButton" parent="加入房间界面" unique_id=560967272]
+self_modulate = Color(0.061333276, 0.92, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = 256.0
+offset_right = 170.0
+offset_bottom = 421.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture_normal = ExtResource("2_4i3bi")
+
+[node name="Label" type="Label" parent="加入房间界面/进入房间" unique_id=482961880]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -82.0
+offset_right = 170.0
+offset_bottom = 83.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 48
+text = "进入房间"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="返回按钮" type="TextureButton" parent="加入房间界面" unique_id=1186228631]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -112.0
+offset_right = 112.0
+grow_vertical = 0
+texture_normal = ExtResource("4_066s8")
+
+[connection signal="pressed" from="联机" to="." method="_on_联机_pressed"]
+[connection signal="pressed" from="联机二级菜单/创建房间" to="." method="_on_创建房间_pressed"]
+[connection signal="pressed" from="联机二级菜单/加入房间" to="." method="_on_加入房间_pressed"]
+[connection signal="pressed" from="联机二级菜单/返回按钮" to="." method="_on_二级菜单返回按钮_pressed"]
+[connection signal="pressed" from="创建房间界面/返回按钮" to="." method="_on_创建房间返回按钮_pressed"]
+[connection signal="pressed" from="创建房间界面/开始游戏" to="." method="_on_开始游戏_pressed"]
+[connection signal="pressed" from="加入房间界面/进入房间" to="." method="_on_进入房间_pressed"]
+[connection signal="pressed" from="加入房间界面/返回按钮" to="." method="_on_加入房间返回按钮_pressed"]

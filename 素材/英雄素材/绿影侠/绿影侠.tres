@@ -1,0 +1,29 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://uxvhsl2boc8s"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://bren1mudws3e4" path="res://素材/英雄素材/绿影侠/绿影侠.atlas" id="1_v07bs"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://c3lmrm6ngbirf" path="res://素材/英雄素材/绿影侠/绿影侠.skel" id="2_5wp02"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_v07bs"]
+from = "intro"
+to = "idle"
+mix = 0.5
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_5wp02"]
+from = "idle"
+to = "hit"
+mix = 0.2
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_nf7m4"]
+from = "hit"
+to = "idle"
+mix = 0.2
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_0v028"]
+from = "die"
+to = "die"
+
+[resource]
+atlas_res = ExtResource("1_v07bs")
+skeleton_file_res = ExtResource("2_5wp02")
+default_mix = 0.1
+animation_mixes = [SubResource("SpineAnimationMix_v07bs"), SubResource("SpineAnimationMix_5wp02"), SubResource("SpineAnimationMix_nf7m4"), SubResource("SpineAnimationMix_0v028")]

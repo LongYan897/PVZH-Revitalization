@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://3wxofpxo54ug"
+path="res://.godot/imported/最终任务.atlas-bca64a65d5f84674d7761a58b7c1cfec.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/最终任务锦囊/最终任务.atlas"
+dest_files=["res://.godot/imported/最终任务.atlas-bca64a65d5f84674d7761a58b7c1cfec.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

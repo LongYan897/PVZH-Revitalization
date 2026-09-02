@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://fyejn43c3xr0"
+path="res://.godot/imported/豌豆射手.skel-8b41e429d64cc85875c989f2c6560bfe.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/豌豆射手植物/豌豆射手.skel"
+dest_files=["res://.godot/imported/豌豆射手.skel-8b41e429d64cc85875c989f2c6560bfe.spskel"]
+
+[params]
+

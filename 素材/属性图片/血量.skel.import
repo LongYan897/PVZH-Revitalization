@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://phvg0qbaga1"
+path="res://.godot/imported/血量.skel-eec6eda4e1e115aade3f955f7844cca9.spskel"
+
+[deps]
+
+source_file="res://素材/属性图片/血量.skel"
+dest_files=["res://.godot/imported/血量.skel-eec6eda4e1e115aade3f955f7844cca9.spskel"]
+
+[params]
+

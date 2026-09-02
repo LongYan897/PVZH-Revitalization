@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://dn6vqdenhwxl8"]
+
+[ext_resource type="Script" uid="uid://c073dp0o3hvb0" path="res://脚本/卡牌库图片.gd" id="1_v80ea"]
+[ext_resource type="Texture2D" uid="uid://ck1u6uimcycib" path="res://素材/ui/护盾/pip_glow.png" id="2_6h46t"]
+
+[node name="卡牌库图片" type="Node2D" unique_id=1547259969]
+script = ExtResource("1_v80ea")
+
+[node name="图片" type="Sprite2D" parent="." unique_id=3756291]
+texture = ExtResource("2_6h46t")

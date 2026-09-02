@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bixre7lpxrjv"]
+
+[ext_resource type="Script" uid="uid://bpdwjj0kjfg6p" path="res://脚本/土坑.gd" id="1_hn3v8"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://mavpbw56r5bl" path="res://数据资源/僵尸动画/土坑动画.tres" id="2_n0bcr"]
+
+[node name="土坑" type="Node2D" unique_id=331052697]
+position = Vector2(382, 638)
+script = ExtResource("1_hn3v8")
+
+[node name="图片" type="SpineSprite" parent="." unique_id=2001297157]
+skeleton_data_res = ExtResource("2_n0bcr")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0

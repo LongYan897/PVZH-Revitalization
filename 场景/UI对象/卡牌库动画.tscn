@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bvm2qdcy3qba3"]
+
+[ext_resource type="Script" uid="uid://7rfh8as3271a" path="res://脚本/卡牌库动画.gd" id="1_knjsu"]
+
+[node name="卡牌库动画" type="Node2D" unique_id=218102672]
+script = ExtResource("1_knjsu")
+
+[node name="动画" type="SpineSprite" parent="." unique_id=1771207479]

@@ -1,0 +1,28 @@
+墓碑.png
+size:323,264
+filter:Linear,Linear
+pma:true
+gravestone_01_Beam #169729
+bounds:120,15,46,13
+offsets:1,1,48,15
+rotate:90
+gravestone_01_circle #63057
+bounds:120,63,46,49
+offsets:1,1,48,51
+gravestone_02 #169746
+bounds:2,114,148,178
+offsets:1,1,150,180
+rotate:90
+gravestone_05 #169724
+bounds:182,121,141,137
+offsets:1,1,143,139
+rotate:90
+gravestone_06 #169749
+bounds:182,2,124,117
+offsets:1,1,126,119
+gravestone_spy_icon
+bounds:2,6,116,106
+offsets:1,4,118,113
+灯带
+bounds:308,25,13,94
+offsets:1,1,15,111

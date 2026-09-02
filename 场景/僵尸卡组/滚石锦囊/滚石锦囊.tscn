@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cx5gxdwtrux12"]
+
+[ext_resource type="PackedScene" uid="uid://n3qjnbpsttlf" path="res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn" id="1_8g6ob"]
+[ext_resource type="Texture2D" uid="uid://c04v32uo3tctp" path="res://场景/僵尸卡组/滚石锦囊/滚石.png" id="2_k8tpe"]
+[ext_resource type="Script" uid="uid://dy4fttyrswc11" path="res://场景/僵尸卡组/滚石锦囊/滚石锦囊.gd" id="2_xo8g0"]
+[ext_resource type="Resource" uid="uid://q1chy3cgi68t" path="res://数据资源/僵尸数据/滚石锦囊数据.tres" id="3_l0twb"]
+[ext_resource type="Texture2D" uid="uid://bmcb0iyio8tv6" path="res://素材/牌背、卡面/SEEDPACKET_onetime_R1.png" id="3_xo8g0"]
+
+[node name="滚石锦囊" unique_id=1746621782 instance=ExtResource("1_8g6ob")]
+script = ExtResource("2_xo8g0")
+zombieData = ExtResource("3_l0twb")
+
+[node name="背景底版" parent="." index="2" unique_id=1356810085]
+modulate = Color(0.5202332, 0.38249514, 0.29822016, 1)
+
+[node name="僵尸图片" parent="." index="3" unique_id=2089114447]
+texture = ExtResource("2_k8tpe")
+
+[node name="卡框" parent="." index="4" unique_id=781609873]
+texture = ExtResource("3_xo8g0")

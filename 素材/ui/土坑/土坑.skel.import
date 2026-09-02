@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://c6cifj7j6lpx8"
+path="res://.godot/imported/土坑.skel-5d0caa5cb9405cdadf04eb66260ac40c.spskel"
+
+[deps]
+
+source_file="res://素材/ui/土坑/土坑.skel"
+dest_files=["res://.godot/imported/土坑.skel-5d0caa5cb9405cdadf04eb66260ac40c.spskel"]
+
+[params]
+

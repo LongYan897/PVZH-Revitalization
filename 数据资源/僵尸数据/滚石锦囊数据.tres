@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ZombieData" format=3 uid="uid://q1chy3cgi68t"]
+
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_qlt5o"]
+[ext_resource type="Script" uid="uid://dsbl34qqgully" path="res://脚本（类）/ZombieData.gd" id="2_jn8tb"]
+
+[resource]
+script = ExtResource("2_jn8tb")
+name = "滚石锦囊"
+attack = 0
+health = 0
+cardType = 1
+metadata/_custom_type_script = "uid://dsbl34qqgully"

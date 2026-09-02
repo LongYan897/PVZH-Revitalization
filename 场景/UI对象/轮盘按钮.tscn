@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bc17uv4uspu85"]
+
+[ext_resource type="Script" uid="uid://bgtgdhgorvkt4" path="res://脚本/轮盘按钮.gd" id="1_6awl3"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cuc5c5fmbam5o" path="res://素材/ui/轮盘动画/轮盘动画.tres" id="2_cjjr5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3hhd0"]
+radius = 54.589375
+
+[node name="轮盘按钮" type="Node2D" unique_id=1078598783]
+position = Vector2(350, 583)
+script = ExtResource("1_6awl3")
+
+[node name="轮盘图片" type="SpineSprite" parent="." unique_id=1482323489]
+skeleton_data_res = ExtResource("2_cjjr5")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+metadata/_edit_lock_ = true
+
+[node name="碰撞体积" type="Area2D" parent="." unique_id=66249137]
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="碰撞体积" unique_id=793329055]
+position = Vector2(3, 23)
+shape = SubResource("CircleShape2D_3hhd0")
+metadata/_edit_lock_ = true

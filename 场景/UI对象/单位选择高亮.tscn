@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://d1i32rvwqmmr4"]
+
+[ext_resource type="PackedScene" uid="uid://b8miqquuaolch" path="res://场景/UI对象/选择高亮.tscn" id="1_oshab"]
+[ext_resource type="Script" uid="uid://cflnqsc6rv2ay" path="res://脚本/单位选择高亮（继承）.gd" id="2_v71x2"]
+[ext_resource type="Texture2D" uid="uid://dyvml5e2jh6kv" path="res://素材/对象高亮框/单位2.png" id="3_v71x2"]
+
+[node name="单位选择高亮" unique_id=430291149 instance=ExtResource("1_oshab")]
+script = ExtResource("2_v71x2")
+hoverScale = Vector2(2.2, 2.2)
+commonScale = Vector2(2, 2)
+
+[node name="高亮" parent="ExSprite" parent_id_path=PackedInt32Array(2143985661) index="0" unique_id=764712986]
+scale = Vector2(2, 2)
+texture = ExtResource("3_v71x2")

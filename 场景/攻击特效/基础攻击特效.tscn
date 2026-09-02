@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bl63plg232e76"]
+
+[ext_resource type="Script" uid="uid://cg87s3oevipk6" path="res://脚本/基础攻击特效.gd" id="1_mmui8"]
+
+[node name="基础攻击特效" type="Node2D" unique_id=1196430730]
+z_index = 3
+script = ExtResource("1_mmui8")
+
+[node name="动画" type="SpineSprite" parent="." unique_id=1112607261]
+
+[node name="图片" type="Sprite2D" parent="." unique_id=1156069248]

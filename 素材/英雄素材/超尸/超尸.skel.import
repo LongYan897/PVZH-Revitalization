@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://ivvhskovjebs"
+path="res://.godot/imported/超尸.skel-d49aee54e0fc2701b5aee363ddbd9a52.spskel"
+
+[deps]
+
+source_file="res://素材/英雄素材/超尸/超尸.skel"
+dest_files=["res://.godot/imported/超尸.skel-d49aee54e0fc2701b5aee363ddbd9a52.spskel"]
+
+[params]
+

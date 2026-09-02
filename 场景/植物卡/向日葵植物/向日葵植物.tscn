@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dybn2k277lsxi"]
+
+[ext_resource type="PackedScene" uid="uid://sbll833n7jjv" path="res://场景/植物卡/基础植物/基础植物.tscn" id="1_32tyu"]
+[ext_resource type="Resource" uid="uid://fdqo7ad50ahq" path="res://数据资源/植物数据/向日葵植物数据.tres" id="2_w5cmj"]
+
+[node name="基础植物模板" unique_id=1775156101 instance=ExtResource("1_32tyu")]
+plant_data = ExtResource("2_w5cmj")

@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://bp7pvhfcakyrr"
+path="res://.godot/imported/消防员僵尸.skel-b0776f59ed0bf3d20ed5b2b1abfead10.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/消防员僵尸/消防员僵尸.skel"
+dest_files=["res://.godot/imported/消防员僵尸.skel-b0776f59ed0bf3d20ed5b2b1abfead10.spskel"]
+
+[params]
+

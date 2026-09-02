@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dheof5x6yrlt3"
+path="res://.godot/imported/死亡动画.atlas-f6b858a144cfd42d14a30ef63a59a2c4.spatlas"
+
+[deps]
+
+source_file="res://素材/ui/死亡特效/死亡动画.atlas"
+dest_files=["res://.godot/imported/死亡动画.atlas-f6b858a144cfd42d14a30ef63a59a2c4.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

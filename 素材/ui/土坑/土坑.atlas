@@ -1,0 +1,14 @@
+土坑.png
+size:378,231
+filter:Linear,Linear
+pma:true
+zombie_dirt_back
+bounds:2,95,245,134
+offsets:1,1,247,137
+zombie_roof_back
+bounds:249,14,215,127
+offsets:1,1,217,129
+rotate:90
+水路
+bounds:2,2,227,91
+offsets:9,26,245,135

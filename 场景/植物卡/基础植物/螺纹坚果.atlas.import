@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://djqmgiep3hbhg"
+path="res://.godot/imported/螺纹坚果.atlas-0d334f93f33cfe430d1dc5df7b2e8596.spatlas"
+
+[deps]
+
+source_file="res://场景/植物卡/基础植物/螺纹坚果.atlas"
+dest_files=["res://.godot/imported/螺纹坚果.atlas-0d334f93f33cfe430d1dc5df7b2e8596.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

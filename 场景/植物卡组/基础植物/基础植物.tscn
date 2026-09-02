@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://jxh0t7fsy74o"]
+
+[ext_resource type="Script" uid="uid://bn4ypq2hnl47t" path="res://脚本/基础植物卡牌.gd" id="1_k61lh"]
+[ext_resource type="Resource" uid="uid://6qrgf0mmtvna" path="res://数据资源/植物数据/基础植物数据.tres" id="2_nhmkf"]
+[ext_resource type="Texture2D" uid="uid://dopuc0tyuav36" path="res://素材/粒子特效/圆形渐变粒子.png" id="3_rq107"]
+[ext_resource type="Texture2D" uid="uid://b8cjw4esrxadc" path="res://素材/牌背、卡面/背景底版1.png" id="4_rocgw"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="5_aqxms"]
+[ext_resource type="Texture2D" uid="uid://c5aq4onpg077v" path="res://素材/牌背、卡面/SEEDPACKET_BACK.png" id="6_jibrv"]
+[ext_resource type="Texture2D" uid="uid://cps2ny8r5uo26" path="res://场景/植物卡组/基础植物/Wing Nut.png" id="7_u5m1q"]
+[ext_resource type="Texture2D" uid="uid://dnofsywiavvau" path="res://素材/牌背、卡面/SEEDPACKET_R4.png" id="8_wuyc7"]
+[ext_resource type="PackedScene" uid="uid://rtw0id81dnn2" path="res://场景/属性场景/植物卡牌数值.tscn" id="9_iyy8b"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xhkjx"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_5uxqd"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_wuiui"]
+curve = SubResource("Curve_5uxqd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xhkjx"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(120, 80, 0)
+angle_min = 1.0728835e-05
+angle_max = 360.00003
+spread = 180.0
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.04
+scale_max = 0.08
+color = Color(0, 0.9411765, 0.16078432, 1)
+alpha_curve = SubResource("CurveTexture_wuiui")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dn10b"]
+size = Vector2(245.71428, 174.2857)
+
+[node name="基础植物卡组" type="Node2D" unique_id=1711997362]
+z_index = 20
+position = Vector2(422, 564)
+scale = Vector2(0.55, 0.55)
+script = ExtResource("1_k61lh")
+plantData = ExtResource("2_nhmkf")
+
+[node name="粒子特效" type="GPUParticles2D" parent="." unique_id=1570761920]
+material = SubResource("CanvasItemMaterial_xhkjx")
+position = Vector2(-5.722046e-06, 0)
+scale = Vector2(0.9999994, 0.9999994)
+amount = 150
+texture = ExtResource("3_rq107")
+lifetime = 0.7
+process_material = SubResource("ParticleProcessMaterial_xhkjx")
+
+[node name="背景底版发光" type="Sprite2D" parent="." unique_id=1910504431]
+modulate = Color(0.1254902, 1, 0.02745098, 1)
+position = Vector2(-10.909074, 3.6363864)
+scale = Vector2(1.8817325, 1.9285715)
+texture = ExtResource("4_rocgw")
+metadata/_edit_lock_ = true
+
+[node name="文字" type="Label" parent="背景底版发光" unique_id=1701215506]
+offset_left = -29.999996
+offset_top = -45.714287
+offset_right = 30.000004
+offset_bottom = 43.285713
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_aqxms")
+theme_override_font_sizes/font_size = 80
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="背景底版" type="Sprite2D" parent="." unique_id=1752054253]
+modulate = Color(0.8392157, 0.85882354, 0.13725491, 1)
+position = Vector2(-8.571411, 4.2142944)
+scale = Vector2(1.8817327, 1.9285717)
+texture = ExtResource("6_jibrv")
+
+[node name="植物图片" type="Sprite2D" parent="." unique_id=1935681318]
+position = Vector2(-58.571438, 0)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("7_u5m1q")
+
+[node name="卡框" type="Sprite2D" parent="." unique_id=1555056847]
+position = Vector2(-9.999999, 0)
+texture = ExtResource("8_wuyc7")
+
+[node name="植物卡牌数值" parent="." unique_id=1319696509 instance=ExtResource("9_iyy8b")]
+position = Vector2(0, 0)
+scale = Vector2(0.9, 0.9)
+
+[node name="碰撞体积" type="Area2D" parent="." unique_id=919647318]
+z_index = 15
+position = Vector2(-9.999999, 0)
+
+[node name="碰撞形体" type="CollisionShape2D" parent="碰撞体积" unique_id=765954887]
+visible = false
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("RectangleShape2D_dn10b")
+
+[connection signal="input_event" from="碰撞体积" to="." method="_on_碰撞体积_input_event"]

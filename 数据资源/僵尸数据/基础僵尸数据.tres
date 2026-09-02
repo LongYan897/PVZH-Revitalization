@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ZombieData" format=3 uid="uid://d1mqt2trhnfv"]
+
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_b480k"]
+[ext_resource type="Script" uid="uid://dsbl34qqgully" path="res://脚本（类）/ZombieData.gd" id="2_wey1k"]
+
+[resource]
+script = ExtResource("2_wey1k")
+name = "基础僵尸"
+attack = 2
+health = 2
+rare = 2
+properties = Array[int]([2, 1])
+metadata/_custom_type_script = "uid://dsbl34qqgully"

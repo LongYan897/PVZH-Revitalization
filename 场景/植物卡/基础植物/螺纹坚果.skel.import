@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://c5u0ct0w6htug"
+path="res://.godot/imported/螺纹坚果.skel-21bedd2cc5030382164622fb8870d5ab.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/基础植物/螺纹坚果.skel"
+dest_files=["res://.godot/imported/螺纹坚果.skel-21bedd2cc5030382164622fb8870d5ab.spskel"]
+
+[params]
+

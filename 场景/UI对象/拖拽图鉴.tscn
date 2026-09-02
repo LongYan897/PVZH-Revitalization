@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://psy2d4ba8nca"]
+
+[ext_resource type="Script" uid="uid://bhqk4pfkmrrye" path="res://脚本/拖拽图鉴.gd" id="1_ntae6"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="2_vbpwh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nl7k4"]
+bg_color = Color(0.1, 0.1, 0.1, 0.7254902)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.37, 0.37, 0.37, 1)
+border_blend = true
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="Control" type="Control" unique_id=1314510686]
+top_level = true
+z_index = 20
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = ExtResource("1_ntae6")
+
+[node name="Panel" type="Panel" parent="." unique_id=1530267685]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -50.0
+offset_right = 200.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_nl7k4")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel" unique_id=1030247664]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -50.0
+offset_right = 200.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_fonts/normal_font = ExtResource("2_vbpwh")
+theme_override_font_sizes/normal_font_size = 28
+text = "请输入文本"
+horizontal_alignment = 1
+vertical_alignment = 1

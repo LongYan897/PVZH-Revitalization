@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://oilk4vv03qaf"
+path="res://.godot/imported/消防员僵尸.atlas-06475549a8dbd02a29931f04ae70ae54.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/消防员僵尸/消防员僵尸.atlas"
+dest_files=["res://.godot/imported/消防员僵尸.atlas-06475549a8dbd02a29931f04ae70ae54.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

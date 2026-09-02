@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PlantData" format=3 uid="uid://b6ldrvqy18m3b"]
+
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_1smt6"]
+[ext_resource type="Script" uid="uid://b1j56l025csm6" path="res://脚本（类）/PlantData.gd" id="2_h3y6i"]
+
+[resource]
+script = ExtResource("2_h3y6i")
+name = "蔓越莓植物"
+cost = 2
+attack = 2
+health = 3
+rare = 3
+properties = Array[int]([3, 4, 0])
+metadata/_custom_type_script = "uid://b1j56l025csm6"

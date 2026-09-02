@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://b77yb2067vbco"]
+
+[ext_resource type="Script" uid="uid://bf88ykskrtem5" path="res://脚本/基础僵尸模板.gd" id="1_5dbhy"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://c4crk3kpb7avn" path="res://数据资源/僵尸动画/基础僵尸动画.tres" id="1_6uqui"]
+[ext_resource type="PackedScene" uid="uid://bfpdgp27r8j0p" path="res://场景/属性场景/伤害和血量.tscn" id="2_5dbhy"]
+[ext_resource type="Resource" uid="uid://d1mqt2trhnfv" path="res://数据资源/僵尸数据/基础僵尸数据.tres" id="2_k25ae"]
+[ext_resource type="PackedScene" uid="uid://bixre7lpxrjv" path="res://场景/UI对象/土坑.tscn" id="5_s55sg"]
+[ext_resource type="PackedScene" uid="uid://dux6muhef85yw" path="res://场景/UI对象/死亡特效.tscn" id="6_v53ql"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v53ql"]
+size = Vector2(511.1112, 711.11096)
+
+[node name="基础僵尸" type="Node2D" unique_id=1787449808]
+top_level = true
+z_index = 6
+position = Vector2(378, 537)
+scale = Vector2(0.18, 0.18)
+script = ExtResource("1_5dbhy")
+zombie_data = ExtResource("2_k25ae")
+
+[node name="土坑" parent="." unique_id=331052697 instance=ExtResource("5_s55sg")]
+position = Vector2(382.00024, 638.00024)
+scale = Vector2(1.0000001, 1.0000001)
+
+[node name="僵尸" type="Node2D" parent="." unique_id=1249527665]
+scale = Vector2(1.0000001, 1.0000001)
+
+[node name="僵尸动画" type="SpineSprite" parent="僵尸" unique_id=1964762294]
+skeleton_data_res = ExtResource("1_6uqui")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(0.00024414063, 205.55542)
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="伤害和血量" parent="僵尸" unique_id=120248237 instance=ExtResource("2_5dbhy")]
+show_behind_parent = true
+z_index = 1
+position = Vector2(-3.9997559, 344.55518)
+scale = Vector2(0.84999996, 0.84999996)
+metadata/_edit_lock_ = true
+
+[node name="死亡特效" parent="." unique_id=1063149028 instance=ExtResource("6_v53ql")]
+visible = false
+
+[node name="碰撞体积" type="Area2D" parent="." unique_id=1871803521]
+
+[node name="碰撞形状" type="CollisionShape2D" parent="碰撞体积" unique_id=2016377479]
+visible = false
+position = Vector2(5.555542, -5.555664)
+scale = Vector2(1.0000001, 1.0000001)
+shape = SubResource("RectangleShape2D_v53ql")

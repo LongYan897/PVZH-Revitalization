@@ -1,0 +1,29 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://cbia30g4r5efx"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://k43qqj322ncb" path="res://素材/英雄素材/超尸/超尸.atlas" id="1_muy5o"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://ivvhskovjebs" path="res://素材/英雄素材/超尸/超尸.skel" id="2_b002q"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_muy5o"]
+from = "intro"
+to = "idle"
+mix = 0.4
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_b002q"]
+from = "idle"
+to = "hit"
+mix = 0.2
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_xrcip"]
+from = "hit"
+to = "idle"
+mix = 0.5
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_5btrs"]
+from = "idle"
+to = "die"
+mix = 0.2
+
+[resource]
+atlas_res = ExtResource("1_muy5o")
+skeleton_file_res = ExtResource("2_b002q")
+animation_mixes = [SubResource("SpineAnimationMix_muy5o"), SubResource("SpineAnimationMix_b002q"), SubResource("SpineAnimationMix_xrcip"), SubResource("SpineAnimationMix_5btrs")]

@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://v37v4sxuw3jy"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://dheof5x6yrlt3" path="res://素材/ui/死亡特效/死亡动画.atlas" id="1_7br0r"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://vrdbatunwfyx" path="res://素材/ui/死亡特效/死亡动画.skel" id="2_crq8r"]
+
+[resource]
+atlas_res = ExtResource("1_7br0r")
+skeleton_file_res = ExtResource("2_crq8r")

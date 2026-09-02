@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PlantData" format=3 uid="uid://48mi5444f50c"]
+
+[ext_resource type="Script" uid="uid://b1j56l025csm6" path="res://脚本（类）/PlantData.gd" id="1_ebslq"]
+
+[resource]
+script = ExtResource("1_ebslq")
+name = "螺纹坚果"
+cost = 4
+attack = 3
+health = 7
+metadata/_custom_type_script = "uid://b1j56l025csm6"

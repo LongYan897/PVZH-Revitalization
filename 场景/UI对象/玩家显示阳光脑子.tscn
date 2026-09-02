@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://xkwxsfn1wk4x"]
+
+[ext_resource type="Script" uid="uid://th12aqx8werg" path="res://脚本/玩家显示阳光脑子.gd" id="1_vl08i"]
+[ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="2_nli0d"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="3_7177i"]
+
+[node name="玩家显示阳光脑子" type="Node2D" unique_id=821938933]
+position = Vector2(-3, -1)
+scale = Vector2(0.6, 0.6)
+script = ExtResource("1_vl08i")
+
+[node name="图片" type="Sprite2D" parent="." unique_id=1963714605]
+z_index = 5
+texture = ExtResource("2_nli0d")
+
+[node name="文字" type="Label" parent="图片" unique_id=996530629]
+offset_left = -29.999996
+offset_top = -45.714287
+offset_right = 30.000004
+offset_bottom = 43.285713
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_7177i")
+theme_override_font_sizes/font_size = 80
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://dndkmd54xpl2b"]
+
+[ext_resource type="Script" uid="uid://diiixfs3oqpj6" path="res://脚本/卡组界面.gd" id="1_cyq40"]
+[ext_resource type="Texture2D" uid="uid://0jenyxv2cpr4" path="res://素材/ui/界面ui/背景图1.png" id="2_cyq40"]
+[ext_resource type="Texture2D" uid="uid://b6tb7lpggosod" path="res://素材/ui/界面ui/遮挡1.png" id="3_cyq40"]
+[ext_resource type="Texture2D" uid="uid://i37rthq4vwic" path="res://素材/卡牌属性图片/白屏.png" id="4_n48ur"]
+[ext_resource type="Texture2D" uid="uid://ch3wbbhd3qoud" path="res://素材/ui/界面ui/backbutton.png" id="5_s81iu"]
+[ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="6_8oig7"]
+[ext_resource type="Texture2D" uid="uid://bcrfkx13cuj2e" path="res://素材/ui/界面ui/plantsymbol.png" id="7_ept2k"]
+[ext_resource type="Texture2D" uid="uid://dr1bhytmibhrm" path="res://素材/ui/界面ui/zombiesymbol.png" id="8_gvd7m"]
+
+[node name="卡组界面" type="Node2D" unique_id=1099086471]
+script = ExtResource("1_cyq40")
+
+[node name="背景图" type="Sprite2D" parent="." unique_id=402899454]
+position = Vector2(360, 640)
+scale = Vector2(3.5, 5)
+texture = ExtResource("2_cyq40")
+
+[node name="cardLibrary" type="Node2D" parent="." unique_id=25129087]
+
+[node name="顶部遮挡" type="Sprite2D" parent="." unique_id=392940115]
+z_index = 30
+position = Vector2(361.5, 150)
+scale = Vector2(5.389706, 1.46875)
+texture = ExtResource("3_cyq40")
+
+[node name="顶部遮挡1" type="Sprite2D" parent="." unique_id=944711103]
+z_index = 29
+position = Vector2(359.75, 67.875)
+scale = Vector2(0.35961914, 0.07043456)
+texture = ExtResource("4_n48ur")
+
+[node name="返回按钮" type="TextureButton" parent="." unique_id=544376845]
+z_index = 999
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 1168.0
+offset_right = 111.0
+offset_bottom = 1280.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(0, 112)
+size_flags_vertical = 6
+texture_normal = ExtResource("5_s81iu")
+
+[node name="植物按钮" type="TextureButton" parent="." unique_id=1187497095]
+self_modulate = Color(0.3882353, 0.8980392, 0.24313726, 1)
+z_index = 30
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = 27.0
+offset_right = 185.0
+offset_bottom = 277.00003
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.32, 0.32)
+pivot_offset = Vector2(122, 122)
+texture_normal = ExtResource("6_8oig7")
+
+[node name="Sprite2D" type="Sprite2D" parent="植物按钮" unique_id=452713059]
+position = Vector2(128.7143, 117.28572)
+scale = Vector2(3, 3)
+texture = ExtResource("7_ept2k")
+
+[node name="僵尸按钮" type="TextureButton" parent="." unique_id=1299725293]
+self_modulate = Color(0.87058824, 0.42745098, 0.93333334, 1)
+z_index = 30
+offset_left = 17.0
+offset_top = 27.0
+offset_right = 272.00003
+offset_bottom = 277.0
+scale = Vector2(0.32, 0.32)
+pivot_offset = Vector2(122, 122)
+texture_normal = ExtResource("6_8oig7")
+
+[node name="Sprite2D" type="Sprite2D" parent="僵尸按钮" unique_id=1140774817]
+position = Vector2(128.7143, 117.2857)
+scale = Vector2(3, 3)
+texture = ExtResource("8_gvd7m")
+
+[connection signal="button_down" from="返回按钮" to="." method="_on_texture_button_button_down"]
+[connection signal="button_up" from="返回按钮" to="." method="_on_texture_button_button_up"]
+[connection signal="pressed" from="返回按钮" to="." method="_on_texture_button_pressed"]
+[connection signal="button_down" from="植物按钮" to="." method="_on_植物按钮_button_down"]
+[connection signal="button_up" from="植物按钮" to="." method="_on_植物按钮_button_up"]
+[connection signal="pressed" from="植物按钮" to="." method="_on_植物按钮_pressed"]
+[connection signal="button_down" from="僵尸按钮" to="." method="_on_僵尸按钮_button_down"]
+[connection signal="button_up" from="僵尸按钮" to="." method="_on_僵尸按钮_button_up"]
+[connection signal="pressed" from="僵尸按钮" to="." method="_on_僵尸按钮_pressed"]

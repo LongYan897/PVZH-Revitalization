@@ -1,0 +1,24 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://wnyo1ea45qg1"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://bh85vj6leh5uu" path="res://场景/植物卡/豌豆射手植物/豌豆射手.atlas" id="1_rxgfc"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://fyejn43c3xr0" path="res://场景/植物卡/豌豆射手植物/豌豆射手.skel" id="2_dwqek"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_rxgfc"]
+from = "attack"
+to = "attack"
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_dwqek"]
+from = "idle"
+to = "hit"
+mix = 0.1
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_hxip2"]
+from = "hit"
+to = "die"
+mix = 0.1
+
+[resource]
+atlas_res = ExtResource("1_rxgfc")
+skeleton_file_res = ExtResource("2_dwqek")
+default_mix = 0.5
+animation_mixes = [SubResource("SpineAnimationMix_rxgfc"), SubResource("SpineAnimationMix_dwqek"), SubResource("SpineAnimationMix_hxip2")]

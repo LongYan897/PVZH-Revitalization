@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bx30ic3kio3qp"]
+
+[ext_resource type="Script" uid="uid://djrctqhnl2e31" path="res://脚本/对方卡牌.gd" id="1_ey826"]
+[ext_resource type="Texture2D" uid="uid://ckokiaj88kvvf" path="res://素材/牌背、卡面/cardback_plants #176244.png" id="2_52dp2"]
+
+[node name="对方卡牌" type="Node2D" unique_id=1473879465]
+position = Vector2(361, 505)
+scale = Vector2(0.55, 0.55)
+script = ExtResource("1_ey826")
+
+[node name="图片" type="Sprite2D" parent="." unique_id=843084041]
+z_index = 20
+texture = ExtResource("2_52dp2")

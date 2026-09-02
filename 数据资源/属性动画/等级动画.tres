@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://xhjd3hi3vww0"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://psdkpefcpyhr" path="res://素材/属性图片/等级.atlas" id="1_5q32v"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://bah4v533csh30" path="res://素材/属性图片/等级.skel" id="2_ctt2d"]
+
+[resource]
+atlas_res = ExtResource("1_5q32v")
+skeleton_file_res = ExtResource("2_ctt2d")

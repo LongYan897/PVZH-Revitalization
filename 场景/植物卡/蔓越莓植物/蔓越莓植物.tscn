@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dqhmyjq5akhns"]
+
+[ext_resource type="PackedScene" uid="uid://sbll833n7jjv" path="res://场景/植物卡/基础植物/基础植物.tscn" id="1_g4ve8"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cvo1pvlrpxiom" path="res://数据资源/植物动画/蔓越莓植物动画.tres" id="2_0sleo"]
+[ext_resource type="Script" uid="uid://yxdud6ja8dof" path="res://场景/植物卡/蔓越莓植物/蔓越莓植物.gd" id="2_j0j0d"]
+
+[node name="蔓越莓" unique_id=1775156101 instance=ExtResource("1_g4ve8")]
+script = ExtResource("2_j0j0d")
+plant_data = null
+
+[node name="植物动画" parent="植物" parent_id_path=PackedInt32Array(1415467110) index="0" unique_id=235776764]
+skeleton_data_res = ExtResource("2_0sleo")
+scale = Vector2(5, 5)

@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://cqrp31b1wbch5"]
+
+[ext_resource type="Script" uid="uid://bw7rrguwhhgyn" path="res://脚本/英雄图鉴.gd" id="1_4nct5"]
+[ext_resource type="Texture2D" uid="uid://db11uq8vftl38" path="res://素材/ui/界面ui/frame #173462.png" id="2_yyr13"]
+[ext_resource type="Texture2D" uid="uid://cttsnfkdqyst1" path="res://素材/ui/界面ui/聪明.png" id="3_e8y07"]
+[ext_resource type="Texture2D" uid="uid://dh3f1n2kdeld3" path="res://素材/ui/稀有标签/rarity_4.png" id="4_1bxj1"]
+[ext_resource type="Texture2D" uid="uid://c4yunnsxr58kl" path="res://素材/ui/界面ui/smallinspectionframe.png" id="5_wdn0o"]
+[ext_resource type="Texture2D" uid="uid://cov63gqkfb3l7" path="res://素材/ui/界面ui/frame_circle_grass.png" id="6_ts3ii"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="10_fu0i2"]
+
+[node name="英雄图鉴" type="Control" unique_id=820026943]
+top_level = true
+z_index = 41
+layout_mode = 3
+anchors_preset = 0
+offset_left = 360.0
+offset_top = 640.0
+offset_right = 360.0
+offset_bottom = 640.0
+script = ExtResource("1_4nct5")
+
+[node name="背景" type="Node2D" parent="." unique_id=51087343]
+scale = Vector2(0.6, 0.6)
+
+[node name="左背景" type="Sprite2D" parent="背景" unique_id=1700759393]
+position = Vector2(-257, 0)
+texture = ExtResource("2_yyr13")
+
+[node name="右背景" type="Sprite2D" parent="背景" unique_id=77013943]
+position = Vector2(257, 0)
+texture = ExtResource("2_yyr13")
+flip_h = true
+
+[node name="属性图片右" type="Sprite2D" parent="背景" unique_id=927357290]
+position = Vector2(300, -300)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_e8y07")
+
+[node name="属性图片左" type="Sprite2D" parent="背景" unique_id=624851902]
+position = Vector2(-300, -300)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_e8y07")
+
+[node name="稀有标签" type="Sprite2D" parent="." unique_id=227272783]
+position = Vector2(0, 235)
+texture = ExtResource("4_1bxj1")
+
+[node name="人物框" type="Sprite2D" parent="." unique_id=1099799470]
+z_index = 1
+position = Vector2(0, -280)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("5_wdn0o")
+
+[node name="底版" type="Sprite2D" parent="人物框" unique_id=1484759573]
+z_index = -1
+texture = ExtResource("6_ts3ii")
+
+[node name="稀有标签label" type="Label" parent="." unique_id=737651757]
+layout_mode = 0
+offset_left = -255.0
+offset_top = 162.0
+offset_right = 253.0
+offset_bottom = 232.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 42
+text = "英雄"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="名字" type="Label" parent="." unique_id=1058128979]
+layout_mode = 0
+offset_left = -263.0
+offset_top = -140.0
+offset_right = 262.0
+offset_bottom = -70.0
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 38
+text = "英雄名字"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="故事标签" type="RichTextLabel" parent="." unique_id=625689413]
+layout_mode = 0
+offset_left = -216.0
+offset_top = 240.0
+offset_right = 213.0
+offset_bottom = 500.0
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_colors/default_color = Color(0.7350987, 0.73509866, 0.73509866, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_fonts/normal_font = ExtResource("10_fu0i2")
+theme_override_font_sizes/normal_font_size = 32
+text = "神秘小故事
+"
+horizontal_alignment = 1
+
+[node name="底版" type="ColorRect" parent="." unique_id=1828930503]
+modulate = Color(0, 0, 0, 0.28627452)
+top_level = true
+z_index = 40
+layout_mode = 0
+offset_right = 722.0
+offset_bottom = 1299.0

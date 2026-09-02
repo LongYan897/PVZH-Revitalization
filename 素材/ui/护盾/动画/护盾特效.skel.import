@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://dbgflnfvixf6c"
+path="res://.godot/imported/护盾特效.skel-c5d76a50cefbd08664ab677bbf6fa51d.spskel"
+
+[deps]
+
+source_file="res://素材/ui/护盾/动画/护盾特效.skel"
+dest_files=["res://.godot/imported/护盾特效.skel-c5d76a50cefbd08664ab677bbf6fa51d.spskel"]
+
+[params]
+

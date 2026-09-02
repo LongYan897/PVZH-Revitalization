@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://bren1mudws3e4"
+path="res://.godot/imported/绿影侠.atlas-7b9c27d2a4b22bd4f7f7eff8d34dea2d.spatlas"
+
+[deps]
+
+source_file="res://素材/英雄素材/绿影侠/绿影侠.atlas"
+dest_files=["res://.godot/imported/绿影侠.atlas-7b9c27d2a4b22bd4f7f7eff8d34dea2d.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

@@ -1,0 +1,15 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://cvo1pvlrpxiom"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://b41g445hfaweu" path="res://场景/植物卡/蔓越莓植物/蔓越莓.atlas" id="1_lhq08"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://b1vyhu0w6hy5h" path="res://场景/植物卡/蔓越莓植物/蔓越莓.skel" id="2_oxn15"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_lhq08"]
+from = "intro"
+to = "idle"
+mix = 0.5
+
+[resource]
+atlas_res = ExtResource("1_lhq08")
+skeleton_file_res = ExtResource("2_oxn15")
+default_mix = 0.1
+animation_mixes = [SubResource("SpineAnimationMix_lhq08")]

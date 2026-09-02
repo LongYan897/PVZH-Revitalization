@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b3pfmv1l3c5yc"]
+
+[ext_resource type="PackedScene" uid="uid://jxh0t7fsy74o" path="res://场景/植物卡组/基础植物/基础植物.tscn" id="1_c03f1"]
+[ext_resource type="Resource" uid="uid://b6ldrvqy18m3b" path="res://数据资源/植物数据/蔓越莓植物数据.tres" id="2_om0eb"]
+[ext_resource type="Texture2D" uid="uid://de8pxwl7ch8w7" path="res://场景/植物卡组/蔓越莓植物/蔓越莓图片.png" id="3_om0eb"]
+
+[node name="蔓越莓" unique_id=1711997362 instance=ExtResource("1_c03f1")]
+plantData = ExtResource("2_om0eb")
+
+[node name="植物图片" parent="." index="3" unique_id=1935681318]
+position = Vector2(-32.72729, -3.6363745)
+scale = Vector2(1.1658198, 1.1658198)
+texture = ExtResource("3_om0eb")

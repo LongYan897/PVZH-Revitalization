@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://bah4v533csh30"
+path="res://.godot/imported/等级.skel-b6316e47f9f74d42e8b47fd7cf1c8719.spskel"
+
+[deps]
+
+source_file="res://素材/属性图片/等级.skel"
+dest_files=["res://.godot/imported/等级.skel-b6316e47f9f74d42e8b47fd7cf1c8719.spskel"]
+
+[params]
+

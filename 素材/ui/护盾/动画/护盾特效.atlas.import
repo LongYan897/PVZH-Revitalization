@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://d0ouqareg7fdo"
+path="res://.godot/imported/护盾特效.atlas-35f9d7dcdf819f078e37f5ff815a3eae.spatlas"
+
+[deps]
+
+source_file="res://素材/ui/护盾/动画/护盾特效.atlas"
+dest_files=["res://.godot/imported/护盾特效.atlas-35f9d7dcdf819f078e37f5ff815a3eae.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

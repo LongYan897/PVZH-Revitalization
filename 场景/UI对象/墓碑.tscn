@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://ss72p37ivu5d"]
+
+[ext_resource type="Script" uid="uid://d4km66e5airuf" path="res://脚本/墓碑.gd" id="1_rfcct"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://2en3mjr35vpn" path="res://素材/墓碑/墓碑.tres" id="2_2o418"]
+
+[node name="墓碑" type="Node2D" unique_id=1362953827]
+scale = Vector2(4.5, 4.5)
+script = ExtResource("1_rfcct")
+
+[node name="图片" type="SpineSprite" parent="." unique_id=1265288149]
+skeleton_data_res = ExtResource("2_2o418")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(0.44444445, 63.11111)

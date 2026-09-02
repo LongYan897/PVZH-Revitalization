@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://d0x2xu25ns6b3"]
+
+[ext_resource type="Script" uid="uid://bhaisxiwr2bbo" path="res://脚本/地图高亮.gd" id="1_mggvd"]
+[ext_resource type="Texture2D" uid="uid://cimvexb4n4idx" path="res://素材/ui/地图高亮/选择框3.png" id="2_d0kmx"]
+
+[node name="地图高亮" type="Node2D" unique_id=551245521]
+z_index = 5
+script = ExtResource("1_mggvd")
+
+[node name="图片" type="Sprite2D" parent="." unique_id=795250198]
+modulate = Color(0.46666667, 0.81960785, 0.54901963, 1)
+scale = Vector2(0.33, 0.33)
+texture = ExtResource("2_d0kmx")

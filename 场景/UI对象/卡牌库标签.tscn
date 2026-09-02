@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://b7an3uf5dy3fe"]
+
+[ext_resource type="Script" uid="uid://cd06vsshtk688" path="res://脚本/卡牌库标签.gd" id="1_15raq"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="2_r601j"]
+
+[node name="卡牌库标签" type="Node2D" unique_id=1860501197]
+script = ExtResource("1_15raq")
+
+[node name="标签" type="Label" parent="." unique_id=644001590]
+offset_top = -35.0
+offset_right = 341.0
+offset_bottom = 35.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = ExtResource("2_r601j")
+theme_override_font_sizes/font_size = 32
+text = "1212121"
+vertical_alignment = 1

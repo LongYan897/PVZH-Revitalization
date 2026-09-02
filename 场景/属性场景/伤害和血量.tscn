@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://bfpdgp27r8j0p"]
+
+[ext_resource type="SpineSkeletonDataResource" uid="uid://6damiheggxsu" path="res://数据资源/属性动画/攻击动画.tres" id="1_cu13d"]
+[ext_resource type="Script" uid="uid://nv1ec3ofua1m" path="res://脚本/伤害和血量.gd" id="1_re4jh"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://dh6k1ymw5ypju" path="res://数据资源/属性动画/血量动画.tres" id="2_paled"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="3_geero"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://xhjd3hi3vww0" path="res://数据资源/属性动画/等级动画.tres" id="4_3fxss"]
+
+[node name="伤害和血量" type="Node2D" unique_id=120248237]
+position = Vector2(366, 588)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("1_re4jh")
+
+[node name="伤害" type="SpineSprite" parent="." unique_id=1119256147]
+skeleton_data_res = ExtResource("1_cu13d")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(-143.33333, 7.7777786)
+
+[node name="伤害数值" type="Label" parent="伤害" unique_id=1344782053]
+offset_left = -112.222244
+offset_top = -114.44445
+offset_right = 108.777756
+offset_bottom = 107.55555
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 16
+theme_override_constants/shadow_offset_y = 16
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("3_geero")
+theme_override_font_sizes/font_size = 200
+text = "123"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="血量" type="SpineSprite" parent="." unique_id=314690359]
+skeleton_data_res = ExtResource("2_paled")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+show_behind_parent = true
+position = Vector2(174.44447, 5.5555563)
+
+[node name="血量数值" type="Label" parent="血量" unique_id=1969772445]
+offset_left = -95.55556
+offset_top = -121.111115
+offset_right = 94.44444
+offset_bottom = 100.888885
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 16
+theme_override_constants/shadow_offset_y = 16
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("3_geero")
+theme_override_font_sizes/font_size = 200
+text = "321"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="等级" type="SpineSprite" parent="." unique_id=1128208529]
+skeleton_data_res = ExtResource("4_3fxss")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(12.222221, 102.22222)
+scale = Vector2(0.7, 0.7)

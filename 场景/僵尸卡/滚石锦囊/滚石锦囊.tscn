@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://c3fbq0cwoe5ig"]
+
+[ext_resource type="PackedScene" uid="uid://b77yb2067vbco" path="res://场景/僵尸卡/基础僵尸/基础僵尸.tscn" id="1_d1xfl"]
+[ext_resource type="Script" uid="uid://ceaemkgotn7km" path="res://场景/僵尸卡/滚石锦囊/滚石锦囊.gd" id="2_0is5a"]
+[ext_resource type="Resource" uid="uid://q1chy3cgi68t" path="res://数据资源/僵尸数据/滚石锦囊数据.tres" id="3_3k55y"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://di1jtdn0in4xn" path="res://数据资源/僵尸动画/滚石锦囊动画.tres" id="3_w5lrp"]
+
+[node name="滚石锦囊" unique_id=1787449808 instance=ExtResource("1_d1xfl")]
+script = ExtResource("2_0is5a")
+zombie_data = ExtResource("3_3k55y")
+
+[node name="僵尸动画" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="0" unique_id=1964762294]
+skeleton_data_res = ExtResource("3_w5lrp")
+scale = Vector2(3.5, 3.5)
+
+[node name="伤害和血量" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="1" unique_id=120248237]
+visible = false

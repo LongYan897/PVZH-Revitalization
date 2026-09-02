@@ -1,0 +1,13 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://cuc5c5fmbam5o"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://daideve67if4j" path="res://素材/ui/轮盘动画/回合按钮.atlas" id="1_lvl1x"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://btqq3x6adhjok" path="res://素材/ui/轮盘动画/回合按钮.skel" id="2_lv25b"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_lvl1x"]
+from = "plantBackCardTurn"
+to = "plantBackCardTurn"
+
+[resource]
+atlas_res = ExtResource("1_lvl1x")
+skeleton_file_res = ExtResource("2_lv25b")
+animation_mixes = [SubResource("SpineAnimationMix_lvl1x")]

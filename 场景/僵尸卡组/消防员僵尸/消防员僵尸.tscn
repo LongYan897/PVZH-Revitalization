@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cb4o33210nony"]
+
+[ext_resource type="PackedScene" uid="uid://n3qjnbpsttlf" path="res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn" id="1_n0jwk"]
+[ext_resource type="Resource" uid="uid://bk2qylistkpsm" path="res://数据资源/僵尸数据/消防员僵尸数据.tres" id="2_26lkf"]
+[ext_resource type="Texture2D" uid="uid://xnjktwi5iiwi" path="res://场景/僵尸卡组/消防员僵尸/消防员僵尸.png" id="3_2prhw"]
+[ext_resource type="Texture2D" uid="uid://dabeqr44tko7h" path="res://素材/牌背、卡面/SEEDPACKET_R2.png" id="4_5643j"]
+
+[node name="消防员僵尸" unique_id=883233916 instance=ExtResource("1_n0jwk")]
+position = Vector2(443, 614)
+zombieData = ExtResource("2_26lkf")
+
+[node name="背景底版" parent="." index="2" unique_id=1356810085]
+modulate = Color(0.33, 0.33, 0.33, 1)
+
+[node name="僵尸图片" parent="." index="3" unique_id=2089114447]
+texture = ExtResource("3_2prhw")
+
+[node name="卡框" parent="." index="4" unique_id=781609873]
+texture = ExtResource("4_5643j")

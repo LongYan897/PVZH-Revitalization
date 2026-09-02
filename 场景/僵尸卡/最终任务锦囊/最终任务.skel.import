@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://x4ijttmivleo"
+path="res://.godot/imported/最终任务.skel-541435dfe03c5b70ee6940566890d30a.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/最终任务锦囊/最终任务.skel"
+dest_files=["res://.godot/imported/最终任务.skel-541435dfe03c5b70ee6940566890d30a.spskel"]
+
+[params]
+
