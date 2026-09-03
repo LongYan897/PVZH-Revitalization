@@ -1,5 +1,4 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-导出/
 .ignore/
