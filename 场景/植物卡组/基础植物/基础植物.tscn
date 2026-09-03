@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cps2ny8r5uo26" path="res://场景/植物卡组/基础植物/Wing Nut.png" id="7_u5m1q"]
 [ext_resource type="Texture2D" uid="uid://dnofsywiavvau" path="res://素材/牌背、卡面/SEEDPACKET_R4.png" id="8_wuyc7"]
 [ext_resource type="PackedScene" uid="uid://rtw0id81dnn2" path="res://场景/属性场景/植物卡牌数值.tscn" id="9_iyy8b"]
+[ext_resource type="Script" uid="uid://dpgiahdxk1glp" path="res://场景/僵尸卡组/基础僵尸/卡框.gd" id="9_nhmkf"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xhkjx"]
 blend_mode = 1
@@ -87,6 +88,8 @@ texture = ExtResource("7_u5m1q")
 [node name="卡框" type="Sprite2D" parent="." unique_id=1555056847]
 position = Vector2(-9.999999, 0)
 texture = ExtResource("8_wuyc7")
+script = ExtResource("9_nhmkf")
+cardRare = 3
 
 [node name="植物卡牌数值" parent="." unique_id=1319696509 instance=ExtResource("9_iyy8b")]
 position = Vector2(0, 0)

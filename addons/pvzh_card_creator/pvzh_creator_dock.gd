@@ -14,6 +14,8 @@ const UNIT_DIRS := {"植物": "场景/植物卡", "僵尸": "场景/僵尸卡"}
 const CARD_DIRS := {"植物": "场景/植物卡组", "僵尸": "场景/僵尸卡组"}
 const UNIT_BASES := {"植物": "res://场景/植物卡/基础植物/基础植物.tscn", "僵尸": "res://场景/僵尸卡/基础僵尸/基础僵尸.tscn"}
 const CARD_BASES := {"植物": "res://场景/植物卡组/基础植物/基础植物.tscn", "僵尸": "res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn"}
+const ANIMATION_DIRS := {"植物": "数据资源/植物动画", "僵尸": "数据资源/僵尸动画"}
+const ANIMATION_TEMPLATES := {"植物": "res://数据资源/植物动画/豌豆射手植物动画.tres", "僵尸": "res://数据资源/僵尸动画/基础僵尸动画.tres"}
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(280, 0)
@@ -101,9 +103,11 @@ func _create_unit(side: String, object_name: String) -> Dictionary:
 	var script_path: String = folder + "/" + object_name + ".gd"
 	var data_dir: String = ROOT + ("数据资源/植物数据" if side == "植物" else "数据资源/僵尸数据")
 	var data_path: String = data_dir + "/" + object_name + "数据.tres"
-	if _exists_any([folder, scene_path, script_path, data_path]):
+	var animation_dir: String = ROOT + str(ANIMATION_DIRS[side])
+	var animation_path: String = animation_dir + "/" + object_name + "动画.tres"
+	if _exists_any([folder, scene_path, script_path, data_path, animation_path]):
 		return {"ok": false, "message": "单位已存在，已取消创建：" + object_name}
-	if not _ensure_dir(folder) or not _ensure_dir(data_dir):
+	if not _ensure_dir(folder) or not _ensure_dir(data_dir) or not _ensure_dir(animation_dir):
 		return {"ok": false, "message": "无法创建单位目录"}
 	var script_class := "BasePlant" if side == "植物" else "BaseZombie"
 	var data_class := "PlantData" if side == "植物" else "ZombieData"
@@ -112,12 +116,16 @@ func _create_unit(side: String, object_name: String) -> Dictionary:
 	var data_text := "[gd_resource type=\"Resource\" script_class=\"" + data_class + "\" format=3]\n\n"
 	data_text += "[ext_resource type=\"Script\" path=\"res://脚本（类）/" + data_class + ".gd\" id=\"1_data\"]\n\n"
 	data_text += "[resource]\nscript = ExtResource(\"1_data\")\nname = \"" + object_name + "\"\n"
-	var scene_text := "[gd_scene load_steps=4 format=3]\n\n"
+	var scene_text := "[gd_scene load_steps=5 format=3]\n\n"
 	scene_text += "[ext_resource type=\"PackedScene\" path=\"" + UNIT_BASES[side] + "\" id=\"1_base\"]\n"
 	scene_text += "[ext_resource type=\"Script\" path=\"" + script_path + "\" id=\"2_script\"]\n"
 	scene_text += "[ext_resource type=\"Resource\" path=\"" + data_path + "\" id=\"3_data\"]\n\n"
+	scene_text += "[ext_resource type=\"SpineSkeletonDataResource\" path=\"" + animation_path + "\" id=\"4_animation\"]\n\n"
 	scene_text += "[node name=\"" + object_name + "\" instance=ExtResource(\"1_base\")]\n"
 	scene_text += "script = ExtResource(\"2_script\")\n" + data_prop + " = ExtResource(\"3_data\")\n"
+	_write(animation_path, FileAccess.get_file_as_string(ANIMATION_TEMPLATES[side]))
+	scene_text += "\n[node name=\"植物动画\" parent=\"植物\" index=\"0\"]\n" if side == "植物" else "\n[node name=\"僵尸动画\" parent=\"僵尸\" index=\"0\"]\n"
+	scene_text += "skeleton_data_res = ExtResource(\"4_animation\")\n"
 	_write(script_path, script_text)
 	_write(data_path, data_text)
 	_write(scene_path, scene_text)

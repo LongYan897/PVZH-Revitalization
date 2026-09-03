@@ -49,11 +49,76 @@ var isHold:bool = false
 var isEnd:bool = false
 func _ready() -> void:
 	rollPosY = 0
-	updateCard()
+	#updateCard()
+	testUpdateCard()
 	updateThemeColor()
-func updateCard():
+func testUpdateCard():
+	var dic := [
+	{"type":"texture","name":"头像","x":0,"y":-25,"scale":Vector2(0.2,0.2)},
+	{"type":"sidebar","y":200},
+	{"type":"label","x":-80,"y":0,"text":"本重制版作者"},
+	#{"type":"animation","name":"logo","x":0,"y":350},
+	{"type":"sidebar","y":50},
+	{"type":"label","x":-300,"y":0,"text":"英雄"},
+	{"type":"heroCard","sprite":"cornerimage_greenshadow","index":0,"y":100},
+	{"type":"heroCard","sprite":"cornerimage_solarflare","index":1,"y":0},
+	{"type":"heroCard","sprite":"cornerimage_BetaCarrotina","index":2,"y":0},
+	{"type":"heroCard","sprite":"cornerimage_grassknuckles","index":3,"y":0},
+	{"type":"heroCard","sprite":"cornerimage_captaincombustible","index":4,"y":0},
+	{"type":"sidebar","y":250},
+	{"type":"texture","name":"健壮","x":-330,"y":0,"scale":Vector2(0.3,0.3)},
+	{"type":"label","x":-300,"y":0,"text":"僵尸"},
+	]
+	var dir = DirAccess.open("res://场景/僵尸卡组/")
+	dir.list_dir_begin()
+	var item = dir.get_next()
+	var count = 0
+	while item != "":
+		if dir.current_is_dir() and item != "." and item != "..":
+			var itemName = item
+			var nitem
+			if count % 4 == 0:
+				if count == 0:
+					nitem = {"type":"zombieCard","name":itemName,"index":0,"y":90}
+				else:
+					nitem = {"type":"zombieCard","name":itemName,"index":0,"y":120}
+			else:
+				nitem = {"type":"zombieCard","name":itemName,"index":count,"y":0}
+			dic.append(nitem)
+			count += 1
+		item = dir.get_next()
+	dir.list_dir_end()
+	
+	var arr = [
+	{"type":"sidebar","y":120},
+	{"type":"texture","name":"光能","x":-330,"y":0,"scale":Vector2(0.3,0.3)},
+	{"type":"label","x":-300,"y":0,"text":"植物"}
+	]
+	dic.append_array(arr)
+				
+	dir = DirAccess.open("res://场景/植物卡组/")
+	dir.list_dir_begin()
+	item = dir.get_next()
+	count = 0
+	while item != "":
+		if dir.current_is_dir() and item != "." and item != "..":
+			var itemName = item
+			var nitem
+			if count % 4 == 0:
+				if count == 0:
+					nitem = {"type":"plantCard","name":itemName,"index":0,"y":90}
+				else:
+					nitem = {"type":"plantCard","name":itemName,"index":0,"y":120}
+			else:
+				nitem = {"type":"plantCard","name":itemName,"index":count,"y":0}
+			dic.append(nitem)
+			count += 1
+		item = dir.get_next()
+	dir.list_dir_end()
+	updateCard(dic)
+func updateCard(cardDict:Array = allPlantCard):
 	var current_y = 0
-	for block in allPlantCard:
+	for block in cardDict:
 		current_y += block["y"]
 		match block["type"]:
 			"texture":

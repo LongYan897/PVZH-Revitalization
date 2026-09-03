@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dqem2vl74qp87" path="res://场景/僵尸卡组/基础僵尸/富兰克林.png" id="5_c8glh"]
 [ext_resource type="Texture2D" uid="uid://dnmb4cd5owl5b" path="res://素材/牌背、卡面/SEEDPACKET_R3.png" id="6_fdw1i"]
 [ext_resource type="PackedScene" uid="uid://rtw0id81dnn2" path="res://场景/属性场景/植物卡牌数值.tscn" id="7_ng8md"]
+[ext_resource type="Script" uid="uid://dpgiahdxk1glp" path="res://场景/僵尸卡组/基础僵尸/卡框.gd" id="8_tpe44"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_618t7"]
 blend_mode = 1
@@ -70,8 +71,10 @@ scale = Vector2(0.9, 0.9)
 texture = ExtResource("5_c8glh")
 
 [node name="卡框" type="Sprite2D" parent="." unique_id=781609873]
-position = Vector2(-9.999999, 0)
+position = Vector2(-9.999999, 3.636364)
 texture = ExtResource("6_fdw1i")
+script = ExtResource("8_tpe44")
+cardRare = 2
 
 [node name="僵尸卡牌数值" parent="." unique_id=1319696509 instance=ExtResource("7_ng8md")]
 position = Vector2(0, 0)

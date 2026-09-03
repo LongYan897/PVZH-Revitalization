@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://q2hnki7b1bt"
+path="res://.godot/imported/爱尔兰小鬼.atlas-eb2796a05a0d041d312f444321efc757.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/爱尔兰小鬼僵尸/爱尔兰小鬼.atlas"
+dest_files=["res://.godot/imported/爱尔兰小鬼.atlas-eb2796a05a0d041d312f444321efc757.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

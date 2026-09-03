@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://1l4odn63wavd"
+path="res://.godot/imported/爱尔兰小鬼.skel-5eb9dc68ba8eee86afdc4078ab4a8fcc.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/爱尔兰小鬼僵尸/爱尔兰小鬼.skel"
+dest_files=["res://.godot/imported/爱尔兰小鬼.skel-5eb9dc68ba8eee86afdc4078ab4a8fcc.spskel"]
+
+[params]
+

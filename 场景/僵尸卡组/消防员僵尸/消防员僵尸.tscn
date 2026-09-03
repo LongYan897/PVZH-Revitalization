@@ -17,3 +17,4 @@ texture = ExtResource("3_2prhw")
 
 [node name="卡框" parent="." index="4" unique_id=781609873]
 texture = ExtResource("4_5643j")
+cardRare = 1
