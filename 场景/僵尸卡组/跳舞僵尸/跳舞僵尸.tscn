@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://c4gya8mb4u4wd"]
+
+[ext_resource type="PackedScene" uid="uid://n3qjnbpsttlf" path="res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://clrhg0g5fpahr" path="res://场景/僵尸卡组/跳舞僵尸/跳舞僵尸.gd" id="2_script"]
+[ext_resource type="Resource" path="res://数据资源/僵尸数据/跳舞僵尸数据.tres" id="3_data"]
+[ext_resource type="Texture2D" uid="uid://cletxuibu7oim" path="res://场景/僵尸卡组/跳舞僵尸/819287e9-e7de-468d-9268-7b54814f65e6 #96951.png" id="4_gejol"]
+[ext_resource type="Texture2D" uid="uid://cy7jlcow8y872" path="res://素材/牌背、卡面/SEEDPACKET_FRONT.png" id="5_fbdix"]
+
+[node name="跳舞僵尸" unique_id=1210144692 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+zombieData = ExtResource("3_data")
+
+[node name="僵尸图片" parent="." index="3" unique_id=2089114447]
+position = Vector2(-34.54545, 0)
+texture = ExtResource("4_gejol")
+
+[node name="卡框" parent="." index="4" unique_id=781609873]
+position = Vector2(-9.090908, 1.818182)
+texture = ExtResource("5_fbdix")
+cardRare = 0

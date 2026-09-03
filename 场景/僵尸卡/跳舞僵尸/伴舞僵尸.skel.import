@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://bkc8kqh0tdhl"
+path="res://.godot/imported/伴舞僵尸.skel-f0643de064e0de8a507c823c6e07328a.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/跳舞僵尸/伴舞僵尸.skel"
+dest_files=["res://.godot/imported/伴舞僵尸.skel-f0643de064e0de8a507c823c6e07328a.spskel"]
+
+[params]
+

@@ -71,7 +71,7 @@ scale = Vector2(0.9, 0.9)
 texture = ExtResource("5_c8glh")
 
 [node name="卡框" type="Sprite2D" parent="." unique_id=781609873]
-position = Vector2(-9.999999, 3.636364)
+position = Vector2(-9.999999, -5.454545)
 texture = ExtResource("6_fdw1i")
 script = ExtResource("8_tpe44")
 cardRare = 2

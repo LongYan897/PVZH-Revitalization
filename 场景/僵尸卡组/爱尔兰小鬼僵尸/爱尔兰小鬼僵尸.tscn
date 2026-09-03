@@ -14,6 +14,6 @@ zombieData = ExtResource("3_data")
 texture = ExtResource("4_o3osv")
 
 [node name="卡框" parent="." index="4" unique_id=781609873]
-position = Vector2(-9.999999, -10.90909)
+position = Vector2(-9.999999, 0)
 texture = ExtResource("5_8klc8")
 cardRare = 5

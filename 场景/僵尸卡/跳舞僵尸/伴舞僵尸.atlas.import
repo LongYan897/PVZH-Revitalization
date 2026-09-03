@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://c06gl4fixgxs5"
+path="res://.godot/imported/伴舞僵尸.atlas-d727a35e2d5d442a05be621133c7d8bc.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/跳舞僵尸/伴舞僵尸.atlas"
+dest_files=["res://.godot/imported/伴舞僵尸.atlas-d727a35e2d5d442a05be621133c7d8bc.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

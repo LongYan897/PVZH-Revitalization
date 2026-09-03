@@ -83,7 +83,7 @@ func testUpdateCard():
 				else:
 					nitem = {"type":"zombieCard","name":itemName,"index":0,"y":120}
 			else:
-				nitem = {"type":"zombieCard","name":itemName,"index":count,"y":0}
+				nitem = {"type":"zombieCard","name":itemName,"index":count % 4,"y":0}
 			dic.append(nitem)
 			count += 1
 		item = dir.get_next()
@@ -110,7 +110,7 @@ func testUpdateCard():
 				else:
 					nitem = {"type":"plantCard","name":itemName,"index":0,"y":120}
 			else:
-				nitem = {"type":"plantCard","name":itemName,"index":count,"y":0}
+				nitem = {"type":"plantCard","name":itemName,"index":count % 4,"y":0}
 			dic.append(nitem)
 			count += 1
 		item = dir.get_next()

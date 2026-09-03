@@ -17,6 +17,7 @@ modulate = Color(0.5202332, 0.38249514, 0.29822016, 1)
 texture = ExtResource("2_k8tpe")
 
 [node name="卡框" parent="." index="4" unique_id=781609873]
+position = Vector2(-9.999999, 3.636364)
 texture = ExtResource("3_xo8g0")
 cardType = 1
 cardRare = 0

@@ -13,7 +13,8 @@ func _ready() -> void:
 	Enemy.addPlantTarget(3,"蔓越莓植物")
 	#Enemy.addPlantTarget(2,"蔓越莓植物")
 	#Enemy.addZombieTarget(2,"基础僵尸")
-	Enemy.addZombieTarget(3,"基础僵尸")
+	Enemy.addZombieTarget(3,"爱尔兰小鬼僵尸")
+	Enemy.addZombieTarget(2,"跳舞僵尸")
 func addRoadToGroup():
 	road1.add_to_group("road")
 	road2.add_to_group("road")

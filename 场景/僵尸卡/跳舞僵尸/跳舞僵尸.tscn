@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://biyvlygftyi8v"]
+
+[ext_resource type="PackedScene" uid="uid://b77yb2067vbco" path="res://场景/僵尸卡/基础僵尸/基础僵尸.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://ds2k8ubtqr7tx" path="res://场景/僵尸卡/跳舞僵尸/跳舞僵尸.gd" id="2_script"]
+[ext_resource type="Resource" path="res://数据资源/僵尸数据/跳舞僵尸数据.tres" id="3_data"]
+
+[node name="跳舞僵尸" unique_id=1749563844 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+zombie_data = ExtResource("3_data")
+
+[node name="僵尸动画" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="0" unique_id=1964762294]
+position = Vector2(0.00024414063, 283.3332)
+scale = Vector2(3, 3)

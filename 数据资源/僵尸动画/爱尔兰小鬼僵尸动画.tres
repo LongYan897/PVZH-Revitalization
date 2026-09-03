@@ -11,4 +11,5 @@ mix = 0.3
 [resource]
 atlas_res = ExtResource("1_ktr12")
 skeleton_file_res = ExtResource("2_kmyia")
+default_mix = 0.1
 animation_mixes = [SubResource("SpineAnimationMix_ktr12")]

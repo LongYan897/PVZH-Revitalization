@@ -11,6 +11,7 @@ zombie_data = ExtResource("3_3k55y")
 
 [node name="僵尸动画" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="0" unique_id=1964762294]
 skeleton_data_res = ExtResource("3_w5lrp")
+position = Vector2(-77.777695, 327.77765)
 scale = Vector2(3.5, 3.5)
 
 [node name="伤害和血量" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="1" unique_id=120248237]

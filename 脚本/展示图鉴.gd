@@ -17,11 +17,18 @@ var plantData:PlantData
 var dataInstance
 var isEnd:bool = false
 var tween:Tween
+var target:Node2D
+var targetCanScale:bool = false
 func _ready() -> void:
 	#loadZombieRes(load(CardManager.cardPath.get("基础僵尸")))
 	#loadPlantRes(load(CardManager.cardPath.get("基础植物")))
 	MessageBox.addMessageBox(self)
 	intro()
+func _process(delta: float) -> void:
+	if target && !targetCanScale:
+		target.global_scale = 0.3 * Vector2(1,1)
+	elif target:
+		target.scale = 0.3 * Vector2(1,1)
 func loadZombieRes(data:ZombieData):
 	costSprite.texture = load("res://素材/卡牌属性图片/inhnd_brains.png")
 	costSpriteLabel.text = str(data.cost)
@@ -66,6 +73,7 @@ func intro():
 	tween.parallel().tween_property(blackgourd,"modulate",Color(0,0,0,0.5), 0.5)
 func clear():
 	if isEnd == true:return
+	targetCanScale = true
 	if tween.is_running():tween.kill()
 	tween = create_tween()
 	tween.set_trans(Tween.TRANS_BACK)
@@ -101,6 +109,7 @@ func createTarget(data,type:PVZ.Type):
 	instance.scale = Vector2(0.3,0.3)
 	instance.loadResource(dataInstance)
 	instance.top_level = false
+	target = instance
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if !event.is_pressed():return
