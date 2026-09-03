@@ -54,7 +54,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/SimpleMultiplayer/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/scene_manager/plugin.cfg", "res://addons/shader_library/plugin.cfg")
+enabled=PackedStringArray("res://addons/SimpleMultiplayer/plugin.cfg", "res://addons/pvzh_card_creator/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/scene_manager/plugin.cfg", "res://addons/shader_library/plugin.cfg")
 
 [input_devices]
 
@@ -72,3 +72,8 @@ textures/vram_compression/import_etc2_astc=true
 [shader_library]
 
 internal/previous_shaders_folder="res://shaders/shaderlib/"
+
+[version_control]
+
+plugin_name="GitPlugin"
+autoload_on_startup=true

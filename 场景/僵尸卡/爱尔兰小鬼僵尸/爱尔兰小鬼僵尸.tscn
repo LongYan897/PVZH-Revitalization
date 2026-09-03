@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://c8k263i117m1x"]
+
+[ext_resource type="PackedScene" uid="uid://b77yb2067vbco" path="res://场景/僵尸卡/基础僵尸/基础僵尸.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://bgo5af4c15a1e" path="res://场景/僵尸卡/爱尔兰小鬼僵尸/爱尔兰小鬼僵尸.gd" id="2_script"]
+[ext_resource type="Resource" path="res://数据资源/僵尸数据/爱尔兰小鬼僵尸数据.tres" id="3_data"]
+
+[node name="爱尔兰小鬼僵尸" unique_id=195873486 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+zombie_data = ExtResource("3_data")

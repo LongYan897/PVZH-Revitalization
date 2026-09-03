@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ZombieData" format=3]
+
+[ext_resource type="Script" path="res://脚本（类）/ZombieData.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+name = "爱尔兰小鬼僵尸"
+cardType = 0
