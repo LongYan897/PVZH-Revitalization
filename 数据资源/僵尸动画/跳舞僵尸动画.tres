@@ -1,39 +1,9 @@
-[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://c4crk3kpb7avn"]
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://dn3l0eovtmfbd"]
 
 [ext_resource type="SpineAtlasResource" uid="uid://c06gl4fixgxs5" path="res://场景/僵尸卡/跳舞僵尸/伴舞僵尸.atlas" id="1_f43eg"]
 [ext_resource type="SpineSkeletonFileResource" uid="uid://bkc8kqh0tdhl" path="res://场景/僵尸卡/跳舞僵尸/伴舞僵尸.skel" id="2_xeeit"]
 
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_yukfe"]
-from = "intro"
-to = "idle"
-mix = 1.0
-
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_36i34"]
-from = "idle"
-to = "hit"
-mix = 0.2
-
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_i8xlb"]
-from = "hit"
-to = "idle"
-mix = 0.2
-
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_qdxa7"]
-from = "idle"
-to = "die"
-mix = 0.5
-
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_3qlli"]
-from = "idle"
-to = "attack"
-mix = 0.3
-
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_b5d4l"]
-from = "attack"
-to = "idle"
-mix = 1.0
-
 [resource]
 atlas_res = ExtResource("1_f43eg")
 skeleton_file_res = ExtResource("2_xeeit")
-animation_mixes = [SubResource("SpineAnimationMix_yukfe"), SubResource("SpineAnimationMix_36i34"), SubResource("SpineAnimationMix_i8xlb"), SubResource("SpineAnimationMix_qdxa7"), SubResource("SpineAnimationMix_3qlli"), SubResource("SpineAnimationMix_b5d4l")]
+default_mix = 0.2

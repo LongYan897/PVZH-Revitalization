@@ -10,6 +10,7 @@ metadata/_custom_type_script = "uid://cx84cbc1hy4wy"
 [resource]
 script = ExtResource("1_14f4n")
 name = "消防员僵尸"
+cost = 4
 attack = 5
 health = 5
 buffList = Array[ExtResource("1_ph04v")]([SubResource("Resource_5c7pl")])

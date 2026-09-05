@@ -15,7 +15,6 @@ const CARD_DIRS := {"植物": "场景/植物卡组", "僵尸": "场景/僵尸卡
 const UNIT_BASES := {"植物": "res://场景/植物卡/基础植物/基础植物.tscn", "僵尸": "res://场景/僵尸卡/基础僵尸/基础僵尸.tscn"}
 const CARD_BASES := {"植物": "res://场景/植物卡组/基础植物/基础植物.tscn", "僵尸": "res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn"}
 const ANIMATION_DIRS := {"植物": "数据资源/植物动画", "僵尸": "数据资源/僵尸动画"}
-const ANIMATION_TEMPLATES := {"植物": "res://数据资源/植物动画/豌豆射手植物动画.tres", "僵尸": "res://数据资源/僵尸动画/基础僵尸动画.tres"}
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(280, 0)
@@ -123,7 +122,8 @@ func _create_unit(side: String, object_name: String) -> Dictionary:
 	scene_text += "[ext_resource type=\"SpineSkeletonDataResource\" path=\"" + animation_path + "\" id=\"4_animation\"]\n\n"
 	scene_text += "[node name=\"" + object_name + "\" instance=ExtResource(\"1_base\")]\n"
 	scene_text += "script = ExtResource(\"2_script\")\n" + data_prop + " = ExtResource(\"3_data\")\n"
-	_write(animation_path, FileAccess.get_file_as_string(ANIMATION_TEMPLATES[side]))
+	# 新动画资源不引用任何 atlas 或 skeleton 文件，等待手动指定。
+	_write(animation_path, "[gd_resource type=\"SpineSkeletonDataResource\" format=3]\n\n[resource]\n")
 	scene_text += "\n[node name=\"植物动画\" parent=\"植物\" index=\"0\"]\n" if side == "植物" else "\n[node name=\"僵尸动画\" parent=\"僵尸\" index=\"0\"]\n"
 	scene_text += "skeleton_data_res = ExtResource(\"4_animation\")\n"
 	_write(script_path, script_text)
