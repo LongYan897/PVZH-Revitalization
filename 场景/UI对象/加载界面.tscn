@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://ey1tde1e3qj3"]
+
+[ext_resource type="Script" uid="uid://cej72jbmpilcy" path="res://脚本/加载界面.gd" id="1_udv02"]
+[ext_resource type="Texture2D" uid="uid://1b2dikv4pylk" path="res://素材/ui/界面ui/海报1.png" id="1_xllmr"]
+[ext_resource type="Texture2D" uid="uid://c7recmw4xi6au" path="res://素材/ui/界面ui/inapp_loading_rotate #134992.png" id="3_oup86"]
+[ext_resource type="Texture2D" uid="uid://bxnbdul1obcf5" path="res://素材/ui/界面ui/agegate_sliderframe.png" id="4_en1i0"]
+
+[node name="加载界面" type="Node2D" unique_id=304216417]
+script = ExtResource("1_udv02")
+
+[node name="背景" type="Sprite2D" parent="." unique_id=1306100233]
+position = Vector2(360, 640)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("1_xllmr")
+
+[node name="加载" type="Sprite2D" parent="." unique_id=1330485307]
+position = Vector2(645.99994, 1204.0001)
+rotation = -6.2831855
+scale = Vector2(0.45, 0.45)
+texture = ExtResource("3_oup86")
+
+[node name="进入按钮" type="TextureButton" parent="." unique_id=772866011]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 465.05
+offset_top = 1180.0
+offset_right = 824.0515
+offset_bottom = 1231.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+size_flags_horizontal = 4
+texture_normal = ExtResource("4_en1i0")
+
+[node name="Label" type="Label" parent="进入按钮" unique_id=1863809831]
+layout_mode = 0
+offset_right = 359.5
+offset_bottom = 51.5
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 32
+text = "开始游戏"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="黑屏" type="ColorRect" parent="." unique_id=867602766]
+visible = false
+offset_right = 737.0
+offset_bottom = 1315.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[connection signal="mouse_entered" from="进入按钮" to="." method="_on_进入按钮_mouse_entered"]
+[connection signal="mouse_exited" from="进入按钮" to="." method="_on_进入按钮_mouse_exited"]
+[connection signal="pressed" from="进入按钮" to="." method="_on_进入按钮_pressed"]

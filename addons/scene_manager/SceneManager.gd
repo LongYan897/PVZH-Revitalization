@@ -178,3 +178,40 @@ func fade_in(setted_options: Dictionary = {}) -> void:
 	is_transitioning = false
 	transition_finished.emit()
 	options["on_fade_in"].call()
+
+##魔改区域
+func pictureScene(root: Node,scenePath:String) -> void:
+	var layer := CanvasLayer.new()
+	layer.name = "PictureTransitionLayer"
+	layer.layer = 100
+	root.add_child(layer)
+	var size := _tree.root.get_visible_rect().size
+	var black := ColorRect.new()
+	black.name = "TransitionBlack"
+	black.size = size
+	black.color = Color.BLACK
+	black.modulate = Color(1, 1, 1, 0)
+	black.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(black)
+	var picture := Sprite2D.new()
+	picture.name = "TransitionPicture"
+	picture.texture = load("res://素材/ui/界面ui/transition_sunflower.png") as Texture2D
+	picture.position = size * 0.5
+	picture.scale = Vector2.ZERO
+	picture.z_index = 1
+	layer.add_child(picture)
+	if picture.texture == null:
+		layer.queue_free()
+		return
+	var open_tween := create_tween()
+	open_tween.tween_property(black, "modulate", Color.WHITE, 0.18)
+	open_tween.parallel().tween_property(picture, "scale", Vector2.ONE, 0.55).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	await open_tween.finished
+	await change_scene(scenePath, {"skip_fade_out": true, "skip_fade_in": true, "wait_time": 0.0})
+	var close_tween := create_tween()
+	close_tween.tween_property(picture, "scale", Vector2.ZERO, 0.55).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	await close_tween.finished
+	var black_tween := create_tween()
+	black_tween.tween_property(black, "modulate", Color(1, 1, 1, 0), 0.3)
+	await black_tween.finished
+	layer.queue_free()

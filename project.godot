@@ -56,6 +56,10 @@ version_control/autoload_on_startup=true
 
 enabled=PackedStringArray("res://addons/SimpleMultiplayer/plugin.cfg", "res://addons/pvzh_card_creator/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/scene_manager/plugin.cfg", "res://addons/shader_library/plugin.cfg")
 
+[gui]
+
+theme/default_font_antialiasing=2
+
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
@@ -68,6 +72,7 @@ pointing/emulate_touch_from_mouse=true
 
 rendering_device/driver.windows="d3d12"
 textures/vram_compression/import_etc2_astc=true
+anti_aliasing/quality/msaa_2d=1
 
 [shader_library]
 
