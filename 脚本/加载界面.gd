@@ -40,7 +40,12 @@ func buttonShow():
 	canClick = true
 
 func _on_进入按钮_mouse_entered() -> void:
-	if !canClick:return
+	if !canClick:
+		while !canClick:
+			await get_tree().process_frame
+	var mouse_pos = get_viewport().get_mouse_position()
+	var button_rect = Rect2(pressButton.global_position, pressButton.size)
+	if !button_rect.has_point(mouse_pos):return
 	tween1 = create_tween()
 	var color = Color(0.118, 0.98, 0.348)
 	tween1.parallel().tween_property(pressButton,"self_modulate",color,0.3).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
