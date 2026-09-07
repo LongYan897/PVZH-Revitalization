@@ -1,0 +1,116 @@
+[gd_scene format=3 uid="uid://c6unf7gxhc5dm"]
+
+[ext_resource type="Texture2D" uid="uid://coy0lm12aip86" path="res://素材/地图/迪斯科/BGDisco_top.png" id="1_3kmke"]
+[ext_resource type="Script" uid="uid://canjxsf2s882v" path="res://脚本/游戏地图.gd" id="1_hk071"]
+[ext_resource type="Texture2D" uid="uid://j446ojku4fbu" path="res://素材/地图/迪斯科/BGDisco_cover.png" id="2_hk071"]
+[ext_resource type="Texture2D" uid="uid://0qbxcmp57rm6" path="res://素材/地图/迪斯科/BGDisco_manhole.png" id="3_najvb"]
+[ext_resource type="Texture2D" uid="uid://cl6h6r4tew5om" path="res://素材/地图/迪斯科/BGDisco_bldg_left.png" id="4_x1en1"]
+[ext_resource type="Texture2D" uid="uid://dhvt0s7ggnskd" path="res://素材/地图/迪斯科/BGDisco_bldg_right.png" id="5_ufmh2"]
+[ext_resource type="Texture2D" uid="uid://dpn15dwxsxpxm" path="res://素材/地图/迪斯科/BGDisco_high.png" id="6_xsalr"]
+[ext_resource type="Texture2D" uid="uid://mt3i5jc608yf" path="res://素材/地图/迪斯科/BGDisco_lane1.png" id="7_8k1th"]
+[ext_resource type="Texture2D" uid="uid://ckxhau2bavsol" path="res://素材/地图/迪斯科/迪斯科底部.png" id="7_x1en1"]
+[ext_resource type="Texture2D" uid="uid://c14m3qvcpxvhl" path="res://素材/地图/迪斯科/BGDisco_lane2.png" id="8_1hits"]
+[ext_resource type="Script" uid="uid://ckuvo50shfli4" path="res://脚本/基础路.gd" id="8_x1en1"]
+[ext_resource type="Texture2D" uid="uid://dtrfabgysabiv" path="res://素材/地图/迪斯科/BGDisco_low.png" id="9_ggl1g"]
+[ext_resource type="PackedScene" uid="uid://bc17uv4uspu85" path="res://场景/UI对象/轮盘按钮.tscn" id="13_x1en1"]
+[ext_resource type="PackedScene" uid="uid://xkwxsfn1wk4x" path="res://场景/UI对象/玩家显示阳光脑子.tscn" id="14_ufmh2"]
+[ext_resource type="PackedScene" uid="uid://dbko58bnriyko" path="res://场景/英雄/英雄通用模板.tscn" id="15_xsalr"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cbia30g4r5efx" path="res://素材/英雄素材/超尸/超尸.tres" id="16_8k1th"]
+[ext_resource type="PackedScene" uid="uid://c5h40kyhmmcp5" path="res://场景/UI对象/护盾.tscn" id="17_1hits"]
+[ext_resource type="PackedScene" uid="uid://dk5iqnymyusuv" path="res://场景/UI对象/设置按钮.tscn" id="18_ggl1g"]
+
+[node name="游戏地图" type="Node2D" unique_id=1405276274]
+script = ExtResource("1_hk071")
+
+[node name="顶部" type="Sprite2D" parent="." unique_id=1049838518]
+position = Vector2(364, 155)
+texture = ExtResource("1_3kmke")
+
+[node name="植物坑" type="Sprite2D" parent="." unique_id=428778408]
+z_index = 1
+position = Vector2(343, 301)
+texture = ExtResource("2_hk071")
+
+[node name="僵尸坑" type="Sprite2D" parent="." unique_id=851105206]
+z_index = 4
+position = Vector2(360, 886)
+texture = ExtResource("3_najvb")
+
+[node name="左边" type="Sprite2D" parent="." unique_id=506241036]
+z_index = 5
+position = Vector2(61, 535)
+texture = ExtResource("4_x1en1")
+
+[node name="右边" type="Sprite2D" parent="." unique_id=869710937]
+z_index = 5
+position = Vector2(647, 541)
+texture = ExtResource("5_ufmh2")
+
+[node name="底部" type="Sprite2D" parent="." unique_id=1472049666]
+z_index = 10
+position = Vector2(359, 1074)
+texture = ExtResource("7_x1en1")
+
+[node name="路1" type="Sprite2D" parent="." unique_id=1007991324]
+z_index = 5
+position = Vector2(139, 599)
+texture = ExtResource("6_xsalr")
+script = ExtResource("8_x1en1")
+
+[node name="路2" type="Sprite2D" parent="." unique_id=331916900]
+z_index = 3
+position = Vector2(250, 617)
+texture = ExtResource("7_8k1th")
+script = ExtResource("8_x1en1")
+
+[node name="路3" type="Sprite2D" parent="." unique_id=378281102]
+z_index = 3
+position = Vector2(356, 616)
+texture = ExtResource("8_1hits")
+script = ExtResource("8_x1en1")
+
+[node name="路4" type="Sprite2D" parent="." unique_id=2057286338]
+z_index = 3
+position = Vector2(462, 616)
+texture = ExtResource("7_8k1th")
+script = ExtResource("8_x1en1")
+
+[node name="路5" type="Sprite2D" parent="." unique_id=586736347]
+z_index = 3
+position = Vector2(566, 595)
+texture = ExtResource("9_ggl1g")
+script = ExtResource("8_x1en1")
+
+[node name="轮盘按钮" parent="." unique_id=1078598783 instance=ExtResource("13_x1en1")]
+z_index = 10
+position = Vector2(631, 1025)
+
+[node name="玩家显示阳光脑子1" parent="." unique_id=821938933 instance=ExtResource("14_ufmh2")]
+z_index = 10
+
+[node name="玩家显示阳光脑子2" parent="." unique_id=413260530 instance=ExtResource("14_ufmh2")]
+z_index = 10
+team = 1
+
+[node name="英雄通用模板" parent="." unique_id=257512772 instance=ExtResource("15_xsalr")]
+position = Vector2(360, 939.00006)
+dataResource = ExtResource("16_8k1th")
+size = Vector2(0.3, 0.3)
+specialTrack = 1
+
+[node name="英雄通用模板2" parent="." unique_id=1219479952 instance=ExtResource("15_xsalr")]
+z_index = 7
+position = Vector2(360, 938.60004)
+scale = Vector2(0.040000003, 0.040000003)
+type = 0
+
+[node name="护盾" parent="." unique_id=1287237271 instance=ExtResource("17_1hits")]
+z_index = 10
+position = Vector2(170, 930)
+
+[node name="护盾1" parent="." unique_id=922867434 instance=ExtResource("17_1hits")]
+z_index = 10
+position = Vector2(550, 220)
+type = 1
+
+[node name="设置按钮" parent="." unique_id=2042087439 instance=ExtResource("18_ggl1g")]

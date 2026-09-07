@@ -8,11 +8,14 @@ var canClick:bool
 var tween1:Tween
 var endScene:bool 
 func _ready() -> void:
+	var rand = randi_range(1,4)
+	SoundManager.setAudioOnST(0,"res://素材/Audio/Loading/Loading" + str(rand) + ".mp3",0.1,true)
 	loadRect.show()
 	pressButton.scale = Vector2.ZERO
 	sprite.scale = Vector2(1,1) * 0.8
 	var tween = create_tween()
 	tween.parallel().tween_property(sprite,"scale",Vector2(1,1) * 0.85,1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	tween.parallel().tween_property(sprite,"position",Vector2(360,620),1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 	tween.parallel().tween_property(loadRect,"modulate",Color(1,1,1,0),0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 	await get_tree().create_timer(2).timeout
 	buttonShow()
@@ -33,7 +36,7 @@ func buttonShow():
 	await get_tree().create_timer(0.6).timeout
 	tween = create_tween()
 	tween.parallel().tween_property(pressButton,"scale",Vector2(1,1) * 1.5,1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN_OUT)
-	tween.parallel().tween_property(pressButton,"position",Vector2(175,1210),1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN_OUT)
+	tween.parallel().tween_property(pressButton,"position",Vector2(175,1190),1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN_OUT)
 	await get_tree().create_timer(1).timeout
 	tween = create_tween()
 	tween.parallel().tween_property(pressButtonLabel,"scale",Vector2(1,1),0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -46,6 +49,7 @@ func _on_进入按钮_mouse_entered() -> void:
 	var mouse_pos = get_viewport().get_mouse_position()
 	var button_rect = Rect2(pressButton.global_position, pressButton.size)
 	if !button_rect.has_point(mouse_pos):return
+	SoundManager.createSound("res://素材/Audio/Hover.mp3",SoundManager.Bus.EFFECT)
 	tween1 = create_tween()
 	var color = Color(0.118, 0.98, 0.348)
 	tween1.parallel().tween_property(pressButton,"self_modulate",color,0.3).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -56,5 +60,6 @@ func _on_进入按钮_mouse_exited() -> void:
 func _on_进入按钮_pressed() -> void:
 	if !canClick:return
 	if endScene:return
+	SoundManager.createSound("res://素材/Audio/ButtonClick2.mp3",SoundManager.Bus.EFFECT,false,10)
 	endScene = true
 	await SceneManager.pictureScene(get_tree().root,"res://场景/UI对象/主界面.tscn")

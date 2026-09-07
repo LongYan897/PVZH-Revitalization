@@ -233,6 +233,7 @@ func updateColor():
 func updateInformationBox():
 	if showLock == true:return
 	if buttonPressed == true:
+		SoundManager.createSound("res://素材/Audio/ButtonClick1.mp3",SoundManager.Bus.EFFECT)
 		z_index = 25
 		informationBox = load("res://场景/UI对象/信息框1.tscn").instantiate()
 		information = load("res://场景/UI对象/信息按钮.tscn").instantiate()
@@ -252,6 +253,7 @@ func updateInformationBox():
 		if is_instance_valid(node1):
 			node1.clear()
 		if is_instance_valid(node1) and node1.isOver == true:
+			SoundManager.createSound("res://素材/Audio/ButtonCannel1.mp3",SoundManager.Bus.EFFECT)
 			var instance = load("res://场景/UI对象/展示图鉴.tscn").instantiate()
 			add_child(instance)
 			instance.loadZombieRes(zombieData)

@@ -19,7 +19,7 @@ signal playerCostUpdate()
 signal placeNewCard(type:PVZ.Type,val:int)
 signal updateState()
 var m_state:int = 0
-@export var team:int = 2
+@export var team:int = 1
 var attackOnce:bool = false
 var cardOnce:bool = false
 var plantCost:int
@@ -121,12 +121,27 @@ func reciveMsg(data):
 					ChooseManager.chooseCQ.emit(CQ)
 func listenTurnBegin():
 	print("listen Turn Begin:",Type.keys()[m_state])
-	if m_state == Type.CARD_TURN:
-		startDrawCard()
+	match m_state:
+		Type.CARD_TURN:
+			SoundManager.setAudioVolOnST(2,0,3)
+			if team == 1:
+				if turnCount == 1:await get_tree().create_timer(0.1).timeout
+				#await get_tree().create_timer(1).timeout
+				HeroManager.plantHero.playTurnSound(turnCount)
+			startDrawCard()
 func listenTurnEnd():
 	print("listen Turn End:",Type.keys()[m_state])
-	if m_state == Type.ATTACK_TURN:
-		startAttack()
+	match m_state:
+		Type.ATTACK_TURN:
+			startAttack()
+			var rand = randi_range(1,8)
+			var path = "res://素材/Audio/AttackBgm/AttackBgm" + str(rand) + ".mp3"
+			var effectPath = "res://素材/Audio/AttackBgm/cameAttack" + str(randi_range(1,3)) + ".mp3"
+			SoundManager.createSound(effectPath,SoundManager.Bus.EFFECT)
+			SoundManager.setAudioOnST(2,path,0.2,true)
+			SoundManager.setAudioVolOnST(0,0,0.2)
+			SoundManager.setAudioVolOnST(1,0,0.2)
+			
 func startAttack():
 	AQ.addAction(startAttackCenter.bind(0))
 func startAttackCenter(road:int):

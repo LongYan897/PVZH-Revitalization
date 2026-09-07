@@ -48,6 +48,7 @@ var holdPos:Vector2 = Vector2(0,0)
 var isHold:bool = false
 var isEnd:bool = false
 func _ready() -> void:
+	SoundManager.setAudioOnST(0,"res://素材/Audio/Collection.mp3",0.5,true)
 	rollPosY = 0
 	#updateCard()
 	testUpdateCard()

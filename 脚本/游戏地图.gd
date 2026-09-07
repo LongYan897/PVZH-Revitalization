@@ -49,6 +49,7 @@ func sendZombieCard(mname:String="基础植物"):
 	add_child(instance)
 	instance.setRoad(Vector2(3,1))
 func setup():
+	SoundManager.clearAudioST(0,0.5)
 	TurnManager.plantTurnCost = 0
 	TurnManager.zombieTurnCost = 0
 	Enemy.gameNode = self

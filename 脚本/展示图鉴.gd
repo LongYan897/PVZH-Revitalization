@@ -104,9 +104,9 @@ func createTarget(data,type:PVZ.Type):
 		instance = load("res://场景/僵尸卡/"+mname+"/"+mname+".tscn").instantiate()
 		dataInstance = ZombieInstance.new(data)
 	instance.type = BaseZombie.Type.Display_only
+	instance.scale = Vector2(0.3,0.3)
 	add_child(instance)
 	instance.position = Vector2(0,-300)
-	instance.scale = Vector2(0.3,0.3)
 	instance.loadResource(dataInstance)
 	instance.top_level = false
 	target = instance

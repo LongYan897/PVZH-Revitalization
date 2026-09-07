@@ -1,4 +1,5 @@
 extends Node2D
+class_name BaseHero
 @onready var hero:SpineSprite = $"英雄"
 @onready var state:SpineAnimationState
 var heroData:Hero 
@@ -75,6 +76,7 @@ func special():
 			else:
 				state.clear_track(specialTrack)
 func setup():
+	print(name, " type=", type, " PLANT=", Hero.Type.PLANT_HERO)
 	hero.skeleton_data_res = dataResource
 	state = hero.get_animation_state()
 	scale = size
@@ -89,6 +91,7 @@ func setup():
 	elif TurnManager.team == 2 && type == Hero.Type.ZOMBIE_HERO:
 		team = 1
 	
+	heroData = Hero.new()
 	if team == 1:
 		position = Vector2(360,950)
 		z_index = 8
@@ -99,7 +102,6 @@ func setup():
 		HeroManager.zombieHero = self
 	if type == Hero.Type.PLANT_HERO:
 		HeroManager.plantHero = self
-	heroData = Hero.new()
 func getPosition(pos):
 	if team == 1:
 		return Vector2(pos.x,global_position.y-50)
@@ -109,3 +111,6 @@ func waitAnimationComP(track:int = 0):
 	while a.get_animation_time() < a.get_animation_end() - 0.05:
 		await get_tree().process_frame
 	await get_tree().create_timer(0.05).timeout
+func playTurnSound(turnCount:int):
+	var path = "res://素材/Audio/GreenShadow/GreenShadow" + str(turnCount) + ".mp3"
+	SoundManager.setAudioOnST(0,path,0.5,true)

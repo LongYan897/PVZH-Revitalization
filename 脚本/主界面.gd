@@ -8,6 +8,8 @@ extends Node2D
 @onready var eventBattleButton = $"今日挑战"
 @onready var BattleButton = $"对战"
 var isEnd:bool = false
+func _ready() -> void:
+	SoundManager.setAudioOnST(0,"res://素材/Audio/Main Menu.mp3",0.5,true)
 func quickCardInput(node,_viewport: Node, event: InputEvent, _shape_idx: int):
 	if event is InputEventScreenTouch:
 		if event.pressed:
