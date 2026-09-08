@@ -113,4 +113,4 @@ func waitAnimationComP(track:int = 0):
 	await get_tree().create_timer(0.05).timeout
 func playTurnSound(turnCount:int):
 	var path = "res://素材/Audio/GreenShadow/GreenShadow" + str(turnCount) + ".mp3"
-	SoundManager.setAudioOnST(0,path,0.5,true)
+	SoundManager.setAudioOnST(0,path,0.5,true,6)

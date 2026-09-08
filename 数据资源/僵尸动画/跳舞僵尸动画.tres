@@ -3,7 +3,18 @@
 [ext_resource type="SpineAtlasResource" uid="uid://c06gl4fixgxs5" path="res://场景/僵尸卡/跳舞僵尸/伴舞僵尸.atlas" id="1_f43eg"]
 [ext_resource type="SpineSkeletonFileResource" uid="uid://bkc8kqh0tdhl" path="res://场景/僵尸卡/跳舞僵尸/伴舞僵尸.skel" id="2_xeeit"]
 
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_f43eg"]
+from = "idle"
+to = "attack"
+mix = 0.05
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_xeeit"]
+from = "attack"
+to = "idle"
+mix = 0.05
+
 [resource]
 atlas_res = ExtResource("1_f43eg")
 skeleton_file_res = ExtResource("2_xeeit")
-default_mix = 0.2
+default_mix = 0.3
+animation_mixes = [SubResource("SpineAnimationMix_f43eg"), SubResource("SpineAnimationMix_xeeit")]

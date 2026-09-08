@@ -31,6 +31,7 @@ func createSound(path:String,bus:Bus = Bus.MASTER,loop:bool = false,adb:int = 0)
 	instance.stream = load(path)
 	instance.bus = BusName[bus]
 	instance.volume_db = adb
+	instance.adb = adb
 	if loop:
 		if path.contains(".mp3"):instance.stream.loop = true
 		elif path.contains(".wav"):instance.stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
@@ -40,15 +41,16 @@ func createSound(path:String,bus:Bus = Bus.MASTER,loop:bool = false,adb:int = 0)
 func soundFinished(node):
 	node.stop()
 	node.queue_free()
-func setAudioOnST(trackNum:int,path:String,time:float = 1,loop:bool = false):
+func setAudioOnST(trackNum:int,path:String,time:float = 1,loop:bool = false,adb:int = 0):
 	print("SoundManager set AudioTrack\t trackNum:" + str(trackNum) + "\tpath:" + path)
-	var audio := createSound(path,Bus.MUSIC,loop)
+	var audio := createSound(path,Bus.MUSIC,loop,adb)
 	trackNum = clamp(trackNum,0,9)
 	if soundTrack[trackNum].soundNode:
 		soundTrack[trackNum].soundNode.VolumeClear(time)
 	soundTrack[trackNum].soundNode = audio
+	var target_volume := db_to_linear(adb)
 	audio.volume_linear = 0
-	audio.setVolume(1,time)
+	audio.setVolume(target_volume,time)
 func clearAudioST(trackNum:int,time:float = 1):
 	print("SoundManager clear AudioTrack\t trackNum:" + str(trackNum))
 	trackNum = clamp(trackNum,0,9)

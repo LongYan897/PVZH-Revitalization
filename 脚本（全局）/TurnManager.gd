@@ -123,10 +123,11 @@ func listenTurnBegin():
 	print("listen Turn Begin:",Type.keys()[m_state])
 	match m_state:
 		Type.CARD_TURN:
-			SoundManager.setAudioVolOnST(2,0,3)
+			var begin = "res://素材/Audio/TurnBegin/TurnBegin" + str(randi_range(1,6)) + ".wav"
+			SoundManager.createSound(begin,SoundManager.Bus.MUSIC)
+			SoundManager.setAudioVolOnST(2,0,0.5)
 			if team == 1:
 				if turnCount == 1:await get_tree().create_timer(0.1).timeout
-				#await get_tree().create_timer(1).timeout
 				HeroManager.plantHero.playTurnSound(turnCount)
 			startDrawCard()
 func listenTurnEnd():
