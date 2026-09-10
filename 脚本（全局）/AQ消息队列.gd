@@ -29,6 +29,10 @@ func addAction(action:Callable):
 	queue.append(data)
 	AQSizeChange.emit()
 	print("AQ add ",action,"\tnumber:",data.number,"\tsize:",queue.size(),"\tname:",objectName)
+func addThreadAndAction(action:Callable):
+	var len = getlen()
+	addAction(action)
+	await addThread(len)
 func waitQueueEmpty():
 	while !queue.is_empty():
 		await get_tree().create_timer(0.05).timeout
