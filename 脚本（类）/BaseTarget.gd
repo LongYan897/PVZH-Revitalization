@@ -10,6 +10,7 @@ var type:Type = Type.Normal
 var isOver:bool = false
 var isDrag:bool = false
 var dragTime:float = 0
+var faction:PVZ.Type = PVZ.Type.PLANT_AND_ZOMBIE
 @onready var is_alive: bool = true
 @onready var attackEffect = load("res://场景/攻击特效/基础攻击特效.tscn")
 var stone
@@ -19,4 +20,6 @@ func introEvent():
 func extraReady():
 	pass
 func planIntro():
+	pass
+func waitAnimationComP(track:int = 0,precent:float = 1):
 	pass

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://sssmscxdt472"]
+
+[ext_resource type="PackedScene" uid="uid://n3qjnbpsttlf" path="res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn" id="1_x3oxi"]
+[ext_resource type="Script" uid="uid://3xexkxea07u8" path="res://场景/僵尸卡组/召唤直升机锦囊/召唤直升机锦囊.gd" id="2_r2m23"]
+[ext_resource type="Resource" uid="uid://blt3vnd63jlsh" path="res://数据资源/僵尸数据/召唤直升机锦囊数据.tres" id="3_x3oxi"]
+[ext_resource type="Texture2D" uid="uid://dje2ujv4cjy4a" path="res://场景/僵尸卡组/召唤直升机锦囊/1828a02e-3554-41c4-af93-946dbc5f0eae.png" id="4_3uj2n"]
+[ext_resource type="Texture2D" uid="uid://dch77wkb5duby" path="res://素材/牌背、卡面/SEEDPACKET_onetime_R3.png" id="5_sycdx"]
+
+[node name="召唤直升机锦囊" unique_id=767220710 instance=ExtResource("1_x3oxi")]
+script = ExtResource("2_r2m23")
+zombieData = ExtResource("3_x3oxi")
+
+[node name="僵尸图片" parent="." index="3" unique_id=2089114447]
+texture = ExtResource("4_3uj2n")
+
+[node name="卡框" parent="." index="4" unique_id=781609873]
+texture = ExtResource("5_sycdx")
+cardType = 1

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://ctp7kaakmi178"]
+
+[ext_resource type="PackedScene" uid="uid://n3qjnbpsttlf" path="res://场景/僵尸卡组/基础僵尸/基础僵尸.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://d1204lw1ygp6h" path="res://场景/僵尸卡组/直升机小鬼僵尸/直升机小鬼僵尸.gd" id="2_script"]
+[ext_resource type="Resource" path="res://数据资源/僵尸数据/直升机小鬼僵尸数据.tres" id="3_data"]
+[ext_resource type="Texture2D" uid="uid://cmyiqua5vgx8w" path="res://场景/僵尸卡组/直升机小鬼僵尸/5da9af96-84ae-42aa-8e6d-ff7f76924b8a #85854.png" id="4_oamu5"]
+[ext_resource type="Texture2D" uid="uid://dabeqr44tko7h" path="res://素材/牌背、卡面/SEEDPACKET_R2.png" id="5_hijoi"]
+
+[node name="直升机小鬼僵尸" unique_id=531292091 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+zombieData = ExtResource("3_data")
+
+[node name="僵尸图片" parent="." index="3" unique_id=2089114447]
+position = Vector2(-18.181816, -3.6363633)
+texture = ExtResource("4_oamu5")
+
+[node name="卡框" parent="." index="4" unique_id=781609873]
+texture = ExtResource("5_hijoi")
+cardRare = 1

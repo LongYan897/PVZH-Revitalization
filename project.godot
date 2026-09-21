@@ -37,6 +37,8 @@ AIManager="*uid://d121qf8yqhf32"
 WebSocketClient="*uid://dnn1hi7xujtqd"
 SoundManager="*uid://b2rqlnc407lr5"
 CameraManager="*uid://eleplmcq515q"
+BattleEffectManager="*uid://bmgcbfoafsa4c"
+Console="*uid://ouiu5xh1cs8n"
 
 [display]
 
@@ -54,7 +56,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/SimpleMultiplayer/plugin.cfg", "res://addons/pvzh_card_creator/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/scene_manager/plugin.cfg", "res://addons/shader_library/plugin.cfg")
+enabled=PackedStringArray("res://addons/SimpleMultiplayer/plugin.cfg", "res://addons/console/plugin.cfg", "res://addons/pvzh_card_creator/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/scene_manager/plugin.cfg", "res://addons/shader_library/plugin.cfg")
 
 [gui]
 

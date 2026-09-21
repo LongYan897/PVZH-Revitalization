@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://cx2phu5agtst3"
+path="res://.godot/imported/skeleton.skel-d22ad0f671f3be19b13ab3e1eb579047.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/召唤直升机锦囊/skeleton.skel"
+dest_files=["res://.godot/imported/skeleton.skel-d22ad0f671f3be19b13ab3e1eb579047.spskel"]
+
+[params]
+

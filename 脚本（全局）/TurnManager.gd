@@ -142,7 +142,6 @@ func listenTurnEnd():
 			SoundManager.setAudioOnST(2,path,0.2,true)
 			SoundManager.setAudioVolOnST(0,0,0.2)
 			SoundManager.setAudioVolOnST(1,0,0.2)
-			
 func startAttack():
 	AQ.addAction(startAttackCenter.bind(0))
 func startAttackCenter(road:int):

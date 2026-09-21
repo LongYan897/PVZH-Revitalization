@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ZombieData" format=3 uid="uid://blt3vnd63jlsh"]
+
+[ext_resource type="Script" uid="uid://dsbl34qqgully" path="res://脚本（类）/ZombieData.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_t73wa"]
+
+[resource]
+script = ExtResource("1_data")
+name = "召唤直升机锦囊"
+cardType = 1

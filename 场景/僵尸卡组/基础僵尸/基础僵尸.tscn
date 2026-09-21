@@ -61,7 +61,7 @@ texture = ExtResource("3_qcwsi")
 
 [node name="背景底版" type="Sprite2D" parent="." unique_id=1356810085]
 modulate = Color(0.5891919, 0.27672112, 0.5667794, 1)
-position = Vector2(-8.571411, 4.2142944)
+position = Vector2(-9.090931, -1.8181982)
 scale = Vector2(1.8817327, 1.9285717)
 texture = ExtResource("4_oim0m")
 

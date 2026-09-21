@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://mlxqltwmjq8t"
+path="res://.godot/imported/skeleton.atlas-48282b6393c15bbb778a842dfadf1546.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/召唤直升机锦囊/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-48282b6393c15bbb778a842dfadf1546.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

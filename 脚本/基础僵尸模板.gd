@@ -39,6 +39,7 @@ func setup():
 		dirt.hide()
 		await get_tree().process_frame
 		label.hide()
+	faction = PVZ.Type.ZOMBIE
 func intro():
 	if type == Type.Display_only:return
 	var len = AQ.getlen()
@@ -194,9 +195,9 @@ func _input(event: InputEvent) -> void:
 			isDrag = true
 		else:
 			isDrag = false
-func waitAnimationComP(track:int = 0):
+func waitAnimationComP(track:int = 0,precent:float = 1):
 	var a = state.get_track(track)
-	while a.get_animation_time() < a.get_animation_end() - 0.05:
+	while a.get_animation_time() < a.get_animation_end() * precent - 0.05:
 		await get_tree().process_frame
 	await get_tree().create_timer(0.05).timeout
 func extraAnimationEvent(eventName):

@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://dmvlrkey3dmn1"
+path="res://.godot/imported/直升机小鬼.skel-5b95bdc2ae082350565c05dc733b96e4.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/直升机小鬼僵尸/直升机小鬼.skel"
+dest_files=["res://.godot/imported/直升机小鬼.skel-5b95bdc2ae082350565c05dc733b96e4.spskel"]
+
+[params]
+

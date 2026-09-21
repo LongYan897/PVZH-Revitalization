@@ -44,6 +44,7 @@ func _ready() -> void:
 	card_type.add_item("锦囊卡（PLAN）", 1)
 	card_type.add_item("环境卡（ENVIRONMENT）", 2)
 	card_type.disabled = true
+	card_type.item_selected.connect(_on_card_type_changed)
 	add_child(card_type)
 	create_unit_check = CheckBox.new()
 	create_unit_check.text = "卡牌同时创建对应单位"
@@ -67,6 +68,11 @@ func _on_create_type_changed(index: int) -> void:
 	var is_card := index == 1
 	card_type.disabled = not is_card
 	create_unit_check.visible = is_card
+	_on_card_type_changed(card_type.selected)
+
+func _on_card_type_changed(index: int) -> void:
+	# 锦囊可以选择是否同时创建对应单位（例如用于挂载动画），不强制禁用。
+	create_unit_check.disabled = false
 
 func _create() -> void:
 	var raw := name_edit.text.strip_edges()
@@ -79,17 +85,24 @@ func _create() -> void:
 		return
 	var side: String = faction.get_item_text(faction.selected)
 	var is_card := create_type.selected == 1
-	var suffix := "植物" if side == "植物" else "僵尸"
-	var object_name: String = clean if clean.ends_with(suffix) else clean + suffix
+	var is_plan_card := is_card and card_type.selected == 1
+	var unit_suffix := "植物" if side == "植物" else "僵尸"
+	var card_suffix := "锦囊" if is_plan_card else unit_suffix
+	var object_name: String = clean if clean.ends_with(card_suffix) else clean + card_suffix
+	# 锦囊卡即使勾选创建对应单位，所有生成文件也统一使用“锦囊”后缀。
+	var unit_name: String = object_name if is_plan_card else (clean if clean.ends_with(unit_suffix) else clean + unit_suffix)
 	var unit_created := false
 	if not is_card or create_unit_check.button_pressed:
-		var unit_result := _create_unit(side, object_name)
+		var unit_result := _create_unit(side, unit_name)
 		if not unit_result.ok:
 			_show_error(unit_result.message)
 			return
 		unit_created = true
 	if is_card:
-		var card_result := _create_card(side, object_name, card_type.selected, unit_created)
+		if is_plan_card and not unit_created and not _create_card_data(side, object_name, object_name):
+			_show_error("无法创建锦囊数据资源")
+			return
+		var card_result := _create_card(side, object_name, card_type.selected, unit_created or is_plan_card)
 		if not card_result.ok:
 			_show_error(card_result.message)
 			return
@@ -130,6 +143,18 @@ func _create_unit(side: String, object_name: String) -> Dictionary:
 	_write(data_path, data_text)
 	_write(scene_path, scene_text)
 	return {"ok": true}
+
+func _create_card_data(side: String, object_name: String, data_name: String) -> bool:
+	var data_dir: String = ROOT + ("数据资源/植物数据" if side == "植物" else "数据资源/僵尸数据")
+	var data_path: String = data_dir + "/" + object_name + "数据.tres"
+	if FileAccess.file_exists(data_path) or not _ensure_dir(data_dir):
+		return false
+	var data_class := "PlantData" if side == "植物" else "ZombieData"
+	var data_text := "[gd_resource type=\"Resource\" script_class=\"" + data_class + "\" format=3]\n\n"
+	data_text += "[ext_resource type=\"Script\" path=\"res://脚本（类）/" + data_class + ".gd\" id=\"1_data\"]\n\n"
+	data_text += "[resource]\nscript = ExtResource(\"1_data\")\nname = \"" + data_name + "\"\n"
+	_write(data_path, data_text)
+	return FileAccess.file_exists(data_path)
 
 func _create_card(side: String, object_name: String, type_index: int, has_unit: bool) -> Dictionary:
 	var folder: String = ROOT + str(CARD_DIRS[side]) + "/" + object_name

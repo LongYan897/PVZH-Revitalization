@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://b8kwym26acbad"
+path="res://.godot/imported/直升机小鬼.atlas-3abb7326e541f0a3dca656b52f9b5c35.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/直升机小鬼僵尸/直升机小鬼.atlas"
+dest_files=["res://.godot/imported/直升机小鬼.atlas-3abb7326e541f0a3dca656b52f9b5c35.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

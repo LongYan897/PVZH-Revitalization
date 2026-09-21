@@ -97,11 +97,18 @@ func createTarget(data,type:PVZ.Type):
 	var instance
 	var datainstance 
 	var mname = data.name
+	var target_path := ""
 	if type == PVZ.Type.PLANT:
-		instance = load("res://场景/植物卡/"+mname+"/"+mname+".tscn").instantiate()
+		target_path = "res://场景/植物卡/"+mname+"/"+mname+".tscn"
+		if not ResourceLoader.exists(target_path):
+			return
+		instance = load(target_path).instantiate()
 		dataInstance = PlantInstance.new(data)
 	elif type == PVZ.Type.ZOMBIE:
-		instance = load("res://场景/僵尸卡/"+mname+"/"+mname+".tscn").instantiate()
+		target_path = "res://场景/僵尸卡/"+mname+"/"+mname+".tscn"
+		if not ResourceLoader.exists(target_path):
+			return
+		instance = load(target_path).instantiate()
 		dataInstance = ZombieInstance.new(data)
 	instance.type = BaseZombie.Type.Display_only
 	instance.scale = Vector2(0.3,0.3)

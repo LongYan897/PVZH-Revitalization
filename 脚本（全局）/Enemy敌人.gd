@@ -2,7 +2,10 @@ extends Node
 signal CardUpdatePos
 var zombie
 var plant
-var gameNode:Node2D
+var gameNode:Node2D:
+	set(value):
+		gameNode = value
+		BattleEffectManager.gameNode = value
 @onready var cardList:Array[EnemyCard]
 func addZombieTarget(line:int,mname:String,data:ZombieInstance=null):
 	var path = "res://场景/僵尸卡/"+mname+"/"+mname+".tscn"

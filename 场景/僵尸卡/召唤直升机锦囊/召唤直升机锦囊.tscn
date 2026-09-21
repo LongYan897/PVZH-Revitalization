@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c0a8bbka2a8fk"]
+
+[ext_resource type="PackedScene" uid="uid://b77yb2067vbco" path="res://场景/僵尸卡/基础僵尸/基础僵尸.tscn" id="1_5jvv2"]
+[ext_resource type="Script" uid="uid://ctybnqbr5xqpy" path="res://场景/僵尸卡/召唤直升机锦囊/召唤直升机锦囊.gd" id="2_kuvf5"]
+[ext_resource type="Resource" uid="uid://blt3vnd63jlsh" path="res://数据资源/僵尸数据/召唤直升机锦囊数据.tres" id="3_5jvv2"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://fb5pjn3dp20o" path="res://数据资源/僵尸动画/召唤直升机锦囊.tres" id="4_5jvv2"]
+
+[node name="召唤直升机锦囊" unique_id=399230647 instance=ExtResource("1_5jvv2")]
+script = ExtResource("2_kuvf5")
+zombie_data = ExtResource("3_5jvv2")
+
+[node name="僵尸动画" parent="僵尸" parent_id_path=PackedInt32Array(1249527665) index="0" unique_id=1964762294]
+skeleton_data_res = ExtResource("4_5jvv2")
+scale = Vector2(3, 3)

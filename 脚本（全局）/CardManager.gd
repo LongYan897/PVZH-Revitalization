@@ -1,10 +1,13 @@
 extends Node
 const plantCardPath = "res://数据资源/植物数据/"
 const zombieCardPath = "res://数据资源/僵尸数据/"
+const plantTargetPath = "res://场景/植物卡/"
+const zombieTargetPath = "res://场景/僵尸卡/"
 @export var cardList1:Array[Node2D]
 @export var cardList2:Array[Node2D]
 signal cardOrderSort
 var cardPath:Dictionary = {}
+var targetPath:Dictionary = {}
 var cardGroup:Dictionary = {}
 enum CardType{
 	NULL = 0,
@@ -57,13 +60,18 @@ func _ready() -> void:
 	initGroup()
 	addCardsGroup()
 	var array:Array[CardProperties] = [CardProperties.ZOMBIE,CardProperties.CLASS]
-	selectByPro(array)
+	#selectByPro(array)
 func scanCards():
 	cardPath.clear()
 	var dir1 = DirAccess.open(plantCardPath)
 	var dir2 = DirAccess.open(zombieCardPath)
 	scanFolder(dir1,plantCardPath)
 	scanFolder(dir2,zombieCardPath)
+	targetPath.clear()
+	dir1 = DirAccess.open(plantTargetPath)
+	dir2 = DirAccess.open(zombieTargetPath)
+	scanTargetFolder(dir1,plantTargetPath)
+	scanTargetFolder(dir2,zombieTargetPath)
 func scanFolder(dir:DirAccess,path:String):
 	dir.list_dir_begin()
 	var fileName = dir.get_next()
@@ -89,6 +97,24 @@ func scanFolder(dir:DirAccess,path:String):
 					assert(false, "卡牌名字重复:"+cardName)
 				cardPath[cardName] = loadPath
 				
+		fileName = dir.get_next()
+func scanTargetFolder(dir:DirAccess,path:String):
+	dir.list_dir_begin()
+	var fileName = dir.get_next()
+	while fileName != "":
+		var fullName = path+fileName
+		print("fullName:",fullName)
+		var newDir = fullName+"/"+fileName+".tscn"
+		var loadPath = newDir
+		var cardData = load(loadPath)
+		var cardName = fileName.get_basename()
+		if targetPath.has(cardName):
+			print("error:重复的单位名字")
+			print("error:名字:",cardName)
+			print("error:已有路径:",targetPath[cardName])
+			print("error:新路径:",fullName)
+			assert(false, "单位名字重复:"+cardName)
+		targetPath[cardName] = loadPath
 		fileName = dir.get_next()
 func initGroup():
 	cardGroup.clear()
@@ -167,6 +193,13 @@ func getCardRes(mname:String):
 	#print("cardres已有key:", cardPath.keys())
 	var res:String = "NULL"
 	res = cardPath.get(mname,"NULL")
+	if res == "NULL":
+		print("error getCardRes fail")
+		return null
+	return load(res)
+func getTargetRes(mname:String):
+	var res:String = "NULL"
+	res = targetPath.get(mname,"NULL")
 	if res == "NULL":
 		print("error getCardRes fail")
 		return null

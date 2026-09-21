@@ -1,0 +1,15 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://cdl53jquamw3q"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://b8kwym26acbad" path="res://场景/僵尸卡/直升机小鬼僵尸/直升机小鬼.atlas" id="1_i8siv"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://dmvlrkey3dmn1" path="res://场景/僵尸卡/直升机小鬼僵尸/直升机小鬼.skel" id="2_rswee"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_i8siv"]
+from = "intro"
+to = "idle"
+mix = 0.3
+
+[resource]
+atlas_res = ExtResource("1_i8siv")
+skeleton_file_res = ExtResource("2_rswee")
+default_mix = 0.15
+animation_mixes = [SubResource("SpineAnimationMix_i8siv")]

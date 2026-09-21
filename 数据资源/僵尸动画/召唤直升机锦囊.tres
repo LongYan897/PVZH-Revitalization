@@ -1,0 +1,9 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://fb5pjn3dp20o"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://mlxqltwmjq8t" path="res://场景/僵尸卡/召唤直升机锦囊/skeleton.atlas" id="1_gu5o4"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://cx2phu5agtst3" path="res://场景/僵尸卡/召唤直升机锦囊/skeleton.skel" id="2_dvrg4"]
+
+[resource]
+atlas_res = ExtResource("1_gu5o4")
+skeleton_file_res = ExtResource("2_dvrg4")
+default_mix = 0.1
