@@ -23,6 +23,8 @@ func intro():
 func hit(val:int):
 	var pval = randi_range(3,3)
 	if shieldVal+pval >= 8 && shieldCount != 0:
+		var path = "res://素材/Audio/HeroHit/hit" + str(randi_range(1,2)) + ".wav"
+		SoundManager.createSound(path,SoundManager.Bus.EFFECT)
 		pval = shieldVal+pval-8
 		shieldVal += pval
 		if type == Hero.Type.PLANT_HERO:
@@ -34,6 +36,8 @@ func hit(val:int):
 		shieldVal = 0
 		shieldCount -= 1
 	elif shieldCount != 0:
+		var path = "res://素材/Audio/HeroHit/hit" + str(randi_range(1,2)) + ".wav"
+		SoundManager.createSound(path,SoundManager.Bus.EFFECT)
 		state.set_animation("hit",false,0)
 		shieldVal += pval
 		heroData.health -= val
@@ -45,6 +49,8 @@ func hit(val:int):
 		await waitAnimationComP(0)
 		state.set_animation("idle",true,0)
 	else:
+		var path = "res://素材/Audio/HeroHit/hit" + str(randi_range(1,2)) + ".wav"
+		SoundManager.createSound(path,SoundManager.Bus.EFFECT)
 		state.set_animation("hit",false,0)
 		heroData.health -= val
 		if type == Hero.Type.PLANT_HERO:

@@ -56,3 +56,7 @@ func excuteQueue(len):
 	print("AQ delete ",action,"\tnumber:",queueNode.number,"\tsize:",queue.size()-1)
 	queue.erase(queueNode)
 	AQSizeChange.emit()
+func addCallableThread(callable:Callable):
+	var len = getlen()
+	addAction(callable)
+	await addThread(len)

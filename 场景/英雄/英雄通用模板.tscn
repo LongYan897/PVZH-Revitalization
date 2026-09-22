@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dbko58bnriyko"]
 
-[ext_resource type="Script" uid="uid://tkqsutxowjxx" path="res://脚本/英雄通用模板.gd" id="1_arxaf"]
+[ext_resource type="Script" uid="uid://tkqsutxowjxx" path="res://脚本/BaseHero.gd" id="1_arxaf"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://uxvhsl2boc8s" path="res://素材/英雄素材/绿影侠/绿影侠.tres" id="2_4onjd"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://cbia30g4r5efx" path="res://素材/英雄素材/超尸/超尸.tres" id="2_pvleb"]
 

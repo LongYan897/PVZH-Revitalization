@@ -357,6 +357,7 @@ func execCQList():
 			CQData.Type.POP_ZOMBIE_TARGET:
 				await Enemy.popZombieInstance(CQ.line)
 			CQData.Type.END_TURN:
+				await get_tree().create_timer(1).timeout
 				TurnManager.turnChange.emit(1)
 				CQList.clear()
 				return
