@@ -3,7 +3,7 @@ func planIntro():
 	hide()
 	if type == BaseTarget.Type.Display_only:
 		show()
-		state.set_animation("intro",false,0)
+		state.set_animation("intro",false,10)
 		return
 	var tar = TurnManager.getAllTarget(PVZ.Type.PLANT)
 	var node:BasePlant = await ChooseManager.choose(tar,PVZ.Type.ZOMBIE)
@@ -11,12 +11,12 @@ func planIntro():
 		push_warning("最终任务锦囊：未找到所选植物")
 		return
 	var zombieTar = RoadList.list[line].zombie
-	state.set_animation("intro",false,0)
+	state.set_animation("intro",false,10)
 	show()
 	await zombie.animation_completed
 	position = node.position
 	await get_tree().create_timer(0.5).timeout
-	state.set_animation("hit",false,0)
+	state.set_animation("hit",false,10)
 	zombieTar.die()
 	await zombie.animation_completed
 	zombie.hide()

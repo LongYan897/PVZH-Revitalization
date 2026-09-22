@@ -26,6 +26,7 @@ func createSound(path:String,bus:Bus = Bus.MASTER,loop:bool = false,adb:int = 0)
 	if stream == null:
 		push_error("音频加载失败：" + path)
 		return null
+	print("SoundManager createSound path:",path)
 	var instance := AudioNode.new()
 	add_child(instance)
 	instance.stream = load(path)

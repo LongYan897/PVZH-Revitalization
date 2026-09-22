@@ -110,6 +110,7 @@ func createTarget(data,type:PVZ.Type):
 			return
 		instance = load(target_path).instantiate()
 		dataInstance = ZombieInstance.new(data)
+	instance.modulate = Color(0,0,0,0)
 	instance.type = BaseZombie.Type.Display_only
 	instance.scale = Vector2(0.3,0.3)
 	add_child(instance)
@@ -117,6 +118,9 @@ func createTarget(data,type:PVZ.Type):
 	instance.loadResource(dataInstance)
 	instance.top_level = false
 	target = instance
+	await get_tree().process_frame
+	await get_tree().process_frame
+	instance.modulate = Color(1,1,1,1)
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if !event.is_pressed():return

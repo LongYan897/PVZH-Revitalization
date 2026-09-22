@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b77yb2067vbco"]
 
-[ext_resource type="Script" uid="uid://bf88ykskrtem5" path="res://脚本/基础僵尸模板.gd" id="1_5dbhy"]
+[ext_resource type="Script" uid="uid://bf88ykskrtem5" path="res://脚本/BaseZombie.gd" id="1_5dbhy"]
 [ext_resource type="PackedScene" uid="uid://bfpdgp27r8j0p" path="res://场景/属性场景/伤害和血量.tscn" id="2_5dbhy"]
 [ext_resource type="Resource" uid="uid://d1mqt2trhnfv" path="res://数据资源/僵尸数据/基础僵尸数据.tres" id="2_k25ae"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://c4crk3kpb7avn" path="res://数据资源/僵尸动画/基础僵尸动画.tres" id="4_v53ql"]

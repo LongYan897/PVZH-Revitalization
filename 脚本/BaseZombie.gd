@@ -12,6 +12,7 @@ class_name BaseZombie
 func _ready():
 	hide()
 	await get_tree().process_frame
+	if zombieInstance:label.updateZombieData(zombieInstance,true)
 	show()
 	setup()
 	bindSignal()
@@ -60,16 +61,18 @@ func introAnimation():
 	label.intro()
 	introEvent()
 	if zombie_data.getCardType() == BaseData.CardType.TARGET:
-		state.set_animation("intro",false,0)
+		state.set_animation("intro",false,10)
 		await zombie.animation_completed
-		state.set_animation("idle",true,0)
+		state.set_animation("idle",true,10)
+		afterIntro()
 	elif zombie_data.getCardType() == BaseData.CardType.PLAN:
 		#await get_tree().create_timer(100).timeout
 		await planIntro()
 		planClear = true
+	
 func hit(val:int):
 	if zombie.visible == false:return
-	state.set_animation("hit",false,0)
+	state.set_animation("hit",false,10)
 	zombieInstance.bonus_health -= val
 	var offsetHP:int = 0
 	if zombieInstance.get_health() < 0:
@@ -77,9 +80,9 @@ func hit(val:int):
 		zombieInstance.bonus_health += offsetHP
 	label.updateZombieData(zombieInstance)
 	label.hit(val - offsetHP)
-	await waitAnimationComP(0)
-	if state.get_track(0).get_animation().get_name() != "die":
-		state.set_animation("idle",true,0)
+	await waitAnimationComP(10)
+	if state.get_track(10).get_animation().get_name() == "hit":
+		state.set_animation("idle",true,10)
 func adjustDie():
 	if zombieInstance.get_health() <= 0:die()
 func die():
@@ -90,13 +93,13 @@ func die():
 		trigger_die_event()
 	AQ.addAction(action)
 	while 1:
-		if state.get_track(0).get_animation().get_name() != "hit":break
+		if state.get_track(10).get_animation().get_name() != "hit":break
 		await get_tree().process_frame
-	state.set_animation("die",false,0)
-	await zombie.animation_completed
+	state.set_animation("die",false,10)
+	await waitAnimationComP(10)
 	await get_tree().create_timer(0.3).timeout
 	label.die()
-	state.clear_track(0)
+	state.clear_track(10)
 	dirt.clear()
 	await dieEffect.intro()
 	self.queue_free()
@@ -106,9 +109,9 @@ func attack():
 		await attackAnimation()
 	AQ.addAction(action)
 func attackAnimation():
-		state.set_animation("attack",false,0)
-		await waitAnimationComP(0)
-		state.set_animation("idle",true,0)
+		state.set_animation("attack",false,10)
+		await waitAnimationComP(10)
+		state.set_animation("idle",true,10)
 func setRoad(pos:Vector2i):
 	line = pos.x
 	col = pos.y
@@ -202,3 +205,5 @@ func waitAnimationComP(track:int = 0,precent:float = 1):
 	await get_tree().create_timer(0.05).timeout
 func extraAnimationEvent(eventName):
 	pass
+func setInstance(instance):
+	zombieInstance = instance

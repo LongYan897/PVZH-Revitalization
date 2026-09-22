@@ -3,7 +3,7 @@ func planIntro():
 	hide()
 	if type == BaseTarget.Type.Display_only:
 		show()
-		state.set_animation("intro1",false,0)
+		state.set_animation("intro1",false,10)
 		return
 func trigger_attack_event():
 	#print("line:",line,"col:",col)

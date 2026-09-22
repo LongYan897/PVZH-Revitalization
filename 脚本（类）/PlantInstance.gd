@@ -6,6 +6,8 @@ var bonus_health:int =0
 var bonus_cost:int =0
 var bonus_buffList:Array[Buff] = []
 func _init(data):
+	if data is String:
+		data = CardManager.getCardRes(data)
 	if data is PlantData:
 		#print("create cardInstance from ",data.name)
 		plantData = PlantData.new(data)

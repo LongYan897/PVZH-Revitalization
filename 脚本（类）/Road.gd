@@ -57,8 +57,10 @@ func attack():
 		await AQ.addThread(listlen)
 	if plant1:plant1.attack()
 	if plant2:plant2.attack()
+	if plant1 || plant2:await get_tree().create_timer(0.2).timeout
 	await get_tree().process_frame
 	await AQ.addThread(listlen)
+	if plant1 || plant2:await get_tree().create_timer(0.5).timeout
 	await get_tree().create_timer(0.1).timeout
 	if plant1 && plant1.plantInstance.get_health()<=0:plant1.die()
 	if plant2 && plant2.plantInstance.get_health()<=0:plant2.die()

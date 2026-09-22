@@ -64,7 +64,12 @@ var zombieIntroHandler:Dictionary = {
 			mcq.plantInstance = node
 			snap.ExCQList.append(mcq)
 			node.bonus_health -= 4
-			snap.adjustDie()
+			snap.adjustDie(),
+	"召唤直升机锦囊":
+		func(snap:Snapshot,data:ZombieInstance,turn:int,cq:CQData):
+			var line = cq.line
+			cq.team = PVZ.Type.ZOMBIE
+			snap.roadList[line].zombie = ZombieInstance.new(CardManager.getCardRes("直升机小鬼僵尸"))
 }
 func _ready() -> void:
 	bindSignal()
@@ -109,9 +114,14 @@ func getCanPlaceTarget(snap:Snapshot,mName:String)->Array[int]:
 					res.append(snap.getPlantLine(i))
 		"最终任务锦囊":
 			if !snap.getAllPlant():return res
-			var arr= snap.getAllZombie()
+			var arr = snap.getAllZombie()
 			for i in arr:
 				res.append(snap.getZombieLine(i))
+		"召唤直升机锦囊":
+			if !snap.getCanPlaceRoad(PVZ.Type.ZOMBIE,BaseData.Type.Amphibious):return res
+			var arr = snap.getCanPlaceRoad(PVZ.Type.ZOMBIE,BaseData.Type.Amphibious)
+			for i in arr:
+				res.append(i.line)
 	return res
 func simTurn(snap:Snapshot,text:bool = true):
 	if text:print("Snapshot 开始模拟回合")

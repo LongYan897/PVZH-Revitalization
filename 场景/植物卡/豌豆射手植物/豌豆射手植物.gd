@@ -1,11 +1,11 @@
 extends BasePlant
 func attackAnimation():
 	if TurnManager.team == 1:
-		state.set_animation("attack",false,0)
+		state.set_animation("attack",false,10)
 	else:
-		state.set_animation("attack1",false,0)
-	await waitAnimationComP(0)
-	state.set_animation("idle",true,0)
+		state.set_animation("attack1",false,10)
+	await waitAnimationComP(10)
+	state.set_animation("idle",true,10)
 func trigger_attack_event():
 	var zombie = RoadList.getRoad(line).getZombie()
 	if zombie:

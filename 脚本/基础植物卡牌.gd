@@ -85,7 +85,7 @@ func _input(event: InputEvent) -> void:
 			isDrag = true
 			touchPos = event.position
 			offset = event.position - global_position
-			particles.emitting = true
+			particles.emitting = false
 			startDrag()
 		else:
 			if isDrag == false:return
@@ -113,6 +113,7 @@ func getCanPlaceTarger()->Array:
 	return res
 func startDrag():
 	z_index = 20
+	particles.emitting = false
 	dragInformation = load("res://场景/UI对象/拖拽图鉴.tscn").instantiate()
 	add_child(dragInformation)
 	dragInformation.setText(CardManager.getcardDesDiction(plantData.name).get("description","NULL"))
@@ -128,6 +129,8 @@ func startDrag():
 	if TurnManager.plantCost < plantDataInstance.get_cost():return
 	#var arr:Array[Node2D] = DragManager.getAllPlaceTarget()
 	var arr:Array[Node2D] = getCanPlaceTarger()
+	if arr.is_empty():return
+	particles.emitting = true
 	for i in arr:
 		if i.is_in_group("road"):
 			var line:int = i.getLine()

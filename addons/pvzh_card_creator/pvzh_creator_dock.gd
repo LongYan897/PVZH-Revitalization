@@ -93,13 +93,13 @@ func _create() -> void:
 	var unit_name: String = object_name if is_plan_card else (clean if clean.ends_with(unit_suffix) else clean + unit_suffix)
 	var unit_created := false
 	if not is_card or create_unit_check.button_pressed:
-		var unit_result := _create_unit(side, unit_name)
+		var unit_result := _create_unit(side, unit_name, is_plan_card)
 		if not unit_result.ok:
 			_show_error(unit_result.message)
 			return
 		unit_created = true
 	if is_card:
-		if is_plan_card and not unit_created and not _create_card_data(side, object_name, object_name):
+		if is_plan_card and not unit_created and not _create_card_data(side, object_name, object_name, true):
 			_show_error("无法创建锦囊数据资源")
 			return
 		var card_result := _create_card(side, object_name, card_type.selected, unit_created or is_plan_card)
@@ -109,7 +109,7 @@ func _create() -> void:
 	_show_success("创建成功：" + object_name)
 	_refresh_filesystem()
 
-func _create_unit(side: String, object_name: String) -> Dictionary:
+func _create_unit(side: String, object_name: String, is_plan_card: bool = false) -> Dictionary:
 	var folder: String = ROOT + str(UNIT_DIRS[side]) + "/" + object_name
 	var scene_path: String = folder + "/" + object_name + ".tscn"
 	var script_path: String = folder + "/" + object_name + ".gd"
@@ -128,6 +128,8 @@ func _create_unit(side: String, object_name: String) -> Dictionary:
 	var data_text := "[gd_resource type=\"Resource\" script_class=\"" + data_class + "\" format=3]\n\n"
 	data_text += "[ext_resource type=\"Script\" path=\"res://脚本（类）/" + data_class + ".gd\" id=\"1_data\"]\n\n"
 	data_text += "[resource]\nscript = ExtResource(\"1_data\")\nname = \"" + object_name + "\"\n"
+	if is_plan_card:
+		data_text += "attack = 0\nhealth = 0\n"
 	var scene_text := "[gd_scene load_steps=5 format=3]\n\n"
 	scene_text += "[ext_resource type=\"PackedScene\" path=\"" + UNIT_BASES[side] + "\" id=\"1_base\"]\n"
 	scene_text += "[ext_resource type=\"Script\" path=\"" + script_path + "\" id=\"2_script\"]\n"
@@ -144,7 +146,7 @@ func _create_unit(side: String, object_name: String) -> Dictionary:
 	_write(scene_path, scene_text)
 	return {"ok": true}
 
-func _create_card_data(side: String, object_name: String, data_name: String) -> bool:
+func _create_card_data(side: String, object_name: String, data_name: String, is_plan_card: bool = false) -> bool:
 	var data_dir: String = ROOT + ("数据资源/植物数据" if side == "植物" else "数据资源/僵尸数据")
 	var data_path: String = data_dir + "/" + object_name + "数据.tres"
 	if FileAccess.file_exists(data_path) or not _ensure_dir(data_dir):
@@ -153,6 +155,8 @@ func _create_card_data(side: String, object_name: String, data_name: String) -> 
 	var data_text := "[gd_resource type=\"Resource\" script_class=\"" + data_class + "\" format=3]\n\n"
 	data_text += "[ext_resource type=\"Script\" path=\"res://脚本（类）/" + data_class + ".gd\" id=\"1_data\"]\n\n"
 	data_text += "[resource]\nscript = ExtResource(\"1_data\")\nname = \"" + data_name + "\"\n"
+	if is_plan_card:
+		data_text += "attack = 0\nhealth = 0\n"
 	_write(data_path, data_text)
 	return FileAccess.file_exists(data_path)
 

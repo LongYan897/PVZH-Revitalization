@@ -1,8 +1,11 @@
-[gd_resource type="Resource" script_class="ZombieData" format=3]
+[gd_resource type="Resource" script_class="ZombieData" format=3 uid="uid://bc0k5f7ax54eo"]
 
-[ext_resource type="Script" path="res://脚本（类）/ZombieData.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://dsbl34qqgully" path="res://脚本（类）/ZombieData.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://cx84cbc1hy4wy" path="res://脚本（类）/Buff.gd" id="1_leh8o"]
 
 [resource]
 script = ExtResource("1_data")
 name = "直升机小鬼僵尸"
-cardType = 0
+cost = 5
+attack = 6
+health = 5

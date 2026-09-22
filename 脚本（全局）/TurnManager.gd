@@ -171,7 +171,7 @@ func startDrawCard():
 		zombieCost = zombieTurnCost
 		await costPlay()
 		var plantInstance = PlantInstance.new(CardManager.getCardRes("豌豆射手植物"))
-		var zombieInstance = ZombieInstance.new(CardManager.getCardRes("最终任务锦囊"))
+		var zombieInstance = ZombieInstance.new(CardManager.getCardRes("召唤直升机锦囊"))
 		#var zombieInstance = ZombieInstance.new(CardManager.getCardRes("基础僵尸"))
 		DrawCard.drawPlantCard(Enemy.gameNode,plantInstance,2)
 		DrawCard.drawZombieCard(Enemy.gameNode,zombieInstance,2)

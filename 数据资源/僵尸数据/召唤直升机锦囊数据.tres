@@ -6,4 +6,6 @@
 [resource]
 script = ExtResource("1_data")
 name = "召唤直升机锦囊"
+attack = 0
+health = 0
 cardType = 1

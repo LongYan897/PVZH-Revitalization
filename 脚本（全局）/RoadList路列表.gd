@@ -2,7 +2,7 @@ extends Node
 @onready var list:Array[Road]
 func addRoad(node:Node2D):
 	list.append(node)
-func getRoad(line:int):
+func getRoad(line:int)->Road:
 	if line < 0 or line >= list.size():
 		return null
 	return list[line]

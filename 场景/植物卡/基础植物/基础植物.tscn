@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://sbll833n7jjv"]
 
-[ext_resource type="Script" uid="uid://0bn1ys7ky03e" path="res://脚本/基础植物模板.gd" id="1_aw0mw"]
+[ext_resource type="Script" uid="uid://0bn1ys7ky03e" path="res://脚本/BasePlant.gd" id="1_aw0mw"]
 [ext_resource type="Resource" uid="uid://6qrgf0mmtvna" path="res://数据资源/植物数据/基础植物数据.tres" id="2_ly8m4"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://cjm1h8b6y7v73" path="res://数据资源/植物动画/基础植物动画.tres" id="3_bqx2e"]
 [ext_resource type="PackedScene" uid="uid://bfpdgp27r8j0p" path="res://场景/属性场景/伤害和血量.tscn" id="4_y6qtw"]

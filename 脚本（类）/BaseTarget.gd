@@ -19,7 +19,11 @@ func introEvent():
 	pass
 func extraReady():
 	pass
+func setInstance(instance):
+	pass
 func planIntro():
 	pass
 func waitAnimationComP(track:int = 0,precent:float = 1):
+	pass
+func afterIntro():
 	pass

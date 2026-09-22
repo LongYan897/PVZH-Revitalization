@@ -11,6 +11,8 @@ class_name BasePlant
 @onready var skeletonDataRes = plant.skeleton_data_res
 
 func _ready():
+	await get_tree().process_frame
+	if plantInstance:label.updatePlantData(plantInstance,true)
 	setup()
 	bindSignal()
 	intro()
@@ -35,12 +37,13 @@ func intro():
 	await AQ.addThread(len)
 func introAnimation():
 	cancelWink()
-	state.set_animation("intro",false,0)
-	await plant.animation_completed
-	state.set_animation("idle",true,0)
+	state.set_animation("intro",false,10)
+	await waitAnimationComP(10)
+	state.set_animation("idle",true,10)
+	afterIntro()
 func hit(val:int):
 	cancelWink()
-	state.set_animation("hit",false,0)
+	state.set_animation("hit",false,10)
 	plantInstance.bonus_health -= val
 	var offsetHP:int = 0
 	if plantInstance.get_health() < 0:
@@ -48,9 +51,9 @@ func hit(val:int):
 		plantInstance.bonus_health += offsetHP
 	label.updatePlantData(plantInstance)
 	label.hit(val - offsetHP)
-	await waitAnimationComP(0)
-	if state.get_track(0).get_animation().get_name() != "die":
-		state.set_animation("idle",true,0)
+	await waitAnimationComP(10)
+	if state.get_track(10).get_animation().get_name() == "hit":
+		state.set_animation("idle",true,10)
 	var action=func():
 		pass
 	AQ.addAction(action)
@@ -64,14 +67,14 @@ func die():
 		trigger_die_event()
 	AQ.addAction(action)
 	while 1:
-		if state.get_track(0).get_animation().get_name() == "idle":break
+		if state.get_track(10).get_animation().get_name() == "idle":break
 		await get_tree().process_frame
 	cancelWink()
-	state.set_animation("die",false,0)
-	await plant.animation_completed
+	state.set_animation("die",false,10)
+	await waitAnimationComP(10)
 	await get_tree().create_timer(0.3).timeout
 	label.die()
-	state.clear_track(0)
+	state.clear_track(10)
 	await dieEffect.intro()
 	self.queue_free()
 func attack():
@@ -81,18 +84,18 @@ func attack():
 		await attackAnimation()
 	AQ.addAction(action)
 func attackAnimation():
-		state.set_animation("attack",false,0)
-		await waitAnimationComP(0)
-		state.set_animation("idle",true,0)
+		state.set_animation("attack",false,10)
+		await waitAnimationComP(10)
+		state.set_animation("idle",true,10)
 func wink():
 	while is_alive:
 		var wtime:int = randi_range(2,4)
 		await get_tree().create_timer(wtime).timeout
-		var track0 = state.get_track(0)
+		var track0 = state.get_track(10)
 		if track0 && track0.get_animation().get_name() == "idle":
-			state.set_animation("wink",false,1)
+			state.set_animation("wink",false,11)
 func cancelWink():
-	state.clear_track(1)
+	state.clear_track(11)
 func setRoad(pos:Vector2i):
 	line = pos.x
 	col = pos.y
@@ -163,3 +166,5 @@ func waitAnimationComP(track:int = 0,precent:float = 1):
 	await get_tree().create_timer(0.05).timeout
 func extraAnimationEvent(eventName):
 	pass
+func setInstance(instance):
+	plantInstance = instance

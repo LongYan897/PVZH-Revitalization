@@ -187,6 +187,19 @@ func getPlantCol(data:PlantInstance)->int:
 		if data == roadList[i].plant2 : return 2
 		if data == roadList[i].plant1 : return 1
 	return -1
+func getCanPlaceRoad(faction:PVZ.Type,type:BaseData.Type = BaseData.Type.Ground)->Array[DataRoad]:
+	var res:Array[DataRoad]
+	if faction == PVZ.Type.PLANT:
+		for i in roadList:
+			if !i.plant1 || !i.plant2:
+				if !(i.type == Road.ROAD_TYPE.WATER_WAY && type == BaseData.Type.Ground):
+					res.append(i)
+	else:
+		for i in roadList:
+			if !i.zombie:
+				if !(i.type == Road.ROAD_TYPE.WATER_WAY && type == BaseData.Type.Ground):
+					res.append(i)
+	return res
 func endCQTurn():
 	var CQ:CQData = CQData.new()
 	CQ.type = CQData.Type.END_TURN
