@@ -1,0 +1,14 @@
+{
+  "Peashooter.Title": "豌豆射手",
+  "Peashooter.Flavor": "自 2009 年起便开始打击僵尸…… 至今仍未停止。",
+  "Peashooter.Hp": 1,
+  "Peashooter.Atk": 1,
+  "Peashooter.Cost": 1,
+  "Peashooter.Rarity": "基础",
+  "Peashooter.Label": [ "豌豆" ],
+  "Peashooter.Category": "猛长",
+  "Peashooter.Camp": "植物",
+  "Peashooter.Type": "单位",
+  "Peashooter.AtkType": "普通",
+  "Peashooter.HpType": "普通"
+}

@@ -6,3 +6,5 @@
 [resource]
 script = ExtResource("2_mir5q")
 name = "基础植物"
+rare = null
+properties = null

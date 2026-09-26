@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://dsnag66lhgvmy" path="res://素材/ui/界面ui/pvpimage_New.png" id="18_p6lmc"]
 [ext_resource type="Texture2D" uid="uid://br5nuly1nj771" path="res://素材/ui/界面ui/按钮5.png" id="19_yri0s"]
 [ext_resource type="Texture2D" uid="uid://djrnhsnaoecwq" path="res://素材/ui/界面ui/渐变纹理.png" id="20_bskb0"]
+[ext_resource type="Script" uid="uid://ccaq7lefsnojt" path="res://脚本(C#)/游戏控制/Main.cs" id="21_fe8yl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s6aw8"]
 
@@ -388,6 +389,11 @@ theme_override_font_sizes/font_size = 87
 text = "战斗"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="测试用主节点" type="Node2D" parent="." unique_id=2015394309]
+position = Vector2(351, 753)
+script = ExtResource("21_fe8yl")
+metadata/_custom_type_script = "uid://ccaq7lefsnojt"
 
 [connection signal="input_event" from="活动/Area2D" to="." method="uiActInput"]
 [connection signal="mouse_exited" from="活动/Area2D" to="." method="uiActMouseExited"]

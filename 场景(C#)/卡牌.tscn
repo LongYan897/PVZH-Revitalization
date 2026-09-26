@@ -1,0 +1,256 @@
+[gd_scene format=3 uid="uid://26tnjhis0xxj"]
+
+[ext_resource type="Texture2D" uid="uid://dopuc0tyuav36" path="res://素材/粒子特效/圆形渐变粒子.png" id="1_tquox"]
+[ext_resource type="Script" uid="uid://doml84h3u12nd" path="res://脚本(C#)/卡牌/节点/NodeCard.cs" id="1_yam0n"]
+[ext_resource type="Texture2D" uid="uid://b8cjw4esrxadc" path="res://素材/牌背、卡面/背景底版1.png" id="2_a5s0q"]
+[ext_resource type="Texture2D" uid="uid://c5aq4onpg077v" path="res://素材/牌背、卡面/SEEDPACKET_BACK.png" id="2_md00x"]
+[ext_resource type="Texture2D" uid="uid://cy7jlcow8y872" path="res://素材/牌背、卡面/SEEDPACKET_FRONT.png" id="3_md00x"]
+[ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="4_m5r2q"]
+[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="5_3nddn"]
+[ext_resource type="Texture2D" uid="uid://52o5rfk8m1db" path="res://场景/植物卡组/豌豆射手植物/43d3b20a-90b4-4a34-8d55-674b02a38dc1 #104810.png" id="5_rgsy0"]
+[ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="5_x53vy"]
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="6_7p28v"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_fsyp8"]
+[ext_resource type="Texture2D" uid="uid://84nyu8lu0ied" path="res://素材/牌背、卡面/cardback_plants.png" id="12_5lf5m"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tquox"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_rgsy0"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_wuiui"]
+curve = SubResource("Curve_rgsy0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yam0n"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(120, 80, 0)
+angle_min = 1.0728835e-05
+angle_max = 360.00003
+spread = 180.0
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.04
+scale_max = 0.08
+color = Color(0, 0.9411765, 0.16078432, 1)
+alpha_curve = SubResource("CurveTexture_wuiui")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fsyp8"]
+atlas = ExtResource("5_x53vy")
+region = Rect2(508.18198, 335.30182, 284.61368, 506.2005)
+
+[sub_resource type="FontVariation" id="FontVariation_fsyp8"]
+base_font = ExtResource("6_fsyp8")
+
+[node name="卡牌" type="Control" unique_id=637355252]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -96.5
+offset_right = -592.0
+offset_bottom = -1183.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_behavior_recursive = 2
+script = ExtResource("1_yam0n")
+metadata/_custom_type_script = "uid://doml84h3u12nd"
+metadata/_edit_horizontal_guides_ = [-83.0]
+
+[node name="碰撞" type="Control" parent="." unique_id=497856477]
+anchors_preset = 0
+offset_left = 5.0
+offset_top = 8.0
+offset_right = 251.0
+offset_bottom = 184.0
+
+[node name="正面卡牌" type="Node2D" parent="." unique_id=1637951132]
+
+[node name="背景容器" type="Node2D" parent="正面卡牌" unique_id=574528223]
+unique_name_in_owner = true
+
+[node name="卡牌发光背景" type="TextureRect" parent="正面卡牌/背景容器" unique_id=513921698]
+unique_name_in_owner = true
+modulate = Color(0.1254902, 1, 0.02745098, 1)
+offset_left = -36.0
+offset_top = -40.0
+offset_right = 220.0
+offset_bottom = 153.0
+scale = Vector2(1.3, 1.4)
+mouse_filter = 2
+texture = ExtResource("2_a5s0q")
+
+[node name="粒子特效" type="GPUParticles2D" parent="正面卡牌/背景容器" unique_id=331906399]
+unique_name_in_owner = true
+material = SubResource("CanvasItemMaterial_tquox")
+position = Vector2(119.999985, 82.99999)
+scale = Vector2(0.99999946, 0.9999995)
+amount = 150
+texture = ExtResource("1_tquox")
+lifetime = 0.7
+process_material = SubResource("ParticleProcessMaterial_yam0n")
+
+[node name="卡牌底板" type="TextureRect" parent="正面卡牌/背景容器" unique_id=1633113909]
+unique_name_in_owner = true
+modulate = Color(0.8392157, 0.85882354, 0.13725491, 1)
+custom_minimum_size = Vector2(256, 0)
+offset_left = 8.999999
+offset_top = 14.0
+offset_right = 273.44446
+offset_bottom = 181.0
+scale = Vector2(0.9, 1)
+mouse_filter = 2
+texture = ExtResource("2_md00x")
+expand_mode = 1
+
+[node name="卡框" type="TextureRect" parent="正面卡牌" unique_id=1111197190]
+unique_name_in_owner = true
+offset_left = 128.0
+offset_top = 96.0
+offset_right = 128.0
+offset_bottom = 96.0
+mouse_filter = 2
+texture = ExtResource("3_md00x")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="卡牌图标" type="TextureRect" parent="正面卡牌" unique_id=723944226]
+unique_name_in_owner = true
+offset_left = 15.0
+offset_top = 9.0
+offset_right = 212.85083
+offset_bottom = 182.0
+mouse_filter = 2
+texture = ExtResource("5_rgsy0")
+expand_mode = 1
+
+[node name="攻击力容器" type="Node2D" parent="正面卡牌" unique_id=1933140278]
+unique_name_in_owner = true
+
+[node name="攻击力" type="TextureRect" parent="正面卡牌/攻击力容器" unique_id=1443008913]
+unique_name_in_owner = true
+offset_left = 86.7037
+offset_top = 110.0
+offset_right = 183.37038
+offset_bottom = 200.0
+mouse_filter = 2
+texture = ExtResource("5_3nddn")
+expand_mode = 1
+
+[node name="攻击力特效" type="TextureRect" parent="正面卡牌/攻击力容器" unique_id=1035299217]
+unique_name_in_owner = true
+offset_left = -31.000015
+offset_top = -126.00001
+offset_right = 287.65308
+offset_bottom = 380.0
+rotation = 1.5707964
+scale = Vector2(0.2, 0.2)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = SubResource("AtlasTexture_fsyp8")
+stretch_mode = 2
+
+[node name="数值" type="RichTextLabel" parent="正面卡牌/攻击力容器" unique_id=967735247]
+offset_left = 108.0
+offset_top = 123.0
+offset_right = 162.0
+offset_bottom = 185.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_outline_size = 3
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = SubResource("FontVariation_fsyp8")
+theme_override_font_sizes/normal_font_size = 55
+bbcode_enabled = true
+text = "123"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="生命值容器" type="Node2D" parent="正面卡牌" unique_id=1111454840]
+unique_name_in_owner = true
+
+[node name="生命值" type="TextureRect" parent="正面卡牌/生命值容器" unique_id=2078360910]
+unique_name_in_owner = true
+offset_left = 180.0
+offset_top = 116.0
+offset_right = 267.5196
+offset_bottom = 195.0
+mouse_filter = 2
+texture = ExtResource("6_7p28v")
+expand_mode = 1
+
+[node name="生命值特效" type="TextureRect" parent="正面卡牌/生命值容器" unique_id=368377757]
+offset_left = 56.999977
+offset_top = -128.00002
+offset_right = 375.65305
+offset_bottom = 378.0
+rotation = 1.5707964
+scale = Vector2(0.2, 0.2)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = SubResource("AtlasTexture_fsyp8")
+stretch_mode = 2
+
+[node name="数值" type="RichTextLabel" parent="正面卡牌/生命值容器" unique_id=507951206]
+offset_left = 196.0
+offset_top = 123.0
+offset_right = 250.0
+offset_bottom = 185.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_outline_size = 3
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = SubResource("FontVariation_fsyp8")
+theme_override_font_sizes/normal_font_size = 55
+bbcode_enabled = true
+text = "123"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="费用容器" type="Node2D" parent="正面卡牌" unique_id=1766249165]
+unique_name_in_owner = true
+
+[node name="费用" type="TextureRect" parent="正面卡牌/费用容器" unique_id=1434990318]
+unique_name_in_owner = true
+offset_left = 179.0
+offset_top = -18.0
+offset_right = 277.0
+offset_bottom = 84.01639
+mouse_filter = 2
+texture = ExtResource("4_m5r2q")
+expand_mode = 1
+
+[node name="数值" type="RichTextLabel" parent="正面卡牌/费用容器" unique_id=1026296633]
+offset_left = 201.0
+offset_top = 2.0
+offset_right = 255.0
+offset_bottom = 64.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = SubResource("FontVariation_fsyp8")
+theme_override_font_sizes/normal_font_size = 55
+bbcode_enabled = true
+text = "123"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="牌背" type="TextureRect" parent="." unique_id=768773165]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 7.0
+offset_top = 10.0
+offset_right = 251.0
+offset_bottom = 184.0
+texture = ExtResource("12_5lf5m")

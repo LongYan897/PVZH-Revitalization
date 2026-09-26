@@ -1,0 +1,171 @@
+[gd_scene format=3 uid="uid://drb7k0mwgbwlk"]
+
+[ext_resource type="Script" uid="uid://b38mmdd52sf5k" path="res://脚本(C#)/卡牌/节点/CardDes.cs" id="1_cnftl"]
+[ext_resource type="Texture2D" uid="uid://db11uq8vftl38" path="res://素材/ui/界面ui/frame #173462.png" id="1_myvtn"]
+[ext_resource type="Texture2D" uid="uid://cttsnfkdqyst1" path="res://素材/ui/界面ui/聪明.png" id="2_t3r8t"]
+[ext_resource type="Texture2D" uid="uid://b3ev0ilfu6bb5" path="res://素材/ui/稀有标签/rarity_0.png" id="3_yukv0"]
+[ext_resource type="Texture2D" uid="uid://c4yunnsxr58kl" path="res://素材/ui/界面ui/smallinspectionframe.png" id="4_4s1xq"]
+[ext_resource type="Texture2D" uid="uid://cov63gqkfb3l7" path="res://素材/ui/界面ui/frame_circle_grass.png" id="5_8r7al"]
+[ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="6_icp5t"]
+[ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="7_cnftl"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="8_m1m2k"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="9_iot5e"]
+
+[node name="卡牌界面" type="Control" unique_id=888145101]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 360.0
+offset_top = 640.0
+offset_right = -360.0
+offset_bottom = -640.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cnftl")
+metadata/_custom_type_script = "uid://b38mmdd52sf5k"
+
+[node name="背景" type="Node2D" parent="." unique_id=649810752]
+scale = Vector2(0.6, 0.6)
+
+[node name="左背景" type="Sprite2D" parent="背景" unique_id=2071301816]
+position = Vector2(-257, 0)
+texture = ExtResource("1_myvtn")
+
+[node name="右背景" type="Sprite2D" parent="背景" unique_id=417714277]
+position = Vector2(257, 0)
+texture = ExtResource("1_myvtn")
+flip_h = true
+
+[node name="属性图片" type="Sprite2D" parent="背景" unique_id=1679049731]
+position = Vector2(340, -300)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_t3r8t")
+
+[node name="稀有标签" type="Sprite2D" parent="." unique_id=1521024813]
+position = Vector2(0, 200)
+texture = ExtResource("3_yukv0")
+
+[node name="人物框" type="Sprite2D" parent="." unique_id=13245324]
+z_index = 1
+position = Vector2(0, -280)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_4s1xq")
+
+[node name="底版" type="Sprite2D" parent="人物框" unique_id=1595920760]
+z_index = -1
+texture = ExtResource("5_8r7al")
+
+[node name="稀有标签label" type="Label" parent="." unique_id=1844954416]
+layout_mode = 0
+offset_left = -255.0
+offset_top = 162.0
+offset_right = 253.0
+offset_bottom = 232.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 42
+text = "XX-XX"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="名字" type="Label" parent="." unique_id=1794050054]
+layout_mode = 0
+offset_left = -263.0
+offset_top = -140.0
+offset_right = 262.0
+offset_bottom = -70.0
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 38
+text = "XXX"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="属性标签" type="Label" parent="." unique_id=212970144]
+layout_mode = 0
+offset_left = -263.0
+offset_top = -98.0
+offset_right = 262.0
+offset_bottom = -28.0
+theme_override_colors/font_color = Color(0.69135684, 0.6913568, 0.69135684, 1)
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+text = "XX"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="介绍Label" type="RichTextLabel" parent="." unique_id=2112734755]
+layout_mode = 0
+offset_left = -216.0
+offset_top = -39.0
+offset_right = 213.0
+offset_bottom = 221.0
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("6_icp5t")
+theme_override_font_sizes/normal_font_size = 32
+text = "什么都没有
+
+"
+horizontal_alignment = 1
+
+[node name="花费数值" type="Sprite2D" parent="." unique_id=2012160516]
+z_index = 2
+position = Vector2(148, -388)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("7_cnftl")
+
+[node name="花费数值Label" type="Label" parent="花费数值" unique_id=821321464]
+offset_left = -34.0
+offset_top = -47.0
+offset_right = 33.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_m1m2k")
+theme_override_font_sizes/font_size = 70
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="故事标签" type="RichTextLabel" parent="." unique_id=1037280863]
+layout_mode = 0
+offset_left = -216.0
+offset_top = 240.0
+offset_right = 213.0
+offset_bottom = 500.0
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_colors/default_color = Color(0.7350987, 0.73509866, 0.73509866, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 5
+theme_override_fonts/normal_font = ExtResource("9_iot5e")
+theme_override_font_sizes/normal_font_size = 32
+text = "神秘小故事
+"
+horizontal_alignment = 1
+
+[node name="底版" type="ColorRect" parent="." unique_id=1495908590]
+modulate = Color(0, 0, 0, 0.28627452)
+top_level = true
+z_index = 40
+layout_mode = 0
+offset_right = 722.0
+offset_bottom = 1299.0
