@@ -12,6 +12,6 @@ public partial class Main : Node2D
         AtkType.Init();
         CardModel card = CardModel.Load<Peashooter>();
         card.Status = Status.FaceUp;
-        NodeCard.Create(this, card).SetAnchor(new Vector2(0,0));
+        NodeCard.Create(this, card);
     }
 }

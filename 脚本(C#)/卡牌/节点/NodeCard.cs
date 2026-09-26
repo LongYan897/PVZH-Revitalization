@@ -11,7 +11,7 @@ namespace Card;
 public partial class NodeCard : Control
 {
 	private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌.tscn");
-	public static NodeCard ChoiceCard;
+	private static NodeCard ChoiceCard;
 	public CardModel Model { get;private set; }
 	/// <summary>
 	/// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
@@ -27,24 +27,99 @@ public partial class NodeCard : Control
 		parent.AddChild(node);
 		return node;
 	}
-	/// <summary>
-	/// 卡牌目标锚点（持续移动的目标位置）
-	/// </summary>
-	private Vector2 _targetAnchor;
-	private const float SpringK = 2.4f;
-	/// <summary>
-	/// 设置该卡牌原始位置(卡牌会持续向该点移动)
-	/// </summary>
-	/// <param name="vector2"></param>
-	public void SetAnchor(Vector2 vector2)
+	private bool _isDragging;
+	private Vector2 _cardOriginPos;
+	private Vector2 _mouseDownGlobal;
+	private Tween _returnTween;
+	private const float DragThreshold = 10f;
+	public override void _Ready()
 	{
-		_targetAnchor = vector2;
+		var hitBtn = GetNode<Button>("碰撞");
+		hitBtn.GuiInput += OnHitButtonGuiInput;
 	}
-	public override void _Process(double delta)
+	private void OnHitButtonGuiInput(InputEvent @event)
 	{
-		Vector2 diff = _targetAnchor - Position;
-		Position += diff * SpringK * (float)delta;
+		if (@event is InputEventMouseButton mb)
+		{
+			if (mb.ButtonIndex == MouseButton.Left)
+			{
+				if (mb.Pressed)
+				{
+					KillReturnTween();
+					_mouseDownGlobal = GetGlobalMousePosition();
+					_cardOriginPos = Position;
+				}
+				else
+				{
+					if (_isDragging)
+					{
+						float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
+						if (dist < DragThreshold)
+						{
+							OnCardClick();
+						}
+						else
+						{
+							EndDrag();
+						}
+					}
+					_isDragging = false;
+				}
+			}
+		}
+		else if (@event is InputEventMouseMotion)
+		{
+			if (!Input.IsMouseButtonPressed(MouseButton.Left))
+				return;
+
+			if (!_isDragging)
+			{
+				float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
+				if (dist > DragThreshold)
+				{
+					_isDragging = true;
+					ChoiceCard = this;
+					ZIndex += 100;
+				}
+			}
+			if (_isDragging)
+			{
+				Vector2 delta = GetGlobalMousePosition() - _mouseDownGlobal;
+				Position = _cardOriginPos + delta;
+			}
+		}
 	}
+
+
+	private void OnCardClick()
+	{
+		ChoiceCard = this;
+	}
+
+	private void EndDrag()
+	{
+		ZIndex -= 100;
+		if (ChoiceCard == this) ChoiceCard = null;
+		ReturnToOrigin();
+	}
+
+	private void ReturnToOrigin()
+	{
+		KillReturnTween();
+		_returnTween = CreateTween();
+		_returnTween.SetEase(Tween.EaseType.Out);
+		_returnTween.SetTrans(Tween.TransitionType.Quad);
+		_returnTween.TweenProperty(this, "position", _cardOriginPos, 0.2f);
+	}
+
+	private void KillReturnTween()
+	{
+		if (_returnTween != null && _returnTween.IsValid())
+		{
+			_returnTween.Kill();
+		}
+	}
+
 	/// <summary>
 	/// 每次修改卡牌时调用 用于刷新卡牌属性
 	/// </summary>

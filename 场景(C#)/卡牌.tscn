@@ -56,17 +56,19 @@ offset_right = -592.0
 offset_bottom = -1183.5
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 mouse_behavior_recursive = 2
 script = ExtResource("1_yam0n")
 metadata/_custom_type_script = "uid://doml84h3u12nd"
 metadata/_edit_horizontal_guides_ = [-83.0]
 
-[node name="碰撞" type="Control" parent="." unique_id=497856477]
-anchors_preset = 0
+[node name="碰撞" type="Button" parent="." unique_id=1076191080]
+layout_mode = 0
 offset_left = 5.0
 offset_top = 8.0
 offset_right = 251.0
 offset_bottom = 184.0
+flat = true
 
 [node name="正面卡牌" type="Node2D" parent="." unique_id=1637951132]
 
