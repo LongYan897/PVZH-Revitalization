@@ -1,4 +1,31 @@
 # Godot 4+ specific ignores
 .godot/
+.import/
 /android/
-.ignore/
+.mono/
+
+# 自动生成的翻译二进制文件
+*.translation
+
+# 导出配置（包含密钥，不要提交到仓库）
+export_presets.cfg
+export.cfg
+
+# 备份文件、临时文件
+*.backup
+*.tmp
+*.log
+*.shader_cache
+
+# VS 缓存（就是刚才报错的 .vs 文件夹，加上！）
+.vs/
+
+# Windows 系统文件
+Thumbs.db
+
+# macOS
+.DS_Store
+
+# Rider / VSCode 编辑器缓存
+.idea/
+.vscode/
