@@ -59,6 +59,7 @@ public partial class NodeCard : Control
 			node.Model = cardModel;
 			node.Scale *= 0.5f;
 			node.Position = position;
+			node.PivotOffsetRatio = new(0.5f, 0.5f);
 			instances.Add(node, cardModel);
 			parent.AddChild(node);
 			node.DrawAnimation();
@@ -124,88 +125,121 @@ public partial class NodeCard : Control
 	private Vector2 _mouseDownGlobal;
 	private Tween _returnTween;
 	private Tween _colorTween;
-	private const float DragThreshold = 10f;
+    private Tween _clickTween;
+    private bool _clickAnimationPlayed;
+    private const float ClickScaleDown = 0.9f;
+    private const float ClickScaleTime = 0.08f;
+    private const float DragThreshold = 10f;
 	public override void _Ready()
 	{
 		var hitBtn = GetNode<Button>("碰撞");
 		hitBtn.GuiInput += OnHitButtonGuiInput;
 	}
 	private ColorBox _colorBox = new ColorBox(new("f4f4d5"),new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
-	private void OnHitButtonGuiInput(InputEvent @event)
-	{
-		if (@event is InputEventMouseButton mb)
-		{
-			if (mb.ButtonIndex == MouseButton.Left)
-			{
-				if (mb.Pressed)
-				{
-					KillReturnTween();
-					_mouseDownGlobal = GetGlobalMousePosition();
-					_cardOriginPos = Position;
-				}
-				else
-				{
-					if (_isDragging)
-					{
-						float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
-						if (dist < DragThreshold)
-						{
-							OnCardClick();
-						}
-						else
-						{
-							EndDrag();
-						}
-					}
+    private void OnHitButtonGuiInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton mb)
+        {
+            if (mb.ButtonIndex == MouseButton.Left)
+            {
+                if (mb.Pressed)
+                {
+                    KillReturnTween();
+                    KillClickTween();
 
-					var glowNode = GetNode<TextureRect>("%卡牌发光背景");
-					if (_colorTween != null && _colorTween.IsValid())
-						_colorTween.Kill();
-					_colorTween = glowNode.CreateTween();
-					_colorTween.TweenProperty(glowNode, "modulate", _colorBox.Default, 0.5f)
-						.SetTrans(Tween.TransitionType.Cubic)
-						.SetEase(Tween.EaseType.Out);
-					GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
-					_isDragging = false;
-				}
-			}
-		}
-		else if (@event is InputEventMouseMotion)
-		{
-			if (!Input.IsMouseButtonPressed(MouseButton.Left))
-				return;
+                    _mouseDownGlobal = GetGlobalMousePosition();
+                    _cardOriginPos = Position;
+                    _isDragging = false;
+                    _clickAnimationPlayed = false;
 
-			if (!_isDragging)
-			{
-				float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
-				if (dist > DragThreshold)
-				{
-					_isDragging = true;
-					ChoiceCard = this;
-					ZIndex += 100;
+                    _clickTween = CreateTween();
+                    _clickTween.TweenProperty(this, "scale", Scale * ClickScaleDown, ClickScaleTime)
+                        .SetTrans(Tween.TransitionType.Quad)
+                        .SetEase(Tween.EaseType.Out);
+                }
+                else
+                {
+                    if (_isDragging)
+                    {
+                        EndDrag();
+                    }
+                    else
+                    {
+                        float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
 
-					var glowNode = GetNode<TextureRect>("%卡牌发光背景");
-					if (_colorTween != null && _colorTween.IsValid())
-						_colorTween.Kill();
-					_colorTween = glowNode.CreateTween();
-					_colorTween.TweenProperty(glowNode, "modulate", _colorBox.ColorA, 0.5f)
-						.SetTrans(Tween.TransitionType.Cubic)
-						.SetEase(Tween.EaseType.Out);
-					GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
-				}
-			}
-			if (_isDragging)
-			{
-				Vector2 delta = GetGlobalMousePosition() - _mouseDownGlobal;
-				Position = _cardOriginPos + delta;
-			}
-		}
-	}
+                        if (dist < DragThreshold)
+                        {
+                            KillClickTween();
+                            _clickTween = CreateTween();
+                            _clickTween.TweenProperty(this, "scale", new Vector2(0.5f, 0.5f), ClickScaleTime)
+                                .SetTrans(Tween.TransitionType.Quad)
+                                .SetEase(Tween.EaseType.Out);
+
+                            OnCardClick();
+                        }
+                        else
+                        {
+                            KillClickTween();
+                            _clickTween = CreateTween();
+                            _clickTween.TweenProperty(this, "scale", new Vector2(0.5f, 0.5f), ClickScaleTime)
+                                .SetTrans(Tween.TransitionType.Quad)
+                                .SetEase(Tween.EaseType.Out);
+                        }
+                    }
+
+                    var glowNode = GetNode<TextureRect>("%卡牌发光背景");
+                    if (_colorTween != null && _colorTween.IsValid())
+                        _colorTween.Kill();
+                    _colorTween = glowNode.CreateTween();
+                    _colorTween.TweenProperty(glowNode, "modulate", _colorBox.Default, 0.5f)
+                        .SetTrans(Tween.TransitionType.Cubic)
+                        .SetEase(Tween.EaseType.Out);
+                    GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
+                    _isDragging = false;
+                }
+            }
+        }
+        else if (@event is InputEventMouseMotion)
+        {
+            if (!Input.IsMouseButtonPressed(MouseButton.Left))
+                return;
+
+            if (!_isDragging)
+            {
+                float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
+                if (dist > DragThreshold)
+                {
+                    _isDragging = true;
+                    ChoiceCard = this;
+                    ZIndex += 100;
+
+                    KillClickTween();
+                    Scale = new Vector2(0.5f, 0.5f);
+
+                    var glowNode = GetNode<TextureRect>("%卡牌发光背景");
+                    if (_colorTween != null && _colorTween.IsValid())
+                        _colorTween.Kill();
+                    _colorTween = glowNode.CreateTween();
+                    _colorTween.TweenProperty(glowNode, "modulate", _colorBox.ColorA, 0.5f)
+                        .SetTrans(Tween.TransitionType.Cubic)
+                        .SetEase(Tween.EaseType.Out);
+                    GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
+                }
+            }
+
+            if (_isDragging)
+            {
+                Vector2 delta = GetGlobalMousePosition() - _mouseDownGlobal;
+                Position = _cardOriginPos + delta;
+            }
+        }
+    }
 
 
-	private void OnCardClick()
+    private void OnCardClick()
 	{
 		ChoiceCard = this;
+		CardDes.DisplayDescription(GetParent(), Model);
 	}
 
 	private void EndDrag()
@@ -231,11 +265,19 @@ public partial class NodeCard : Control
 			_returnTween.Kill();
 		}
 	}
+    private void KillClickTween()
+    {
+        if (_clickTween != null && _clickTween.IsValid())
+        {
+            _clickTween.Kill();
+        }
+    }
 
-	/// <summary>
-	/// 每次修改卡牌时调用 用于刷新卡牌属性
-	/// </summary>
-	public void Fresh()
+
+    /// <summary>
+    /// 每次修改卡牌时调用 用于刷新卡牌属性
+    /// </summary>
+    public void Fresh()
 	{
 		if (Model != null)
 		{

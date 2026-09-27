@@ -43,10 +43,14 @@ public class CardModel
     {
         var card = Activator.CreateInstance<T>();
         card.Cost = new IntVariable("Cost",cardString.Cost);
+        card.Title = cardString.Title;
+        card.Description = cardString.Description;
+        card.Flavor = cardString.Flavor;
         card.Rarity = cardString.Rarity;
         card.Class = cardString.Category;
         card.Camp = cardString.Camp;
         card.CardType = cardString.CardType;
+        card.Pack = cardString.Pack;
         card.Labels = new Variable<List<string>>("Labels",cardString.Labels);
         return (T)card.LoadData(cardString);
     }
@@ -59,6 +63,22 @@ public class CardModel
     {
         return this;
     }
+    /// <summary>
+    /// 卡牌的标题(名字)
+    /// </summary>
+    public string Title { get; private set; }
+    /// <summary>
+    /// 卡牌的正规描述
+    /// </summary>
+    public string Description {  get; private set; }
+    /// <summary>
+    /// 卡牌的非正规描述
+    /// </summary>
+    public string Flavor { get; private set; }
+    /// <summary>
+    /// 卡牌的卡包
+    /// </summary>
+    public string Pack { get; private set; }
     /// <summary>
     /// 卡牌的稀有度
     /// </summary>

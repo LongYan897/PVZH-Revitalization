@@ -19,6 +19,7 @@ namespace Card.String;
 ///     派系  : 使用 "Category" 当作Json的键<br/>
 ///     稀有度  : 使用 "Rarity" 当作Json的键<br/>
 ///     类别 : 使用 "Type" 当作Json的键<br/>
+///     卡包[可选] : 使用 "Pack" 当作Json的键 如果是基础卡默认是 "基础-常见"<br/>
 ///     阵营 : 使用 "Camp" 当作Json的键<br/>
 ///     特别描述 : 使用 "Flavor" 当作Json的键<br/>
 ///     描述  : 使用 "Description" 或 "Des"<br/>
@@ -43,6 +44,8 @@ namespace Card.String;
 ///         "Peashooter.Category": "MegaGrow" (改成中文的"猛长"也可以)<br/>
 ///         "Peashooter.Camp": "植物"<br/>
 ///         "Peashooter.Type": "单位" （关于英雄的可以写成"单位:英雄"）<br/>
+///         "Peashooter.AtkType": "普通",<br/>
+///         "Peashooter.HpType": "普通"<br/>
 ///     }<br/>
 ///     *********
 /// </summary>
@@ -56,6 +59,10 @@ public class CardString
     /// 描述
     /// </summary>
     public string Description { get; private set; }
+    /// <summary>
+    /// 卡包
+    /// </summary>
+    public string Pack {  get; private set; }
     /// <summary>
     /// 血量
     /// </summary>
@@ -139,6 +146,10 @@ public class CardString
         if (GetData(cardTitle, "Flavor").VariantType != Variant.Type.Nil)
         {
             cardString.Flavor = GetData(cardTitle, "Flavor").AsString();
+        }
+        if (GetData(cardTitle, "Pack").VariantType != Variant.Type.Nil)
+        {
+            cardString.Pack = GetData(cardTitle, "Pack").AsString();
         }
         if (GetData(cardTitle, "Camp").VariantType != Variant.Type.Nil)
         {

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b38mmdd52sf5k" path="res://脚本(C#)/卡牌/节点/CardDes.cs" id="1_cnftl"]
 [ext_resource type="Texture2D" uid="uid://db11uq8vftl38" path="res://素材/ui/界面ui/frame #173462.png" id="1_myvtn"]
-[ext_resource type="Texture2D" uid="uid://cttsnfkdqyst1" path="res://素材/ui/界面ui/聪明.png" id="2_t3r8t"]
+[ext_resource type="Texture2D" uid="uid://bmrkrr7e86k7a" path="res://素材/ui/界面ui/健壮.png" id="3_setff"]
 [ext_resource type="Texture2D" uid="uid://b3ev0ilfu6bb5" path="res://素材/ui/稀有标签/rarity_0.png" id="3_yukv0"]
 [ext_resource type="Texture2D" uid="uid://c4yunnsxr58kl" path="res://素材/ui/界面ui/smallinspectionframe.png" id="4_4s1xq"]
 [ext_resource type="Texture2D" uid="uid://cov63gqkfb3l7" path="res://素材/ui/界面ui/frame_circle_grass.png" id="5_8r7al"]
@@ -10,10 +10,15 @@
 [ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="7_cnftl"]
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="8_m1m2k"]
 [ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="9_iot5e"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://6damiheggxsu" path="res://数据资源/属性动画/攻击动画.tres" id="11_vxs5b"]
+[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="11_setff"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="12_setff"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://dh6k1ymw5ypju" path="res://数据资源/属性动画/血量动画.tres" id="13_fad38"]
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="13_vxs5b"]
+[ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="13_xr0wq"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://xhjd3hi3vww0" path="res://数据资源/属性动画/等级动画.tres" id="14_ts65j"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vxs5b"]
+atlas = ExtResource("13_xr0wq")
+region = Rect2(508.18198, 335.30182, 284.61368, 506.2005)
 
 [node name="卡牌界面" type="Control" unique_id=888145101]
 layout_mode = 3
@@ -34,6 +39,7 @@ scale = Vector2(0.6, 0.6)
 
 [node name="左背景" type="TextureRect" parent="背景" unique_id=768489596]
 unique_name_in_owner = true
+modulate = Color(0.94509804, 0.5803922, 0.03529412, 1)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -71,14 +77,14 @@ offset_right = 340.0
 offset_bottom = -300.0
 scale = Vector2(1.3, 1.3)
 mouse_filter = 2
-texture = ExtResource("2_t3r8t")
+texture = ExtResource("3_setff")
 
 [node name="稀有标签" type="Sprite2D" parent="." unique_id=1521024813]
 unique_name_in_owner = true
 position = Vector2(0, 200)
 texture = ExtResource("3_yukv0")
 
-[node name="稀有标签label" type="Label" parent="." unique_id=1844954416]
+[node name="稀有标签Label" type="Label" parent="." unique_id=1844954416]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = -255.0
@@ -213,25 +219,34 @@ z_index = 34
 position = Vector2(0, -192.00003)
 scale = Vector2(0.3, 0.3)
 
-[node name="伤害" type="SpineSprite" parent="基础信息" unique_id=179524870]
-skeleton_data_res = ExtResource("11_vxs5b")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
+[node name="伤害" type="TextureRect" parent="基础信息" unique_id=1199868725]
 unique_name_in_owner = true
-position = Vector2(-185, 1)
+offset_left = -379.99997
+offset_top = -166.66658
+offset_right = -283.33328
+offset_bottom = -76.66658
+scale = Vector2(4, 4)
+mouse_filter = 2
+texture = ExtResource("11_setff")
+expand_mode = 1
 
-[node name="伤害数值" type="Label" parent="基础信息/伤害" unique_id=643864004]
+[node name="伤害数值" type="Label" parent="基础信息" unique_id=643864004]
 unique_name_in_owner = true
-offset_left = -112.222244
-offset_top = -114.44445
-offset_right = 108.777756
-offset_bottom = 107.55555
+anchors_preset = -1
+anchor_left = 1.341379
+anchor_top = 1.3999999
+anchor_right = -0.38620678
+anchor_bottom = -0.37777779
+offset_left = -306.66672
+offset_top = -99.99988
+offset_right = -85.66672
+offset_bottom = 122.00012
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 16
-theme_override_constants/shadow_offset_y = 16
-theme_override_constants/outline_size = 8
+theme_override_constants/shadow_offset_x = 12
+theme_override_constants/shadow_offset_y = 12
+theme_override_constants/outline_size = 36
 theme_override_constants/shadow_outline_size = 5
 theme_override_fonts/font = ExtResource("12_setff")
 theme_override_font_sizes/font_size = 200
@@ -240,34 +255,59 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="血量" type="SpineSprite" parent="基础信息" unique_id=1888262854]
-skeleton_data_res = ExtResource("13_fad38")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
+[node name="攻击力特效" type="TextureRect" parent="基础信息" unique_id=175033825]
 unique_name_in_owner = true
-show_behind_parent = true
-z_index = 2
-position = Vector2(187, 0)
-scale = Vector2(0.99999994, 0.99999994)
+offset_left = -376.6667
+offset_top = -356.66653
+offset_right = -58.01361
+offset_bottom = 149.33347
+rotation = 1.5707964
+scale = Vector2(0.7, 0.7)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = SubResource("AtlasTexture_vxs5b")
+stretch_mode = 2
 
-[node name="血量数值" type="Label" parent="基础信息/血量" unique_id=871496818]
+[node name="血量" type="TextureRect" parent="基础信息" unique_id=1573850398]
 unique_name_in_owner = true
-offset_left = -95.55556
-offset_top = -121.111115
-offset_right = 94.44444
-offset_bottom = 100.888885
+offset_left = 6.6666718
+offset_top = -133.33328
+offset_right = 94.186264
+offset_bottom = -54.333282
+scale = Vector2(4, 4)
+mouse_filter = 2
+texture = ExtResource("13_vxs5b")
+expand_mode = 1
+
+[node name="血量数值" type="Label" parent="基础信息" unique_id=871496818]
+unique_name_in_owner = true
+offset_left = 83.333336
+offset_top = -96.66659
+offset_right = 273.33334
+offset_bottom = 125.33341
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 16
-theme_override_constants/shadow_offset_y = 16
-theme_override_constants/outline_size = 8
+theme_override_constants/shadow_offset_x = 12
+theme_override_constants/shadow_offset_y = 12
+theme_override_constants/outline_size = 36
 theme_override_constants/shadow_outline_size = 5
 theme_override_fonts/font = ExtResource("12_setff")
 theme_override_font_sizes/font_size = 200
 text = "321"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="生命值特效" type="TextureRect" parent="基础信息" unique_id=1659034884]
+unique_name_in_owner = true
+offset_left = -3.333397
+offset_top = -356.6665
+offset_right = 315.31967
+offset_bottom = 149.3335
+rotation = 1.5707964
+scale = Vector2(0.7, 0.7)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = SubResource("AtlasTexture_vxs5b")
+stretch_mode = 2
 
 [node name="等级" type="SpineSprite" parent="基础信息" unique_id=1685866777]
 skeleton_data_res = ExtResource("14_ts65j")
@@ -280,7 +320,8 @@ z_index = 3
 position = Vector2(-0.444458, 98.66669)
 scale = Vector2(0.7, 0.7)
 
-[node name="底版" type="ColorRect" parent="." unique_id=1495908590]
+[node name="底色" type="ColorRect" parent="." unique_id=1495908590]
+unique_name_in_owner = true
 modulate = Color(0, 0, 0, 0.28627452)
 z_index = -20
 layout_mode = 1

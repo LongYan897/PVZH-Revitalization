@@ -15,5 +15,8 @@ public partial class Main : Node2D
         HpType.Init();
         AtkType.Init();
         //
+        CardModel card = CardModel.Load<Peashooter>();
+        card.Status = Status.FaceUp;
+        NodeCard.DrawACard(this, card, new(0, 0));
     }
 }
