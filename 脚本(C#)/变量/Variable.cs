@@ -74,7 +74,7 @@ public class Variable<T> : IVariable
         int index = _history.Count;
         if (typeof(T).IsClass && typeof(T) != typeof(string) && before != null)
         {
-            if (typeof(T).IsSubclassOf(typeof(CardModel)))
+            if (typeof(T).IsSubclassOf(typeof(CardModel)) || typeof(T) == typeof(CardModel))
             {
                 var clone = typeof(object).GetMethod("Clone", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
                 object rawCardClone = clone.Invoke(before, null);
