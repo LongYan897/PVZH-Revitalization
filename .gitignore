@@ -33,3 +33,4 @@ Thumbs.db
 # C# 项目用户配置
 *.csproj.user
 *.sln.docstates
+/.vs
