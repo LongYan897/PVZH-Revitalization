@@ -1,3 +1,4 @@
+using Card;
 using Logger;
 using System;
 using System.Collections.Generic;
@@ -73,6 +74,13 @@ public class Variable<T> : IVariable
         int index = _history.Count;
         if (typeof(T).IsClass && typeof(T) != typeof(string) && before != null)
         {
+            if (typeof(T).IsSubclassOf(typeof(CardModel)))
+            {
+                var clone = typeof(object).GetMethod("Clone", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                object rawCardClone = clone.Invoke(before, null);
+                _history.Add(new VariableHistory(index, (T)rawCardClone, after, reason));
+                return index;
+            }
             var method = typeof(object).GetMethod("MemberwiseClone", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             object rawClone = method.Invoke(before, null);
             _history.Add(new VariableHistory(index, (T)rawClone, after, reason));
