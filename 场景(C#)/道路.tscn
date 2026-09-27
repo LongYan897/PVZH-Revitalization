@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://dklertu5xn7l"]
+
+[ext_resource type="Script" uid="uid://d0fiwqlc5ur5k" path="res://脚本(C#)/战斗相关/道路/NodeRoad.cs" id="1_ewqbq"]
+[ext_resource type="Texture2D" uid="uid://mt3i5jc608yf" path="res://素材/地图/迪斯科/BGDisco_lane1.png" id="1_x76yt"]
+[ext_resource type="Texture2D" uid="uid://cimvexb4n4idx" path="res://素材/ui/地图高亮/选择框3.png" id="3_x76yt"]
+[ext_resource type="Texture2D" uid="uid://d4ihrs2s4rf4q" path="res://素材/对象高亮框/单位.png" id="4_ewqbq"]
+[ext_resource type="Texture2D" uid="uid://weos2ou5dc6" path="res://素材(C#)/场地/coffee_lane_base.png" id="4_qclkx"]
+
+[node name="道路" type="Node2D" unique_id=942116151]
+script = ExtResource("1_ewqbq")
+metadata/_custom_type_script = "uid://d0fiwqlc5ur5k"
+
+[node name="碰撞" type="Button" parent="." unique_id=1867943672]
+offset_left = -50.999996
+offset_top = -269.0
+offset_right = 51.000004
+offset_bottom = 221.0
+
+[node name="图标" type="Sprite2D" parent="." unique_id=1560511930]
+unique_name_in_owner = true
+texture = ExtResource("1_x76yt")
+
+[node name="环境" type="TextureRect" parent="." unique_id=1090838795]
+unique_name_in_owner = true
+visible = false
+offset_left = -80.0
+offset_top = -297.0
+offset_right = 79.0
+offset_bottom = 256.0
+mouse_filter = 2
+texture = ExtResource("4_qclkx")
+expand_mode = 1
+
+[node name="环境高亮" type="Sprite2D" parent="." unique_id=381365032]
+unique_name_in_owner = true
+visible = false
+modulate = Color(0.46666667, 0.81960785, 0.54901963, 1)
+position = Vector2(0, -24)
+scale = Vector2(0.33, 0.33)
+texture = ExtResource("3_x76yt")
+
+[node name="单位高亮" type="TextureRect" parent="." unique_id=1842500548]
+unique_name_in_owner = true
+visible = false
+z_index = 7
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.0
+offset_top = 116.0
+offset_right = 55.0
+offset_bottom = 212.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.0000001, 1.0000001)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("4_ewqbq")
+expand_mode = 1

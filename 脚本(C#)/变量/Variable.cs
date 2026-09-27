@@ -115,9 +115,9 @@ public class Variable<T> : IVariable
     /// <param name="value">要设置的值</param>
     /// <param name="reason">设置的原因</param>
     /// <returns>返回历史时期的顺序</returns>
-    public int Set(object value, VariableReason reason)
+    public virtual int Set(object value, VariableReason reason)
     {
-        return Set(value, reason);
+        return Set((T)value, reason);
     }
     /// <summary>
     /// 设置该变量的值
@@ -125,7 +125,7 @@ public class Variable<T> : IVariable
     /// <param name="value">要设置的值</param>
     /// <param name="reason">设置的原因</param>
     /// <returns>返回历史时期的顺序</returns>
-    public int Set(T value,VariableReason reason)
+    public virtual int Set(T value,VariableReason reason)
     {
         int index = Record(Current,value, reason);
         Current = value;
@@ -140,12 +140,20 @@ public class Variable<T> : IVariable
         Current = Base;
     }
     /// <summary>
+    /// 重置变量并且删除所有历史
+    /// </summary>
+    public void Abandon()
+    {
+        _history.Clear();
+        Current = Base;
+    }
+    /// <summary>
     /// 重置变量的值为某个历史时期的值 即回退(!!!回退会清除指定历史时期之后的历史)
     /// </summary>
     /// <param name="Index">对应时期的顺序 从0开始</param>
-    public void Rewind(int Index)
+    public virtual void Rewind(int Index)
     {
-        if (Index >= _history.Count)
+        if (Index >= _history.Count || Index < 0)
         {
             Log.Error($"Index : {Index} 已经大于该变量修改的历史总数 找不到对应的历史");
             return;
@@ -158,7 +166,7 @@ public class Variable<T> : IVariable
     /// <summary>
     /// 回退到最晚历史时期
     /// </summary>
-    public void Rewind()
+    public virtual void Rewind()
     {
         Rewind(_history.Count - 1);
     }
@@ -167,9 +175,9 @@ public class Variable<T> : IVariable
     /// </summary>
     /// <param name="Index">对应时期的顺序 从0开始</param>
     /// <param name="reason">回退的原因</param>
-    public void RewindReasonable(int Index,VariableReason reason)
+    public virtual void RewindReasonable(int Index,VariableReason reason)
     {
-        if (Index >= _history.Count)
+        if (Index >= _history.Count || Index < 0)
         {
             Log.Error($"Index : {Index} 已经大于该变量修改的历史总数 找不到对应的历史");
             return;
@@ -183,7 +191,7 @@ public class Variable<T> : IVariable
     /// 回退到最晚历史时期但是不会删除历史记录
     /// </summary>
     /// <param name="reason">回退的原因</param>
-    public void RewindReasonable(VariableReason reason)
+    public virtual void RewindReasonable(VariableReason reason)
     {
         RewindReasonable(_history.Count - 1, reason);
     }
