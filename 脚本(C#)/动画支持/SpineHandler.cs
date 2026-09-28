@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Diagnostics;
 
 namespace Spine;
 
@@ -62,4 +63,14 @@ public partial class SpineHandler : Node2D
 			OnSpineAnimEvent?.Invoke(evt);
 		}));
 	}
+    public void ClearTrack(int track)
+    {
+        if (_spineSprite == null) return;
+        _spineSprite.Call("clear_track",track);
+    }
+	public void ClearTracks()
+	{
+        if (_spineSprite == null) return;
+        _spineSprite.Call("clear_tracks");
+    }
 }

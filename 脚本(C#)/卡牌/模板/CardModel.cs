@@ -51,6 +51,7 @@ public class CardModel
         card.Camp = cardString.Camp;
         card.CardType = cardString.CardType;
         card.Pack = cardString.Pack;
+        card.AnimationPath = cardString.AnimationPath;
         card.Labels = new Variable<List<string>>("Labels",cardString.Labels);
         return (T)card.LoadData(cardString);
     }
@@ -79,6 +80,10 @@ public class CardModel
     /// 卡牌的卡包
     /// </summary>
     public string Pack { get; private set; }
+    /// <summary>
+    /// 卡牌的动画路径
+    /// </summary>
+    public string AnimationPath { get; private set; }
     /// <summary>
     /// 卡牌的稀有度
     /// </summary>

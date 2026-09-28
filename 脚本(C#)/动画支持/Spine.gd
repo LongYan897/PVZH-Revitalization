@@ -20,3 +20,9 @@ func _on_animation_event(evt):
 
 func _ready():
 	connect("animation_event", _on_animation_event)
+
+func clear_track(track:int):
+	get_animation_state().clear_track(track)
+
+func clear_tracks():
+	get_animation_state().clear_tracks()

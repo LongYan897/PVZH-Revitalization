@@ -22,6 +22,7 @@ namespace Card.String;
 ///     卡包[可选] : 使用 "Pack" 当作Json的键 如果是基础卡默认是 "基础-常见"<br/>
 ///     阵营 : 使用 "Camp" 当作Json的键<br/>
 ///     特别描述 : 使用 "Flavor" 当作Json的键<br/>
+///     动画 : 使用 "Animation" 当作Json的键<br/>
 ///     描述  : 使用 "Description" 或 "Des"<br/>
 ///     <br/>
 ///     ***<br/>
@@ -46,6 +47,7 @@ namespace Card.String;
 ///         "Peashooter.Type": "单位" （关于英雄的可以写成"单位;英雄"）<br/>
 ///         "Peashooter.AtkType": "普通",<br/>
 ///         "Peashooter.HpType": "普通"<br/>
+///         "Peashooter.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres"<br/>
 ///     }<br/>
 ///     *********
 /// </summary>
@@ -63,6 +65,11 @@ public class CardString
     /// 卡包
     /// </summary>
     public string Pack {  get; private set; }
+
+    /// <summary>
+    /// 动画路径
+    /// </summary>
+    public string AnimationPath { get; private set; }
     /// <summary>
     /// 血量
     /// </summary>
@@ -150,6 +157,10 @@ public class CardString
         if (GetData(cardTitle, "Pack").VariantType != Variant.Type.Nil)
         {
             cardString.Pack = GetData(cardTitle, "Pack").AsString() + "-";
+        }
+        if (GetData(cardTitle, "Animation").VariantType != Variant.Type.Nil)
+        {
+            cardString.AnimationPath = GetData(cardTitle, "Animation").AsString();
         }
         if (GetData(cardTitle, "Camp").VariantType != Variant.Type.Nil)
         {

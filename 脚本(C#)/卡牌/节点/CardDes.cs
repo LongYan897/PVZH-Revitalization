@@ -82,6 +82,8 @@ public partial class CardDes : Control
         GetNode<Control>("%单位容器").ZIndex = 12;
         GetNode<Control>("%单位容器").Position = new(0f, -335f);
         GetNode<Control>("%单位容器").TopLevel = false;
+        var sprite = GetNode<SpineHandler>("%动画");
+        sprite.ClearTrack(0);
         _tween = CreateTween();
         _tween.SetTrans(Tween.TransitionType.Back);
         _tween.SetEase(Tween.EaseType.In);
@@ -296,7 +298,7 @@ public partial class CardDes : Control
                 _ => new(511.0f, 75.0f)
             };
             var sprite = GetNode<SpineHandler>("%动画");
-            sprite.LoadSkeletonData("res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres");
+            sprite.LoadSkeletonData(Model.AnimationPath);
             sprite.SetAnimation(0, "intro", false);
             sprite.AddAnimation(0,"idle",true);
         }
