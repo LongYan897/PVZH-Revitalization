@@ -4,6 +4,7 @@
   "Peashooter.Hp": 1,
   "Peashooter.Atk": 1,
   "Peashooter.Cost": 1,
+  "Peashooter.Description": "_打出_：_额外攻击_一次",
   "Peashooter.Rarity": "基础",
   "Peashooter.Label": [ "豌豆" ],
   "Peashooter.Category": "猛长",

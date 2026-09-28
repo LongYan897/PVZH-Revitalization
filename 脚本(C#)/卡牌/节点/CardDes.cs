@@ -2,6 +2,7 @@
 using Battle.Entity;
 using Godot;
 using Pack;
+using System.Text.RegularExpressions;
 using Target;
 using static Godot.OpenXRCompositionLayer;
 
@@ -123,7 +124,11 @@ public partial class CardDes : Control
             cost.Text = $"{Model.Cost.Current}";
             GetNode<Sprite2D>("%花费数值").Texture = Model.CampCostIcon;
             GetNode<Label>("%名字").Text = Model.Title;
-            GetNode<RichTextLabel>("%介绍Label").Text = Model.Description ?? "";
+            GetNode<RichTextLabel>("%介绍Label").Text = Regex.Replace(Model.Description ?? "", @"_([^_]+)_", m =>
+            {
+                string inner = m.Groups[1].Value;
+                return $"[color=#44ffff][url={inner}]{inner}[/url][/color]";
+            });
             GetNode<RichTextLabel>("%故事标签").Text = Model.Flavor;
             if (Model.Cost.HasChanged)
             {
@@ -176,7 +181,10 @@ public partial class CardDes : Control
                 Camp.Zombie => "僵尸",
                 _ => "???"
             } + string.Join(" ",Model.Labels.Current);
-            GetNode<Label>("%稀有标签Label").Text = Model.Pack ?? "基础" + "-" + Model.Rarity switch 
+            GetNode<Label>("%稀有标签Label").Text = Model.Pack ?? Model.Rarity switch {
+                Rarity.Token => "",
+                _ => "基础"
+                } + "-" + Model.Rarity switch 
             {
                 Rarity.Basic => "常见",
                 Rarity.Common => "常见",
@@ -244,6 +252,18 @@ public partial class CardDes : Control
                 Class.Crazy => GD.Load<Texture2D>("res://素材/ui/界面ui/疯狂.png"),
                 Class.Hearty => GD.Load<Texture2D>("res://素材/ui/界面ui/健壮.png"),
                 _ => GD.Load<Texture2D>("res://素材/ui/界面ui/聪明.png")
+            };
+            GetNode<Sprite2D>("%稀有标签").Texture = Model.Rarity switch
+            {
+                Rarity.Basic => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
+                Rarity.Common => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
+                Rarity.Uncommon => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_1.png"),
+                Rarity.Rare => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_2.png"),
+                Rarity.SuperRare => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_3.png"),
+                Rarity.Legend => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_4.png"),
+                Rarity.Activity => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_E.png"),
+                Rarity.Token => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
+                _ => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png")
             };
         }
     }

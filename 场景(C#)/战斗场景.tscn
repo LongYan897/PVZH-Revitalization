@@ -9,8 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://ckxhau2bavsol" path="res://素材/地图/迪斯科/迪斯科底部.png" id="7_pqs4j"]
 [ext_resource type="PackedScene" uid="uid://bc17uv4uspu85" path="res://场景/UI对象/轮盘按钮.tscn" id="13_nlif2"]
 [ext_resource type="PackedScene" uid="uid://xkwxsfn1wk4x" path="res://场景/UI对象/玩家显示阳光脑子.tscn" id="14_eku8x"]
-[ext_resource type="PackedScene" uid="uid://dbko58bnriyko" path="res://场景/英雄/英雄通用模板.tscn" id="15_61bft"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://cbia30g4r5efx" path="res://素材/英雄素材/超尸/超尸.tres" id="16_n838h"]
 [ext_resource type="PackedScene" uid="uid://c5h40kyhmmcp5" path="res://场景/UI对象/护盾.tscn" id="17_ttxd2"]
 [ext_resource type="PackedScene" uid="uid://dk5iqnymyusuv" path="res://场景/UI对象/设置按钮.tscn" id="18_tsqrd"]
 
@@ -55,18 +53,6 @@ z_index = 10
 [node name="玩家显示阳光脑子2" parent="." unique_id=2145284189 instance=ExtResource("14_eku8x")]
 z_index = 10
 team = 1
-
-[node name="英雄通用模板" parent="." unique_id=257512772 instance=ExtResource("15_61bft")]
-position = Vector2(360, 939.00006)
-dataResource = ExtResource("16_n838h")
-size = Vector2(0.3, 0.3)
-specialTrack = 1
-
-[node name="英雄通用模板2" parent="." unique_id=247595755 instance=ExtResource("15_61bft")]
-z_index = 7
-position = Vector2(360, 938.60004)
-scale = Vector2(0.040000003, 0.040000003)
-type = 0
 
 [node name="护盾" parent="." unique_id=1287237271 instance=ExtResource("17_ttxd2")]
 z_index = 10

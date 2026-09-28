@@ -151,6 +151,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 6
 theme_override_fonts/normal_font = ExtResource("6_icp5t")
 theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
 text = "什么都没有
 
 "
@@ -233,8 +234,8 @@ expand_mode = 1
 [node name="伤害数值" type="Label" parent="基础信息" unique_id=643864004]
 unique_name_in_owner = true
 anchors_preset = -1
-anchor_left = 1.341379
-anchor_top = 1.3999999
+anchor_left = -0.38620678
+anchor_top = -0.37777779
 anchor_right = -0.38620678
 anchor_bottom = -0.37777779
 offset_left = -306.66672
