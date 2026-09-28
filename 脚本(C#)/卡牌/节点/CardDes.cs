@@ -2,6 +2,7 @@
 using Battle.Entity;
 using Godot;
 using Pack;
+using Spine;
 using System.Text.RegularExpressions;
 using Target;
 using static Godot.OpenXRCompositionLayer;
@@ -23,7 +24,7 @@ public partial class CardDes : Control
     /// <param name="parent"></param>
     /// <param name="card"></param>
     /// <returns></returns>
-    public static CardDes DisplayDescription(Node parent, CardModel card)
+    public static void DisplayDescription(Node parent, CardModel card)
     {
         if (instance == null)
         {
@@ -34,10 +35,10 @@ public partial class CardDes : Control
             des.Fresh();
             des.ZIndex = 1024;
             instance = des;
-            return des;
         }
         else
         {
+            if (instance.Visible == true) return;
             instance.Model = card;
             if (parent != instance.GetParent())
             {
@@ -47,7 +48,6 @@ public partial class CardDes : Control
             instance.Visible = true;
             instance.Open();
             instance.Fresh();
-            return instance;
         }
     }
     private Tween _tween;
@@ -58,6 +58,9 @@ public partial class CardDes : Control
     private void Open()
     {
         _isEnd = false;
+        GetNode<Control>("%单位容器").ZIndex = 1036;
+        GetNode<Control>("%单位容器").Position = new(360f,305f);
+        GetNode<Control>("%单位容器").TopLevel = true;
         GetNode<ColorRect>("%底色").MouseFilter = MouseFilterEnum.Stop;
         Scale = Vector2.Zero;
         GetNode<ColorRect>("%底色").Modulate = new Color(0, 0, 0, 0);
@@ -76,6 +79,9 @@ public partial class CardDes : Control
         {
             _tween.Kill();
         }
+        GetNode<Control>("%单位容器").ZIndex = 12;
+        GetNode<Control>("%单位容器").Position = new(0f, -335f);
+        GetNode<Control>("%单位容器").TopLevel = false;
         _tween = CreateTween();
         _tween.SetTrans(Tween.TransitionType.Back);
         _tween.SetEase(Tween.EaseType.In);
@@ -116,7 +122,7 @@ public partial class CardDes : Control
     }
 
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
-    private void Fresh()
+    private async void Fresh()
     {
         if (Model != null)
         {
@@ -181,10 +187,18 @@ public partial class CardDes : Control
                 Camp.Zombie => "僵尸",
                 _ => "???"
             } + string.Join(" ",Model.Labels.Current);
-            GetNode<Label>("%稀有标签Label").Text = Model.Pack ?? Model.Rarity switch {
-                Rarity.Token => "",
-                _ => "基础"
-                } + "-" + Model.Rarity switch 
+
+            GetNode<Label>("%稀有标签Label").Text = (Model.Pack ?? Model.Rarity switch {
+                Rarity.Token => null,
+                _ => Model.CardType switch
+                {
+                    CardType.Hero | CardType.Fighter => null,
+                    CardType.Hero | CardType.Environment => null,
+                    CardType.Hero | CardType.Trick => null,
+                    _ => "基础-"
+                }
+                })
+            + Model.Rarity switch 
             {
                 Rarity.Basic => "常见",
                 Rarity.Common => "常见",
@@ -197,7 +211,7 @@ public partial class CardDes : Control
                 _ => "令牌"
             };
 
-            GetNode<Sprite2D>("%单位框").Modulate = Model.Class switch
+            GetNode<Sprite2D>("%单位框").SelfModulate = Model.Class switch
             {
                 Class.Smarty => new Color("ffffff"),
                 Class.Solar => new Color("f5c728"),
@@ -253,7 +267,7 @@ public partial class CardDes : Control
                 Class.Hearty => GD.Load<Texture2D>("res://素材/ui/界面ui/健壮.png"),
                 _ => GD.Load<Texture2D>("res://素材/ui/界面ui/聪明.png")
             };
-            GetNode<Sprite2D>("%稀有标签").Texture = Model.Rarity switch
+            GetNode<TextureRect>("%稀有标签").Texture = Model.Rarity switch
             {
                 Rarity.Basic => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
                 Rarity.Common => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
@@ -265,6 +279,26 @@ public partial class CardDes : Control
                 Rarity.Token => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
                 _ => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png")
             };
+            GetNode<TextureRect>("%稀有标签").Position = Model.Rarity switch
+            {
+                Rarity.Rare => new(-274.0f,163.0f),
+                Rarity.SuperRare => new(-290.0f, 144.0f),
+                Rarity.Legend => new(-303.0f, 164.0f),
+                Rarity.Activity => new(-290.0f,97.0f),
+                _ => new(-255.5f, 163.0f)
+            };
+            GetNode<TextureRect>("%稀有标签").Size = Model.Rarity switch
+            {
+                Rarity.Rare => new(551.0f, 109.0f),
+                Rarity.SuperRare => new(580.0f, 149.0f),
+                Rarity.Legend => new(606.0f, 164.0f),
+                Rarity.Activity => new(580.0f, 187.0f),
+                _ => new(511.0f, 75.0f)
+            };
+            var sprite = GetNode<SpineHandler>("%动画");
+            sprite.LoadSkeletonData("res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres");
+            sprite.SetAnimation(0, "intro", false);
+            sprite.AddAnimation(0,"idle",true);
         }
     }
 }

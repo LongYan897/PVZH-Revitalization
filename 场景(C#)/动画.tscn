@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://2sf8a4wv46c8"]
+
+[ext_resource type="SpineSkeletonDataResource" uid="uid://wnyo1ea45qg1" path="res://数据资源/植物动画/豌豆射手植物动画.tres" id="1_4nk0g"]
+[ext_resource type="Script" uid="uid://dgww10u3pg76i" path="res://脚本(C#)/动画支持/SpineHandler.cs" id="1_8y1ha"]
+[ext_resource type="Script" uid="uid://kh0wp3c6pr4f" path="res://脚本(C#)/动画支持/Spine.gd" id="1_xai57"]
+
+[node name="动画" type="Node2D" unique_id=922182681]
+script = ExtResource("1_8y1ha")
+metadata/_custom_type_script = "uid://dgww10u3pg76i"
+
+[node name="Spine" type="SpineSprite" parent="." unique_id=273388558]
+skeleton_data_res = ExtResource("1_4nk0g")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+script = ExtResource("1_xai57")

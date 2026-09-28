@@ -5,11 +5,12 @@
   "Peashooter.Atk": 1,
   "Peashooter.Cost": 1,
   "Peashooter.Description": "_打出_：_额外攻击_一次",
-  "Peashooter.Rarity": "基础",
+  "Peashooter.Rarity": "活动",
   "Peashooter.Label": [ "豌豆" ],
   "Peashooter.Category": "猛长",
   "Peashooter.Camp": "植物",
-  "Peashooter.Type": "单位",
+  "Peashooter.Type": "环境",
   "Peashooter.AtkType": "普通",
-  "Peashooter.HpType": "普通"
+  "Peashooter.HpType": "普通",
+  "Peashooter.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres"
 }

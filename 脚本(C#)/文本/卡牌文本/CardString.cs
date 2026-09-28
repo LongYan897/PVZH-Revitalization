@@ -43,7 +43,7 @@ namespace Card.String;
 ///         "Peashooter.Label": ["豌豆"],<br/>
 ///         "Peashooter.Category": "MegaGrow" (改成中文的"猛长"也可以)<br/>
 ///         "Peashooter.Camp": "植物"<br/>
-///         "Peashooter.Type": "单位" （关于英雄的可以写成"单位:英雄"）<br/>
+///         "Peashooter.Type": "单位" （关于英雄的可以写成"单位;英雄"）<br/>
 ///         "Peashooter.AtkType": "普通",<br/>
 ///         "Peashooter.HpType": "普通"<br/>
 ///     }<br/>
@@ -149,7 +149,7 @@ public class CardString
         }
         if (GetData(cardTitle, "Pack").VariantType != Variant.Type.Nil)
         {
-            cardString.Pack = GetData(cardTitle, "Pack").AsString();
+            cardString.Pack = GetData(cardTitle, "Pack").AsString() + "-";
         }
         if (GetData(cardTitle, "Camp").VariantType != Variant.Type.Nil)
         {
