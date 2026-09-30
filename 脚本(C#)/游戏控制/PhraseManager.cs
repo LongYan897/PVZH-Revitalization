@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Phrase;
+namespace Phrases;
 
 public enum Phrase
 {

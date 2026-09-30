@@ -147,6 +147,10 @@ public class Variable<T> : IVariable
         Record(Current, Base, VariableReason.Reset);
         Current = Base;
     }
+    public List<VariableHistory> GetHistory()
+    {
+        return [.. _history];
+    }
     /// <summary>
     /// 重置变量并且删除所有历史
     /// </summary>

@@ -9,13 +9,24 @@
 [ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="6_icp5t"]
 [ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="7_cnftl"]
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="8_m1m2k"]
-[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="9_iot5e"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="10_fad38"]
+[ext_resource type="FontFile" uid="uid://hsayw12ab5vm" path="res://素材/字体/CAFR____.ttf" id="11_fad38"]
 [ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="11_setff"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="12_setff"]
 [ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="13_vxs5b"]
 [ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="13_xr0wq"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://xhjd3hi3vww0" path="res://数据资源/属性动画/等级动画.tres" id="14_ts65j"]
+[ext_resource type="Script" uid="uid://dpy81oq8meuvd" path="res://脚本(C#)/辅助类/IconComposer.cs" id="17_ts65j"]
+
+[sub_resource type="FontVariation" id="FontVariation_qosmd"]
+base_font = ExtResource("6_icp5t")
+
+[sub_resource type="FontVariation" id="FontVariation_voqjy"]
+base_font = ExtResource("6_icp5t")
+
+[sub_resource type="FontVariation" id="FontVariation_fad38"]
+base_font = ExtResource("11_fad38")
+variation_transform = Transform2D(1, 0.4, 0, 1, 0, 0)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vxs5b"]
 atlas = ExtResource("13_xr0wq")
@@ -114,16 +125,17 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = -263.0
-offset_top = -140.0
+offset_top = -150.0
 offset_right = 262.0
-offset_bottom = -70.0
+offset_bottom = -80.0
 theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
 theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 38
-text = "XXX"
+theme_override_fonts/font = SubResource("FontVariation_qosmd")
+theme_override_font_sizes/font_size = 42
+text = "豌豆射手"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -131,17 +143,37 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = -263.0
-offset_top = -98.0
+offset_top = -101.0
 offset_right = 262.0
-offset_bottom = -28.0
+offset_bottom = -31.0
 theme_override_colors/font_color = Color(0.69135684, 0.6913568, 0.69135684, 1)
 theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
 theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = SubResource("FontVariation_voqjy")
+theme_override_font_sizes/font_size = 26
 text = "XX"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="额外标签" type="Label" parent="." unique_id=949679412]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -263.0
+offset_top = 64.0
+offset_right = 262.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0.51, 0.68149996, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = SubResource("FontVariation_voqjy")
+theme_override_font_sizes/font_size = 24
+text = "由变形器变形而来"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -149,9 +181,9 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = -216.0
-offset_top = -39.0
+offset_top = -50.0
 offset_right = 213.0
-offset_bottom = 221.0
+offset_bottom = 76.0
 pivot_offset_ratio = Vector2(0.5, 0)
 theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
 theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
@@ -159,17 +191,17 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 6
 theme_override_fonts/normal_font = ExtResource("6_icp5t")
-theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
 text = "什么都没有
-
-"
+使用[img=36]res://素材(C#)/文本图片/inhnd_brains.png[/img]而非"
 horizontal_alignment = 1
 
 [node name="花费数值" type="Sprite2D" parent="." unique_id=2012160516]
 unique_name_in_owner = true
 z_index = 12
-position = Vector2(115, -407)
+position = Vector2(121, -371.00003)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("7_cnftl")
 
 [node name="花费数值Label" type="Label" parent="花费数值" unique_id=821321464]
@@ -193,6 +225,7 @@ z_index = 22
 anchors_preset = 0
 offset_top = -335.0
 offset_bottom = -335.0
+scale = Vector2(0.8, 0.8)
 
 [node name="动画" parent="单位容器" unique_id=167055946 instance=ExtResource("10_fad38")]
 unique_name_in_owner = true
@@ -202,7 +235,7 @@ position = Vector2(0, 143.33333)
 unique_name_in_owner = true
 z_index = 10
 position = Vector2(0, -280)
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("4_4s1xq")
 
 [node name="底版" type="Sprite2D" parent="单位框" unique_id=1595920760]
@@ -213,20 +246,24 @@ texture = ExtResource("5_8r7al")
 [node name="故事标签" type="RichTextLabel" parent="." unique_id=1037280863]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = -217.0
-offset_top = 246.0
-offset_right = 212.0
-offset_bottom = 506.0
+offset_left = -360.0
+offset_top = 316.0
+offset_right = 360.0
+offset_bottom = 576.0
 pivot_offset_ratio = Vector2(0.5, 0)
-theme_override_colors/default_color = Color(0.7350987, 0.73509866, 0.73509866, 1)
+theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 5
-theme_override_fonts/normal_font = ExtResource("9_iot5e")
-theme_override_font_sizes/normal_font_size = 32
-text = "神秘小故事
+theme_override_fonts/normal_font = SubResource("FontVariation_fad38")
+theme_override_font_sizes/normal_font_size = 38
+theme_override_font_sizes/bold_italics_font_size = 38
+theme_override_font_sizes/italics_font_size = 38
+theme_override_font_sizes/mono_font_size = 38
+bbcode_enabled = true
+text = "个子越高，摔得越疼。
 "
 horizontal_alignment = 1
 
@@ -238,11 +275,11 @@ scale = Vector2(0.3, 0.3)
 
 [node name="伤害" type="TextureRect" parent="基础信息" unique_id=1199868725]
 unique_name_in_owner = true
-offset_left = -379.99997
-offset_top = -166.66658
-offset_right = -283.33328
-offset_bottom = -76.66658
-scale = Vector2(4, 4)
+offset_left = -276.66666
+offset_top = -119.99992
+offset_right = -179.99997
+offset_bottom = -29.999924
+scale = Vector2(3, 3)
 mouse_filter = 2
 texture = ExtResource("11_setff")
 expand_mode = 1
@@ -254,19 +291,19 @@ anchor_left = -0.38620678
 anchor_top = -0.37777779
 anchor_right = -0.38620678
 anchor_bottom = -0.37777779
-offset_left = -293.33337
-offset_top = -109.99984
-offset_right = -72.333374
-offset_bottom = 140.00015
+offset_left = -240.00005
+offset_top = -116.666504
+offset_right = -19.000046
+offset_bottom = 133.3335
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 12
+theme_override_constants/shadow_offset_x = 20
+theme_override_constants/shadow_offset_y = 24
 theme_override_constants/outline_size = 36
 theme_override_constants/shadow_outline_size = 5
 theme_override_fonts/font = ExtResource("12_setff")
-theme_override_font_sizes/font_size = 225
+theme_override_font_sizes/font_size = 200
 text = "123"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -274,12 +311,12 @@ metadata/_edit_use_anchors_ = true
 
 [node name="攻击力特效" type="TextureRect" parent="基础信息" unique_id=175033825]
 unique_name_in_owner = true
-offset_left = -376.6667
-offset_top = -356.66653
-offset_right = -58.01361
-offset_bottom = 149.33347
+offset_left = -313.33334
+offset_top = -313.3331
+offset_right = 5.3197327
+offset_bottom = 192.6669
 rotation = 1.5707964
-scale = Vector2(0.7, 0.7)
+scale = Vector2(0.6, 0.6)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 texture = SubResource("AtlasTexture_vxs5b")
@@ -288,40 +325,40 @@ stretch_mode = 2
 [node name="血量" type="TextureRect" parent="基础信息" unique_id=1573850398]
 unique_name_in_owner = true
 offset_left = 6.6666718
-offset_top = -133.33328
+offset_top = -93.33328
 offset_right = 94.186264
-offset_bottom = -54.333282
-scale = Vector2(4, 4)
+offset_bottom = -14.333282
+scale = Vector2(3, 3)
 mouse_filter = 2
 texture = ExtResource("13_vxs5b")
 expand_mode = 1
 
 [node name="血量数值" type="Label" parent="基础信息" unique_id=871496818]
 unique_name_in_owner = true
-offset_left = 73.333336
-offset_top = -103.33326
-offset_right = 287.33334
-offset_bottom = 146.66675
+offset_left = 30.000006
+offset_top = -109.99993
+offset_right = 244.00002
+offset_bottom = 140.00006
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 12
+theme_override_constants/shadow_offset_x = 20
+theme_override_constants/shadow_offset_y = 24
 theme_override_constants/outline_size = 36
 theme_override_constants/shadow_outline_size = 5
 theme_override_fonts/font = ExtResource("12_setff")
-theme_override_font_sizes/font_size = 225
+theme_override_font_sizes/font_size = 200
 text = "321"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="生命值特效" type="TextureRect" parent="基础信息" unique_id=1659034884]
 unique_name_in_owner = true
-offset_left = -3.333397
-offset_top = -356.6665
-offset_right = 315.31967
-offset_bottom = 149.3335
+offset_left = -43.3333
+offset_top = -313.33316
+offset_right = 275.31976
+offset_bottom = 192.66684
 rotation = 1.5707964
-scale = Vector2(0.7, 0.7)
+scale = Vector2(0.6, 0.6)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 texture = SubResource("AtlasTexture_vxs5b")
@@ -355,3 +392,8 @@ offset_bottom = 649.5
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="IconComposer" type="Node" parent="." unique_id=2117131518]
+unique_name_in_owner = true
+script = ExtResource("17_ts65j")
+metadata/_custom_type_script = "uid://dpy81oq8meuvd"

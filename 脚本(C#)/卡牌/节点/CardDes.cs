@@ -4,6 +4,7 @@ using Godot;
 using Pack;
 using Spine;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Target;
 using static Godot.OpenXRCompositionLayer;
 
@@ -17,7 +18,7 @@ public partial class CardDes : Control
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌界面.tscn");
     private CardModel Model;
-    private static CardDes instance;
+    public static CardDes instance { get; private set; }
     /// <summary>
     /// 创建卡牌的描述
     /// </summary>
@@ -80,7 +81,7 @@ public partial class CardDes : Control
             _tween.Kill();
         }
         GetNode<Control>("%单位容器").ZIndex = 12;
-        GetNode<Control>("%单位容器").Position = new(0f, -335f);
+        GetNode<Control>("%单位容器").Position = new(0f, -325f);
         GetNode<Control>("%单位容器").TopLevel = false;
         var sprite = GetNode<SpineHandler>("%动画");
         sprite.ClearTrack(0);
@@ -124,6 +125,53 @@ public partial class CardDes : Control
     }
 
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
+    public void CardTryFresh(CardModel cardModel)
+    {
+        if (cardModel == null) return;
+        if (cardModel == Model)
+        {
+            Fresh();
+        }
+    }
+    public async Task SetDescription(string raw)
+    {
+        var matches = Regex.Matches(raw, @"=(\w+)=\{(\d+)\}");
+        var label = GetNode<RichTextLabel>("%介绍Label");
+
+        label.Clear();
+        label.BbcodeEnabled = true;
+
+        int last = 0;
+        foreach (Match m in matches)
+        {
+            if (m.Index > last)
+            {
+                string textPart = raw.Substring(last, m.Index - last);
+                textPart = Regex.Replace(textPart, @"_([^_]+)_",
+                    mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
+                label.AppendText(textPart);
+            }
+
+            string name = m.Groups[1].Value;
+            string value = m.Groups[2].Value;
+
+            if (Icon.TryGet(name, out var path,out var attr))
+            {
+                var tex = await IconComposer.Instance.ComposeAsync(path, value , attr.Color,attr.OutlineColor,attr.OutlineSize);
+                if (tex != null)
+                    label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+            }
+
+            last = m.Index + m.Length;
+        }
+        if (last < raw.Length)
+        {
+            string tail = raw.Substring(last);
+            tail = Regex.Replace(tail, @"_([^_]+)_",
+                mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
+            label.AppendText(tail);
+        }
+    }
     private async void Fresh()
     {
         if (Model != null)
@@ -132,11 +180,7 @@ public partial class CardDes : Control
             cost.Text = $"{Model.Cost.Current}";
             GetNode<Sprite2D>("%花费数值").Texture = Model.CampCostIcon;
             GetNode<Label>("%名字").Text = Model.Title;
-            GetNode<RichTextLabel>("%介绍Label").Text = Regex.Replace(Model.Description ?? "", @"_([^_]+)_", m =>
-            {
-                string inner = m.Groups[1].Value;
-                return $"[color=#44ffff][url={inner}]{inner}[/url][/color]";
-            });
+            await SetDescription(Model.Description);
             GetNode<RichTextLabel>("%故事标签").Text = Model.Flavor;
             if (Model.Cost.HasChanged)
             {
@@ -183,12 +227,26 @@ public partial class CardDes : Control
             {
                 GetNode<Node2D>("%基础信息").Visible = false;
             }
-            GetNode<Label>("%属性标签").Text = Model.Camp switch
+            GetNode<Label>("%属性标签").Text = $"-{string.Join(" ", Model.Labels.Current)} {Model.CardType switch
             {
-                Camp.Plant => "植物 ",
-                Camp.Zombie => "僵尸",
-                _ => "???"
-            } + string.Join(" ",Model.Labels.Current);
+                CardType.Hero | CardType.Fighter => Model.Camp switch
+                {
+                    Camp.Plant => "超能力植物",
+                    Camp.Zombie => "超能力僵尸",
+                    _ => "???"
+                },
+                CardType.Hero | CardType.Trick => "超能力锦囊牌",
+                CardType.Hero | CardType.Environment => "超能力环境",
+                CardType.None | CardType.Trick => "锦囊牌",
+                CardType.None | CardType.Environment => "环境",
+                CardType.None | CardType.Fighter => Model.Camp switch
+                {
+                    Camp.Plant => "植物",
+                    Camp.Zombie => "僵尸",
+                    _ => "???"
+                },
+                _ => ""
+            }} -";
 
             GetNode<Label>("%稀有标签Label").Text = (Model.Pack ?? Model.Rarity switch {
                 Rarity.Token => null,
@@ -300,7 +358,7 @@ public partial class CardDes : Control
             var sprite = GetNode<SpineHandler>("%动画");
             sprite.LoadSkeletonData(Model.AnimationPath);
             sprite.SetAnimation(0, "intro", false);
-            sprite.AddAnimation(0,"idle",true);
+            sprite.AddAnimation(0,"idle",true); 
         }
     }
 }

@@ -1,7 +1,7 @@
 
 using Card;
 using Logger;
-using Phrase;
+using Phrases;
 using System.Collections.Generic;
 using System.Linq;
 using Variable;

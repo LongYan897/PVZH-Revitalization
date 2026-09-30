@@ -1,6 +1,6 @@
 
 using Card;
-using Phrase;
+using Phrases;
 
 namespace Play;
 

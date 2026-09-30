@@ -1,12 +1,20 @@
 [gd_scene format=3 uid="uid://csp8yyj2i0wf3"]
 
 [ext_resource type="Script" uid="uid://cp33ms6knt1nk" path="res://脚本(C#)/战斗相关/实体/Fighter.cs" id="1_qosmd"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://6damiheggxsu" path="res://数据资源/属性动画/攻击动画.tres" id="1_rj5wi"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://dn3l0eovtmfbd" path="res://数据资源/僵尸动画/跳舞僵尸动画.tres" id="2_owwe4"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="2_w5bvm"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://dh6k1ymw5ypju" path="res://数据资源/属性动画/血量动画.tres" id="3_owwe4"]
+[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="3_bev64"]
+[ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="3_qosmd"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://xhjd3hi3vww0" path="res://数据资源/属性动画/等级动画.tres" id="4_qosmd"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://mavpbw56r5bl" path="res://数据资源/僵尸动画/土坑动画.tres" id="5_w5bvm"]
+[ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="5_6cys6"]
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="6_4gq2c"]
+[ext_resource type="Texture2D" uid="uid://brf5p27vt3t6o" path="res://素材/对象高亮框/单位1.png" id="8_bev64"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ggbqp"]
+atlas = ExtResource("5_6cys6")
+region = Rect2(508.18198, 335.30182, 284.61368, 506.2005)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bev64"]
+size = Vector2(640, 540)
 
 [node name="战斗单位" type="Control" unique_id=1516114560]
 layout_mode = 3
@@ -14,48 +22,95 @@ anchors_preset = 0
 script = ExtResource("1_qosmd")
 metadata/_custom_type_script = "uid://cp33ms6knt1nk"
 
-[node name="土坑" type="SpineSprite" parent="." unique_id=1007510431]
-skeleton_data_res = ExtResource("5_w5bvm")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
-unique_name_in_owner = true
-position = Vector2(2, -52)
-scale = Vector2(4, 4)
+[node name="土坑" parent="." unique_id=1531348011 instance=ExtResource("3_qosmd")]
+visible = false
+position = Vector2(0, -117.00001)
+scale = Vector2(3.8, 3.8)
 
 [node name="单位场景" type="Node2D" parent="." unique_id=1751003746]
 unique_name_in_owner = true
+position = Vector2(0, -80)
 
-[node name="动画节点" type="SpineSprite" parent="单位场景" unique_id=470727967]
-skeleton_data_res = ExtResource("2_owwe4")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
+[node name="动画" parent="单位场景" unique_id=922182681 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
-position = Vector2(-5, -79)
-scale = Vector2(3, 3)
+scale = Vector2(3.6, 3.6)
 
-[node name="伤害" type="SpineSprite" parent="." unique_id=777394735]
-skeleton_data_res = ExtResource("1_rj5wi")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
+[node name="基础信息" type="Node2D" parent="." unique_id=80156814]
 unique_name_in_owner = true
-position = Vector2(-185, 1)
+z_index = 34
 
-[node name="伤害数值" type="Label" parent="伤害" unique_id=273000113]
+[node name="血量" type="TextureRect" parent="基础信息" unique_id=1431460387]
 unique_name_in_owner = true
-offset_left = -112.222244
-offset_top = -114.44445
-offset_right = 108.777756
-offset_bottom = 107.55555
+offset_left = 98.0
+offset_top = -40.070908
+offset_right = 185.51959
+offset_bottom = 38.929092
+scale = Vector2(3.5, 3.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = ExtResource("6_4gq2c")
+expand_mode = 1
+
+[node name="血量数值" type="Label" parent="基础信息" unique_id=1585496076]
+unique_name_in_owner = true
+offset_left = 31.8068
+offset_top = -125.07084
+offset_right = 245.80682
+offset_bottom = 124.92916
+pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 16
-theme_override_constants/shadow_offset_y = 16
-theme_override_constants/outline_size = 8
+theme_override_constants/shadow_offset_x = 20
+theme_override_constants/shadow_offset_y = 24
+theme_override_constants/outline_size = 36
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("2_w5bvm")
+theme_override_font_sizes/font_size = 200
+text = "321"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="生命值特效" type="TextureRect" parent="基础信息" unique_id=1531423819]
+unique_name_in_owner = true
+offset_left = -41.52652
+offset_top = -328.40405
+offset_right = 277.12656
+offset_bottom = 177.59595
+rotation = 1.5707964
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = SubResource("AtlasTexture_ggbqp")
+stretch_mode = 2
+
+[node name="伤害" type="TextureRect" parent="基础信息" unique_id=526937123]
+unique_name_in_owner = true
+offset_left = -185.0
+offset_top = -40.070908
+offset_right = -88.33331
+offset_bottom = 49.929092
+scale = Vector2(3.5, 3.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = ExtResource("3_bev64")
+expand_mode = 1
+
+[node name="伤害数值" type="Label" parent="基础信息" unique_id=438546615]
+unique_name_in_owner = true
+anchors_preset = -1
+anchor_left = -0.38620678
+anchor_top = -0.37777779
+anchor_right = -0.38620678
+anchor_bottom = -0.37777779
+offset_left = -252.0
+offset_top = -131.0709
+offset_right = -31.0
+offset_bottom = 118.92909
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 20
+theme_override_constants/shadow_offset_y = 24
+theme_override_constants/outline_size = 36
 theme_override_constants/shadow_outline_size = 5
 theme_override_fonts/font = ExtResource("2_w5bvm")
 theme_override_font_sizes/font_size = 200
@@ -64,36 +119,20 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="血量" type="SpineSprite" parent="." unique_id=1406994392]
-skeleton_data_res = ExtResource("3_owwe4")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
+[node name="攻击力特效" type="TextureRect" parent="基础信息" unique_id=515793783]
 unique_name_in_owner = true
-show_behind_parent = true
-z_index = 2
-position = Vector2(187, 2.3841858e-07)
-scale = Vector2(0.99999994, 0.99999994)
+offset_left = -325.52652
+offset_top = -328.404
+offset_right = -6.8734436
+offset_bottom = 177.59601
+rotation = 1.5707964
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = SubResource("AtlasTexture_ggbqp")
+stretch_mode = 2
 
-[node name="血量数值" type="Label" parent="血量" unique_id=2065358721]
-unique_name_in_owner = true
-offset_left = -95.55556
-offset_top = -121.111115
-offset_right = 94.44444
-offset_bottom = 100.888885
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 16
-theme_override_constants/shadow_offset_y = 16
-theme_override_constants/outline_size = 8
-theme_override_constants/shadow_outline_size = 5
-theme_override_fonts/font = ExtResource("2_w5bvm")
-theme_override_font_sizes/font_size = 200
-text = "321"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="等级" type="SpineSprite" parent="." unique_id=347714836]
+[node name="等级" type="SpineSprite" parent="基础信息" unique_id=58495163]
 skeleton_data_res = ExtResource("4_qosmd")
 preview_skin = "Default"
 preview_animation = "-- Empty --"
@@ -101,5 +140,27 @@ preview_frame = false
 preview_time = 0.0
 unique_name_in_owner = true
 z_index = 3
-position = Vector2(-0.44444966, 98.666664)
+position = Vector2(0, 116)
 scale = Vector2(0.7, 0.7)
+
+[node name="ExSprite" type="Node2D" parent="." unique_id=1255777390]
+unique_name_in_owner = true
+visible = false
+modulate = Color(0.43, 0.9430001, 1, 1)
+z_index = 48
+position = Vector2(0, -344)
+scale = Vector2(2.4, 2.4)
+
+[node name="高亮" type="Sprite2D" parent="ExSprite" unique_id=1910243173]
+unique_name_in_owner = true
+z_index = 7
+scale = Vector2(2, 2)
+texture = ExtResource("8_bev64")
+
+[node name="碰撞箱" type="Area2D" parent="." unique_id=1248027003]
+unique_name_in_owner = true
+position = Vector2(0, -344)
+
+[node name="体积" type="CollisionShape2D" parent="碰撞箱" unique_id=164457338]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_bev64")

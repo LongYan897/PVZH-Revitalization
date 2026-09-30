@@ -11,7 +11,7 @@ namespace Card;
 /// 可以新建类继承Buff比较方便
 /// </summary>
 /// <param name="action">对目标卡牌的操作</param>
-public class Buff(Func<CardModel,Task> action)
+public class Buff(Func<CardModel,Task> action = null)
 {
     /// <summary>
     /// 操作的卡牌

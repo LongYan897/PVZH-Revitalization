@@ -29,6 +29,16 @@ public class HpType
     /// </summary>
     public virtual Texture2D AddtiveIcon { get; }
     /// <summary>
+    /// 附加到战斗卡牌时用于增加过滤条件
+    /// 比如锦囊免疫等效果
+    /// </summary>
+    /// <param name="card"></param>
+    /// <returns></returns>
+    public virtual bool ExtraFilter(CardModel card)
+    {
+        return true;
+    }
+    /// <summary>
     /// 持续的生命值效果
     /// </summary>
     public Buff Action { get; set; }

@@ -9,11 +9,11 @@ to = "attack"
 
 [sub_resource type="SpineAnimationMix" id="SpineAnimationMix_dwqek"]
 from = "idle"
-to = "hit"
+to = "attack"
 mix = 0.1
 
 [sub_resource type="SpineAnimationMix" id="SpineAnimationMix_hxip2"]
-from = "hit"
+from = "attack"
 to = "die"
 mix = 0.1
 

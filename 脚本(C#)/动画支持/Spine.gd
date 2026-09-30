@@ -15,7 +15,7 @@ func set_skin(skin_name:String) -> void:
 func get_bone_world_pos(bone_name:String) -> Vector2:
 	return get_global_bone_transform(bone_name).origin
 
-func _on_animation_event(evt):
+func _on_animation_event(sprite, anim_state, track_entry, evt):
 	emit_signal("spine_anim_event", evt)
 
 func _ready():
@@ -26,3 +26,6 @@ func clear_track(track:int):
 
 func clear_tracks():
 	get_animation_state().clear_tracks()
+
+func set_attachment(id:String,name:String):
+	get_skeleton().set_attachment(id,name)
