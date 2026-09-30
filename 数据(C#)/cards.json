@@ -16,7 +16,7 @@
 
   "RollingStone.Title": "滚石",
   "RollingStone.Flavor": "给 “摇滚” 这个词赋予了新含义。",
-  "RollingStone.Description": "_消灭_一株 =Strength={2} 或以下的植物。",
+  "RollingStone.Description": "_消灭_一株 =Strength= =Strength={+2} 或以下的植物。",
   "RollingStone.Rarity": "基础",
   "RollingStone.Label": [],
   "RollingStone.Cost": 1,

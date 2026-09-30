@@ -84,7 +84,6 @@ public partial class NodeCard : Control
             node.Model = cardModel;
             node.Position = position;
             node.Scale *= 0.5f;
-            node.PivotOffsetRatio = new(0.5f, 0.5f);
             instances.Add(node, cardModel);
             Main.CardContainer.AddChild(node);
             node.DrawAnimation();
