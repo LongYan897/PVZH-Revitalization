@@ -8,11 +8,11 @@ from = "attack"
 to = "attack"
 
 [sub_resource type="SpineAnimationMix" id="SpineAnimationMix_dwqek"]
-from = "idle"
+from = "hurt"
 to = "attack"
 mix = 0.1
 
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_hxip2"]
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_81ewe"]
 from = "attack"
 to = "die"
 mix = 0.1
@@ -21,4 +21,4 @@ mix = 0.1
 atlas_res = ExtResource("1_rxgfc")
 skeleton_file_res = ExtResource("2_dwqek")
 default_mix = 0.5
-animation_mixes = [SubResource("SpineAnimationMix_rxgfc"), SubResource("SpineAnimationMix_dwqek"), SubResource("SpineAnimationMix_hxip2")]
+animation_mixes = [SubResource("SpineAnimationMix_rxgfc"), SubResource("SpineAnimationMix_dwqek"), SubResource("SpineAnimationMix_81ewe")]

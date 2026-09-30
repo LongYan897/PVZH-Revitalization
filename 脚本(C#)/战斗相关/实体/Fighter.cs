@@ -64,7 +64,7 @@ public partial class Fighter : Control, ITarget
     {
         await GetNode<SpineHandler>("%动画").SetAnimationTask(0,"die");
         Tween tween = CreateTween();
-        tween.TweenProperty(this, "modulate",new Vector4(1,1,1,0),0.03f);
+        tween.TweenProperty(this, "modulate",new Color(1,1,1,0),0.03f);
         await ToSignal(tween, Tween.SignalName.Finished);
         Visible = false;
         Clear();

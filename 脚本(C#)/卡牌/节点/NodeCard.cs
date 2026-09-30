@@ -285,12 +285,12 @@ public partial class NodeCard : Control
     {
         ZIndex -= 100;
         if (ChoiceCard == this) ChoiceCard = null;
+        Fighter.DeleteFightersTargeted(Model.TargetType);
+        ReturnToOrigin();
         if (target != null)
         {
             await CardCmd.PlayedCard(Model, target);
         }
-        Fighter.DeleteFightersTargeted(Model.TargetType);
-        ReturnToOrigin();
     }
 
     private void ReturnToOrigin()

@@ -1,4 +1,5 @@
 using Godot;
+using Logger;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -37,7 +38,8 @@ public partial class SpineHandler : Node2D
 		{
 			return;
 		}
-		_spineSprite.Set("skeleton_data", data);
+		_spineSprite.Set("skeleton_data_res", data);
+
 	}
 
 	/// <summary>
@@ -47,7 +49,6 @@ public partial class SpineHandler : Node2D
 	{
 		_spineSprite.Call("set_animation", track, animName, loop);
 	}
-
 	/// <summary>
 	/// 添加动画。
 	/// </summary>
