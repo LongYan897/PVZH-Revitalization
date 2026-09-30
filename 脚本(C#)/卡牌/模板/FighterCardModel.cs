@@ -99,7 +99,7 @@ public class FighterCardModel : CardModel
     {
         if (key == "Health")
         {
-            await PlayFighterAnimation("hit");
+            await PlayFighterAnimation("hurt");
             if (Hp.Current <= 0)
                 await Fighter.GetNode(this).Die();
         }
