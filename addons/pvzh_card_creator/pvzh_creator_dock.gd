@@ -274,38 +274,38 @@ func _create() -> void:
 
 func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 	var entry := {}
-	entry["%s.Title" % clean] = clean
-	entry["%s.Des" % clean] = des_edit.text
-	entry["%s.Cost" % clean] = int(cost_spin.value)
-	entry["%s.Camp" % clean] = "植物" if side == "植物" else "僵尸"
-	entry["%s.Type" % clean] = type_text
-	entry["%s.Rarity" % clean] = rarity_option.get_item_text(rarity_option.selected)
-	entry["%s.Category" % clean] = category_option.get_item_text(category_option.selected)
-	entry["%s.Animation" % clean] = animation_edit.text
+	entry["\"%s.Title\"" % clean] = clean
+	entry["\"%s.Des\"" % clean] = des_edit.text
+	entry["\"%s.Cost\"" % clean] = int(cost_spin.value)
+	entry["\"%s.Camp\"" % clean] = "植物" if side == "植物" else "僵尸"
+	entry["\"%s.Type\"" % clean] = type_text
+	entry["\"%s.Rarity\"" % clean] = rarity_option.get_item_text(rarity_option.selected)
+	entry["\"%s.Category\"" % clean] = category_option.get_item_text(category_option.selected)
+	entry["\"%s.Animation\"" % clean] = animation_edit.text
 
 	var labels := []
 	for s in label_edit.text.split(",", false):
 		var t := s.strip_edges()
 		if not t.is_empty():
 			labels.append(t)
-	entry["%s.Label" % clean] = labels
+	entry["\"%s.Label\"" % clean] = labels
 
 	if include_hp.button_pressed:
-		entry["%s.Hp" % clean] = int(hp_spin.value)
-		entry["%s.HpType" % clean] = hp_type_option.get_item_text(hp_type_option.selected)
+		entry["\"%s.Hp\"" % clean] = int(hp_spin.value)
+		entry["\"%s.HpType\"" % clean] = hp_type_option.get_item_text(hp_type_option.selected)
 
 	if include_atk.button_pressed:
-		entry["%s.Atk" % clean] = int(atk_spin.value)
-		entry["%s.AtkType" % clean] = atk_type_option.get_item_text(atk_type_option.selected)
+		entry["\"%s.Atk\"" % clean] = int(atk_spin.value)
+		entry["\"%s.AtkType\"" % clean] = atk_type_option.get_item_text(atk_type_option.selected)
 
 	if include_star_type.button_pressed:
-		entry["%s.StarType" % clean] = star_type_option.get_item_text(star_type_option.selected)
+		entry["\"%s.StarType\"" % clean] = star_type_option.get_item_text(star_type_option.selected)
 	if include_pack.button_pressed:
-		entry["%s.Pack" % clean] = pack_edit.text
+		entry["\"%s.Pack\"" % clean] = pack_edit.text
 	if include_flavor.button_pressed:
-		entry["%s.Flavor" % clean] = flavor_edit.text
+		entry["\"%s.Flavor\"" % clean] = flavor_edit.text
 
-	print("===== cards.json 条目：" + clean + " =====")
+	print("===== cards.json ：" + clean + " =====")
 	for k in entry.keys():
 		var v = entry[k]
 		if v is Array:
