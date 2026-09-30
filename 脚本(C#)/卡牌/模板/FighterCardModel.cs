@@ -22,6 +22,7 @@ public class FighterCardModel : CardModel
         AtkType = new(this, "AttackType", cardString.AtkType);
         Hp = new(this, "Health", cardString.Health);
         HpType = new(this, "HealthType", cardString.HpType);
+
         return LoadCustomData(cardString);
     }
     public Task Die()
@@ -76,6 +77,10 @@ public class FighterCardModel : CardModel
     /// 卡牌的生命值类型
     /// </summary>
     public CardVariable<HpType> HpType { get; private set; }
+    /// <summary>
+    /// 等级类型s
+    /// </summary>
+    public StarType StarType { get; private set; }
     /// <summary>
     /// 在战斗开始后(攻击之前)
     /// </summary>

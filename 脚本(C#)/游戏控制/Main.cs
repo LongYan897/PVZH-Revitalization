@@ -13,6 +13,9 @@ namespace Controller;
 public partial class Main : Node2D
 {
     public static Node Animator { get; private set; }
+    public static Node CardContainer { get; private set; }
+    public static Node FighterContainer { get; private set; }
+    public static Node DesLayer { get; private set; }
     public override void _Ready()
     {
         //初始化各各组件
@@ -21,11 +24,14 @@ public partial class Main : Node2D
         Icon.Init();
         //初始化容器
         Animator = GetNode<CanvasLayer>("Animators");
+        CardContainer = GetNode<CanvasLayer>("Cards");
+        FighterContainer = GetNode<CanvasLayer>("Fighters");
+        DesLayer = GetNode<CanvasLayer>("Des");
         //
         CardModel card = CardModel.Load<Peashooter>();
         CardModel card1 = CardModel.Load<RollingStone>();
         card1.Status = Status.FaceUp;
-        NodeCard.DrawACard(this, card1, new(0, 0));
-        Fighter.Generate(this, card as Peashooter, new Battle.Road() { Index = 1 }, 0);
+        NodeCard.DrawACard(card1, new(0,0));
+        Fighter.Generate(card as Peashooter, new Battle.Road() { Index = 1 }, 0);
     }
 }

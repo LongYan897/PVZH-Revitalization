@@ -1,5 +1,6 @@
 using Battle.Entity;
 using Card.Cmd;
+using Controller;
 using Godot;
 using Pack;
 using Spine;
@@ -27,14 +28,15 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCard(Node parent, CardModel cardModel)
+    public static NodeCard DisplayCard(CardModel cardModel, Vector2 position)
     {
         if (instances.Count < maxInstance)
         {
             var node = Scene.Instantiate<NodeCard>();
             node.Model = cardModel;
+            node.Position = position;
             node.Scale *= 0.5f;
-            parent.AddChild(node);
+            Main.CardContainer.AddChild(node);
             node.Fresh();
             instances.Add(node, cardModel);
             return node;
@@ -43,12 +45,8 @@ public partial class NodeCard : Control
         {
             var node = instances.First(p => p.Value == null).Key;
             node.Model = cardModel;
+            node.Position = position;
             node.Scale *= 0.5f;
-            if (parent != node.GetParent())
-            {
-                node.GetParent().RemoveChild(node);
-                parent.AddChild(node);
-            }
             node.Fresh();
             instances[node] = cardModel;
             return node;
@@ -78,17 +76,17 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACard(Node parent, CardModel cardModel, Vector2 position)
+    public static NodeCard DrawACard(CardModel cardModel, Vector2 position)
     {
         if (instances.Count < maxInstance)
         {
             var node = Scene.Instantiate<NodeCard>();
             node.Model = cardModel;
-            node.Scale *= 0.5f;
             node.Position = position;
+            node.Scale *= 0.5f;
             node.PivotOffsetRatio = new(0.5f, 0.5f);
             instances.Add(node, cardModel);
-            parent.AddChild(node);
+            Main.CardContainer.AddChild(node);
             node.DrawAnimation();
             return node;
         }
@@ -96,14 +94,9 @@ public partial class NodeCard : Control
         {
             var node = instances.First(p => p.Key.Model == null).Key;
             node.Model = cardModel;
-            node.Scale *= 0.5f;
             node.Position = position;
+            node.Scale *= 0.5f;
             instances[node] = cardModel;
-            if (parent != node.GetParent())
-            {
-                node.GetParent().RemoveChild(node);
-                parent.AddChild(node);
-            }
             node.DrawAnimation();
             return node;
         }
@@ -278,7 +271,7 @@ public partial class NodeCard : Control
     private void OnCardClick()
     {
         ChoiceCard = this;
-        CardDes.DisplayDescription(GetParent(), Model);
+        CardDes.DisplayDescription(Model);
     }
 
     private async Task EndDrag()
@@ -303,7 +296,7 @@ public partial class NodeCard : Control
         _returnTween = CreateTween();
         _returnTween.SetEase(Tween.EaseType.Out);
         _returnTween.SetTrans(Tween.TransitionType.Quad);
-        _returnTween.TweenProperty(this, "position", _cardOriginPos + new Vector2(0, -20), 0.2f);
+        _returnTween.TweenProperty(this, "position", _cardOriginPos, 0.2f);
     }
 
     private ITarget target;
@@ -575,6 +568,11 @@ public partial class NodeCard : Control
                     GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"intro", false);
                     GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
                     GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
+                    if (fighter.StarType != null)
+                    {
+                        GetNode<SpineHandler>("%等级").LoadSkeletonData(fighter.StarType.IconSkelPath);
+                        GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
+                    }
                     if (fighter.Hp.HasChanged)
                     {
                         if (fighter.Hp.PositiveChanged)

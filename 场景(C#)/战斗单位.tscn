@@ -18,8 +18,18 @@ size = Vector2(640, 540)
 [node name="战斗单位" type="Control" unique_id=1516114560]
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("1_qosmd")
 metadata/_custom_type_script = "uid://cp33ms6knt1nk"
+
+[node name="碰撞" type="Button" parent="." unique_id=472415403]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -320.0
+offset_top = -614.0
+offset_right = 320.0
+offset_bottom = -74.0
+flat = true
 
 [node name="土坑" parent="." unique_id=1531348011 instance=ExtResource("3_qosmd")]
 visible = false

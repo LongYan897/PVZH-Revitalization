@@ -4,7 +4,7 @@ public class NormalStarType : StarType
 {
     public static (bool, StarType) Parse(string str)
     {
-        var bol = str.Split(":")[0] == "普通" || str.Split(":")[0] == "Normal";
+        var bol = str.Split(":")[0] == "星星" || str.Split(":")[0] == "Star";
         var atk = new NormalStarType();
         return (bol, atk);
     }

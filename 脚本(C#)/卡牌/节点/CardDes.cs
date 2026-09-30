@@ -1,8 +1,11 @@
+using Battle.Entity;
+using Controller;
 using Godot;
 using Pack;
 using Spine;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Godot.OpenXRCompositionLayer;
 
 namespace Card;
 
@@ -21,13 +24,13 @@ public partial class CardDes : Control
     /// <param name="parent"></param>
     /// <param name="card"></param>
     /// <returns></returns>
-    public static void DisplayDescription(Node parent, CardModel card)
+    public static void DisplayDescription(CardModel card)
     {
         if (instance == null)
         {
             var des = Scene.Instantiate<CardDes>();
             des.Model = card;
-            parent.AddChild(des);
+            Main.DesLayer.AddChild(des);
             des.Open();
             des.Fresh();
             des.ZIndex = 1024;
@@ -37,11 +40,6 @@ public partial class CardDes : Control
         {
             if (instance.Visible == true) return;
             instance.Model = card;
-            if (parent != instance.GetParent())
-            {
-                instance.GetParent().RemoveChild(instance);
-                parent.AddChild(instance);
-            }
             instance.Visible = true;
             instance.Open();
             instance.Fresh();
@@ -194,7 +192,11 @@ public partial class CardDes : Control
                 GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
                 GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
                 GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
-
+                if (fighterCard.StarType != null)
+                {
+                    GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
+                    GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
+                }
                 if (fighterCard.Hp.HasChanged)
                 {
                     if (fighterCard.Hp.PositiveChanged)

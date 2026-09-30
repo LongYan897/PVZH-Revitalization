@@ -60,13 +60,13 @@ public class StarType
     /// 解析字符串为StarType<br/>
     /// Parser输出的第一个bool代表是否要解析该字符串,为false时直接跳过不使用第二个值<br/>
     /// Parser输出的第二个值为StarType<br/>
-    /// 解析的时候统一格式为输入|StarType的名称:StarType的数值|<br/>
+    /// 解析的时候统一格式为输入|StarType的名称|<br/>
     /// 例:<br/>
-    ///     输入 |致命|<br/>
-    ///     代表致命<br/>
+    ///     输入 |抽卡星星|<br/>
+    ///     代表抽卡等级<br/>
     /// /// </summary>
     /// <param name="parserString">解析字符串</param>
-    /// <returns>得到的AtkType</returns>
+    /// <returns>得到的StarType</returns>
     public static StarType Parser(string parserString)
     {
         if (Parsers == null) return null;

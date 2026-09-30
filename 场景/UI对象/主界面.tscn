@@ -395,10 +395,17 @@ position = Vector2(360, 640)
 script = ExtResource("21_fe8yl")
 metadata/_custom_type_script = "uid://ccaq7lefsnojt"
 
-[node name="Animators" type="CanvasLayer" parent="测试用主节点" unique_id=1042041253]
-layer = 112
-
 [node name="Fighters" type="CanvasLayer" parent="测试用主节点" unique_id=852753402]
+layer = 25
+
+[node name="Animators" type="CanvasLayer" parent="测试用主节点" unique_id=1042041253]
+layer = 100
+
+[node name="Cards" type="CanvasLayer" parent="测试用主节点" unique_id=1940022711]
+layer = 50
+
+[node name="Des" type="CanvasLayer" parent="测试用主节点" unique_id=1141592221]
+layer = 1000
 
 [connection signal="input_event" from="活动/Area2D" to="." method="uiActInput"]
 [connection signal="mouse_exited" from="活动/Area2D" to="." method="uiActMouseExited"]

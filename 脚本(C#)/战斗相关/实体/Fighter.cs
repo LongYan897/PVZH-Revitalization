@@ -1,6 +1,7 @@
 using Card;
 using Controller;
 using Godot;
+using Logger;
 using Pack;
 using Spine;
 using System;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
+using static Godot.OpenXRCompositionLayer;
 
 namespace Battle.Entity;
 
@@ -135,14 +137,15 @@ public partial class Fighter : Control, ITarget
     /// <param name="model">绑定的卡牌</param>
     /// <param name="index">生成单位的位置</param>
     /// <returns>单位</returns>
-    public static Fighter Generate(Node node, FighterCardModel model, Road road, Location index)
+    public static Fighter Generate(FighterCardModel model, Road road, Location index)
     {
         if (Instances.Count < maxInstance)
         {
             var fighter = Scene.Instantiate<Fighter>();
+            fighter.Position = new(360, 720);
             fighter.Model = model;
             fighter.index = index;
-            node.AddChild(fighter);
+            Main.FighterContainer.AddChild(fighter);
             fighter.isFirstPlace = true;
             fighter.Fresh();
             Instances.Add(fighter, model);
@@ -151,12 +154,10 @@ public partial class Fighter : Control, ITarget
         else
         {
             var fighter = Instances.First(p => p.Key.Model == null).Key;
+            fighter.Position = new(360, 720);
             fighter.isFirstPlace = true;
-            if (node != fighter.GetParent())
-            {
-                fighter.GetParent().RemoveChild(fighter);
-                node.AddChild(fighter);
-            }
+            fighter.Model = model;
+            fighter.index = index;
             fighter.Fresh();
             Instances[fighter] = model;
             return fighter;
@@ -218,7 +219,24 @@ public partial class Fighter : Control, ITarget
     {
         GetNode<Area2D>("碰撞箱").SetMeta("Target", this);
         GetNode<Area2D>("碰撞箱").SetMeta("TargetType", "Fighter");
+        var hitBtn = GetNode<Button>("碰撞");
+        hitBtn.GuiInput += OnHitButtonGuiInput;
     }
+    private void OnHitButtonGuiInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton mb
+            && mb.ButtonIndex == MouseButton.Left
+            && mb.Pressed)
+        {
+            OnFighterClick();
+        }
+    }
+
+    private void OnFighterClick()
+    {
+        CardDes.DisplayDescription(Model);
+    }
+
     public void Targeted()
     {
         if (!Calling) return;
@@ -303,7 +321,11 @@ public partial class Fighter : Control, ITarget
                 GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
                 GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
                 GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
-                GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+                if (fighterCard.StarType != null)
+                {
+                    GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
+                    GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
+                }
                 if (fighterCard.Hp.HasChanged)
                 {
                     if (fighterCard.Hp.PositiveChanged)
