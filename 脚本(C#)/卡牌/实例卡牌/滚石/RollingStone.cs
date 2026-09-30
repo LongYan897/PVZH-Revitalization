@@ -1,10 +1,5 @@
 using Battle.Entity;
 using Godot;
-using Logger;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Target;
 
@@ -22,8 +17,8 @@ public class RollingStone : CardModel
         var tg = (Fighter)target;
         if (tg.Model.Camp == Camp.Plant)
         {
-            await PlayInstantAnimation("intro",target);
-            await tg.Model.Hp.Lose(2,Variable.VariableReason.Trick);
+            await PlayInstantAnimation("intro", target);
+            await tg.Model.Die();
         }
     }
 }

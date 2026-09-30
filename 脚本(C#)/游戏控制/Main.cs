@@ -26,6 +26,6 @@ public partial class Main : Node2D
         CardModel card1 = CardModel.Load<RollingStone>();
         card1.Status = Status.FaceUp;
         NodeCard.DrawACard(this, card1, new(0, 0));
-        Fighter.Generate(this,card as Peashooter,new Battle.Road() { Index = 1}, 0);
+        Fighter.Generate(this, card as Peashooter, new Battle.Road() { Index = 1 }, 0);
     }
 }

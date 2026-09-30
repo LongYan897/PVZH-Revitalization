@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="5_x53vy"]
 [ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="6_7p28v"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_fsyp8"]
+[ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="7_ia5uq"]
 [ext_resource type="Texture2D" uid="uid://84nyu8lu0ied" path="res://素材/牌背、卡面/cardback_plants.png" id="12_5lf5m"]
 [ext_resource type="Texture2D" uid="uid://nvma3q7pcegf" path="res://素材/抽卡特效/refresh_card_spin.png" id="13_t66oa"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://xhjd3hi3vww0" path="res://数据资源/属性动画/等级动画.tres" id="14_fp1j7"]
@@ -150,8 +151,13 @@ expand_mode = 1
 [node name="生命值容器" type="Node2D" parent="正面卡牌" unique_id=1111454840]
 unique_name_in_owner = true
 
+[node name="血量动画" parent="正面卡牌/生命值容器" unique_id=922182681 instance=ExtResource("7_ia5uq")]
+unique_name_in_owner = true
+position = Vector2(224, 157.5)
+
 [node name="生命值" type="TextureRect" parent="正面卡牌/生命值容器" unique_id=2078360910]
 unique_name_in_owner = true
+visible = false
 offset_left = 180.0
 offset_top = 116.0
 offset_right = 267.5196
@@ -194,8 +200,13 @@ autowrap_mode = 0
 unique_name_in_owner = true
 position = Vector2(7, 0)
 
+[node name="伤害动画" parent="正面卡牌/攻击力容器" unique_id=808255837 instance=ExtResource("7_ia5uq")]
+unique_name_in_owner = true
+position = Vector2(135, 157.5)
+
 [node name="攻击力" type="TextureRect" parent="正面卡牌/攻击力容器" unique_id=1443008913]
 unique_name_in_owner = true
+visible = false
 offset_left = 86.7037
 offset_top = 110.0
 offset_right = 183.37038
@@ -239,13 +250,22 @@ unique_name_in_owner = true
 
 [node name="费用" type="TextureRect" parent="正面卡牌/费用容器" unique_id=1434990318]
 unique_name_in_owner = true
-offset_left = 179.0
-offset_top = -18.0
-offset_right = 277.0
-offset_bottom = 84.01639
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 180.0
+offset_top = -18.5
+offset_right = 278.0
+offset_bottom = 83.51639
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 texture = ExtResource("4_m5r2q")
 expand_mode = 1
+stretch_mode = 4
 
 [node name="数值" type="RichTextLabel" parent="正面卡牌/费用容器" unique_id=1026296633]
 offset_left = 201.0

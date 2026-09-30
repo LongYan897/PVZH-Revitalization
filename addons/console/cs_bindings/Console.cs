@@ -1,18 +1,20 @@
 using Godot;
 using Godot.Collections;
 
-public partial class Console : Node{
+public partial class Console : Node
+{
     static GodotObject console = (GodotObject)GD.Load<GDScript>("uid://ouiu5xh1cs8n").New();
 
-    public static bool Enabled{ get{return console.Get("enabled").AsBool();} }
-    public static bool EnabledOnReleaseBuild{ get{return console.Get("enabled_on_release_build").AsBool();} }
-    public static bool PauseEnabled{ get{return console.Get("pause_enabled").AsBool();} set{console.Set("pause_enabled", value);} }
-    public static int FontSize{ get{return console.Get("font_size").AsInt32();} set{console.Set("font_size", value);} }
+    public static bool Enabled { get { return console.Get("enabled").AsBool(); } }
+    public static bool EnabledOnReleaseBuild { get { return console.Get("enabled_on_release_build").AsBool(); } }
+    public static bool PauseEnabled { get { return console.Get("pause_enabled").AsBool(); } set { console.Set("pause_enabled", value); } }
+    public static int FontSize { get { return console.Get("font_size").AsInt32(); } set { console.Set("font_size", value); } }
 
-    public static RichTextLabel RichLabel{ get{return (RichTextLabel)console.Get("rich_label").AsGodotObject();} set{console.Set("rich_label", value);} }
-    public static LineEdit LineEdit{ get{return (LineEdit)console.Get("line_edit").AsGodotObject();} set{console.Set("line_edit", value);} }
+    public static RichTextLabel RichLabel { get { return (RichTextLabel)console.Get("rich_label").AsGodotObject(); } set { console.Set("rich_label", value); } }
+    public static LineEdit LineEdit { get { return (LineEdit)console.Get("line_edit").AsGodotObject(); } set { console.Set("line_edit", value); } }
 
-    public override void _Ready(){
+    public override void _Ready()
+    {
         AddChild((Node)console);
     }
 
@@ -35,7 +37,7 @@ public partial class Console : Node{
     public static void SetCvar(string cvarName, Variant value) => console.Call("set_cvar", cvarName, value);
     public static void AddCommandAutocompleteList(string commandName, string[] paramList) => console.Call("add_command_autocomplete_list", commandName, paramList);
     public static void Disable() => console.Call("disable");
-    public static void Enable() =>console.Call("enable");
+    public static void Enable() => console.Call("enable");
     public static void ToggleConsole() => console.Call("toggle_console");
     public static void IsVisible() => console.Call("is_visible");
     public static void ScrollToBottom() => console.Call("scroll_to_bottom");

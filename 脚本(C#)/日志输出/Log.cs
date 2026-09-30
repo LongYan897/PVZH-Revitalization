@@ -21,7 +21,7 @@ public static class Log
     /// </summary>
     /// <param name="content">发送的内容</param>
     /// <param name="debugId">修复bug的代号,需要和DebugId相同才会发送日志</param>
-    public static void Debug(string content,int debugId)
+    public static void Debug(string content, int debugId)
     {
         if (debugId == DebugId)
             GD.Print(content);

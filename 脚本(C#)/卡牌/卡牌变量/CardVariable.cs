@@ -1,7 +1,6 @@
 
 using Card.Cmd;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Variable;
 using Variable.Special;
@@ -15,7 +14,7 @@ namespace Card;
 /// <param name="cardModel"></param>
 /// <param name="sign"></param>
 /// <param name="obj"></param>
-public class CardVariable<T>(CardModel cardModel,string sign,T obj) : ICardVariable
+public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVariable
 {
     private CardModel card = cardModel;
     private Variable<T> variable = new Variable<T>(sign, obj);
@@ -31,7 +30,7 @@ public class CardVariable<T>(CardModel cardModel,string sign,T obj) : ICardVaria
     {
         var val = variable.Current;
         int v = variable.Set(value, reason);
-        await CardCmd.ChangedCard(card,sign,val,value);
+        await CardCmd.ChangedCard(card, sign, val, value);
         return v;
     }
     /// <summary>
@@ -45,7 +44,7 @@ public class CardVariable<T>(CardModel cardModel,string sign,T obj) : ICardVaria
         var old = variable.Current;
         var value = history.Before;
         variable.Rewind(Index);
-        await CardCmd.ChangedCard(card,sign,old,value);
+        await CardCmd.ChangedCard(card, sign, old, value);
     }
     /// <summary>
     /// 回溯值(不清空历史)
@@ -59,7 +58,7 @@ public class CardVariable<T>(CardModel cardModel,string sign,T obj) : ICardVaria
         var old = variable.Current;
         var value = history.Before;
         variable.RewindReasonable(Index, reason);
-        await CardCmd.ChangedCard(card, sign, old,value);
+        await CardCmd.ChangedCard(card, sign, old, value);
     }
 
     /// <summary>
@@ -81,10 +80,10 @@ public interface ICardVariable
 /// <summary>
 /// 整数变量
 /// </summary>
-public class CardIntVariable(CardModel cardModel,string sign, int baseValue)
+public class CardIntVariable(CardModel cardModel, string sign, int baseValue)
 {
     private CardModel card = cardModel;
-    private IntVariable variable = new IntVariable(sign,baseValue);
+    private IntVariable variable = new IntVariable(sign, baseValue);
     public int Current => variable.Current;
     public bool HasChanged => variable.HasChanged;
     /// <summary>

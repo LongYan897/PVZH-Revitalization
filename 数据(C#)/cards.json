@@ -19,6 +19,7 @@
   "RollingStone.Description": "_消灭_一株 =Strength={2} 或以下的植物。",
   "RollingStone.Rarity": "基础",
   "RollingStone.Label": [],
+  "RollingStone.Cost": 1,
   "RollingStone.Category": "健壮",
   "RollingStone.Camp": "僵尸",
   "RollingStone.Type": "锦囊",

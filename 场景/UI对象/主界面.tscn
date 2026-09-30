@@ -398,6 +398,8 @@ metadata/_custom_type_script = "uid://ccaq7lefsnojt"
 [node name="Animators" type="CanvasLayer" parent="测试用主节点" unique_id=1042041253]
 layer = 112
 
+[node name="Fighters" type="CanvasLayer" parent="测试用主节点" unique_id=852753402]
+
 [connection signal="input_event" from="活动/Area2D" to="." method="uiActInput"]
 [connection signal="mouse_exited" from="活动/Area2D" to="." method="uiActMouseExited"]
 [connection signal="input_event" from="卡组/Area2D" to="." method="uiCardInput"]

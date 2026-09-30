@@ -22,7 +22,7 @@ public static class PlayerManager
     /// </summary>
     /// <param name="p1">玩家1</param>
     /// <param name="p2">玩家2</param>
-    public static void FillPlayer(Player p1,Player p2)
+    public static void FillPlayer(Player p1, Player p2)
     {
 
     }

@@ -1,10 +1,7 @@
 using Battle;
 using Logger;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Phrases;
 
@@ -69,6 +66,6 @@ public static class PhraseManager
             Log.Error("道路数量只有五个 却尝试获取第六个以上或者第零个以下的道路");
             return null;
         }
-        return Roads.First(r=>r.Index == Index);
+        return Roads.First(r => r.Index == Index);
     }
 }

@@ -34,7 +34,7 @@ public class PlayerBox
                 Log.Error("在非战斗场景尝试获取战斗卡组的卡牌");
                 return null;
             }
-            return [.._deckCards.Select(v=>v.Current)];
+            return [.. _deckCards.Select(v => v.Current)];
         }
     }
     /// <summary>
@@ -63,7 +63,7 @@ public class PlayerBox
     public void DeckAddCard(CardModel card)
     {
         if (_deckCards.Any(v => v.Current == card)) return;
-        _deckCards.Add(new("Card",card));
+        _deckCards.Add(new("Card", card));
     }
     /// <summary>
     /// 从战斗中移除卡牌
@@ -71,7 +71,7 @@ public class PlayerBox
     /// <param name="card">移除的卡牌</param>
     public void DeckRemoveCard(CardModel card)
     {
-        _deckCards.RemoveAll(v=>v.Current == card);
+        _deckCards.RemoveAll(v => v.Current == card);
     }
     /// <summary>
     /// 往手牌中加入卡牌

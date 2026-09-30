@@ -1,15 +1,13 @@
 using Card;
+using Controller;
 using Godot;
-using Logger;
 using Pack;
 using Spine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Target;
-using Variable;
 
 namespace Battle.Entity;
 
@@ -49,8 +47,8 @@ public partial class Fighter : Control, ITarget
     /// <summary>
     /// 检查能否某类型卡牌被作为目标
     /// </summary>
-    public Func<CardModel,Func<FighterCardModel,bool>, bool> CanBeTarget =>
-        (t,f) =>
+    public Func<CardModel, Func<FighterCardModel, bool>, bool> CanBeTarget =>
+        (t, f) =>
         {
             bool? a;
             a = f?.Invoke(Model);
@@ -62,16 +60,24 @@ public partial class Fighter : Control, ITarget
         };
     public async Task Die()
     {
-        await GetNode<SpineHandler>("%动画").SetAnimationTask(0,"die");
-        Tween tween = CreateTween();
-        tween.TweenProperty(this, "modulate",new Color(1,1,1,0),0.03f);
-        await ToSignal(tween, Tween.SignalName.Finished);
+        GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"die", false);
+        GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"die", false);
+        GetNode<Label>("%伤害数值").Visible = false;
+        GetNode<Label>("%血量数值").Visible = false;
+        await GetNode<SpineHandler>("%动画").SetAnimationTask(0, "die");
+        if (Model.Camp == Camp.Plant)
+        {
+            Tween tween = CreateTween();
+            tween.TweenProperty(GetNode<SpineHandler>("%动画"), "modulate", new Color(1, 1, 1, 0), 0.3f);
+            await ToSignal(tween, Tween.SignalName.Finished);
+        }
         Visible = false;
         Clear();
+        await AnimaActor.PlayInstantAnimation("res://数据资源/属性动画/死亡特效.tres", GlobalPosition + new Vector2(0, -30), "intro");
     }
     public TargetType TargetType => TargetType.Fighters;
-    private ColorBox _colortgBox = new ColorBox(new Color("ffffff"),new Color("37ff00"),default,default);
-    public static void CallFightersTargeted(CardModel cardModel,TargetType targetType)
+    private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
+    public static void CallFightersTargeted(CardModel cardModel, TargetType targetType)
     {
         if (targetType == TargetType.Fighters)
         {
@@ -103,7 +109,7 @@ public partial class Fighter : Control, ITarget
     /// </summary>
     public async Task Battle()
     {
-       await PlayAnimation("attack", true);
+        await PlayAnimation("attack", true);
     }
     /// <summary>
     /// 攻击之前
@@ -129,7 +135,7 @@ public partial class Fighter : Control, ITarget
     /// <param name="model">绑定的卡牌</param>
     /// <param name="index">生成单位的位置</param>
     /// <returns>单位</returns>
-    public static Fighter Generate(Node node,FighterCardModel model,Road road,Location index)
+    public static Fighter Generate(Node node, FighterCardModel model, Road road, Location index)
     {
         if (Instances.Count < maxInstance)
         {
@@ -144,11 +150,11 @@ public partial class Fighter : Control, ITarget
         }
         else
         {
-            var fighter = Instances.First(p=>p.Key.Model == null).Key;
+            var fighter = Instances.First(p => p.Key.Model == null).Key;
             fighter.isFirstPlace = true;
             if (node != fighter.GetParent())
             {
-                fighter.GetParent().RemoveChild(fighter);  
+                fighter.GetParent().RemoveChild(fighter);
                 node.AddChild(fighter);
             }
             fighter.Fresh();
@@ -172,9 +178,9 @@ public partial class Fighter : Control, ITarget
     /// </summary>
     /// <param name="name">动画名称</param>
     /// <returns></returns>
-    public async Task PlayAnimation(string name,bool returnToIdle)
+    public async Task PlayAnimation(string name, bool returnToIdle)
     {
-        await GetNode<SpineHandler>("%动画").SetAnimationTask(0, name,false);
+        await GetNode<SpineHandler>("%动画").SetAnimationTask(0, name, false);
         if (returnToIdle)
         {
             GetNode<SpineHandler>("%动画").SetAnimation(0, "idle", true);
@@ -194,8 +200,8 @@ public partial class Fighter : Control, ITarget
         _tweenTargeted = CreateTween().BindNode(sp).SetLoops(-1);
         sp.Modulate = _colortgBox.Default;
         sp.Visible = true;
-        _tweenTargeted.TweenProperty(sp,"scale",2.4f * new Vector2(1.02f,1.02f),1f);
-        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f,0.98f), 1f);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 1f);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f, 0.98f), 1f);
     }
     private void KillTween()
     {
@@ -210,7 +216,7 @@ public partial class Fighter : Control, ITarget
     }
     public override void _Ready()
     {
-        GetNode<Area2D>("碰撞箱").SetMeta("Target",this);
+        GetNode<Area2D>("碰撞箱").SetMeta("Target", this);
         GetNode<Area2D>("碰撞箱").SetMeta("TargetType", "Fighter");
     }
     public void Targeted()
@@ -232,7 +238,7 @@ public partial class Fighter : Control, ITarget
         _tweenTargeted2 = CreateTween().BindNode(sp);
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1f, 1f), 0.2f);
         _tweenTargeted2.TweenProperty(sp, "modulate", _colortgBox.Default, 0.2f);
-        await ToSignal(_tweenTargeted,Tween.SignalName.Finished);
+        await ToSignal(_tweenTargeted, Tween.SignalName.Finished);
         KillTween();
         _tweenTargeted = CreateTween().BindNode(sp).SetLoops(-1);
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 1f);
@@ -291,21 +297,13 @@ public partial class Fighter : Control, ITarget
             if (Model is FighterCardModel fighterCard)
             {
                 GetNode<Node2D>("%基础信息").Visible = true;
-                GetNode<TextureRect>("%伤害").Texture = fighterCard.AtkType.Current.Icon;
+                GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
+                GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"intro", false);
                 GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
-                GetNode<TextureRect>("%血量").Texture = fighterCard.HpType.Current.Icon;
+                GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+                GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
                 GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
-
-                if (fighterCard.AtkType.Current.AddtiveIcon != null)
-                    GetNode<TextureRect>("%攻击力特效").Texture = fighterCard.AtkType.Current.AddtiveIcon;
-                else
-                    GetNode<TextureRect>("%攻击力特效").Visible = false;
-
-                if (fighterCard.HpType.Current.AddtiveIcon != null)
-                    GetNode<TextureRect>("%生命值特效").Texture = fighterCard.HpType.Current.AddtiveIcon;
-                else
-                    GetNode<TextureRect>("%生命值特效").Visible = false;
-
+                GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
                 if (fighterCard.Hp.HasChanged)
                 {
                     if (fighterCard.Hp.PositiveChanged)

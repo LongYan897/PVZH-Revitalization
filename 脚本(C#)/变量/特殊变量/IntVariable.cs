@@ -4,14 +4,14 @@ namespace Variable.Special;
 /// <summary>
 /// 整数变量
 /// </summary>
-public class IntVariable(string sign,int baseValue) : Variable<int>(sign,baseValue)
+public class IntVariable(string sign, int baseValue) : Variable<int>(sign, baseValue)
 {
     /// <summary>
     /// 增加值
     /// </summary>
     /// <param name="value">要增加的值</param>
     /// <param name="reason">原因</param>
-    public void Gain(int value,VariableReason reason)
+    public void Gain(int value, VariableReason reason)
     {
         Record(Current, Current + value, reason);
         Current = Current + value;
@@ -21,7 +21,7 @@ public class IntVariable(string sign,int baseValue) : Variable<int>(sign,baseVal
     /// </summary>
     /// <param name="value">要减少的值</param>
     /// <param name="reason">原因</param>
-    public void Lose(int value,VariableReason reason)
+    public void Lose(int value, VariableReason reason)
     {
         Record(Current, Current - value, reason);
         Current = Current - value;

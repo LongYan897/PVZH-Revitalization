@@ -65,7 +65,7 @@ public class CardString
     /// <summary>
     /// 卡包
     /// </summary>
-    public string Pack {  get; private set; }
+    public string Pack { get; private set; }
 
     /// <summary>
     /// 动画路径
@@ -106,11 +106,11 @@ public class CardString
     /// <summary>
     /// 初始的攻击类型
     /// </summary>
-    public AtkType AtkType {  get; private set; }
+    public AtkType AtkType { get; private set; }
     /// <summary>
     /// 阵营
     /// </summary>
-    public Camp Camp {  get; private set; }
+    public Camp Camp { get; private set; }
     /// <summary>
     /// 卡牌种类
     /// </summary>
@@ -187,9 +187,9 @@ public class CardString
                 "单位" => CardType.Fighter,
                 "环境" => CardType.Environment,
                 _ => CardType.None
-            } | 
-            (cardType.Split(";").Count() > 1 ? cardType.Split(";")[1] 
-            switch 
+            } |
+            (cardType.Split(";").Count() > 1 ? cardType.Split(";")[1]
+            switch
             {
                 "英雄" => CardType.Hero,
                 _ => CardType.None

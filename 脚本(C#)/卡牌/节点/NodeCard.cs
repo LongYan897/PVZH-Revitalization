@@ -1,9 +1,8 @@
 using Battle.Entity;
 using Card.Cmd;
 using Godot;
-using Logger;
 using Pack;
-using System;
+using Spine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -176,6 +175,7 @@ public partial class NodeCard : Control
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;
+        if (!isCallDragging) return;
         if (@event is InputEventMouseButton mb)
         {
             if (mb.ButtonIndex == MouseButton.Left)
@@ -286,10 +286,14 @@ public partial class NodeCard : Control
         ZIndex -= 100;
         if (ChoiceCard == this) ChoiceCard = null;
         Fighter.DeleteFightersTargeted(Model.TargetType);
-        ReturnToOrigin();
-        if (target != null)
+        if (target == null)
+            ReturnToOrigin();
+        else
         {
+            await DiscallDrugging();
+            Visible = false;
             await CardCmd.PlayedCard(Model, target);
+            await Model.DestroyMe();
         }
     }
 
@@ -299,7 +303,7 @@ public partial class NodeCard : Control
         _returnTween = CreateTween();
         _returnTween.SetEase(Tween.EaseType.Out);
         _returnTween.SetTrans(Tween.TransitionType.Quad);
-        _returnTween.TweenProperty(this, "position", _cardOriginPos, 0.2f);
+        _returnTween.TweenProperty(this, "position", _cardOriginPos + new Vector2(0, -20), 0.2f);
     }
 
     private ITarget target;
@@ -378,6 +382,33 @@ public partial class NodeCard : Control
         }
     }
 
+    private Tween _callTween;
+    private void KillCallTween()
+    {
+        if (_callTween != null && _callTween.IsValid())
+        {
+            _callTween.Kill();
+        }
+    }
+    private bool isCallDragging;
+    private async Task CallDrugging()
+    {
+        KillCallTween();
+        isCallDragging = true;
+        _callTween = CreateTween();
+        _callTween.TweenProperty(this, "modulate", new Color(1, 1, 1, 1), 0.1f);
+        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 1), 0.1f);
+        await ToSignal(_callTween, Tween.SignalName.Finished);
+    }
+    private async Task DiscallDrugging()
+    {
+        KillCallTween();
+        isCallDragging = false;
+        _callTween = CreateTween();
+        _callTween.TweenProperty(this, "modulate", new Color(0.6f, 0.6f, 0.6f, 1), 0.1f);
+        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 0f), 0.1f);
+        await ToSignal(_callTween, Tween.SignalName.Finished);
+    }
 
     /// <summary>
     /// 每次修改卡牌时调用 用于刷新卡牌属性
@@ -393,6 +424,13 @@ public partial class NodeCard : Control
                     var frame = GetNode<TextureRect>("%卡框");
                     var frameGlowBg = GetNode<TextureRect>("%卡牌发光背景");
                     var frameBg = GetNode<TextureRect>("%卡牌底板");
+
+                    KillCallTween();
+                    isCallDragging = false;
+                    _callTween = CreateTween();
+                    _callTween.TweenProperty(this, "modulate", new Color(0.6f, 0.6f, 0.6f, 1), 0.4f);
+                    _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 0f), 0.4f);
+                    CallDrugging();
                     frame.Texture = Model.CardType switch
                     {
                         CardType.Hero | CardType.Trick => Model.Rarity switch
@@ -531,18 +569,12 @@ public partial class NodeCard : Control
                     hps.Visible = true;
                     GetNode<Node2D>("%等级").Visible = true;
                     atks.GetNode<RichTextLabel>("数值").Text = $"[center]{fighter.Atk.Current}[/center]";
-                    atks.GetNode<TextureRect>("攻击力").Texture = fighter.AtkType.Current.Icon;
                     atks.GetNode<TextureRect>("攻击力特效").Visible = true;
-                    if (fighter.AtkType.Current.AddtiveIcon != null)
-                        atks.GetNode<TextureRect>("攻击力特效").Texture = fighter.AtkType.Current.AddtiveIcon;
-                    else
-                        atks.GetNode<TextureRect>("攻击力特效").Visible = false;
                     hps.GetNode<RichTextLabel>("数值").Text = $"[center]{fighter.Hp.Current}[/center]";
-                    hps.GetNode<TextureRect>("生命值").Texture = fighter.HpType.Current.Icon;
-                    if (fighter.HpType.Current.AddtiveIcon != null)
-                        hps.GetNode<TextureRect>("生命值特效").Texture = fighter.HpType.Current.AddtiveIcon;
-                    else
-                        hps.GetNode<TextureRect>("生命值特效").Visible = false;
+                    GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
+                    GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"intro", false);
+                    GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
+                    GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
                     if (fighter.Hp.HasChanged)
                     {
                         if (fighter.Hp.PositiveChanged)

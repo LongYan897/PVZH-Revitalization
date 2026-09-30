@@ -33,7 +33,7 @@ public partial class IconComposer : Node
             VerticalAlignment = VerticalAlignment.Center
         };
         _label.AddThemeFontSizeOverride("font_size", 24);
-        _label.AddThemeFontOverride("font",GD.Load<Font>("res://素材/字体/CAFBL___.ttf"));
+        _label.AddThemeFontOverride("font", GD.Load<Font>("res://素材/字体/CAFBL___.ttf"));
         _label.Position += new Vector2(0, 1);
         _label.Size = new Vector2(32, 32);
         _viewport.AddChild(_label);

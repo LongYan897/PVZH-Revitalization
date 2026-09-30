@@ -1,12 +1,8 @@
-
-using Battle.Entity;
 using Godot;
 using Pack;
 using Spine;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Target;
-using static Godot.OpenXRCompositionLayer;
 
 namespace Card;
 
@@ -60,7 +56,7 @@ public partial class CardDes : Control
     {
         _isEnd = false;
         GetNode<Control>("%单位容器").ZIndex = 1036;
-        GetNode<Control>("%单位容器").Position = new(360f,305f);
+        GetNode<Control>("%单位容器").Position = new(360f, 305f);
         GetNode<Control>("%单位容器").TopLevel = true;
         GetNode<ColorRect>("%底色").MouseFilter = MouseFilterEnum.Stop;
         Scale = Vector2.Zero;
@@ -155,9 +151,9 @@ public partial class CardDes : Control
             string name = m.Groups[1].Value;
             string value = m.Groups[2].Value;
 
-            if (Icon.TryGet(name, out var path,out var attr))
+            if (Icon.TryGet(name, out var path, out var attr))
             {
-                var tex = await IconComposer.Instance.ComposeAsync(path, value , attr.Color,attr.OutlineColor,attr.OutlineSize);
+                var tex = await IconComposer.Instance.ComposeAsync(path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
                 if (tex != null)
                     label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
             }
@@ -192,20 +188,12 @@ public partial class CardDes : Control
             if (Model is FighterCardModel fighterCard)
             {
                 GetNode<Node2D>("%基础信息").Visible = true;
-                GetNode<TextureRect>("%伤害").Texture = fighterCard.AtkType.Current.Icon;
+                GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
+                GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"intro", false);
                 GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
-                GetNode<TextureRect>("%血量").Texture = fighterCard.HpType.Current.Icon;
+                GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+                GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
                 GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
-
-                if (fighterCard.AtkType.Current.AddtiveIcon != null)
-                    GetNode<TextureRect>("%攻击力特效").Texture = fighterCard.AtkType.Current.AddtiveIcon;
-                else
-                    GetNode<TextureRect>("%攻击力特效").Visible = false;
-
-                if (fighterCard.HpType.Current.AddtiveIcon != null)
-                    GetNode<TextureRect>("%生命值特效").Texture = fighterCard.HpType.Current.AddtiveIcon;
-                else
-                    GetNode<TextureRect>("%生命值特效").Visible = false;
 
                 if (fighterCard.Hp.HasChanged)
                 {
@@ -248,7 +236,8 @@ public partial class CardDes : Control
                 _ => ""
             }} -";
 
-            GetNode<Label>("%稀有标签Label").Text = (Model.Pack ?? Model.Rarity switch {
+            GetNode<Label>("%稀有标签Label").Text = (Model.Pack ?? Model.Rarity switch
+            {
                 Rarity.Token => null,
                 _ => Model.CardType switch
                 {
@@ -257,8 +246,8 @@ public partial class CardDes : Control
                     CardType.Hero | CardType.Trick => null,
                     _ => "基础-"
                 }
-                })
-            + Model.Rarity switch 
+            })
+            + Model.Rarity switch
             {
                 Rarity.Basic => "常见",
                 Rarity.Common => "常见",
@@ -341,10 +330,10 @@ public partial class CardDes : Control
             };
             GetNode<TextureRect>("%稀有标签").Position = Model.Rarity switch
             {
-                Rarity.Rare => new(-274.0f,163.0f),
+                Rarity.Rare => new(-274.0f, 163.0f),
                 Rarity.SuperRare => new(-290.0f, 144.0f),
                 Rarity.Legend => new(-303.0f, 164.0f),
-                Rarity.Activity => new(-290.0f,97.0f),
+                Rarity.Activity => new(-290.0f, 97.0f),
                 _ => new(-255.5f, 163.0f)
             };
             GetNode<TextureRect>("%稀有标签").Size = Model.Rarity switch
@@ -358,7 +347,7 @@ public partial class CardDes : Control
             var sprite = GetNode<SpineHandler>("%动画");
             sprite.LoadSkeletonData(Model.AnimationPath);
             sprite.SetAnimation(0, "intro", false);
-            sprite.AddAnimation(0,"idle",true); 
+            sprite.AddAnimation(0, "idle", true);
         }
     }
 }

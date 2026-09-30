@@ -1,5 +1,3 @@
-
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +21,7 @@ public class AtkType
     /// <summary>
     /// 攻击力图标
     /// </summary>
-    public virtual Texture2D Icon { get; }
-    /// <summary>
-    /// 额外图标
-    /// </summary>
-    public virtual Texture2D AddtiveIcon { get; }
+    public virtual string IconSkelPath { get; }
     /// <summary>
     /// 持续的攻击力效果
     /// </summary>
@@ -36,7 +30,7 @@ public class AtkType
     /// <summary>
     /// 注册逻辑
     /// </summary>
-    private static List<Func<string, (bool,AtkType)>> Parsers;
+    private static List<Func<string, (bool, AtkType)>> Parsers;
     private static void GetAtkTypes()
     {
         if (Parsers != null) return;

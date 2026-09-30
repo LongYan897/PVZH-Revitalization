@@ -1,8 +1,5 @@
+using Godot;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Controller;
@@ -12,9 +9,10 @@ namespace Controller;
 /// </summary>
 public static class AnimaActor
 {
-    public static async Task PlayInstantAnimation(string skelPath,string name)
+    public static async Task PlayInstantAnimation(string skelPath, Vector2 pos, string name)
     {
         var sp = SpineHandler.Get();
+        sp.Position = pos;
         Main.Animator.AddChild(sp);
         sp.LoadSkeletonData(skelPath);
         await sp.SetAnimationAndFreeOnEndTask(0, name);

@@ -1,5 +1,3 @@
-
-using Battle;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Target;
@@ -36,13 +34,13 @@ public static class CardCmd
     /// <param name="before">变量修改前的值</param>
     /// <param name="after">变量修改后的值</param>
     /// <returns></returns>
-    public static async Task ChangedCard<T>(CardModel cardModel,string key,T before,T after)
+    public static async Task ChangedCard<T>(CardModel cardModel, string key, T before, T after)
     {
         cardModel.Fresh();
         await cardModel.Changed<T>(key, before, after);
         foreach (CardModel card in CardInstances)
         {
-            await card.AfterCardBeChanged(cardModel,key,before,after);
+            await card.AfterCardBeChanged(cardModel, key, before, after);
         }
     }
     /// <summary>
@@ -51,7 +49,7 @@ public static class CardCmd
     /// <param name="cardModel">打出的卡牌</param>
     /// <param name="target">打出卡牌的对象</param>
     /// <returns></returns>
-    public static async Task PlayedCard(CardModel cardModel,ITarget target)
+    public static async Task PlayedCard(CardModel cardModel, ITarget target)
     {
         await cardModel.Play(target);
         foreach (CardModel card in CardInstances)

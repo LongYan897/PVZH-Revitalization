@@ -1,10 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pack;
 
@@ -18,14 +15,14 @@ public class IconTextAttribute : Attribute
     /// 字体颜色
     /// </summary>
 	public Color Color { get; }
-	/// <summary>
+    /// <summary>
     /// 字体轮廓颜色
     /// </summary>
     public Color OutlineColor { get; }
     /// <summary>
     /// 字体轮廓大小
     /// </summary>
-	public int OutlineSize {  get; }
+	public int OutlineSize { get; }
     public IconTextAttribute(float r, float g, float b, float a = 1f)
     {
         Color = new Color(r, g, b, a);
@@ -46,7 +43,7 @@ public class IconTextAttribute : Attribute
         OutlineColor = new Color();
         OutlineSize = 0;
     }
-    public IconTextAttribute(string colorCode,string outlineColorCode,int outlineSize)
+    public IconTextAttribute(string colorCode, string outlineColorCode, int outlineSize)
     {
         Color = new Color(colorCode);
         OutlineColor = new Color(outlineColorCode);

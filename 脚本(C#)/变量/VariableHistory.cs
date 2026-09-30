@@ -4,7 +4,7 @@ namespace Variable;
 /// <summary>
 /// 变量的历史
 /// </summary>
-public class VariableHistory(int Index,object Before,object After,VariableReason Reason)
+public class VariableHistory(int Index, object Before, object After, VariableReason Reason)
 {
     /// <summary>
     /// 历史的顺序 越大代表修改事件越晚

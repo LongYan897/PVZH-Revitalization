@@ -11,22 +11,22 @@ namespace Card;
 /// 可以新建类继承Buff比较方便
 /// </summary>
 /// <param name="action">对目标卡牌的操作</param>
-public class Buff(Func<CardModel,Task> action = null)
+public class Buff(Func<CardModel, Task> action = null)
 {
     /// <summary>
     /// 操作的卡牌
     /// </summary>
-    private readonly Variable<CardModel> _card = new("Base",null);
+    private readonly Variable<CardModel> _card = new("Base", null);
     /// <summary>
     /// 对目标卡牌的操作
     /// </summary>
-    public readonly Func<CardModel,Task> Action = action;
+    public readonly Func<CardModel, Task> Action = action;
     /// <summary>
     /// 操作卡牌
     /// </summary>
     /// <param name="cardModel">操作的对象</param>
     /// <param name="reason">操作的原因</param>
-    public async Task Result(CardModel cardModel,VariableReason reason)
+    public async Task Result(CardModel cardModel, VariableReason reason)
     {
         if (Action == null)
         {
@@ -34,7 +34,7 @@ public class Buff(Func<CardModel,Task> action = null)
             return;
         }
         if (_card.Current != null) return;
-        _card.Set(cardModel.Clone(),reason);
+        _card.Set(cardModel.Clone(), reason);
         await Action(cardModel);
     }
     /// <summary>

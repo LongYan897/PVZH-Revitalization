@@ -1,13 +1,8 @@
 using Battle;
 using Battle.Entity;
 using Card.String;
-using Logger;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Target;
-using Variable;
-using Variable.Special;
 
 namespace Card;
 
@@ -23,11 +18,15 @@ public class FighterCardModel : CardModel
     /// <returns>加载出来的卡牌</returns>
     protected override CardModel LoadData(CardString cardString)
     {
-        Atk = new(this,"Attack", cardString.Attack);
-        AtkType = new(this,"AttackType", cardString.AtkType);
-        Hp = new(this,"Health", cardString.Health);
-        HpType = new(this,"HealthType",cardString.HpType);
+        Atk = new(this, "Attack", cardString.Attack);
+        AtkType = new(this, "AttackType", cardString.AtkType);
+        Hp = new(this, "Health", cardString.Health);
+        HpType = new(this, "HealthType", cardString.HpType);
         return LoadCustomData(cardString);
+    }
+    public Task Die()
+    {
+        return Fighter.GetNode(this).Die();
     }
     /// <summary>
     /// 检测能否被Card当作对象
@@ -64,11 +63,11 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 卡牌的攻击力
     /// </summary>
-    public CardIntVariable Atk {  get;private set; }
+    public CardIntVariable Atk { get; private set; }
     /// <summary>
     /// 卡牌的攻击类型
     /// </summary>
-    public CardVariable<AtkType> AtkType {  get; private set; }
+    public CardVariable<AtkType> AtkType { get; private set; }
     /// <summary>
     /// 卡牌的生命值
     /// </summary>
@@ -94,8 +93,8 @@ public class FighterCardModel : CardModel
     /// </summary>
     /// <param name="road">所处的战斗道路</param>
     /// <returns></returns>
-    public virtual Task AfterPlayed(Road road) {  return Task.CompletedTask; }
-    public override async Task Changed<T>(string key,T valueAfter, T valueBefore)
+    public virtual Task AfterPlayed(Road road) { return Task.CompletedTask; }
+    public override async Task Changed<T>(string key, T valueAfter, T valueBefore)
     {
         if (key == "Health")
         {

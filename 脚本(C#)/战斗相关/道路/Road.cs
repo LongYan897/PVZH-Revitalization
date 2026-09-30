@@ -1,8 +1,5 @@
 
 using Battle.Entity;
-using Card;
-using Card.Cmd;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,7 +63,7 @@ public class Road
             await fighter.AfterAtk(this);
         }
     }
-    private readonly Variable<Environment> _environment = new("Environment",null);
+    private readonly Variable<Environment> _environment = new("Environment", null);
     /// <summary>
     /// 该道路的环境
     /// 只有道路类型是平地的才有
@@ -76,11 +73,11 @@ public class Road
         get
         {
             return Type switch
-            { 
+            {
                 RoadType.Ground => _environment.Current,
                 _ => null
             };
         }
     }
-    
+
 }

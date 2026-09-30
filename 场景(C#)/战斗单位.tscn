@@ -4,7 +4,6 @@
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="2_w5bvm"]
 [ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="3_bev64"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="3_qosmd"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://xhjd3hi3vww0" path="res://数据资源/属性动画/等级动画.tres" id="4_qosmd"]
 [ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="5_6cys6"]
 [ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="6_4gq2c"]
 [ext_resource type="Texture2D" uid="uid://brf5p27vt3t6o" path="res://素材/对象高亮框/单位1.png" id="8_bev64"]
@@ -39,8 +38,13 @@ scale = Vector2(3.6, 3.6)
 unique_name_in_owner = true
 z_index = 34
 
+[node name="血量动画" parent="基础信息" unique_id=1977449702 instance=ExtResource("3_qosmd")]
+unique_name_in_owner = true
+position = Vector2(140, 0)
+
 [node name="血量" type="TextureRect" parent="基础信息" unique_id=1431460387]
 unique_name_in_owner = true
+visible = false
 offset_left = 98.0
 offset_top = -40.070908
 offset_right = 185.51959
@@ -71,6 +75,7 @@ vertical_alignment = 1
 
 [node name="生命值特效" type="TextureRect" parent="基础信息" unique_id=1531423819]
 unique_name_in_owner = true
+visible = false
 offset_left = -41.52652
 offset_top = -328.40405
 offset_right = 277.12656
@@ -82,8 +87,13 @@ mouse_filter = 2
 texture = SubResource("AtlasTexture_ggbqp")
 stretch_mode = 2
 
+[node name="伤害动画" parent="基础信息" unique_id=1188301239 instance=ExtResource("3_qosmd")]
+unique_name_in_owner = true
+position = Vector2(-139, 0)
+
 [node name="伤害" type="TextureRect" parent="基础信息" unique_id=526937123]
 unique_name_in_owner = true
+visible = false
 offset_left = -185.0
 offset_top = -40.070908
 offset_right = -88.33331
@@ -121,6 +131,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="攻击力特效" type="TextureRect" parent="基础信息" unique_id=515793783]
 unique_name_in_owner = true
+visible = false
 offset_left = -325.52652
 offset_top = -328.404
 offset_right = -6.8734436
@@ -132,16 +143,9 @@ mouse_filter = 2
 texture = SubResource("AtlasTexture_ggbqp")
 stretch_mode = 2
 
-[node name="等级" type="SpineSprite" parent="基础信息" unique_id=58495163]
-skeleton_data_res = ExtResource("4_qosmd")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
+[node name="等级" parent="基础信息" unique_id=1703809306 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
-z_index = 3
-position = Vector2(0, 116)
-scale = Vector2(0.7, 0.7)
+position = Vector2(0, 117)
 
 [node name="ExSprite" type="Node2D" parent="." unique_id=1255777390]
 unique_name_in_owner = true

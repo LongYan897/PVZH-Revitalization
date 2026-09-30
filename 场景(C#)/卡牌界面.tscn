@@ -273,8 +273,13 @@ z_index = 34
 position = Vector2(0, -192.00003)
 scale = Vector2(0.3, 0.3)
 
+[node name="伤害动画" parent="基础信息" unique_id=922182681 instance=ExtResource("10_fad38")]
+unique_name_in_owner = true
+position = Vector2(140, 26.666767)
+
 [node name="伤害" type="TextureRect" parent="基础信息" unique_id=1199868725]
 unique_name_in_owner = true
+visible = false
 offset_left = -276.66666
 offset_top = -119.99992
 offset_right = -179.99997
@@ -292,9 +297,9 @@ anchor_top = -0.37777779
 anchor_right = -0.38620678
 anchor_bottom = -0.37777779
 offset_left = -240.00005
-offset_top = -116.666504
+offset_top = -109.99984
 offset_right = -19.000046
-offset_bottom = 133.3335
+offset_bottom = 140.00015
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -311,6 +316,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="攻击力特效" type="TextureRect" parent="基础信息" unique_id=175033825]
 unique_name_in_owner = true
+visible = false
 offset_left = -313.33334
 offset_top = -313.3331
 offset_right = 5.3197327
@@ -322,8 +328,13 @@ mouse_filter = 2
 texture = SubResource("AtlasTexture_vxs5b")
 stretch_mode = 2
 
+[node name="血量动画" parent="基础信息" unique_id=1116490365 instance=ExtResource("10_fad38")]
+unique_name_in_owner = true
+position = Vector2(-130, 26.666767)
+
 [node name="血量" type="TextureRect" parent="基础信息" unique_id=1573850398]
 unique_name_in_owner = true
+visible = false
 offset_left = 6.6666718
 offset_top = -93.33328
 offset_right = 94.186264
@@ -353,6 +364,7 @@ vertical_alignment = 1
 
 [node name="生命值特效" type="TextureRect" parent="基础信息" unique_id=1659034884]
 unique_name_in_owner = true
+visible = false
 offset_left = -43.3333
 offset_top = -313.33316
 offset_right = 275.31976

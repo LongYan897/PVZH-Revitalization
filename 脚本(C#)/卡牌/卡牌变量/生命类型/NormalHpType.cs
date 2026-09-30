@@ -1,10 +1,4 @@
-using Godot;
 using Pack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Card;
 
@@ -19,5 +13,5 @@ public class NormalHpType : HpType
 
     [IconText("ffffff", "91001b", 3)]
     public const string Health = "res://素材(C#)/文本图片/heart.png";
-    public override Texture2D Icon => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/heart.png");
+    public override string IconSkelPath => "res://数据资源/属性动画/血量动画.tres";
 }

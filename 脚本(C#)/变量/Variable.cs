@@ -1,6 +1,5 @@
 using Card;
 using Logger;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,7 +68,7 @@ public class Variable<T> : IVariable
     /// <param name="after">修改后的值</param>
     /// <param name="reason">原因</param>
     /// <returns>返回历史时期的顺序</returns>
-    protected int Record(T before,T after,VariableReason reason)
+    protected int Record(T before, T after, VariableReason reason)
     {
         int index = _history.Count;
         if (typeof(T).IsClass && typeof(T) != typeof(string) && before != null)
@@ -94,7 +93,7 @@ public class Variable<T> : IVariable
     /// </summary>
     /// <param name="sign">变量的标志</param>
     /// <param name="baseValue">变量的基础值</param>
-    public Variable(string sign,T baseValue)
+    public Variable(string sign, T baseValue)
     {
         Sign = sign;
         Base = baseValue;
@@ -107,11 +106,11 @@ public class Variable<T> : IVariable
     /// <summary>
     /// 变量的基础值
     /// </summary>
-    public T Base { get;protected set; }
+    public T Base { get; protected set; }
     /// <summary>
     /// 变量的当前值
     /// </summary>
-    public T Current {  get;protected set; }
+    public T Current { get; protected set; }
     private readonly List<VariableHistory> _history = new();
     /// <summary>
     /// 变量修改的历史
@@ -133,9 +132,9 @@ public class Variable<T> : IVariable
     /// <param name="value">要设置的值</param>
     /// <param name="reason">设置的原因</param>
     /// <returns>返回历史时期的顺序</returns>
-    public virtual int Set(T value,VariableReason reason)
+    public virtual int Set(T value, VariableReason reason)
     {
-        int index = Record(Current,value, reason);
+        int index = Record(Current, value, reason);
         Current = value;
         return index;
     }
@@ -170,10 +169,10 @@ public class Variable<T> : IVariable
             Log.Error($"Index : {Index} 已经大于该变量修改的历史总数 找不到对应的历史");
             return;
         }
-        VariableHistory history = _history.First(his=>his.Index == Index);
+        VariableHistory history = _history.First(his => his.Index == Index);
         var before = (T)history.Before;
         Current = before;
-        _history.RemoveAll(his=>his.Index >= Index);
+        _history.RemoveAll(his => his.Index >= Index);
     }
     /// <summary>
     /// 回退到最晚历史时期
@@ -187,7 +186,7 @@ public class Variable<T> : IVariable
     /// </summary>
     /// <param name="Index">对应时期的顺序 从0开始</param>
     /// <param name="reason">回退的原因</param>
-    public virtual void RewindReasonable(int Index,VariableReason reason)
+    public virtual void RewindReasonable(int Index, VariableReason reason)
     {
         if (Index >= _history.Count || Index < 0)
         {
@@ -221,5 +220,5 @@ public class Variable<T> : IVariable
     /// <summary>
     /// 检查是否已经被修改
     /// </summary>
-    public bool HasChanged =>_history.Count > 0;
+    public bool HasChanged => _history.Count > 0;
 }
