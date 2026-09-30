@@ -49,6 +49,7 @@ namespace Card.String;
 ///         "Peashooter.Type": "单位" （关于英雄的可以写成"单位;英雄"）<br/>
 ///         "Peashooter.AtkType": "普通",<br/>
 ///         "Peashooter.HpType": "普通"<br/>
+///         "Peashooter.HpType": "星星"<br/>
 ///         "Peashooter.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres"<br/>
 ///     }<br/>
 ///     *********

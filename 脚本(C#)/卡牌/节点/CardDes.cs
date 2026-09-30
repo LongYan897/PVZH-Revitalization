@@ -127,44 +127,52 @@ public partial class CardDes : Control
             Fresh();
         }
     }
+    private static readonly Regex IconRegex =
+        new Regex(@"=(\w+)=(?:\{(\d+)\}|\})", RegexOptions.Compiled);
+
+    private static readonly Regex LinkRegex =
+        new Regex(@"_([^_]+)_", RegexOptions.Compiled);
+
+    private static string ConvertLinks(string text) =>
+        LinkRegex.Replace(text,
+            mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
+
     public async Task SetDescription(string raw)
     {
-        var matches = Regex.Matches(raw, @"=(\w+)=\{(\d+)\}");
         var label = GetNode<RichTextLabel>("%介绍Label");
-
         label.Clear();
         label.BbcodeEnabled = true;
 
         int last = 0;
-        foreach (Match m in matches)
+        foreach (Match m in IconRegex.Matches(raw))
         {
             if (m.Index > last)
-            {
-                string textPart = raw.Substring(last, m.Index - last);
-                textPart = Regex.Replace(textPart, @"_([^_]+)_",
-                    mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
-                label.AppendText(textPart);
-            }
+                label.AppendText(ConvertLinks(raw.Substring(last, m.Index - last)));
 
             string name = m.Groups[1].Value;
-            string value = m.Groups[2].Value;
+            bool hasNum = m.Groups[2].Success;
+            string value = hasNum ? m.Groups[2].Value : null;
 
             if (Icon.TryGet(name, out var path, out var attr))
             {
-                var tex = await IconComposer.Instance.ComposeAsync(path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
-                if (tex != null)
-                    label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+                if (hasNum)
+                {
+                    var tex = await IconComposer.Instance.ComposeAsync(
+                        path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
+                    if (tex != null)
+                        label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+                }
+                else
+                {
+                    label.AppendText($"[img]{path}[/img]");
+                }
             }
 
             last = m.Index + m.Length;
         }
+
         if (last < raw.Length)
-        {
-            string tail = raw.Substring(last);
-            tail = Regex.Replace(tail, @"_([^_]+)_",
-                mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
-            label.AppendText(tail);
-        }
+            label.AppendText(ConvertLinks(raw.Substring(last)));
     }
     private async void Fresh()
     {
