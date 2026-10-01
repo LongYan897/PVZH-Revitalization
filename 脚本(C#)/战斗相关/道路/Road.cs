@@ -7,7 +7,6 @@ using Variable;
 using Environment = Battle.Entity.Environment;
 
 namespace Battle;
-
 /// <summary>
 /// 道路的类型
 /// </summary>
@@ -79,5 +78,28 @@ public class Road
             };
         }
     }
-
+    /// <summary>
+    /// 添加战斗单位到该道路
+    /// </summary>
+    /// <param name="fighter">要添加的战斗单位</param>
+    public void AddFighter(Fighter fighter)
+    {
+        fighters.Add(fighter);
+    }
+    /// <summary>
+    /// 移除战斗单位从该道路
+    /// </summary>
+    /// <param name="fighter">要移除的战斗单位</param>
+    public void RemoveFighter(Fighter fighter)
+    {
+        fighters.Remove(fighter);
+    }
+    /// <summary>
+    /// 获取该道路上的所有战斗单位
+    /// </summary>
+    /// <returns>获取到的战斗单位列表</returns>
+    public List<Fighter> GetFighters()
+    {
+        return fighters;
+    }
 }

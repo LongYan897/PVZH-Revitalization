@@ -17,6 +17,7 @@ namespace Card.String;
 ///     费用  : 使用 "Cost" 当作Json的键<br/>
 ///     名称  : 使用 "Title" 当作Json的键<br/>
 ///     标签  : 使用 "Label" 当作Json的键 值是列表 [,..]<br/>
+///     关键词  : 使用 "Tag" 当作Json的键 值是列表 [,..]<br/>
 ///     派系  : 使用 "Category" 当作Json的键<br/>
 ///     稀有度  : 使用 "Rarity" 当作Json的键<br/>
 ///     类别 : 使用 "Type" 当作Json的键<br/>
@@ -95,6 +96,10 @@ public class CardString
     /// 稀有度
     /// </summary>
     public Rarity Rarity { get; private set; }
+    /// <summary>
+    /// 卡牌关键词
+    /// </summary>
+    public CardTag CardTag { get; private set; }
     /// <summary>
     /// 标签
     /// </summary>
@@ -214,6 +219,19 @@ public class CardString
         if (GetData(cardTitle, "Label").VariantType != Variant.Type.Nil)
         {
             cardString.Labels = [.. GetData(cardTitle, "Label").AsStringArray()];
+        }
+        if (GetData(cardTitle, "Tag").VariantType != Variant.Type.Nil)
+        {
+            CardTag tag = CardTag.None;
+            if (GetData(cardTitle, "Tag").AsStringArray().Contains("Coop") || GetData(cardTitle, "Tag").AsStringArray().Contains("组队"))
+            {
+                tag |= CardTag.Coop;
+            }
+            if (GetData(cardTitle, "Tag").AsStringArray().Contains("Amphibious") || GetData(cardTitle, "Tag").AsStringArray().Contains("两栖"))
+            {
+                tag |= CardTag.Amphibious;
+            }
+            cardString.CardTag = tag;
         }
         if (GetData(cardTitle, "Rarity").VariantType != Variant.Type.Nil)
         {

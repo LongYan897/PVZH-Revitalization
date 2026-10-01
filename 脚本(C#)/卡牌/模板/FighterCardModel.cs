@@ -25,6 +25,10 @@ public class FighterCardModel : CardModel
 
         return LoadCustomData(cardString);
     }
+    /// <summary>
+    /// 让单位死亡
+    /// </summary>
+    /// <returns></returns>
     public Task Die()
     {
         return Fighter.GetNode(this).Die();
@@ -32,13 +36,13 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 检测能否被Card当作对象
     /// </summary>
-    /// <param name="cardModel"></param>
+    /// <param name="cardModel">要把该卡牌当作目标的卡牌</param>
     /// <returns></returns>
     protected virtual bool CanTargetedBy(CardModel cardModel) { return true; }
     /// <summary>
     /// 检测能否被Card当作对象
     /// </summary>
-    /// <param name="cardModel"></param>
+    /// <param name="cardModel">要把该卡牌当作目标的卡牌</param>
     /// <returns></returns>
     public bool CanbeTarget(CardModel cardModel)
     {
@@ -61,6 +65,10 @@ public class FighterCardModel : CardModel
     /// <param name="cardString">目标String</param>
     /// <returns>加载出来的卡牌</returns>
     protected virtual CardModel LoadCustomData(CardString cardString) { return this; }
+    /// <summary>
+    /// 卡牌关键词的类型
+    /// </summary>
+    public virtual CardTag CardTag { get; private set; } = CardTag.None;
     /// <summary>
     /// 卡牌的攻击力
     /// </summary>

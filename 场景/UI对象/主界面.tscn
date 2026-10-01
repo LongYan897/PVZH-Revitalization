@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://br5nuly1nj771" path="res://素材/ui/界面ui/按钮5.png" id="19_yri0s"]
 [ext_resource type="Texture2D" uid="uid://djrnhsnaoecwq" path="res://素材/ui/界面ui/渐变纹理.png" id="20_bskb0"]
 [ext_resource type="Script" uid="uid://ccaq7lefsnojt" path="res://脚本(C#)/游戏控制/Main.cs" id="21_fe8yl"]
+[ext_resource type="PackedScene" uid="uid://dklertu5xn7l" path="res://场景(C#)/道路.tscn" id="22_kjoov"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s6aw8"]
 
@@ -406,6 +407,11 @@ layer = 50
 
 [node name="Des" type="CanvasLayer" parent="测试用主节点" unique_id=1141592221]
 layer = 1000
+
+[node name="Audios" type="Node2D" parent="测试用主节点" unique_id=825812913]
+
+[node name="道路" parent="测试用主节点" unique_id=942116151 instance=ExtResource("22_kjoov")]
+position = Vector2(-256, 230)
 
 [connection signal="input_event" from="活动/Area2D" to="." method="uiActInput"]
 [connection signal="mouse_exited" from="活动/Area2D" to="." method="uiActMouseExited"]

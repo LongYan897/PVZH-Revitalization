@@ -107,12 +107,11 @@ public class CardModel
         return this;
     }
     /// <summary>
-    /// 对于目标是战斗单位的卡牌
     /// 这个是筛选能成为目标的函数
     /// </summary>
-    /// <param name="cardModel"></param>
+    /// <param name="target">目标</param>
     /// <returns></returns>
-    public virtual bool TargetFilter(FighterCardModel cardModel)
+    public virtual bool TargetFilter(ITarget target)
     {
         return true;
     }

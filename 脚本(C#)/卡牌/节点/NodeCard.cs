@@ -1,3 +1,4 @@
+using Battle;
 using Battle.Entity;
 using Card.Cmd;
 using Controller;
@@ -265,6 +266,7 @@ public partial class NodeCard : Control
     private void Drag()
     {
         Fighter.CallFightersTargeted(Model, Model.TargetType);
+        NodeRoad.CallRoadLinesTargeted(Model, Model.TargetType);
     }
 
     private void OnCardClick()
@@ -278,11 +280,12 @@ public partial class NodeCard : Control
         ZIndex -= 100;
         if (ChoiceCard == this) ChoiceCard = null;
         Fighter.DeleteFightersTargeted(Model.TargetType);
+        NodeRoad.DeleteRoadLinesTargeted(Model.TargetType);
         if (target == null)
             ReturnToOrigin();
         else
         {
-            await DiscallDrugging();
+            await DiscallDragging();
             Visible = false;
             await CardCmd.PlayedCard(Model, target);
             await Model.DestroyMe();
@@ -308,24 +311,39 @@ public partial class NodeCard : Control
             var type = (string)area.GetMeta("TargetType");
             if (type == "Fighter")
             {
-                if (Model.TargetType == TargetType.Fighters)
+                if (Model.TargetType.HasFlag(TargetType.Fighters))
                 {
                     var col = (Fighter)(GodotObject)variant;
                     if (!col.Calling) return;
                     target = col;
                     col.Targeted();
-
-                    var glowNode = GetNode<TextureRect>("%卡牌发光背景");
-                    if (_colorTween != null && _colorTween.IsValid())
-                        _colorTween.Kill();
-                    _colorTween = glowNode.CreateTween();
-                    _colorTween.TweenProperty(glowNode, "modulate", _colorBox.ColorA, 0.5f)
-                        .SetTrans(Tween.TransitionType.Cubic)
-                        .SetEase(Tween.EaseType.Out);
-                    GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
+                    Glowing();
+                }
+            }
+            if (type == "Road")
+            {
+                if (Model.TargetType.HasFlag(TargetType.Lines))
+                {
+                    var col = (NodeRoad)(GodotObject)variant;
+                    if (!col.Calling) return;
+                    target = col;
+                    col.Targeted();
+                    Glowing();
                 }
             }
         }
+    }
+
+    private void Glowing()
+    {
+        var glowNode = GetNode<TextureRect>("%卡牌发光背景");
+        if (_colorTween != null && _colorTween.IsValid())
+            _colorTween.Kill();
+        _colorTween = glowNode.CreateTween();
+        _colorTween.TweenProperty(glowNode, "modulate", _colorBox.ColorA, 0.5f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+        GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
     }
 
     private void AreaExited(Area2D area)
@@ -339,24 +357,38 @@ public partial class NodeCard : Control
                 var type = (string)area.GetMeta("TargetType");
                 if (type == "Fighter")
                 {
-                    if (Model.TargetType == TargetType.Fighters)
+                    if (Model.TargetType.HasFlag(TargetType.Fighters))
                     {
                         var col = (Fighter)(GodotObject)variant;
                         col.Distargeted();
                     }
                 }
+                if (type == "Road")
+                {
+                    if (Model.TargetType.HasFlag(TargetType.Lines))
+                    {
+                        var col = (NodeRoad)(GodotObject)variant;
+                        col.Distargeted();
 
-                var glowNode = GetNode<TextureRect>("%卡牌发光背景");
-                if (_colorTween != null && _colorTween.IsValid())
-                    _colorTween.Kill();
-                _colorTween = glowNode.CreateTween();
-                _colorTween.TweenProperty(glowNode, "modulate", _colorBox.Default, 0.5f)
-                    .SetTrans(Tween.TransitionType.Cubic)
-                    .SetEase(Tween.EaseType.Out);
-                GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
-                target = null;
+                    }
+                }
+                Darken();
             }
         }
+
+    }
+
+    private void Darken()
+    {
+        var glowNode = GetNode<TextureRect>("%卡牌发光背景");
+        if (_colorTween != null && _colorTween.IsValid())
+            _colorTween.Kill();
+        _colorTween = glowNode.CreateTween();
+        _colorTween.TweenProperty(glowNode, "modulate", _colorBox.Default, 0.5f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+        GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
+        target = null;
     }
 
     private void KillReturnTween()
@@ -383,7 +415,8 @@ public partial class NodeCard : Control
         }
     }
     private bool isCallDragging;
-    private async Task CallDrugging()
+    private async void _callDragging() => await CallDragging();
+    private async Task CallDragging()
     {
         KillCallTween();
         isCallDragging = true;
@@ -392,7 +425,7 @@ public partial class NodeCard : Control
         _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 1), 0.1f);
         await ToSignal(_callTween, Tween.SignalName.Finished);
     }
-    private async Task DiscallDrugging()
+    private async Task DiscallDragging()
     {
         KillCallTween();
         isCallDragging = false;
@@ -422,7 +455,7 @@ public partial class NodeCard : Control
                     _callTween = CreateTween();
                     _callTween.TweenProperty(this, "modulate", new Color(0.6f, 0.6f, 0.6f, 1), 0.4f);
                     _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 0f), 0.4f);
-                    CallDrugging();
+                    _callDragging();
                     frame.Texture = Model.CardType switch
                     {
                         CardType.Hero | CardType.Trick => Model.Rarity switch
@@ -541,6 +574,12 @@ public partial class NodeCard : Control
                 var costs = GetNode<Node2D>("%费用容器");
                 costs.GetNode<RichTextLabel>("数值").Text = $"[center]{Model.Cost.Current}[/center]";
                 costs.GetNode<TextureRect>("费用").Texture = Model.CampCostIcon;
+                costs.GetNode<TextureRect>("费用").Position = Model.Camp switch
+                {
+                    Camp.Plant => new(180.0f, -18.5f),
+                    Camp.Zombie => new(180.0f, -9.5f),
+                    _ => new(180.0f, -18.5f)
+                }; ;
                 GetNode<Node2D>("正面卡牌").Visible = true;
                 GetNode<TextureRect>("牌背").Visible = false;
                 GetNode<TextureRect>("%卡牌图标").Texture = Model.Icon;
@@ -561,15 +600,15 @@ public partial class NodeCard : Control
                     hps.Visible = true;
                     GetNode<Node2D>("%等级").Visible = true;
                     atks.GetNode<RichTextLabel>("数值").Text = $"[center]{fighter.Atk.Current}[/center]";
-                    atks.GetNode<TextureRect>("攻击力特效").Visible = true;
                     hps.GetNode<RichTextLabel>("数值").Text = $"[center]{fighter.Hp.Current}[/center]";
                     GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
-                    GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"intro", false);
+                    GetNode<SpineHandler>("%伤害动画").Scale = new(0.28f, 0.28f);
                     GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
-                    GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
+                    GetNode<SpineHandler>("%血量动画").Scale = new(0.28f, 0.28f);
                     if (fighter.StarType != null)
                     {
                         GetNode<SpineHandler>("%等级").LoadSkeletonData(fighter.StarType.IconSkelPath);
+                        GetNode<SpineHandler>("%等级").Scale = new(0.28f, 0.28f);
                         GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
                     }
                     if (fighter.Hp.HasChanged)

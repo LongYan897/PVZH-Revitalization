@@ -128,7 +128,7 @@ public partial class CardDes : Control
         }
     }
     private static readonly Regex IconRegex =
-        new Regex(@"=(\w+)=(?:\{(\d+)\}|\})", RegexOptions.Compiled);
+        new Regex(@"=(\w+)=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
 
     private static readonly Regex LinkRegex =
         new Regex(@"_([^_]+)_", RegexOptions.Compiled);
@@ -164,7 +164,7 @@ public partial class CardDes : Control
                 }
                 else
                 {
-                    label.AppendText($"[img]{path}[/img]");
+                    label.AppendText($"[img=32]{path}[/img]");
                 }
             }
 
@@ -182,6 +182,7 @@ public partial class CardDes : Control
             cost.Text = $"{Model.Cost.Current}";
             GetNode<Sprite2D>("%花费数值").Texture = Model.CampCostIcon;
             GetNode<Label>("%名字").Text = Model.Title;
+            GetNode<Label>("%额外标签").Text = Model.ExDescription ?? "";
             await SetDescription(Model.Description);
             GetNode<RichTextLabel>("%故事标签").Text = Model.Flavor;
             if (Model.Cost.HasChanged)
@@ -194,12 +195,8 @@ public partial class CardDes : Control
             if (Model is FighterCardModel fighterCard)
             {
                 GetNode<Node2D>("%基础信息").Visible = true;
-                GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
-                GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"intro", false);
-                GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
-                GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
-                GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
-                GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
+                AtkAnim();
+                HpAnim();
                 if (fighterCard.StarType != null)
                 {
                     GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
@@ -359,6 +356,28 @@ public partial class CardDes : Control
             sprite.SetAnimation(0, "intro", false);
             if (!Model.CardType.HasFlag(CardType.Trick))
                 sprite.AddAnimation(0, "idle", true);
+        }
+    }
+    private async void AtkAnim()
+    {
+        if (Model is FighterCardModel fighterCard)
+        {
+            GetNode<Label>("%伤害数值").Text = $"";
+            GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
+            GetNode<SpineHandler>("%伤害动画").Scale = new(0.85f, 0.85f);
+            await GetNode<SpineHandler>("%伤害动画").SetAnimationTask(0, $"intro");
+            GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
+        }
+    }
+    private async void HpAnim()
+    {
+        if (Model is FighterCardModel fighterCard)
+        {
+            GetNode<Label>("%血量数值").Text = $"";
+            GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+            GetNode<SpineHandler>("%血量动画").Scale = new(0.85f, 0.85f);
+            await GetNode<SpineHandler>("%血量动画").SetAnimationTask(0, $"intro");
+            GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
         }
     }
 }

@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://cwxjv7k6hsa6s"
-path="res://.godot/imported/锦囊-滚石.wav-3c37d0003db387ca7f6787be155c9797.sample"
+path="res://.godot/imported/intro_1.wav-0f548e9dc85b68751f44af81d6119f22.sample"
 
 [deps]
 
-source_file="res://素材(C#)/卡牌/滚石/锦囊-滚石.wav"
-dest_files=["res://.godot/imported/锦囊-滚石.wav-3c37d0003db387ca7f6787be155c9797.sample"]
+source_file="res://素材(C#)/卡牌/滚石/intro_1.wav"
+dest_files=["res://.godot/imported/intro_1.wav-0f548e9dc85b68751f44af81d6119f22.sample"]
 
 [params]
 

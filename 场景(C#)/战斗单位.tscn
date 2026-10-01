@@ -16,14 +16,27 @@ region = Rect2(508.18198, 335.30182, 284.61368, 506.2005)
 size = Vector2(640, 540)
 
 [node name="战斗单位" type="Control" unique_id=1516114560]
+custom_minimum_size = Vector2(640, 540)
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -640.0
+offset_right = 280.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_qosmd")
 metadata/_custom_type_script = "uid://cp33ms6knt1nk"
 
 [node name="碰撞" type="Button" parent="." unique_id=472415403]
 unique_name_in_owner = true
+z_index = 999
+custom_minimum_size = Vector2(640, 540)
 layout_mode = 0
 offset_left = -320.0
 offset_top = -614.0

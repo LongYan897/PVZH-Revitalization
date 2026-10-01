@@ -49,11 +49,11 @@ public partial class Fighter : Control, ITarget
     /// <summary>
     /// 检查能否某类型卡牌被作为目标
     /// </summary>
-    public Func<CardModel, Func<FighterCardModel, bool>, bool> CanBeTarget =>
+    public Func<CardModel, Func<ITarget, bool>, bool> CanBeTarget =>
         (t, f) =>
         {
             bool? a;
-            a = f?.Invoke(Model);
+            a = f?.Invoke(this);
             bool b;
             b = Model.CanbeTarget(t);
             if (a != null)
@@ -62,6 +62,8 @@ public partial class Fighter : Control, ITarget
         };
     public async Task Die()
     {
+        _isOpen = false;
+        Road.RemoveFighter(this);
         GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"die", false);
         GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"die", false);
         GetNode<Label>("%伤害数值").Visible = false;
@@ -81,7 +83,7 @@ public partial class Fighter : Control, ITarget
     private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
     public static void CallFightersTargeted(CardModel cardModel, TargetType targetType)
     {
-        if (targetType == TargetType.Fighters)
+        if (targetType.HasFlag(TargetType.Fighters))
         {
             var List = new List<Fighter>();
             foreach (var fighter in Instances.Keys)
@@ -98,7 +100,7 @@ public partial class Fighter : Control, ITarget
     }
     public static void DeleteFightersTargeted(TargetType targetType)
     {
-        if (targetType == TargetType.Fighters)
+        if (targetType.HasFlag(TargetType.Fighters))
         {
             foreach (var fighter in Instances.Keys)
             {
@@ -135,6 +137,7 @@ public partial class Fighter : Control, ITarget
     /// 生成单位
     /// </summary>
     /// <param name="model">绑定的卡牌</param>
+    /// <param name="road">生成单位的道路</param>
     /// <param name="index">生成单位的位置</param>
     /// <returns>单位</returns>
     public static Fighter Generate(FighterCardModel model, Road road, Location index)
@@ -142,11 +145,13 @@ public partial class Fighter : Control, ITarget
         if (Instances.Count < maxInstance)
         {
             var fighter = Scene.Instantiate<Fighter>();
-            fighter.Position = new(360, 720);
+            fighter.Position = new(100, 220);
             fighter.Model = model;
             fighter.index = index;
             Main.FighterContainer.AddChild(fighter);
             fighter.isFirstPlace = true;
+            fighter.Road = road;
+            road.AddFighter(fighter);
             fighter.Fresh();
             Instances.Add(fighter, model);
             return fighter;
@@ -154,14 +159,36 @@ public partial class Fighter : Control, ITarget
         else
         {
             var fighter = Instances.First(p => p.Key.Model == null).Key;
-            fighter.Position = new(360, 720);
+            fighter.Position = new(100, 220);
             fighter.isFirstPlace = true;
             fighter.Model = model;
             fighter.index = index;
+            fighter.Road = road;
+            road.AddFighter(fighter);
             fighter.Fresh();
             Instances[fighter] = model;
             return fighter;
         }
+    }
+    /// <summary>
+    /// 检查单位能否在某条道路上生成单位
+    /// </summary>
+    /// <param name="model">单位的卡牌</param>
+    /// <param name="road">生成单位的道路</param>
+    /// <returns>能否生成</returns>
+    public static bool CanGenerate(FighterCardModel model, Road road)
+    {
+        var capa = model.Capability;
+        var roadFighters = road.GetFighters();
+        var roadType = road.Type;
+        return capa switch
+        {
+            Capability.Amphibious => true,
+            Capability.Land => roadType == RoadType.Ground || roadType == RoadType.Height && (!roadFighters.Any(f=>f.Model.Camp == model.Camp)),
+            Capability.AmphibiousCoop => roadFighters.Count(f => f.Model.Camp == model.Camp) <= 1 && model.Camp == Camp.Plant,
+            Capability.LandCoop => roadType == RoadType.Ground || roadType == RoadType.Height && roadFighters.Count(f => f.Model.Camp == model.Camp) <= 1 && model.Camp == Camp.Plant,
+            _ => false
+        };
     }
     /// <summary>
     /// 返还绑定的卡牌
@@ -170,6 +197,7 @@ public partial class Fighter : Control, ITarget
     public FighterCardModel ReturnCard()
     {
         var fighterCard = Model;
+        Road.RemoveFighter(this);
         Clear();
         Model = null;
         return fighterCard;
@@ -201,8 +229,8 @@ public partial class Fighter : Control, ITarget
         _tweenTargeted = CreateTween().BindNode(sp).SetLoops(-1);
         sp.Modulate = _colortgBox.Default;
         sp.Visible = true;
-        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 1f);
-        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f, 0.98f), 1f);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 0.7f);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f, 0.98f), 0.7f);
     }
     private void KillTween()
     {
@@ -222,8 +250,10 @@ public partial class Fighter : Control, ITarget
         var hitBtn = GetNode<Button>("碰撞");
         hitBtn.GuiInput += OnHitButtonGuiInput;
     }
+    private bool _isOpen = false;
     private void OnHitButtonGuiInput(InputEvent @event)
     {
+        if (!_isOpen) return;
         if (@event is InputEventMouseButton mb
             && mb.ButtonIndex == MouseButton.Left
             && mb.Pressed)
@@ -259,8 +289,8 @@ public partial class Fighter : Control, ITarget
         await ToSignal(_tweenTargeted, Tween.SignalName.Finished);
         KillTween();
         _tweenTargeted = CreateTween().BindNode(sp).SetLoops(-1);
-        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 1f);
-        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f, 0.98f), 1f);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 0.7f);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f, 0.98f), 0.7f);
     }
     private Tween _tweenTargeted2;
     private Tween _tweenTargeted;
@@ -286,6 +316,7 @@ public partial class Fighter : Control, ITarget
         {
             if (isFirstPlace)
             {
+                _isOpen = true;
                 Scale = new(0.17f, 0.17f);
                 GetNode<SpineHandler>("土坑").Visible = Model.Camp switch
                 {
@@ -315,12 +346,8 @@ public partial class Fighter : Control, ITarget
             if (Model is FighterCardModel fighterCard)
             {
                 GetNode<Node2D>("%基础信息").Visible = true;
-                GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
-                GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"intro", false);
-                GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
-                GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
-                GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"intro", false);
-                GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
+                AtkAnim();
+                HpAnim();
                 if (fighterCard.StarType != null)
                 {
                     GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
@@ -342,6 +369,26 @@ public partial class Fighter : Control, ITarget
                         GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                 }
             }
+        }
+    }
+    private async void AtkAnim()
+    {
+        if (Model is FighterCardModel fighterCard)
+        {
+            GetNode<Label>("%伤害数值").Text = $"";
+            GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
+            await GetNode<SpineHandler>("%伤害动画").SetAnimationTask(0, $"intro");
+            GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
+        }
+    }
+    private async void HpAnim()
+    {
+        if (Model is FighterCardModel fighterCard)
+        {
+            GetNode<Label>("%血量数值").Text = $"";
+            GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+            await GetNode<SpineHandler>("%血量动画").SetAnimationTask(0, $"intro");
+            GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
         }
     }
     private void Clear()
