@@ -1,18 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\",
+  "WorkspaceRootPath": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4B2AB7C4-DDBB-4D1C-9448-6F2D0B77864C}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\fighter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4B2AB7C4-DDBB-4D1C-9448-6F2D0B77864C}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\fighter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4B2AB7C4-DDBB-4D1C-9448-6F2D0B77864C}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u8282\u70B9\\nodecard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4B2AB7C4-DDBB-4D1C-9448-6F2D0B77864C}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u8282\u70B9\\nodecard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4B2AB7C4-DDBB-4D1C-9448-6F2D0B77864C}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u8F85\u52A9\u7C7B\\icon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4B2AB7C4-DDBB-4D1C-9448-6F2D0B77864C}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u8F85\u52A9\u7C7B\\icon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u8F85\u52A9\u7C7B\\nbutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u8F85\u52A9\u7C7B\\nbutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,56 +14,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "NodeCard.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
-              "ViewState": "AgIAAAkBAAAAAAAAAAAQwB4BAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T14:23:13.477Z"
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Fighter.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "ViewState": "AgIAABsBAAAAAAAAAAAqwGABAAABAAAAAAAAAA==",
+              "Title": "NButton.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T14:21:47.287Z",
+              "WhenOpened": "2026-10-01T10:55:05.718Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Icon.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\Icon.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\Icon.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\Icon.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\Icon.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAwwBkAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T07:52:37.939Z"
             }
           ]
         }

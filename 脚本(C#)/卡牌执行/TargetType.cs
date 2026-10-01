@@ -28,4 +28,12 @@ public enum TargetType
     /// 以战斗单位目标和可放置格子
     /// </summary>
     FighterAndGrids,
+    ///<summary>
+    /// 以英雄为目标
+    ///</summary>
+    Hero,
+    /// <summary>
+    /// 以战斗单位和英雄为目标
+    /// </summary>
+    HeroAndFighters
 }
