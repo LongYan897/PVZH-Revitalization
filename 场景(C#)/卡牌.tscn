@@ -4,10 +4,7 @@
 [ext_resource type="Script" uid="uid://doml84h3u12nd" path="res://脚本(C#)/卡牌/节点/NodeCard.cs" id="1_yam0n"]
 [ext_resource type="Texture2D" uid="uid://b8cjw4esrxadc" path="res://素材/牌背、卡面/背景底版1.png" id="2_a5s0q"]
 [ext_resource type="Texture2D" uid="uid://c5aq4onpg077v" path="res://素材/牌背、卡面/SEEDPACKET_BACK.png" id="2_md00x"]
-[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="5_3nddn"]
-[ext_resource type="Texture2D" uid="uid://52o5rfk8m1db" path="res://场景/植物卡组/豌豆射手植物/43d3b20a-90b4-4a34-8d55-674b02a38dc1 #104810.png" id="5_rgsy0"]
 [ext_resource type="Texture2D" uid="uid://dabeqr44tko7h" path="res://素材/牌背、卡面/SEEDPACKET_R2.png" id="5_t66oa"]
-[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="6_7p28v"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_fsyp8"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="7_ia5uq"]
 [ext_resource type="Texture2D" uid="uid://84nyu8lu0ied" path="res://素材/牌背、卡面/cardback_plants.png" id="12_5lf5m"]
@@ -62,9 +59,9 @@ metadata/_edit_horizontal_guides_ = [-83.0]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 5.0
-offset_top = 8.0
+offset_top = 13.0
 offset_right = 251.0
-offset_bottom = 184.0
+offset_bottom = 189.0
 flat = true
 
 [node name="碰撞箱" type="Area2D" parent="." unique_id=1576679367]
@@ -130,16 +127,8 @@ texture = ExtResource("5_t66oa")
 expand_mode = 1
 stretch_mode = 3
 
-[node name="卡牌图标" type="TextureRect" parent="正面卡牌" unique_id=723944226]
+[node name="卡面容器" type="Node2D" parent="正面卡牌" unique_id=346698980]
 unique_name_in_owner = true
-offset_left = 29.0
-offset_top = 14.0
-offset_right = 227.0
-offset_bottom = 186.0
-pivot_offset = Vector2(99, 86)
-mouse_filter = 2
-texture = ExtResource("5_rgsy0")
-expand_mode = 1
 
 [node name="生命值容器" type="Node2D" parent="正面卡牌" unique_id=1111454840]
 unique_name_in_owner = true
@@ -148,17 +137,6 @@ z_index = 2
 [node name="血量动画" parent="正面卡牌/生命值容器" unique_id=922182681 instance=ExtResource("7_ia5uq")]
 unique_name_in_owner = true
 position = Vector2(224, 157.5)
-
-[node name="生命值" type="TextureRect" parent="正面卡牌/生命值容器" unique_id=2078360910]
-unique_name_in_owner = true
-visible = false
-offset_left = 180.0
-offset_top = 116.0
-offset_right = 267.5196
-offset_bottom = 195.0
-mouse_filter = 2
-texture = ExtResource("6_7p28v")
-expand_mode = 1
 
 [node name="数值" type="RichTextLabel" parent="正面卡牌/生命值容器" unique_id=507951206]
 offset_left = 195.0
@@ -185,17 +163,6 @@ position = Vector2(7, 0)
 [node name="伤害动画" parent="正面卡牌/攻击力容器" unique_id=808255837 instance=ExtResource("7_ia5uq")]
 unique_name_in_owner = true
 position = Vector2(135, 157.5)
-
-[node name="攻击力" type="TextureRect" parent="正面卡牌/攻击力容器" unique_id=1443008913]
-unique_name_in_owner = true
-visible = false
-offset_left = 86.7037
-offset_top = 110.0
-offset_right = 183.37038
-offset_bottom = 200.0
-mouse_filter = 2
-texture = ExtResource("5_3nddn")
-expand_mode = 1
 
 [node name="数值" type="RichTextLabel" parent="正面卡牌/攻击力容器" unique_id=967735247]
 offset_left = 105.0

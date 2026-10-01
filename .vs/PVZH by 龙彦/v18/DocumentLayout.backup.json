@@ -3,60 +3,12 @@
   "WorkspaceRootPath": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\fighter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\fighter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u6A21\u677F\\fightercardmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u6A21\u677F\\fightercardmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u547D\u4EE4\\cardcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u547D\u4EE4\\cardcmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u9053\u8DEF\\noderoad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u9053\u8DEF\\noderoad.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u6A21\u677F\\cardmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u6A21\u677F\\cardmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u8282\u70B9\\nodecard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u8282\u70B9\\nodecard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u76F4\u5347\u673A\u5C0F\u9B3C\\coptercommando.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u76F4\u5347\u673A\u5C0F\u9B3C\\coptercommando.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u53EC\u5524\u76F4\u5347\u673A\\hailacopter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u53EC\u5524\u76F4\u5347\u673A\\hailacopter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\animaactor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\animaactor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u6570\u636E(c#)\\cards.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u6570\u636E(c#)\\cards.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6587\u672C\\\u5361\u724C\u6587\u672C\\cardstring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6587\u672C\\\u5361\u724C\u6587\u672C\\cardstring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\wavplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\wavplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u8C4C\u8C46\\\u8C4C\u8C46\u5C04\u624B\\peashooter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u8C4C\u8C46\\\u8C4C\u8C46\u5C04\u624B\\peashooter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u5236\u4F5C\\mod\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u5361\u724C\u53D8\u91CF\\startype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u5361\u724C\u53D8\u91CF\\startype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -66,73 +18,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Fighter.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAD4vxMAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T09:00:01.016Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FighterCardModel.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\FighterCardModel.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\FighterCardModel.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\FighterCardModel.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\FighterCardModel.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAWwDwAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T08:40:19.531Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CardCmd.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u547D\u4EE4\\CardCmd.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u547D\u4EE4\\CardCmd.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u547D\u4EE4\\CardCmd.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u547D\u4EE4\\CardCmd.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAowEIAAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T08:07:04.064Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "NodeRoad.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u9053\u8DEF\\NodeRoad.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u9053\u8DEF\\NodeRoad.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u9053\u8DEF\\NodeRoad.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u9053\u8DEF\\NodeRoad.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAIA3wDcAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T07:18:55.605Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CopterCommando.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u76F4\u5347\u673A\u5C0F\u9B3C\\CopterCommando.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u76F4\u5347\u673A\u5C0F\u9B3C\\CopterCommando.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u76F4\u5347\u673A\u5C0F\u9B3C\\CopterCommando.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u76F4\u5347\u673A\u5C0F\u9B3C\\CopterCommando.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAswA4AAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T06:18:18.053Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -147,119 +34,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
+              "Title": "CardModel.cs",
+              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAAAN4AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T13:40:46.223Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "NodeCard.cs",
               "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
               "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
               "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
               "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\NodeCard.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAswDQAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAFsCAAAAAAAAAAAAAGcCAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T16:40:50.581Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "HailACopter.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u53EC\u5524\u76F4\u5347\u673A\\HailACopter.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u53EC\u5524\u76F4\u5347\u673A\\HailACopter.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u53EC\u5524\u76F4\u5347\u673A\\HailACopter.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u5C0F\u9B3C\\\u53EC\u5524\u76F4\u5347\u673A\\HailACopter.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T02:13:55.279Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Main.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAAwCcAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T16:34:30.871Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "AnimaActor.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\AnimaActor.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\AnimaActor.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\AnimaActor.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\AnimaActor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T07:50:43.587Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "cards.json",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u6570\u636E(C#)\\cards.json",
-              "RelativeDocumentMoniker": "\u6570\u636E(C#)\\cards.json",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u6570\u636E(C#)\\cards.json",
-              "RelativeToolTip": "\u6570\u636E(C#)\\cards.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-09-30T17:55:07.824Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "CardString.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6587\u672C\\\u5361\u724C\u6587\u672C\\CardString.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6587\u672C\\\u5361\u724C\u6587\u672C\\CardString.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6587\u672C\\\u5361\u724C\u6587\u672C\\CardString.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u6587\u672C\\\u5361\u724C\u6587\u672C\\CardString.cs",
-              "ViewState": "AgIAADsAAAAAAAAAAAAwwCgAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T16:23:00.938Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "WavPlayer.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\WavPlayer.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\WavPlayer.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\WavPlayer.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\WavPlayer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T02:41:19.259Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Peashooter.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u8C4C\u8C46\\\u8C4C\u8C46\u5C04\u624B\\Peashooter.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u8C4C\u8C46\\\u8C4C\u8C46\u5C04\u624B\\Peashooter.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u8C4C\u8C46\\\u8C4C\u8C46\u5C04\u624B\\Peashooter.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u8C4C\u8C46\\\u8C4C\u8C46\u5C04\u624B\\Peashooter.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T02:26:26.77Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "StarType.cs",
-              "DocumentMoniker": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5361\u724C\u53D8\u91CF\\StarType.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u5361\u724C\u53D8\u91CF\\StarType.cs",
-              "ToolTip": "D:\\\u5236\u4F5C\\Mod\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5361\u724C\u53D8\u91CF\\StarType.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u5361\u724C\u53D8\u91CF\\StarType.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAkwEAAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-30T16:26:59.416Z",
+              "WhenOpened": "2026-10-01T13:39:40.179Z",
               "EditorCaption": ""
             }
           ]

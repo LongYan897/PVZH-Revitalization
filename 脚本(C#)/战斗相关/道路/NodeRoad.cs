@@ -67,19 +67,16 @@ public partial class NodeRoad : Control, ITarget
             _ => new(360, 640),
         };
     }
-    public TargetType TargetType => TargetType.Lines | TargetType.FighterAndGrids | TargetType.FighterAndCoopGrids | TargetType.Grids | TargetType.CoopGrids;
+    public TargetType TargetType => TargetType.Lines | TargetType.Grids | TargetType.CoopGrids;
     private static bool NeedLine(TargetType t) =>
     t.HasFlag(TargetType.Lines);
 
     private static bool NeedG1(TargetType t) =>
         t.HasFlag(TargetType.Grids)
-        || t.HasFlag(TargetType.CoopGrids)
-        || t.HasFlag(TargetType.FighterAndGrids)
-        || t.HasFlag(TargetType.FighterAndCoopGrids);
+        || t.HasFlag(TargetType.CoopGrids);
 
     private static bool NeedG2(TargetType t) =>
-        t.HasFlag(TargetType.CoopGrids)
-        || t.HasFlag(TargetType.FighterAndCoopGrids);
+        t.HasFlag(TargetType.CoopGrids);
     public static void CallTargeted(CardModel cardModel, TargetType targetType)
     {
         CallTargeted(cardModel, targetType, cardModel.TargetFilter);
@@ -150,7 +147,7 @@ public partial class NodeRoad : Control, ITarget
         KillTween();
         Calling = true;
 
-        var hl = GetNode<Sprite2D>("%单位高亮");
+        var hl = GetNode<TextureRect>("%单位高亮");
         _tweenTargeted = CreateTween().BindNode(hl).SetLoops(-1);
         hl.Modulate = _colortgBox.Default;
         hl.Visible = true;
@@ -163,14 +160,14 @@ public partial class NodeRoad : Control, ITarget
         KillTween();
         Calling = true;
 
-        var hl1 = GetNode<Sprite2D>("%单位高亮");
+        var hl1 = GetNode<TextureRect>("%单位高亮");
         _tweenTargeted = CreateTween().BindNode(hl1).SetLoops(-1);
         hl1.Modulate = _colortgBox.Default;
         hl1.Visible = true;
         _tweenTargeted.TweenProperty(hl1, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(hl1, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
 
-        var hl2 = GetNode<Sprite2D>("%单位高亮2");
+        var hl2 = GetNode<TextureRect>("%单位高亮2");
         _tweenTargeted2 = CreateTween().BindNode(hl2).SetLoops(-1);
         hl2.Modulate = _colortgBox.Default;
         hl2.Visible = true;
@@ -182,7 +179,6 @@ public partial class NodeRoad : Control, ITarget
     {
         KillTween();
         Calling = false;
-        LastTargetKind = RoadTargetKind.None;
 
         GetNode<Sprite2D>("%环境高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮").Visible = false;
@@ -202,6 +198,7 @@ public partial class NodeRoad : Control, ITarget
             hl.Visible = true;
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(0.33f, 0.378f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
+            LastTargetKind = RoadTargetKind.Line;
         }
 
         if (g1)
@@ -212,6 +209,7 @@ public partial class NodeRoad : Control, ITarget
             hl.Visible = true;
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
+            LastTargetKind = RoadTargetKind.Grid;
         }
 
         if (g2)
@@ -222,6 +220,7 @@ public partial class NodeRoad : Control, ITarget
             hl.Visible = true;
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
+            LastTargetKind = RoadTargetKind.CoopGrid;
         }
     }
     public async void Distargeted(bool line, bool g1, bool g2)
@@ -260,6 +259,8 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted = CreateTween().BindNode(node).SetLoops(-1);
         _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(0.98f, 0.98f), 0.7f);
+
+        LastTargetKind = RoadTargetKind.None;
     }
 
     public override void _Ready()

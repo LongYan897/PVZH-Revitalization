@@ -3,15 +3,8 @@
 [ext_resource type="Script" uid="uid://cp33ms6knt1nk" path="res://脚本(C#)/战斗相关/实体/Fighter.cs" id="1_qosmd"]
 [ext_resource type="Texture2D" uid="uid://doru1f3me30oj" path="res://素材(C#)/其他/shadow.png" id="2_bev64"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="2_w5bvm"]
-[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="3_bev64"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="3_qosmd"]
-[ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="5_6cys6"]
-[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="6_4gq2c"]
 [ext_resource type="Texture2D" uid="uid://brf5p27vt3t6o" path="res://素材/对象高亮框/单位1.png" id="8_bev64"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ggbqp"]
-atlas = ExtResource("5_6cys6")
-region = Rect2(508.18198, 335.30182, 284.61368, 506.2005)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bev64"]
 size = Vector2(640, 540)
@@ -62,19 +55,6 @@ z_index = 34
 unique_name_in_owner = true
 position = Vector2(140, 0)
 
-[node name="血量" type="TextureRect" parent="基础信息" unique_id=1431460387]
-unique_name_in_owner = true
-visible = false
-offset_left = 98.0
-offset_top = -40.070908
-offset_right = 185.51959
-offset_bottom = 38.929092
-scale = Vector2(3.5, 3.5)
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-texture = ExtResource("6_4gq2c")
-expand_mode = 1
-
 [node name="血量数值" type="Label" parent="基础信息" unique_id=1585496076]
 unique_name_in_owner = true
 offset_left = 31.8068
@@ -93,36 +73,9 @@ text = "321"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="生命值特效" type="TextureRect" parent="基础信息" unique_id=1531423819]
-unique_name_in_owner = true
-visible = false
-offset_left = -41.52652
-offset_top = -328.40405
-offset_right = 277.12656
-offset_bottom = 177.59595
-rotation = 1.5707964
-scale = Vector2(0.6, 0.6)
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-texture = SubResource("AtlasTexture_ggbqp")
-stretch_mode = 2
-
 [node name="伤害动画" parent="基础信息" unique_id=1188301239 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
 position = Vector2(-139, 0)
-
-[node name="伤害" type="TextureRect" parent="基础信息" unique_id=526937123]
-unique_name_in_owner = true
-visible = false
-offset_left = -185.0
-offset_top = -40.070908
-offset_right = -88.33331
-offset_bottom = 49.929092
-scale = Vector2(3.5, 3.5)
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-texture = ExtResource("3_bev64")
-expand_mode = 1
 
 [node name="伤害数值" type="Label" parent="基础信息" unique_id=438546615]
 unique_name_in_owner = true
@@ -148,21 +101,32 @@ theme_override_font_sizes/font_size = 200
 text = "123"
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="攻击力特效" type="TextureRect" parent="基础信息" unique_id=515793783]
+[node name="额外动画" type="Node2D" parent="基础信息" unique_id=2007434438]
 unique_name_in_owner = true
 visible = false
-offset_left = -325.52652
-offset_top = -328.404
-offset_right = -6.8734436
-offset_bottom = 177.59601
-rotation = 1.5707964
-scale = Vector2(0.6, 0.6)
+
+[node name="额外血量动画" parent="基础信息/额外动画" unique_id=146215497 instance=ExtResource("3_qosmd")]
+unique_name_in_owner = true
+position = Vector2(140, 0)
+
+[node name="额外血量数值" type="Label" parent="基础信息/额外动画" unique_id=958690880]
+unique_name_in_owner = true
+offset_left = 31.8068
+offset_top = -125.07084
+offset_right = 245.80682
+offset_bottom = 124.92916
 pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-texture = SubResource("AtlasTexture_ggbqp")
-stretch_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 20
+theme_override_constants/shadow_offset_y = 24
+theme_override_constants/outline_size = 36
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("2_w5bvm")
+theme_override_font_sizes/font_size = 200
+text = "321"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="等级" parent="基础信息" unique_id=1703809306 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true

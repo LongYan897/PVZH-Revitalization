@@ -1,5 +1,6 @@
 using Battle;
 using Battle.Entity;
+using Card.Cmd;
 using Card.String;
 using System.Threading.Tasks;
 using Target;
@@ -121,15 +122,31 @@ public class FighterCardModel : CardModel
     {
         if (key == "Health")
         {
-            await PlayFighterAnimationTask("hurt");
+            if (valueAfter is int i && valueBefore is int i2)
+            await Fighter.GetNode(this).Hurt(i2-i);
             if (Hp.Current <= 0)
                 await Fighter.GetNode(this).Die();
         }
         await ChangedMe<T>(key, valueAfter, valueBefore);
     }
     protected virtual Task ChangedMe<T>(string key, T valueAfter, T valueBefore) => Task.CompletedTask;
+    public override TargetType TargetType
+    {
+        get
+        {
+            if (CardTag.HasFlag(CardTag.Coop))
+                return TargetType.CoopGrids;
+            return TargetType.Grids;
+        }
+    }
     public override async Task Play(ITarget target)
     {
-        await DestroyMe();
+        if (target is NodeRoad road)
+        {
+            if (road.LastTargetKind == NodeRoad.RoadTargetKind.Grid)
+                await CardCmd.FighterGenerate(this, road.Model,Location.Plant);
+            else if (road.LastTargetKind == NodeRoad.RoadTargetKind.CoopGrid)
+                await CardCmd.FighterGenerate(this, road.Model, Location.PlantFront);
+        }
     }
 }

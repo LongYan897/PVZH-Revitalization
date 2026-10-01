@@ -34,13 +34,11 @@ public partial class Main : Node
         DesLayer = GetNode<CanvasLayer>("Des");
         AudioContainer = GetNode<Node2D>("Audios");
         //
-        CardModel card = CardModel.Load<Peashooter>();
         CardModel card1 = CardModel.Load<HailACopter>();
-        CardModel card2 = CardModel.Load<FinalMission>();
+        CardModel card2 = CardModel.Load<Peashooter>();
         card1.Status = Status.FaceUp;
         card2.Status = Status.FaceUp;
         NodeCard.DrawACard(card1, new(0,0));
         NodeCard.DrawACard(card2, new(120, 0));
-        await CardCmd.FighterGenerate(card as Peashooter, GetNode<NodeRoad>("道路").Model, 0);
     }
 }

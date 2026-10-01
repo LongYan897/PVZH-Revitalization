@@ -336,11 +336,8 @@ public partial class NodeCard : Control
             if (type == "Grid")
             {
                 bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
-                     || Model.TargetType.HasFlag(TargetType.CoopGrids)
-                     || Model.TargetType.HasFlag(TargetType.FighterAndGrids)
-                     || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids);
-                bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.FighterAndGrids)
-                     || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids));
+                     || Model.TargetType.HasFlag(TargetType.CoopGrids);
+                bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.CoopGrids));
                 if (!needGrid) return;
                 var col = (NodeRoad)(GodotObject)variant;
                 if (!col.Calling) return;
@@ -392,11 +389,8 @@ public partial class NodeCard : Control
                 if (type == "Grid")
                 {
                     bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
-                         || Model.TargetType.HasFlag(TargetType.CoopGrids)
-                         || Model.TargetType.HasFlag(TargetType.FighterAndGrids)
-                         || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids);
-                    bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.FighterAndGrids)
-                         || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids));
+                         || Model.TargetType.HasFlag(TargetType.CoopGrids);
+                    bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.CoopGrids));
                     if (needGrid)
                     {
                         var col = (NodeRoad)(GodotObject)variant;
@@ -613,26 +607,27 @@ public partial class NodeCard : Control
                 }; ;
                 GetNode<Node2D>("正面卡牌").Visible = true;
                 GetNode<TextureRect>("牌背").Visible = false;
-                GetNode<TextureRect>("%卡牌图标").Texture = Model.Icon;
-                GetNode<TextureRect>("%卡牌发光背景").Modulate = _colorBox.Default;
-                GetNode<TextureRect>("%卡牌图标").Scale = Model.CardType switch
+                Control control = null;
+                if (GetNode<Node2D>("%卡面容器").GetChildren().Count == 0)
                 {
-                    CardType.None | CardType.Fighter => new(1f,1f),
-                    CardType.None | CardType.Environment => new(0.8f, 0.8f),
-                    CardType.None | CardType.Trick => new(0.9f, 0.9f),
-                    CardType.Hero | CardType.Fighter => new(1f, 1f),
-                    CardType.Hero | CardType.Environment => new(0.8f, 0.8f),
-                    CardType.Hero | CardType.Trick => new(0.9f, 0.9f),
-                    _ => new()
-                };
+                    control = Model.Icon.Instantiate<Control>();
+                    control.MouseFilter = MouseFilterEnum.Ignore;
+                    GetNode<Node2D>("%卡面容器").AddChild(control);
+                    control.GetNode<TextureRect>("卡牌图标").MouseFilter = MouseFilterEnum.Ignore;
+                    GetNode<TextureRect>("%卡牌发光背景").Modulate = _colorBox.Default;
+                }
+                else
+                {
+                    control = GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First();
+                }
                 if (Model.CardType.HasFlag(CardType.Fighter))
                 {
-                    GetNode<TextureRect>("%卡牌图标").ZIndex = 1;
+                    control.ZIndex = 1;
                     GetNode<TextureRect>("%卡框").ZIndex = 0;
                 }
                 else
                 {
-                    GetNode<TextureRect>("%卡牌图标").ZIndex = 0;
+                    control.ZIndex = 0;
                     GetNode<TextureRect>("%卡框").ZIndex = 1;
                 }
                 GetNode<GpuParticles2D>("%粒子特效").Emitting = false;

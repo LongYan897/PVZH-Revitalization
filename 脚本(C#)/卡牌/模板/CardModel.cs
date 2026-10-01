@@ -119,7 +119,7 @@ public class CardModel
         card.CardType = cardString.CardType;
         card.Pack = cardString.Pack;
         card.AnimationPath = cardString.AnimationPath;
-        card.Icon = GD.Load<Texture2D>(cardString.IconPath);
+        card.Icon = GD.Load<PackedScene>(cardString.IconPath);
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
         return (T)card.LoadData(cardString);
     }
@@ -220,7 +220,7 @@ public class CardModel
     /// <summary>
     /// 卡牌的卡面
     /// </summary>
-    public Texture2D Icon { get; private set; }
+    public PackedScene Icon { get; private set; }
     /// <summary>
     /// 卡牌打出时的效果
     /// </summary>

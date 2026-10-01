@@ -231,7 +231,6 @@ func _ready() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status_label)
 
-	# 初始化：根据当前卡牌类型刷新单位字段显隐
 	_on_card_type_selected(card_type.selected)
 
 func _add_label(text: String) -> void:
@@ -243,7 +242,6 @@ func _add_label_to(parent: Node, text: String) -> void:
 	parent.add_child(label)
 
 func _on_card_type_selected(index: int) -> void:
-	# 0 = 单位卡，其余不显示
 	hp_box.visible = (index == 0)
 	if not hp_box.visible:
 		include_atk.button_pressed = false
@@ -302,7 +300,6 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 			labels.append(t)
 	entry["\"%s.Label\"" % clean] = labels
 
-	# 关键词：从勾选框收集
 	var tags := []
 	if tag_teamup.button_pressed:
 		tags.append("组队")
@@ -310,7 +307,6 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 		tags.append("两栖")
 	entry["\"%s.Tag\"" % clean] = tags
 
-	# 仅单位卡输出生命值 / 生命值类型，子项按勾选
 	if card_type.selected == 0:
 		entry["\"%s.Hp\"" % clean] = int(hp_spin.value)
 		entry["\"%s.HpType\"" % clean] = hp_type_option.get_item_text(hp_type_option.selected)

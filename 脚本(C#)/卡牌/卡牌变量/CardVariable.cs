@@ -111,7 +111,10 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
     {
         var old = variable.Current - value;
         if (!canNegative && old < 0)
+        {
             old = 0;
+            value = variable.Current;
+        }
         variable.Lose(value, reason);
         await CardCmd.ChangedCard(card, sign, old, value);
     }

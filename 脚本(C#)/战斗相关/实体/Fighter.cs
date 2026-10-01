@@ -88,6 +88,29 @@ public partial class Fighter : Control, ITarget
 		Clear();
 		await AnimaActor.PlayInstantAnimationTask("res://数据资源/属性动画/死亡特效.tres", GlobalPosition + new Vector2(0, -30), "intro");
 	}
+	private Tween _hurtTween;
+	private void KillHurtTween()
+	{
+		if (_hurtTween != null && _hurtTween.IsValid())
+		{
+			_hurtTween.Kill();
+		}
+	}
+	public async Task Hurt(int amount)
+	{
+		KillHurtTween();
+		GetNode<Node2D>("%额外动画").Modulate = new Color(1, 1, 1, 1);
+        Tween tween = CreateTween();
+        tween.TweenProperty(GetNode<Node2D>("%额外动画"), "position", new Vector2(0, -300), 0.3f);
+		tween.TweenProperty(GetNode<Node2D>("%额外动画"), "modulate", new Color(1,1,1,0),0.3f);
+        GetNode<Label>("%额外血量数值").Text = $"-{amount}";
+		GetNode<Node2D>("%额外动画").Visible = true;
+        GetNode<SpineHandler>("%伤害动画").SetAnimation(0, $"hurt", false);
+        GetNode<SpineHandler>("%血量动画").SetAnimation(0, $"hurt", false);
+        await GetNode<SpineHandler>("%动画").SetAnimationTask(0, "hurt");
+		GetNode<Node2D>("%额外动画").Visible = false;
+		GetNode<Node2D>("%额外动画").Position = new Vector2();
+    }
 	public TargetType TargetType => TargetType.Fighters;
 	private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
     public static void CallTargeted(CardModel cardModel, TargetType targetType)
@@ -454,6 +477,8 @@ public partial class Fighter : Control, ITarget
         hpLabel.Scale = Vector2.Zero;
 
         hpSpine.LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+        GetNode<SpineHandler>("%额外血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+        GetNode<SpineHandler>("%额外血量动画").Scale = new Vector2(0.85f,0.85f);
         hpSpine.Scale = new Vector2(0.85f, 0.85f);
 
         await hpSpine.SetAnimationTask(0, "intro");

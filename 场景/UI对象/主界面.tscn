@@ -416,15 +416,19 @@ offset_right = 181.0
 offset_bottom = 812.0
 
 [node name="SceneAnimF" type="CanvasLayer" parent="测试用主节点" unique_id=1724601623]
+unique_name_in_owner = true
 layer = 15
 
 [node name="SceneAnimFToC" type="CanvasLayer" parent="测试用主节点" unique_id=1096389504]
+unique_name_in_owner = true
 layer = 40
 
 [node name="SceneAnimCToA" type="CanvasLayer" parent="测试用主节点" unique_id=2045668232]
+unique_name_in_owner = true
 layer = 75
 
 [node name="SceneAnimAToD" type="CanvasLayer" parent="测试用主节点" unique_id=2082298716]
+unique_name_in_owner = true
 layer = 150
 
 [connection signal="input_event" from="活动/Area2D" to="." method="uiActInput"]

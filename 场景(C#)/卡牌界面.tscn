@@ -12,9 +12,7 @@
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="8_m1m2k"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="10_fad38"]
 [ext_resource type="FontFile" uid="uid://hsayw12ab5vm" path="res://素材/字体/CAFR____.ttf" id="11_fad38"]
-[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="11_setff"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="12_setff"]
-[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="13_vxs5b"]
 [ext_resource type="Script" uid="uid://dpy81oq8meuvd" path="res://脚本(C#)/辅助类/IconComposer.cs" id="17_ts65j"]
 
 [sub_resource type="FontVariation" id="FontVariation_qosmd"]
@@ -278,18 +276,6 @@ scale = Vector2(0.3, 0.3)
 unique_name_in_owner = true
 position = Vector2(140, 26.666767)
 
-[node name="血量" type="TextureRect" parent="基础信息" unique_id=1573850398]
-unique_name_in_owner = true
-visible = false
-offset_left = 6.6666718
-offset_top = -93.33328
-offset_right = 94.186264
-offset_bottom = -14.333282
-scale = Vector2(3, 3)
-mouse_filter = 2
-texture = ExtResource("13_vxs5b")
-expand_mode = 1
-
 [node name="血量数值" type="Label" parent="基础信息" unique_id=871496818]
 unique_name_in_owner = true
 offset_left = 30.000006
@@ -311,18 +297,6 @@ vertical_alignment = 1
 [node name="伤害动画" parent="基础信息" unique_id=922182681 instance=ExtResource("10_fad38")]
 unique_name_in_owner = true
 position = Vector2(-130, 26.66687)
-
-[node name="伤害" type="TextureRect" parent="基础信息" unique_id=1199868725]
-unique_name_in_owner = true
-visible = false
-offset_left = -276.6667
-offset_top = -120.0
-offset_right = -180.0
-offset_bottom = -30.0
-scale = Vector2(3, 3)
-mouse_filter = 2
-texture = ExtResource("11_setff")
-expand_mode = 1
 
 [node name="伤害数值" type="Label" parent="基础信息" unique_id=643864004]
 unique_name_in_owner = true
@@ -359,6 +333,7 @@ scale = Vector2(3.333333, 3.333333)
 [node name="底色" type="ColorRect" parent="." unique_id=1495908590]
 unique_name_in_owner = true
 modulate = Color(0, 0, 0, 0.28627452)
+top_level = true
 z_index = -20
 layout_mode = 1
 anchors_preset = 8
@@ -366,10 +341,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -361.0
-offset_top = -649.5
-offset_right = 361.0
-offset_bottom = 649.5
+offset_left = -360.0
+offset_top = -640.0
+offset_right = 362.0
+offset_bottom = 659.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
