@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://cb2oe8m6omb4y"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://c36gwa2qqppdw" path="res://场景/僵尸卡/滚石锦囊/滚石.atlas" id="1_cl80s"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://bymkfloa25pq2" path="res://场景/僵尸卡/滚石锦囊/滚石.skel" id="2_7y8kf"]
+
+[resource]
+atlas_res = ExtResource("1_cl80s")
+skeleton_file_res = ExtResource("2_7y8kf")

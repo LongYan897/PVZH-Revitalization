@@ -1,4 +1,40 @@
 # Godot 4+ specific ignores
 .godot/
+.import/
 /android/
-.ignore/
+.mono/
+/bin/
+/obj/
+
+# 自动生成的翻译二进制文件
+*.translation
+
+# 导出配置
+export_presets.cfg
+export.cfg
+
+# 备份、临时、日志
+*.backup
+*.tmp
+*.log
+*.shader_cache
+
+# VS缓存
+.vs/
+
+# Windows / Mac系统文件
+Thumbs.db
+.DS_Store
+
+# Rider / VSCode
+.idea/
+.vscode/
+
+# C# 项目用户配置
+*.csproj.user
+*.sln.docstates
+/.vs
+.vs/PVZH by 龙彦/v18/.suo
+.vs/PVZH by 龙彦/v18/.suo
+.vs/PVZH by 龙彦/DesignTimeBuild/.dtbcache.v2
+/.vs
