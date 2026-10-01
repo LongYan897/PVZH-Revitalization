@@ -14,7 +14,6 @@ var des_edit: TextEdit
 var animation_edit: LineEdit
 var icon_edit: LineEdit
 var label_edit: LineEdit
-var tag_edit: LineEdit
 var cost_spin: SpinBox
 var rarity_option: OptionButton
 var category_option: OptionButton
@@ -35,6 +34,9 @@ var atk_type_option: OptionButton
 var star_type_option: OptionButton
 var pack_edit: LineEdit
 var flavor_edit: TextEdit
+
+var tag_teamup: CheckBox
+var tag_amphibious: CheckBox
 
 var status_label: Label
 
@@ -77,51 +79,51 @@ func _ready() -> void:
 
 	_add_label("卡牌类型")
 	card_type = OptionButton.new()
-	card_type.add_item("单位卡（FIGHTER）", 0)
-	card_type.add_item("锦囊卡（TRICK）", 1)
-	card_type.add_item("环境卡（ENVIRONMENT）", 2)
+	card_type.add_item("单位卡", 0)
+	card_type.add_item("锦囊卡", 1)
+	card_type.add_item("环境卡", 2)
 	card_type.item_selected.connect(_on_card_type_selected)
 	root.add_child(card_type)
 
 	hero_check = CheckBox.new()
-	hero_check.text = "超能力?"
+	hero_check.text = "超能力？"
 	root.add_child(hero_check)
 
 	# ---------- 描述 ----------
-	_add_label("描述（Des）")
+	_add_label("描述")
 	des_edit = TextEdit.new()
 	des_edit.custom_minimum_size = Vector2(0, 60)
 	des_edit.placeholder_text = "支持 _下划线_ 、 =图标= 、 =图标={N}"
 	root.add_child(des_edit)
 
 	# ---------- 数值 ----------
-	_add_label("费用（Cost）")
+	_add_label("费用")
 	cost_spin = SpinBox.new()
 	cost_spin.min_value = 0
 	cost_spin.max_value = 99
 	root.add_child(cost_spin)
 
-	# ---------- 单位字段（仅 Fighter 显示） ----------
+	# ---------- 单位字段（仅单位卡显示） ----------
 	hp_box = VBoxContainer.new()
 	hp_box.visible = false
 	hp_box.add_theme_constant_override("separation", 4)
 	root.add_child(hp_box)
 
-	_add_label_to(hp_box, "Hp")
+	_add_label_to(hp_box, "生命值")
 	hp_spin = SpinBox.new()
 	hp_spin.min_value = 0
 	hp_spin.max_value = 999
 	hp_box.add_child(hp_spin)
 
-	_add_label_to(hp_box, "HpType")
+	_add_label_to(hp_box, "生命值类型")
 	hp_type_option = OptionButton.new()
 	for t in HP_TYPES:
 		hp_type_option.add_item(t)
 	hp_box.add_child(hp_type_option)
 
-	# ---- 子项：Atk ----
+	# ---- 子项：攻击力 ----
 	include_atk = CheckBox.new()
-	include_atk.text = "有伤害?"
+	include_atk.text = "有伤害？"
 	include_atk.toggled.connect(_on_include_atk_toggled)
 	hp_box.add_child(include_atk)
 
@@ -130,21 +132,21 @@ func _ready() -> void:
 	atk_box.add_theme_constant_override("separation", 4)
 	hp_box.add_child(atk_box)
 
-	_add_label_to(atk_box, "Atk")
+	_add_label_to(atk_box, "攻击力")
 	atk_spin = SpinBox.new()
 	atk_spin.min_value = 0
 	atk_spin.max_value = 999
 	atk_box.add_child(atk_spin)
 
-	_add_label_to(atk_box, "AtkType")
+	_add_label_to(atk_box, "攻击力类型")
 	atk_type_option = OptionButton.new()
 	for t in ATK_TYPES:
 		atk_type_option.add_item(t)
 	atk_box.add_child(atk_type_option)
 
-	# ---- 子项：StarType ----
+	# ---- 子项：等级类型 ----
 	include_star_type = CheckBox.new()
-	include_star_type.text = "有等级?"
+	include_star_type.text = "有等级？"
 	include_star_type.toggled.connect(_on_include_star_type_toggled)
 	hp_box.add_child(include_star_type)
 
@@ -153,15 +155,15 @@ func _ready() -> void:
 	star_type_box.add_theme_constant_override("separation", 4)
 	hp_box.add_child(star_type_box)
 
-	_add_label_to(star_type_box, "StarType")
+	_add_label_to(star_type_box, "等级类型")
 	star_type_option = OptionButton.new()
 	for t in STAR_TYPES:
 		star_type_option.add_item(t)
 	star_type_box.add_child(star_type_option)
 
-	# ---------- Pack（独立） ----------
+	# ---------- 卡包（独立） ----------
 	include_pack = CheckBox.new()
-	include_pack.text = "有卡包?"
+	include_pack.text = "有卡包？"
 	include_pack.toggled.connect(_on_include_pack_toggled)
 	root.add_child(include_pack)
 
@@ -170,47 +172,51 @@ func _ready() -> void:
 	pack_box.add_theme_constant_override("separation", 4)
 	root.add_child(pack_box)
 
-	_add_label_to(pack_box, "卡包（Pack）")
+	_add_label_to(pack_box, "卡包")
 	pack_edit = LineEdit.new()
 	pack_edit.placeholder_text = "高级"
 	pack_box.add_child(pack_edit)
 
-	# ---------- Tag（关键词，必须有） ----------
-	_add_label("关键词（Tag，逗号分隔）")
-	tag_edit = LineEdit.new()
-	tag_edit.placeholder_text = "例如：致命,必中"
-	root.add_child(tag_edit)
+	# ---------- 关键词（多选） ----------
+	_add_label("关键词")
+	tag_teamup = CheckBox.new()
+	tag_teamup.text = "组队"
+	root.add_child(tag_teamup)
 
-	# ---------- Flavor（特别描述，必须有） ----------
-	_add_label("特别描述（Flavor）")
+	tag_amphibious = CheckBox.new()
+	tag_amphibious.text = "两栖"
+	root.add_child(tag_amphibious)
+
+	# ---------- 特别描述 ----------
+	_add_label("特别描述")
 	flavor_edit = TextEdit.new()
 	flavor_edit.custom_minimum_size = Vector2(0, 40)
 	root.add_child(flavor_edit)
 
 	# ---------- 其余 ----------
-	_add_label("稀有度（Rarity）")
+	_add_label("稀有度")
 	rarity_option = OptionButton.new()
 	for r in RARITIES:
 		rarity_option.add_item(r)
 	root.add_child(rarity_option)
 
-	_add_label("派系（Category）")
+	_add_label("派系")
 	category_option = OptionButton.new()
 	for c in CATEGORIES:
 		category_option.add_item(c)
 	root.add_child(category_option)
 
-	_add_label("标签（Label，逗号分隔）")
+	_add_label("标签（逗号分隔）")
 	label_edit = LineEdit.new()
 	label_edit.placeholder_text = "豌豆,水果"
 	root.add_child(label_edit)
 
-	_add_label("动画路径（Animation）")
+	_add_label("动画路径")
 	animation_edit = LineEdit.new()
 	animation_edit.placeholder_text = "res://..."
 	root.add_child(animation_edit)
 
-	_add_label("卡面（Icon）")
+	_add_label("卡面")
 	icon_edit = LineEdit.new()
 	icon_edit.placeholder_text = "res://..."
 	root.add_child(icon_edit)
@@ -225,7 +231,7 @@ func _ready() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status_label)
 
-	# 初始化：根据当前卡牌类型刷新 Hp 区块显隐
+	# 初始化：根据当前卡牌类型刷新单位字段显隐
 	_on_card_type_selected(card_type.selected)
 
 func _add_label(text: String) -> void:
@@ -237,7 +243,7 @@ func _add_label_to(parent: Node, text: String) -> void:
 	parent.add_child(label)
 
 func _on_card_type_selected(index: int) -> void:
-	# 0 = 单位卡（FIGHTER），其余不显示
+	# 0 = 单位卡，其余不显示
 	hp_box.visible = (index == 0)
 	if not hp_box.visible:
 		include_atk.button_pressed = false
@@ -296,14 +302,15 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 			labels.append(t)
 	entry["\"%s.Label\"" % clean] = labels
 
+	# 关键词：从勾选框收集
 	var tags := []
-	for s in tag_edit.text.split(",", false):
-		var t := s.strip_edges()
-		if not t.is_empty():
-			tags.append(t)
+	if tag_teamup.button_pressed:
+		tags.append("组队")
+	if tag_amphibious.button_pressed:
+		tags.append("两栖")
 	entry["\"%s.Tag\"" % clean] = tags
 
-	# 仅 Fighter 输出 Hp / HpType，子项按勾选
+	# 仅单位卡输出生命值 / 生命值类型，子项按勾选
 	if card_type.selected == 0:
 		entry["\"%s.Hp\"" % clean] = int(hp_spin.value)
 		entry["\"%s.HpType\"" % clean] = hp_type_option.get_item_text(hp_type_option.selected)
