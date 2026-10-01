@@ -1,4 +1,5 @@
 using Card;
+using Card.Cmd;
 using Controller;
 using Godot;
 using Logger;
@@ -64,7 +65,8 @@ public partial class Fighter : Control, ITarget
                 Camp.Zombie => t.Camp == Camp.Plant,
                 _ => false
             };
-			b = b && camp;
+			if (!t.FriendTarget)
+				b = b && camp;
             return b;
 		};
 	public async Task Die()
@@ -84,28 +86,30 @@ public partial class Fighter : Control, ITarget
 		}
 		Visible = false;
 		Clear();
-		await AnimaActor.PlayInstantAnimation("res://数据资源/属性动画/死亡特效.tres", GlobalPosition + new Vector2(0, -30), "intro");
+		await AnimaActor.PlayInstantAnimationTask("res://数据资源/属性动画/死亡特效.tres", GlobalPosition + new Vector2(0, -30), "intro");
 	}
 	public TargetType TargetType => TargetType.Fighters;
 	private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
-	public static void CallFightersTargeted(CardModel cardModel, TargetType targetType)
-	{
-		if (targetType.HasFlag(TargetType.Fighters))
-		{
-			var List = new List<Fighter>();
-			foreach (var fighter in Instances.Keys)
-			{
-				var bol = fighter.CanBeTarget(cardModel, cardModel.TargetFilter);
-				if (bol)
-					List.Add(fighter);
-			}
-			foreach (var fighter in List)
-			{
-				fighter.CallTargeted();
-			}
-		}
-	}
-	public static void DeleteFightersTargeted(TargetType targetType)
+    public static void CallTargeted(CardModel cardModel, TargetType targetType)
+    {
+        CallTargeted(cardModel, targetType, cardModel.TargetFilter);
+    }
+
+    public static void CallTargeted(CardModel cardModel, TargetType targetType, Func<ITarget, bool> filter)
+    {
+        if (!targetType.HasFlag(TargetType.Fighters)) return;
+
+        var list = new List<Fighter>();
+        foreach (var fighter in Instances.Keys)
+        {
+            if (fighter.CanBeTarget(cardModel, filter))
+                list.Add(fighter);
+        }
+
+        foreach (var fighter in list)
+            fighter.CallTargeted();
+    }
+    public static void DeleteTargeted(TargetType targetType)
 	{
 		if (targetType.HasFlag(TargetType.Fighters))
 		{
@@ -285,7 +289,12 @@ public partial class Fighter : Control, ITarget
 
 	private void OnFighterClick()
 	{
-		CardDes.DisplayDescription(Model);
+		if (!Calling)
+			CardDes.DisplayDescription(Model);
+		else
+		{
+			CardCmd.SelectTarget(this);
+		}
 	}
 
 	public void Targeted()

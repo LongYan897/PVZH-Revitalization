@@ -22,7 +22,18 @@ namespace Card;
 /// </summary>
 public class CardModel
 {
+    public virtual Vector2 Size => new(1, 1);
+    public virtual Vector2 Position => new(0, 0);
     public Player Player { get; private set; }
+    /// <summary>
+    /// 卡牌的模板(用于获取卡牌数据)(不要修改)
+    /// </summary>
+    public static CardModel GetTemplate(string cardClassName)
+    {
+        var method = typeof(CardModel).GetMethod("Load", BindingFlags.Static | BindingFlags.NonPublic);
+        var genericMethod = method.MakeGenericMethod();
+        return (CardModel)genericMethod.Invoke(null, new object[] { cardClassName });
+    }
     /// <summary>
     /// 卡牌的模板(用于获取卡牌数据)(不要修改)
     /// </summary>
@@ -44,6 +55,10 @@ public class CardModel
     {
         await Destroy();
     }
+    /// <summary>
+    /// 是否能把友军当作目标
+    /// </summary>
+    public virtual bool FriendTarget => false;
     /// <summary>
     /// 卡牌费用图片
     /// </summary>

@@ -21,6 +21,15 @@ offset_bottom = 20.0
 script = ExtResource("1_ewqbq")
 metadata/_custom_type_script = "uid://d0fiwqlc5ur5k"
 
+[node name="碰撞" type="Button" parent="." unique_id=1720904402]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -40.0
+offset_top = -270.0
+offset_right = 40.0
+offset_bottom = 270.0
+flat = true
+
 [node name="碰撞箱" type="Area2D" parent="." unique_id=1696215677]
 unique_name_in_owner = true
 
@@ -66,6 +75,15 @@ texture = ExtResource("4_ewqbq")
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
+[node name="碰撞2" type="Button" parent="植物_僵尸1" unique_id=93059963]
+unique_name_in_owner = true
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 100.0
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+flat = true
+
 [node name="碰撞箱2" type="Area2D" parent="植物_僵尸1" unique_id=1825499576]
 unique_name_in_owner = true
 position = Vector2(55, 48)
@@ -90,6 +108,15 @@ scale = Vector2(1.0000001, 1.0000001)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("4_ewqbq")
 expand_mode = 1
+
+[node name="碰撞3" type="Button" parent="植物_2" unique_id=1150805435]
+unique_name_in_owner = true
+offset_left = 10.0
+offset_top = 112.0
+offset_right = 100.0
+offset_bottom = 192.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+flat = true
 
 [node name="碰撞箱3" type="Area2D" parent="植物_2" unique_id=1383307985]
 unique_name_in_owner = true

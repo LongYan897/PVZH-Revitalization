@@ -26,6 +26,7 @@ public partial class Main : Node
         HpType.Init();
         AtkType.Init();
         Icon.Init();
+        SceneAnimaActor.Init(this);
         //初始化容器
         Animator = GetNode<CanvasLayer>("Animators");
         CardContainer = GetNode<CanvasLayer>("Cards");
@@ -35,7 +36,7 @@ public partial class Main : Node
         //
         CardModel card = CardModel.Load<Peashooter>();
         CardModel card1 = CardModel.Load<HailACopter>();
-        CardModel card2 = CardModel.Load<RollingStone>();
+        CardModel card2 = CardModel.Load<FinalMission>();
         card1.Status = Status.FaceUp;
         card2.Status = Status.FaceUp;
         NodeCard.DrawACard(card1, new(0,0));

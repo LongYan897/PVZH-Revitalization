@@ -58,5 +58,19 @@
   "CopterCommando.Atk": 6,
   "CopterCommando.AtkType": "普通",
   "CopterCommando.Pack": "巨大",
-  "CopterCommando.Flavor": "患有严重恐水症，死活不肯在水上飞行。"
+  "CopterCommando.Flavor": "患有严重恐水症，死活不肯在水上飞行。",
+
+  "FinalMission.Title": "最终任务",
+  "FinalMission.Des": "_消灭_一只僵尸。然后对一株植物造成=Health={-4}",
+  "FinalMission.Cost": 2,
+  "FinalMission.Camp": "僵尸",
+  "FinalMission.Type": "锦囊",
+  "FinalMission.Rarity": "稀有",
+  "FinalMission.Category": "疯狂",
+  "FinalMission.Animation": "res://素材(C#)/卡牌/最终任务/最终任务锦囊动画.tres",
+  "FinalMission.Icon": "res://素材(C#)/卡牌/最终任务/Mission.png",
+  "FinalMission.Label": [ "科学家", "木桶" ],
+  "FinalMission.Tag": [],
+  "FinalMission.Pack": "银河",
+  "FinalMission.Flavor": "“往返票和单程票一个价。“"
 }

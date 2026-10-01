@@ -1,5 +1,8 @@
 using Battle;
 using Battle.Entity;
+using Godot;
+using Play;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Target;
@@ -12,6 +15,8 @@ namespace Card.Cmd;
 public static class CardCmd
 {
     private static List<CardModel> CardInstances = new List<CardModel>();
+    private static ITarget _cachedTarget;
+
     /// <summary>
     /// 向Cmd添加卡牌
     /// </summary>
@@ -58,6 +63,58 @@ public static class CardCmd
         {
             await card.AfterPlayCard(cardModel, target);
         }
+    }
+    private static TaskCompletionSource<ITarget> _tcs;
+    /// <summary>
+    /// 让玩家选择一个目标
+    /// </summary>
+    /// <param name="player">选中的玩家</param>
+    /// <param name="cardModel">选中的卡牌</param>
+    /// <param name="targetType">目标类型</param>
+    /// <returns></returns>
+    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType)
+    {
+        Fighter.CallTargeted(cardModel, targetType);
+        NodeRoad.CallTargeted(cardModel, targetType);
+
+        _tcs = new TaskCompletionSource<ITarget>();
+        var result = await _tcs.Task;
+
+        Fighter.DeleteTargeted(targetType);
+        NodeRoad.DeleteTargeted(targetType);
+
+        _tcs = null;
+        return result;
+    }
+    /// <summary>
+    /// 让玩家选择一个目标(自定义过滤器)
+    /// </summary>
+    /// <param name="player">选中的玩家</param>
+    /// <param name="cardModel">选中的卡牌</param>
+    /// <param name="targetType">目标类型</param>
+    /// <param name="filter">过滤器</param>
+    /// <returns></returns>
+    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, Func<ITarget, bool> filter)
+    {
+        Fighter.CallTargeted(cardModel, targetType, filter);
+        NodeRoad.CallTargeted(cardModel, targetType, filter);
+
+        _tcs = new TaskCompletionSource<ITarget>();
+        var result = await _tcs.Task;
+
+        Fighter.DeleteTargeted(targetType);
+        NodeRoad.DeleteTargeted(targetType);
+
+        _tcs = null;
+        return result;
+    }
+    /// <summary>
+    /// 选中目标后调用此方法
+    /// </summary>
+    /// <param name="target"></param>
+    public static void SelectTarget(ITarget target)
+    {
+        _tcs?.TrySetResult(target);
     }
     /// <summary>
     /// 生成战斗单位

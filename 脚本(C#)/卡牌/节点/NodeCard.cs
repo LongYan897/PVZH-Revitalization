@@ -267,8 +267,8 @@ public partial class NodeCard : Control
     }
     private void Drag()
     {
-        Fighter.CallFightersTargeted(Model, Model.TargetType);
-        NodeRoad.CallRoadLinesTargeted(Model, Model.TargetType);
+        Fighter.CallTargeted(Model, Model.TargetType);
+        NodeRoad.CallTargeted(Model, Model.TargetType);
     }
 
     private void OnCardClick()
@@ -281,8 +281,8 @@ public partial class NodeCard : Control
     {
         ZIndex -= instances.Count * 60;
         if (ChoiceCard == this) ChoiceCard = null;
-        Fighter.DeleteFightersTargeted(Model.TargetType);
-        NodeRoad.DeleteRoadLinesTargeted(Model.TargetType);
+        Fighter.DeleteTargeted(Model.TargetType);
+        NodeRoad.DeleteTargeted(Model.TargetType);
         if (target == null)
             ReturnToOrigin();
         else
@@ -329,9 +329,24 @@ public partial class NodeCard : Control
                     var col = (NodeRoad)(GodotObject)variant;
                     if (!col.Calling) return;
                     target = col;
-                    col.Targeted();
+                    col.Targeted(true, false, false);
                     Glowing();
                 }
+            }
+            if (type == "Grid")
+            {
+                bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
+                     || Model.TargetType.HasFlag(TargetType.CoopGrids)
+                     || Model.TargetType.HasFlag(TargetType.FighterAndGrids)
+                     || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids);
+                bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.FighterAndGrids)
+                     || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids));
+                if (!needGrid) return;
+                var col = (NodeRoad)(GodotObject)variant;
+                if (!col.Calling) return;
+                target = col;
+                col.Targeted(false, needGrid, coopNeedGrid);
+                Glowing();
             }
         }
     }
@@ -370,8 +385,22 @@ public partial class NodeCard : Control
                     if (Model.TargetType.HasFlag(TargetType.Lines))
                     {
                         var col = (NodeRoad)(GodotObject)variant;
-                        col.Distargeted();
+                        col.Distargeted(true, false, false);
 
+                    }
+                }
+                if (type == "Grid")
+                {
+                    bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
+                         || Model.TargetType.HasFlag(TargetType.CoopGrids)
+                         || Model.TargetType.HasFlag(TargetType.FighterAndGrids)
+                         || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids);
+                    bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.FighterAndGrids)
+                         || Model.TargetType.HasFlag(TargetType.FighterAndCoopGrids));
+                    if (needGrid)
+                    {
+                        var col = (NodeRoad)(GodotObject)variant;
+                        col.Distargeted(false,needGrid,coopNeedGrid);
                     }
                 }
                 Darken();

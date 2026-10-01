@@ -78,14 +78,19 @@ public interface ICardVariable
 }
 
 /// <summary>
-/// 整数变量
+/// 卡牌的整数变量(卡牌必须使用该变量,需要用该变量监听卡牌修改事件)
 /// </summary>
-public class CardIntVariable(CardModel cardModel, string sign, int baseValue)
+/// <param name="cardModel">监听的卡牌</param>
+/// <param name="sign">监听的信号</param>
+/// <param name="baseValue">基础值</param>
+/// <param name="canNegative">是否可以为负数</param>
+public class CardIntVariable(CardModel cardModel, string sign, int baseValue,bool canNegative = false)
 {
     private CardModel card = cardModel;
     private IntVariable variable = new IntVariable(sign, baseValue);
     public int Current => variable.Current;
     public bool HasChanged => variable.HasChanged;
+    private bool canNegative = canNegative;
     /// <summary>
     /// 增加值
     /// </summary>
@@ -105,6 +110,8 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue)
     public async Task Lose(int value, VariableReason reason)
     {
         var old = variable.Current - value;
+        if (!canNegative && old < 0)
+            old = 0;
         variable.Lose(value, reason);
         await CardCmd.ChangedCard(card, sign, old, value);
     }
