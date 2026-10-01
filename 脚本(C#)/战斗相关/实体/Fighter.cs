@@ -181,13 +181,13 @@ public partial class Fighter : Control, ITarget
         var capa = model.CardTag;
         var roadFighters = road.GetFighters();
         var roadType = road.Type;
-        if (model.Camp == Camp.Zombie && (roadType == RoadType.Ground || (roadType == RoadType.Water && capa.HasFlag(CardTag.Amphibious))))
+        if (model.Camp == Camp.Zombie && (roadType != RoadType.Water || (roadType == RoadType.Water && capa.HasFlag(CardTag.Amphibious))))
         {
             if (roadFighters.Any(f => f.Model.Camp == Camp.Zombie))
                 return false;
             return true;
         }
-        else if (model.Camp == Camp.Plant && (roadType == RoadType.Ground || (roadType == RoadType.Water && capa.HasFlag(CardTag.Amphibious))))
+        else if (model.Camp == Camp.Plant && (roadType != RoadType.Water || (roadType == RoadType.Water && capa.HasFlag(CardTag.Amphibious))))
         {
             if (capa.HasFlag(CardTag.Coop))
             {
