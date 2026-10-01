@@ -33,7 +33,10 @@ public partial class NodeRoad : Control, ITarget
     {
         bool? a;
         a = f?.Invoke(this);
-        return (bool)a;
+        bool b = true;
+        if (t is FighterCardModel fighter)
+            b = Fighter.CanGenerate(fighter,Model);
+        return (bool)a && b;
     };
 
     public TargetType TargetType => TargetType.Lines | TargetType.FighterAndGrids | TargetType.Grids ;

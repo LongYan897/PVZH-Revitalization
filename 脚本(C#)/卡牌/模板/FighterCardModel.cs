@@ -22,7 +22,7 @@ public class FighterCardModel : CardModel
         AtkType = new(this, "AttackType", cardString.AtkType);
         Hp = new(this, "Health", cardString.Health);
         HpType = new(this, "HealthType", cardString.HpType);
-
+        CardTag = cardString.CardTag;
         return LoadCustomData(cardString);
     }
     /// <summary>
@@ -68,7 +68,7 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 卡牌关键词的类型
     /// </summary>
-    public virtual CardTag CardTag { get; private set; } = CardTag.None;
+    public virtual CardTag CardTag { get; private set; }
     /// <summary>
     /// 卡牌的攻击力
     /// </summary>

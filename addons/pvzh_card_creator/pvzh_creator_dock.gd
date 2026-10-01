@@ -14,21 +14,19 @@ var des_edit: TextEdit
 var animation_edit: LineEdit
 var icon_edit: LineEdit
 var label_edit: LineEdit
+var tag_edit: LineEdit
 var cost_spin: SpinBox
 var rarity_option: OptionButton
 var category_option: OptionButton
 
-var include_hp: CheckBox
 var include_atk: CheckBox
 var include_star_type: CheckBox
 var include_pack: CheckBox
-var include_flavor: CheckBox
 
 var hp_box: VBoxContainer
 var atk_box: VBoxContainer
 var star_type_box: VBoxContainer
 var pack_box: VBoxContainer
-var flavor_box: VBoxContainer
 
 var hp_spin: SpinBox
 var hp_type_option: OptionButton
@@ -82,6 +80,7 @@ func _ready() -> void:
 	card_type.add_item("单位卡（FIGHTER）", 0)
 	card_type.add_item("锦囊卡（TRICK）", 1)
 	card_type.add_item("环境卡（ENVIRONMENT）", 2)
+	card_type.item_selected.connect(_on_card_type_selected)
 	root.add_child(card_type)
 
 	hero_check = CheckBox.new()
@@ -102,15 +101,7 @@ func _ready() -> void:
 	cost_spin.max_value = 99
 	root.add_child(cost_spin)
 
-	# ---------- 可选字段 ----------
-	_add_label("可选字段")
-
-	# Hp
-	include_hp = CheckBox.new()
-	include_hp.text = "有血量?"
-	include_hp.toggled.connect(_on_include_hp_toggled)
-	root.add_child(include_hp)
-
+	# ---------- 单位字段（仅 Fighter 显示） ----------
 	hp_box = VBoxContainer.new()
 	hp_box.visible = false
 	hp_box.add_theme_constant_override("separation", 4)
@@ -128,16 +119,16 @@ func _ready() -> void:
 		hp_type_option.add_item(t)
 	hp_box.add_child(hp_type_option)
 
-	# Atk
+	# ---- 子项：Atk ----
 	include_atk = CheckBox.new()
 	include_atk.text = "有伤害?"
 	include_atk.toggled.connect(_on_include_atk_toggled)
-	root.add_child(include_atk)
+	hp_box.add_child(include_atk)
 
 	atk_box = VBoxContainer.new()
 	atk_box.visible = false
 	atk_box.add_theme_constant_override("separation", 4)
-	root.add_child(atk_box)
+	hp_box.add_child(atk_box)
 
 	_add_label_to(atk_box, "Atk")
 	atk_spin = SpinBox.new()
@@ -151,16 +142,16 @@ func _ready() -> void:
 		atk_type_option.add_item(t)
 	atk_box.add_child(atk_type_option)
 
-	# StarType
+	# ---- 子项：StarType ----
 	include_star_type = CheckBox.new()
 	include_star_type.text = "有等级?"
 	include_star_type.toggled.connect(_on_include_star_type_toggled)
-	root.add_child(include_star_type)
+	hp_box.add_child(include_star_type)
 
 	star_type_box = VBoxContainer.new()
 	star_type_box.visible = false
 	star_type_box.add_theme_constant_override("separation", 4)
-	root.add_child(star_type_box)
+	hp_box.add_child(star_type_box)
 
 	_add_label_to(star_type_box, "StarType")
 	star_type_option = OptionButton.new()
@@ -168,7 +159,7 @@ func _ready() -> void:
 		star_type_option.add_item(t)
 	star_type_box.add_child(star_type_option)
 
-	# Pack
+	# ---------- Pack（独立） ----------
 	include_pack = CheckBox.new()
 	include_pack.text = "有卡包?"
 	include_pack.toggled.connect(_on_include_pack_toggled)
@@ -184,21 +175,17 @@ func _ready() -> void:
 	pack_edit.placeholder_text = "高级"
 	pack_box.add_child(pack_edit)
 
-	# Flavor
-	include_flavor = CheckBox.new()
-	include_flavor.text = "有特别描述?"
-	include_flavor.toggled.connect(_on_include_flavor_toggled)
-	root.add_child(include_flavor)
+	# ---------- Tag（关键词，必须有） ----------
+	_add_label("关键词（Tag，逗号分隔）")
+	tag_edit = LineEdit.new()
+	tag_edit.placeholder_text = "例如：致命,必中"
+	root.add_child(tag_edit)
 
-	flavor_box = VBoxContainer.new()
-	flavor_box.visible = false
-	flavor_box.add_theme_constant_override("separation", 4)
-	root.add_child(flavor_box)
-
-	_add_label_to(flavor_box, "特别描述（Flavor）")
+	# ---------- Flavor（特别描述，必须有） ----------
+	_add_label("特别描述（Flavor）")
 	flavor_edit = TextEdit.new()
 	flavor_edit.custom_minimum_size = Vector2(0, 40)
-	flavor_box.add_child(flavor_edit)
+	root.add_child(flavor_edit)
 
 	# ---------- 其余 ----------
 	_add_label("稀有度（Rarity）")
@@ -227,6 +214,7 @@ func _ready() -> void:
 	icon_edit = LineEdit.new()
 	icon_edit.placeholder_text = "res://..."
 	root.add_child(icon_edit)
+
 	# ---------- 按钮 ----------
 	var button := Button.new()
 	button.text = "创建"
@@ -237,6 +225,9 @@ func _ready() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status_label)
 
+	# 初始化：根据当前卡牌类型刷新 Hp 区块显隐
+	_on_card_type_selected(card_type.selected)
+
 func _add_label(text: String) -> void:
 	_add_label_to(root, text)
 
@@ -245,8 +236,14 @@ func _add_label_to(parent: Node, text: String) -> void:
 	label.text = text
 	parent.add_child(label)
 
-func _on_include_hp_toggled(pressed: bool) -> void:
-	hp_box.visible = pressed
+func _on_card_type_selected(index: int) -> void:
+	# 0 = 单位卡（FIGHTER），其余不显示
+	hp_box.visible = (index == 0)
+	if not hp_box.visible:
+		include_atk.button_pressed = false
+		include_star_type.button_pressed = false
+		atk_box.visible = false
+		star_type_box.visible = false
 
 func _on_include_atk_toggled(pressed: bool) -> void:
 	atk_box.visible = pressed
@@ -256,9 +253,6 @@ func _on_include_star_type_toggled(pressed: bool) -> void:
 
 func _on_include_pack_toggled(pressed: bool) -> void:
 	pack_box.visible = pressed
-
-func _on_include_flavor_toggled(pressed: bool) -> void:
-	flavor_box.visible = pressed
 
 func _build_type_text() -> String:
 	var base_text: String = ["单位", "锦囊", "环境"][card_type.selected]
@@ -302,20 +296,29 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 			labels.append(t)
 	entry["\"%s.Label\"" % clean] = labels
 
-	if include_hp.button_pressed:
+	var tags := []
+	for s in tag_edit.text.split(",", false):
+		var t := s.strip_edges()
+		if not t.is_empty():
+			tags.append(t)
+	entry["\"%s.Tag\"" % clean] = tags
+
+	# 仅 Fighter 输出 Hp / HpType，子项按勾选
+	if card_type.selected == 0:
 		entry["\"%s.Hp\"" % clean] = int(hp_spin.value)
 		entry["\"%s.HpType\"" % clean] = hp_type_option.get_item_text(hp_type_option.selected)
 
-	if include_atk.button_pressed:
-		entry["\"%s.Atk\"" % clean] = int(atk_spin.value)
-		entry["\"%s.AtkType\"" % clean] = atk_type_option.get_item_text(atk_type_option.selected)
+		if include_atk.button_pressed:
+			entry["\"%s.Atk\"" % clean] = int(atk_spin.value)
+			entry["\"%s.AtkType\"" % clean] = atk_type_option.get_item_text(atk_type_option.selected)
 
-	if include_star_type.button_pressed:
-		entry["\"%s.StarType\"" % clean] = star_type_option.get_item_text(star_type_option.selected)
+		if include_star_type.button_pressed:
+			entry["\"%s.StarType\"" % clean] = star_type_option.get_item_text(star_type_option.selected)
+
 	if include_pack.button_pressed:
 		entry["\"%s.Pack\"" % clean] = pack_edit.text
-	if include_flavor.button_pressed:
-		entry["\"%s.Flavor\"" % clean] = flavor_edit.text
+
+	entry["\"%s.Flavor\"" % clean] = flavor_edit.text
 
 	print("===== cards.json ：" + clean + " =====")
 	for k in entry.keys():

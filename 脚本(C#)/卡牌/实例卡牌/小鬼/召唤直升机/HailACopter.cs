@@ -11,6 +11,10 @@ namespace Card.Imp;
 public class HailACopter : CardModel
 {
     public override TargetType TargetType => TargetType.Lines;
+    public override bool TargetFilter(ITarget target)
+    {
+        return base.TargetFilter(target);
+    }
     public override async Task Play(ITarget target)
     {
         WavPlayer.Play("res://素材(C#)/卡牌/召唤直升机/intro_1.wav");

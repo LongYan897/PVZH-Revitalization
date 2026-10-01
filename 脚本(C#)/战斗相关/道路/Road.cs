@@ -37,7 +37,7 @@ public class Road
     /// <summary>
     /// 决定该道路的类型(高地/平地/水路)
     /// </summary>
-    public RoadType Type { get; init; }
+    public RoadType Type { get; init; } = RoadType.Water;
     /// <summary>
     /// 该道路存储的战斗单位
     /// </summary>

@@ -178,17 +178,31 @@ public partial class Fighter : Control, ITarget
     /// <returns>能否生成</returns>
     public static bool CanGenerate(FighterCardModel model, Road road)
     {
-        var capa = model.Capability;
+        var capa = model.CardTag;
         var roadFighters = road.GetFighters();
         var roadType = road.Type;
-        return capa switch
+        if (model.Camp == Camp.Zombie && (roadType == RoadType.Ground) || (roadType == RoadType.Water && capa.HasFlag(CardTag.Amphibious)))
         {
-            Capability.Amphibious => true,
-            Capability.Land => roadType == RoadType.Ground || roadType == RoadType.Height && (!roadFighters.Any(f=>f.Model.Camp == model.Camp)),
-            Capability.AmphibiousCoop => roadFighters.Count(f => f.Model.Camp == model.Camp) <= 1 && model.Camp == Camp.Plant,
-            Capability.LandCoop => roadType == RoadType.Ground || roadType == RoadType.Height && roadFighters.Count(f => f.Model.Camp == model.Camp) <= 1 && model.Camp == Camp.Plant,
-            _ => false
-        };
+            if (roadFighters.Any(f => f.Model.Camp == Camp.Zombie))
+                return false;
+            return true;
+        }
+        else if (model.Camp == Camp.Plant && (roadType == RoadType.Ground) || (roadType == RoadType.Water && capa.HasFlag(CardTag.Amphibious)))
+        {
+            if (capa.HasFlag(CardTag.Coop))
+            {
+                if (roadFighters.Count(f => f.Model.Camp == Camp.Plant) >= 1)
+                    return false;
+                return true;
+            }
+            else
+            {
+                if (roadFighters.Any(f => f.Model.Camp == Camp.Plant))
+                    return false;
+                return true;
+            }
+        }
+        return false;
     }
     /// <summary>
     /// 返还绑定的卡牌
