@@ -15,17 +15,9 @@ size = Vector2(89.99999, 80)
 [node name="道路" type="Control" unique_id=1720357688]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -640.0
-offset_right = -340.0
-offset_bottom = -620.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 20.0
+offset_bottom = 20.0
 script = ExtResource("1_ewqbq")
 metadata/_custom_type_script = "uid://d0fiwqlc5ur5k"
 
@@ -59,60 +51,53 @@ position = Vector2(0, -7.499998)
 scale = Vector2(0.33, 0.37791798)
 texture = ExtResource("3_x76yt")
 
-[node name="单位高亮" type="TextureRect" parent="." unique_id=1842500548]
+[node name="植物_僵尸1" type="Node2D" parent="." unique_id=545167542]
+unique_name_in_owner = true
+position = Vector2(-55, 138)
+
+[node name="单位高亮" type="TextureRect" parent="植物_僵尸1" unique_id=1842500548]
 unique_name_in_owner = true
 z_index = 7
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -65.0
-offset_top = 105.0
-offset_right = 45.0
-offset_bottom = 201.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 110.0
+offset_bottom = 96.0
 scale = Vector2(1.0000001, 1.0000001)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("4_ewqbq")
 expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
-[node name="碰撞箱2" type="Area2D" parent="." unique_id=1825499576]
+[node name="碰撞箱2" type="Area2D" parent="植物_僵尸1" unique_id=1825499576]
 unique_name_in_owner = true
-position = Vector2(0, 178)
+position = Vector2(55, 48)
 scale = Vector2(1.0000001, 1.0000001)
 
-[node name="体积" type="CollisionShape2D" parent="碰撞箱2" unique_id=35310815]
-position = Vector2(0, -14)
+[node name="体积" type="CollisionShape2D" parent="植物_僵尸1/碰撞箱2" unique_id=35310815]
 shape = SubResource("RectangleShape2D_rx7a3")
 
-[node name="单位高亮2" type="TextureRect" parent="." unique_id=1021507255]
+[node name="Pos" type="Marker2D" parent="植物_僵尸1" unique_id=2100969712]
+position = Vector2(55, 64)
+
+[node name="植物_2" type="Node2D" parent="." unique_id=503027257]
+unique_name_in_owner = true
+position = Vector2(-55, 34)
+
+[node name="单位高亮2" type="TextureRect" parent="植物_2" unique_id=1021507255]
 unique_name_in_owner = true
 z_index = 7
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -65.0
-offset_top = -41.0
-offset_right = 45.0
-offset_bottom = 55.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 110.0
+offset_bottom = 96.0
 scale = Vector2(1.0000001, 1.0000001)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("4_ewqbq")
 expand_mode = 1
 
-[node name="碰撞箱3" type="Area2D" parent="." unique_id=1383307985]
+[node name="碰撞箱3" type="Area2D" parent="植物_2" unique_id=1383307985]
 unique_name_in_owner = true
-position = Vector2(-55.000008, -31.000008)
 scale = Vector2(1.0000001, 1.0000001)
 
-[node name="体积" type="CollisionShape2D" parent="碰撞箱3" unique_id=1685226519]
+[node name="体积" type="CollisionShape2D" parent="植物_2/碰撞箱3" unique_id=1685226519]
 position = Vector2(55, 48)
 shape = SubResource("RectangleShape2D_rx7a3")
+
+[node name="Pos" type="Marker2D" parent="植物_2" unique_id=779240684]
+position = Vector2(55, 64)

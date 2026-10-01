@@ -19,7 +19,7 @@ public partial class NodeRoad : Control, ITarget
     /// <summary>
     /// 绑定的道路数据
     /// </summary>
-    public Road Model { get; private set; }
+    public Road Model { get; private set; } = new() { Index =1, Type = RoadType.Ground };
     /// <summary>
     /// 绑定道路数据
     /// </summary>
@@ -38,7 +38,24 @@ public partial class NodeRoad : Control, ITarget
             b = Fighter.CanGenerate(fighter,Model);
         return (bool)a && b;
     };
-
+    public static NodeRoad GetNode(Road road)
+    {
+        foreach (var item in Instances)
+        {
+            if (item.Value == road)
+                return item.Key;
+        }
+        return null;
+    }
+    public Vector2 GetFighterLocation(Location location)
+    {
+        return location switch
+        {
+            Location.Plant => GetNode<Node2D>("%植物_僵尸1").GetNode<Marker2D>("Pos").GlobalPosition,
+            Location.PlantFront => GetNode<Node2D>("%植物2").GetNode<Marker2D>("Pos").GlobalPosition,
+            _ => new(360,640),
+        };
+    }
     public TargetType TargetType => TargetType.Lines | TargetType.FighterAndGrids | TargetType.Grids ;
 
     public static void CallRoadLinesTargeted(CardModel cardModel, TargetType targetType)
@@ -137,14 +154,20 @@ public partial class NodeRoad : Control, ITarget
         GetNode<Area2D>("%碰撞箱3").SetMeta("Target", this);
         GetNode<Area2D>("%碰撞箱3").SetMeta("TargetType", "Grid");
         Instances.Add(this, Model);
+        GetNode<Node2D>("%环境高亮").Visible = false;
+        GetNode<Node2D>("%植物_僵尸1").Visible = false;
+        GetNode<Node2D>("%植物_2").Visible = false;
     }
     public void SetMonitoring(bool roadOn)
     {
         GetNode<Area2D>("%碰撞箱").Monitoring = roadOn;
         GetNode<Area2D>("%碰撞箱").Monitorable = roadOn;
+        GetNode<Node2D>("%环境高亮").Visible = roadOn;
         GetNode<Area2D>("%碰撞箱2").Monitoring = !roadOn;
         GetNode<Area2D>("%碰撞箱2").Monitorable = !roadOn;
+        GetNode<Node2D>("%植物_僵尸1").Visible = !roadOn;
         GetNode<Area2D>("%碰撞箱3").Monitoring = !roadOn;
         GetNode<Area2D>("%碰撞箱3").Monitorable = !roadOn;
+        GetNode<Node2D>("%植物_2").Visible = !roadOn;
     }
 }

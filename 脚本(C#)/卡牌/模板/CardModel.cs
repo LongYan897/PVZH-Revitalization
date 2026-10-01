@@ -26,42 +26,9 @@ public class CardModel
     /// <summary>
     /// 卡牌的模板(用于获取卡牌数据)(不要修改)
     /// </summary>
-    public static CardModel Template
+    public static CardModel GetTemplate<T>() where T : CardModel
     {
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        get
-        {
-            var caller = FindCallerType();
-            if (caller == null)
-                return null;
-            return CreateTemplate(caller);
-        }
-    }
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static Type FindCallerType()
-    {
-        var trace = new StackTrace();
-        for (int i = 1; i < trace.FrameCount; i++)
-        {
-            var type = trace.GetFrame(i)?.GetMethod()?.DeclaringType;
-            if (type != null && type != typeof(CardModel) && typeof(CardModel).IsAssignableFrom(type))
-                return type;
-        }
-        return null;
-    }
-
-    private static CardModel CreateTemplate(Type caller)
-    {
-        var loadMethod = typeof(CardModel).GetMethod(
-            "Load",
-            BindingFlags.NonPublic | BindingFlags.Static,
-            null,
-            new[] { typeof(CardString), typeof(Player) },
-            null);
-
-        var generic = loadMethod.MakeGenericMethod(caller);
-        var cardString = CardString.Loading(caller.Name);
-        return (CardModel)generic.Invoke(null, new object[] { cardString, null });
+        return Load<T>();
     }
     /// <summary>
     /// 刷新卡牌的节点
@@ -92,7 +59,7 @@ public class CardModel
             };
         }
     }
-    protected async Task PlayInstantAnimation(string animName, ITarget target)
+    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -100,7 +67,17 @@ public class CardModel
         sp.Scale = new(0.7f, 0.7f);
         node.AddChild(sp);
         sp.LoadSkeletonData(AnimationPath);
-        await sp.SetAnimationAndFreeOnEndTask(0, animName, false);
+        await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
+    }
+    protected async Task PlayLoopAnimation(string animName, ITarget target,int track = 0)
+    {
+        var node = Main.Animator;
+        var sp = SpineHandler.Get();
+        sp.Position = ((Control)(GodotObject)target).GlobalPosition;
+        sp.Scale = new(0.7f, 0.7f);
+        node.AddChild(sp);
+        sp.LoadSkeletonData(AnimationPath);
+        await sp.SetAnimationTask(track, animName, true);
     }
     public static CardModel Load<T>() where T : CardModel
     {

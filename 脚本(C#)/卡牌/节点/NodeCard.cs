@@ -40,6 +40,7 @@ public partial class NodeCard : Control
             Main.CardContainer.AddChild(node);
             node.Fresh();
             instances.Add(node, cardModel);
+            node.ZIndex = instances.Count * 30;
             return node;
         }
         else
@@ -87,6 +88,7 @@ public partial class NodeCard : Control
             node.Scale *= 0.5f;
             instances.Add(node, cardModel);
             Main.CardContainer.AddChild(node);
+            node.ZIndex = instances.Count * 30;
             node.DrawAnimation();
             return node;
         }
@@ -234,7 +236,7 @@ public partial class NodeCard : Control
                 {
                     _isDragging = true;
                     ChoiceCard = this;
-                    ZIndex += 100;
+                    ZIndex += instances.Count * 60;
 
                     KillClickTween();
                     Scale = new Vector2(0.5f, 0.5f);
@@ -277,7 +279,7 @@ public partial class NodeCard : Control
 
     private async Task EndDrag()
     {
-        ZIndex -= 100;
+        ZIndex -= instances.Count * 60;
         if (ChoiceCard == this) ChoiceCard = null;
         Fighter.DeleteFightersTargeted(Model.TargetType);
         NodeRoad.DeleteRoadLinesTargeted(Model.TargetType);
@@ -584,6 +586,26 @@ public partial class NodeCard : Control
                 GetNode<TextureRect>("牌背").Visible = false;
                 GetNode<TextureRect>("%卡牌图标").Texture = Model.Icon;
                 GetNode<TextureRect>("%卡牌发光背景").Modulate = _colorBox.Default;
+                GetNode<TextureRect>("%卡牌图标").Scale = Model.CardType switch
+                {
+                    CardType.None | CardType.Fighter => new(1f,1f),
+                    CardType.None | CardType.Environment => new(0.8f, 0.8f),
+                    CardType.None | CardType.Trick => new(0.9f, 0.9f),
+                    CardType.Hero | CardType.Fighter => new(1f, 1f),
+                    CardType.Hero | CardType.Environment => new(0.8f, 0.8f),
+                    CardType.Hero | CardType.Trick => new(0.9f, 0.9f),
+                    _ => new()
+                };
+                if (Model.CardType.HasFlag(CardType.Fighter))
+                {
+                    GetNode<TextureRect>("%卡牌图标").ZIndex = 1;
+                    GetNode<TextureRect>("%卡框").ZIndex = 0;
+                }
+                else
+                {
+                    GetNode<TextureRect>("%卡牌图标").ZIndex = 0;
+                    GetNode<TextureRect>("%卡框").ZIndex = 1;
+                }
                 GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
                 if (Model.Cost.HasChanged)
                 {

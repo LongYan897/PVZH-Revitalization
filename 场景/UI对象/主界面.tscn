@@ -392,7 +392,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="测试用主节点" type="Node2D" parent="." unique_id=2015394309]
-position = Vector2(360, 640)
 script = ExtResource("21_fe8yl")
 metadata/_custom_type_script = "uid://ccaq7lefsnojt"
 
@@ -411,7 +410,10 @@ layer = 1000
 [node name="Audios" type="Node2D" parent="测试用主节点" unique_id=825812913]
 
 [node name="道路" parent="测试用主节点" unique_id=942116151 instance=ExtResource("22_kjoov")]
-position = Vector2(-256, 230)
+offset_left = 161.0
+offset_top = 792.0
+offset_right = 181.0
+offset_bottom = 812.0
 
 [connection signal="input_event" from="活动/Area2D" to="." method="uiActInput"]
 [connection signal="mouse_exited" from="活动/Area2D" to="." method="uiActMouseExited"]

@@ -46,16 +46,11 @@ alpha_curve = SubResource("CurveTexture_wuiui")
 base_font = ExtResource("6_fsyp8")
 
 [node name="卡牌" type="Control" unique_id=637355252]
+custom_minimum_size = Vector2(256, 193)
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -128.0
-offset_top = -96.5
-offset_right = -592.0
-offset_bottom = -1183.5
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 256.0
+offset_bottom = 193.0
 pivot_offset = Vector2(128, 96.5)
 mouse_filter = 1
 mouse_behavior_recursive = 2
@@ -89,6 +84,7 @@ unique_name_in_owner = true
 [node name="卡牌发光背景" type="TextureRect" parent="正面卡牌/背景容器" unique_id=513921698]
 unique_name_in_owner = true
 modulate = Color(0.1254902, 1, 0.02745098, 1)
+z_index = -4
 offset_left = -37.0
 offset_top = -30.0
 offset_right = 219.0
@@ -100,6 +96,7 @@ expand_mode = 1
 
 [node name="粒子特效" type="GPUParticles2D" parent="正面卡牌/背景容器" unique_id=331906399]
 unique_name_in_owner = true
+z_index = -5
 material = SubResource("CanvasItemMaterial_tquox")
 position = Vector2(119.999985, 82.99999)
 scale = Vector2(0.99999946, 0.9999995)
@@ -111,6 +108,7 @@ process_material = SubResource("ParticleProcessMaterial_yam0n")
 [node name="卡牌底板" type="TextureRect" parent="正面卡牌/背景容器" unique_id=1633113909]
 unique_name_in_owner = true
 modulate = Color(0.8392157, 0.85882354, 0.13725491, 1)
+z_index = -3
 custom_minimum_size = Vector2(256, 0)
 offset_left = 8.999999
 offset_top = 17.5
@@ -134,16 +132,18 @@ stretch_mode = 3
 
 [node name="卡牌图标" type="TextureRect" parent="正面卡牌" unique_id=723944226]
 unique_name_in_owner = true
-offset_left = 15.0
-offset_top = 10.5
-offset_right = 212.85083
-offset_bottom = 182.0
+offset_left = 29.0
+offset_top = 14.0
+offset_right = 227.0
+offset_bottom = 186.0
+pivot_offset = Vector2(99, 86)
 mouse_filter = 2
 texture = ExtResource("5_rgsy0")
 expand_mode = 1
 
 [node name="生命值容器" type="Node2D" parent="正面卡牌" unique_id=1111454840]
 unique_name_in_owner = true
+z_index = 2
 
 [node name="血量动画" parent="正面卡牌/生命值容器" unique_id=922182681 instance=ExtResource("7_ia5uq")]
 unique_name_in_owner = true
@@ -179,6 +179,7 @@ autowrap_mode = 0
 
 [node name="攻击力容器" type="Node2D" parent="正面卡牌" unique_id=1933140278]
 unique_name_in_owner = true
+z_index = 2
 position = Vector2(7, 0)
 
 [node name="伤害动画" parent="正面卡牌/攻击力容器" unique_id=808255837 instance=ExtResource("7_ia5uq")]
@@ -215,6 +216,7 @@ autowrap_mode = 0
 
 [node name="费用容器" type="Node2D" parent="正面卡牌" unique_id=1766249165]
 unique_name_in_owner = true
+z_index = 2
 
 [node name="费用" type="TextureRect" parent="正面卡牌/费用容器" unique_id=1434990318]
 unique_name_in_owner = true
@@ -252,6 +254,7 @@ autowrap_mode = 0
 
 [node name="等级" parent="正面卡牌" unique_id=1432422643 instance=ExtResource("7_ia5uq")]
 unique_name_in_owner = true
+z_index = 2
 position = Vector2(0, 117)
 
 [node name="牌背" type="TextureRect" parent="." unique_id=768773165]

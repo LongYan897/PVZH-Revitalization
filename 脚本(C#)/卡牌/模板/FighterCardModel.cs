@@ -54,10 +54,10 @@ public class FighterCardModel : CardModel
     /// </summary>
     /// <param name="name">动画名称</param>
     /// <returns></returns>
-    protected async Task PlayFighterAnimation(string name, bool returnToIdle = true)
+    protected async Task PlayFighterAnimationTask(string name, bool returnToIdle = true,int track = 0)
     {
         var fighter = Fighter.GetNode(this);
-        await fighter.PlayAnimation(name, returnToIdle);
+        await fighter.PlayAnimation(name, returnToIdle, track);
     }
     /// <summary>
     /// 子类加载卡牌数据
@@ -107,11 +107,21 @@ public class FighterCardModel : CardModel
     /// <param name="road">所处的战斗道路</param>
     /// <returns></returns>
     public virtual Task AfterPlayed(Road road) { return Task.CompletedTask; }
+    /// <summary>
+    /// 被打出后播放动画
+    /// </summary>
+    /// <param name="road">被打出的战斗道路</param>
+    /// <returns></returns>
+    public virtual Task AnimationWhenPlayed(Road road) { return Task.CompletedTask; }
+    public async Task IntroPlayed()
+    {
+        await PlayFighterAnimationTask("intro");
+    }
     public override async Task Changed<T>(string key, T valueAfter, T valueBefore)
     {
         if (key == "Health")
         {
-            await PlayFighterAnimation("hurt");
+            await PlayFighterAnimationTask("hurt");
             if (Hp.Current <= 0)
                 await Fighter.GetNode(this).Die();
         }

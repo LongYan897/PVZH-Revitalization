@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://db11uq8vftl38" path="res://素材/ui/界面ui/frame #173462.png" id="1_myvtn"]
 [ext_resource type="Texture2D" uid="uid://bmrkrr7e86k7a" path="res://素材/ui/界面ui/健壮.png" id="3_setff"]
 [ext_resource type="Texture2D" uid="uid://c4yunnsxr58kl" path="res://素材/ui/界面ui/smallinspectionframe.png" id="4_4s1xq"]
+[ext_resource type="Texture2D" uid="uid://doru1f3me30oj" path="res://素材(C#)/其他/shadow.png" id="4_fad38"]
 [ext_resource type="Texture2D" uid="uid://d3v406wyygdfb" path="res://素材/ui/稀有标签/rarity_E.png" id="4_setff"]
 [ext_resource type="Texture2D" uid="uid://cov63gqkfb3l7" path="res://素材/ui/界面ui/frame_circle_grass.png" id="5_8r7al"]
 [ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="6_icp5t"]
@@ -40,7 +41,7 @@ metadata/_custom_type_script = "uid://b38mmdd52sf5k"
 
 [node name="背景" type="Node2D" parent="." unique_id=649810752]
 unique_name_in_owner = true
-z_index = -1
+z_index = -6
 scale = Vector2(0.6, 0.6)
 
 [node name="左背景" type="TextureRect" parent="背景" unique_id=768489596]
@@ -84,6 +85,12 @@ offset_bottom = -300.0
 scale = Vector2(1.3, 1.3)
 mouse_filter = 2
 texture = ExtResource("3_setff")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=1506807958]
+unique_name_in_owner = true
+position = Vector2(-1.5258789e-05, -223)
+scale = Vector2(1.7140003, 1.0030797)
+texture = ExtResource("4_fad38")
 
 [node name="稀有标签" type="TextureRect" parent="." unique_id=2050973622]
 unique_name_in_owner = true
@@ -193,7 +200,7 @@ horizontal_alignment = 1
 
 [node name="花费数值" type="Sprite2D" parent="." unique_id=2012160516]
 unique_name_in_owner = true
-z_index = 12
+z_index = 8
 position = Vector2(121, -371.00003)
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("7_cnftl")
@@ -227,7 +234,7 @@ position = Vector2(0, 143.33333)
 
 [node name="单位框" type="Sprite2D" parent="." unique_id=13245324]
 unique_name_in_owner = true
-z_index = 10
+z_index = 6
 position = Vector2(0, -280)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("4_4s1xq")
@@ -330,6 +337,7 @@ offset_right = -19.0
 offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 20
 theme_override_constants/shadow_offset_y = 24

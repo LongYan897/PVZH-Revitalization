@@ -222,6 +222,7 @@ public partial class CardDes : Control
             {
                 GetNode<Node2D>("%基础信息").Visible = false;
             }
+            GetNode<Sprite2D>("Shadow").Visible = Model.CardType.HasFlag(CardType.Fighter);
             GetNode<Label>("%属性标签").Text = $"-{string.Join(" ", Model.Labels.Current)} {Model.CardType switch
             {
                 CardType.Hero | CardType.Fighter => Model.Camp switch
@@ -358,26 +359,66 @@ public partial class CardDes : Control
                 sprite.AddAnimation(0, "idle", true);
         }
     }
+    private Tween _tweenAtk;
+    private Tween _tweenHp;
+    private Tween LabelIntro(Label label, float duration = 0.5f)
+    {
+        var tween = CreateTween().BindNode(label);
+        tween.SetTrans(Tween.TransitionType.Back);
+        tween.SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(label, "scale", Vector2.One, duration);
+        return tween;
+    }
+    private void KillAtkTween()
+    {
+        if (_tweenAtk != null && _tweenAtk.IsValid())
+            _tweenAtk.Kill();
+    }
+
+    private void KillHpTween()
+    {
+        if (_tweenHp != null && _tweenHp.IsValid())
+            _tweenHp.Kill();
+    }
     private async void AtkAnim()
     {
-        if (Model is FighterCardModel fighterCard)
-        {
-            GetNode<Label>("%伤害数值").Text = $"";
-            GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
-            GetNode<SpineHandler>("%伤害动画").Scale = new(0.85f, 0.85f);
-            await GetNode<SpineHandler>("%伤害动画").SetAnimationTask(0, $"intro");
-            GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
-        }
+        if (Model is not FighterCardModel fighterCard) return;
+
+        KillAtkTween();
+
+        var atkLabel = GetNode<Label>("%伤害数值");
+        var atkSpine = GetNode<SpineHandler>("%伤害动画");
+
+        atkLabel.Text = "";
+        atkLabel.Scale = Vector2.Zero;
+
+        atkSpine.LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
+        atkSpine.Scale = new Vector2(0.85f, 0.85f);
+
+        await atkSpine.SetAnimationTask(0, "intro");
+
+        atkLabel.Text = $"{fighterCard.Atk.Current}";
+        _tweenAtk = LabelIntro(atkLabel);
     }
+
     private async void HpAnim()
     {
-        if (Model is FighterCardModel fighterCard)
-        {
-            GetNode<Label>("%血量数值").Text = $"";
-            GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
-            GetNode<SpineHandler>("%血量动画").Scale = new(0.85f, 0.85f);
-            await GetNode<SpineHandler>("%血量动画").SetAnimationTask(0, $"intro");
-            GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
-        }
+        if (Model is not FighterCardModel fighterCard) return;
+
+        KillHpTween();
+
+        var hpLabel = GetNode<Label>("%血量数值");
+        var hpSpine = GetNode<SpineHandler>("%血量动画");
+
+        hpLabel.Text = "";
+        hpLabel.Scale = Vector2.Zero;
+
+        hpSpine.LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+        hpSpine.Scale = new Vector2(0.85f, 0.85f);
+
+        await hpSpine.SetAnimationTask(0, "intro");
+
+        hpLabel.Text = $"{fighterCard.Hp.Current}";
+        _tweenHp = LabelIntro(hpLabel);
     }
 }

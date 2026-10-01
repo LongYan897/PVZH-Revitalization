@@ -1,3 +1,5 @@
+using Battle;
+using Battle.Entity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Target;
@@ -56,6 +58,20 @@ public static class CardCmd
         {
             await card.AfterPlayCard(cardModel, target);
         }
+    }
+    /// <summary>
+    /// 生成战斗单位
+    /// </summary>
+    /// <param name="fighter">战斗单位卡牌</param>
+    /// <param name="road">打出的道路</param>
+    /// <param name="location">打出的位置</param>
+    /// <returns></returns>
+    public static async Task FighterGenerate(FighterCardModel fighter,Road road,Location location)
+    {
+        var fight = Fighter.Generate(fighter,road,location);
+        await fighter.IntroPlayed();
+        await fighter.AnimationWhenPlayed(road);
+        await fighter.AfterPlayed(road);
     }
     /// <summary>
     /// 从卡组中抽出卡牌
