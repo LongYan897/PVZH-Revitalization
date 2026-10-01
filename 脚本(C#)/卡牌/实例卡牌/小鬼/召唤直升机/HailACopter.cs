@@ -1,3 +1,5 @@
+using Battle;
+using Battle.Entity;
 using Controller;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ public class HailACopter : CardModel
     public override TargetType TargetType => TargetType.Lines;
     public override bool TargetFilter(ITarget target)
     {
-        return base.TargetFilter(target);
+        return target is NodeRoad road && Fighter.CanGenerate(CopterCommando.Template as FighterCardModel, road.Model);
     }
     public override async Task Play(ITarget target)
     {

@@ -19,7 +19,7 @@ public partial class NodeRoad : Control, ITarget
     /// <summary>
     /// 绑定的道路数据
     /// </summary>
-    private Road Model;
+    public Road Model { get; private set; }
     /// <summary>
     /// 绑定道路数据
     /// </summary>

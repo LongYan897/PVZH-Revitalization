@@ -9,6 +9,9 @@ using Play;
 using Spine;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Target;
 
@@ -20,6 +23,46 @@ namespace Card;
 public class CardModel
 {
     public Player Player { get; private set; }
+    /// <summary>
+    /// 卡牌的模板(用于获取卡牌数据)(不要修改)
+    /// </summary>
+    public static CardModel Template
+    {
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        get
+        {
+            var caller = FindCallerType();
+            if (caller == null)
+                return null;
+            return CreateTemplate(caller);
+        }
+    }
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static Type FindCallerType()
+    {
+        var trace = new StackTrace();
+        for (int i = 1; i < trace.FrameCount; i++)
+        {
+            var type = trace.GetFrame(i)?.GetMethod()?.DeclaringType;
+            if (type != null && type != typeof(CardModel) && typeof(CardModel).IsAssignableFrom(type))
+                return type;
+        }
+        return null;
+    }
+
+    private static CardModel CreateTemplate(Type caller)
+    {
+        var loadMethod = typeof(CardModel).GetMethod(
+            "Load",
+            BindingFlags.NonPublic | BindingFlags.Static,
+            null,
+            new[] { typeof(CardString), typeof(Player) },
+            null);
+
+        var generic = loadMethod.MakeGenericMethod(caller);
+        var cardString = CardString.Loading(caller.Name);
+        return (CardModel)generic.Invoke(null, new object[] { cardString, null });
+    }
     /// <summary>
     /// 刷新卡牌的节点
     /// </summary>

@@ -68,7 +68,7 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 卡牌关键词的类型
     /// </summary>
-    public virtual CardTag CardTag { get; private set; }
+    public CardTag CardTag { get; private set; }
     /// <summary>
     /// 卡牌的攻击力
     /// </summary>

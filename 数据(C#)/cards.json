@@ -17,7 +17,7 @@
 
   "RollingStone.Title": "滚石",
   "RollingStone.Flavor": "给 “摇滚” 这个词赋予了新含义。",
-  "RollingStone.Description": "_消灭_一株 =Strength={2} 或以下的植物。",
+  "RollingStone.Description": "_消灭_一株=Strength={2}或以下的植物。",
   "RollingStone.Rarity": "基础",
   "RollingStone.Label": [],
   "RollingStone.Cost": 1,
@@ -30,7 +30,7 @@
   "RollingStone.Animation": "res://素材(C#)/卡牌/滚石/滚石锦囊动画.tres",
 
   "HailACopter.Title": "召唤直升机",
-  "HailACopter.Des": "_召唤_一只 =Strength={6}/=Health={5} 的直升机敢死队小鬼。",
+  "HailACopter.Des": "_召唤_一只=Strength={6}/=Health={5}的直升机敢死队小鬼。",
   "HailACopter.Cost": 6,
   "HailACopter.Camp": "僵尸",
   "HailACopter.Type": "锦囊",
@@ -40,6 +40,23 @@
   "HailACopter.Animation": "res://素材(C#)/卡牌/召唤直升机/召唤直升机锦囊动画.tres",
   "HailACopter.Label": [ "科学家", "小鬼" ],
   "HailACopter.Pack": "高级",
-  "HailACopter.Flavor": "患有严重恐水症，死活不肯在水上飞行。"
+  "HailACopter.Flavor": "患有严重恐水症，死活不肯在水上飞行。",
 
+  "CopterCommando.Title": "直升机小鬼",
+  "CopterCommando.Des": "",
+  "CopterCommando.Cost": 5,
+  "CopterCommando.Camp": "僵尸",
+  "CopterCommando.Type": "单位",
+  "CopterCommando.Rarity": "罕见",
+  "CopterCommando.Category": "有脑",
+  "CopterCommando.Animation": "res://素材(C#)/卡牌/直升机小鬼/直升机小鬼僵尸动画.tres",
+  "CopterCommando.Icon": "res://素材(C#)/卡牌/直升机小鬼/Copter.png",
+  "CopterCommando.Label": [ "科学家", "小鬼" ],
+  "CopterCommando.Tag": [],
+  "CopterCommando.Hp": 5,
+  "CopterCommando.HpType": "普通",
+  "CopterCommando.Atk": 6,
+  "CopterCommando.AtkType": "普通",
+  "CopterCommando.Pack": "巨大",
+  "CopterCommando.Flavor": "患有严重恐水症，死活不肯在水上飞行。"
 }
