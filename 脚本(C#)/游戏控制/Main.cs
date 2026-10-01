@@ -1,5 +1,6 @@
 using Battle.Entity;
 using Card;
+using Card.Imp;
 using Card.Pea;
 using Godot;
 using Pack;
@@ -29,7 +30,7 @@ public partial class Main : Node2D
         DesLayer = GetNode<CanvasLayer>("Des");
         //
         CardModel card = CardModel.Load<Peashooter>();
-        CardModel card1 = CardModel.Load<RollingStone>();
+        CardModel card1 = CardModel.Load<HailACopter>();
         card1.Status = Status.FaceUp;
         NodeCard.DrawACard(card1, new(0,0));
         Fighter.Generate(card as Peashooter, new Battle.Road() { Index = 1 }, 0);

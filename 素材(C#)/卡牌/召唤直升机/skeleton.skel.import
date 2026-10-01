@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://bdkp3lpe23uxn"
+path="res://.godot/imported/skeleton.skel-c0ae853978ae1a154c4163dd82cb7cff.spskel"
+
+[deps]
+
+source_file="res://素材(C#)/卡牌/召唤直升机/skeleton.skel"
+dest_files=["res://.godot/imported/skeleton.skel-c0ae853978ae1a154c4163dd82cb7cff.spskel"]
+
+[params]
+

@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://cvtvg40kpwyi"
+path="res://.godot/imported/滚石.atlas-1fd1f596653189298514a5ea2fd0b119.spatlas"
+
+[deps]
+
+source_file="res://素材(C#)/卡牌/滚石/滚石.atlas"
+dest_files=["res://.godot/imported/滚石.atlas-1fd1f596653189298514a5ea2fd0b119.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

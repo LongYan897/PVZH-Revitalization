@@ -19,7 +19,6 @@ namespace Card;
 /// </summary>
 public class CardModel
 {
-    public virtual Texture2D Icon { get; } = GD.Load<Texture2D>("res://素材(C#)/卡牌/豌豆射手/Pea.png");
     public Player Player { get; private set; }
     /// <summary>
     /// 刷新卡牌的节点
@@ -85,6 +84,7 @@ public class CardModel
         card.CardType = cardString.CardType;
         card.Pack = cardString.Pack;
         card.AnimationPath = cardString.AnimationPath;
+        card.Icon = GD.Load<Texture2D>(cardString.IconPath);
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
         return (T)card.LoadData(cardString);
     }
@@ -183,6 +183,10 @@ public class CardModel
     /// 卡牌的费用
     /// </summary>
     public CardIntVariable Cost { get; private set; }
+    /// <summary>
+    /// 卡牌的卡面
+    /// </summary>
+    public Texture2D Icon { get; private set; }
     /// <summary>
     /// 卡牌打出时的效果
     /// </summary>

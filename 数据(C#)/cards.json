@@ -12,6 +12,7 @@
   "Peashooter.Type": "单位",
   "Peashooter.AtkType": "普通",
   "Peashooter.HpType": "普通",
+  "Peashooter.Icon": "res://素材(C#)/卡牌/豌豆射手/Pea.png",
   "Peashooter.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
 
   "RollingStone.Title": "滚石",
@@ -25,5 +26,20 @@
   "RollingStone.Type": "锦囊",
   "RollingStone.AtkType": "普通",
   "RollingStone.HpType": "普通",
-  "RollingStone.Animation": "res://数据资源/僵尸动画/滚石锦囊动画.tres"
+  "RollingStone.Icon": "res://素材(C#)/卡牌/滚石/Stone.png",
+  "RollingStone.Animation": "res://素材(C#)/卡牌/滚石/滚石锦囊动画.tres",
+
+  "HailACopter.Title": "召唤直升机",
+  "HailACopter.Des": "_召唤_一只 =Strength={6}/=Health={5} 的直升机敢死队小鬼。",
+  "HailACopter.Cost": 6,
+  "HailACopter.Camp": "僵尸",
+  "HailACopter.Type": "锦囊",
+  "HailACopter.Rarity": "稀有",
+  "HailACopter.Category": "有脑",
+  "HailACopter.Icon": "res://素材(C#)/卡牌/召唤直升机/Copter.png",
+  "HailACopter.Animation": "res://素材(C#)/卡牌/召唤直升机/召唤直升机锦囊动画.tres",
+  "HailACopter.Label": [ "科学家", "小鬼" ],
+  "HailACopter.Pack": "高级",
+  "HailACopter.Flavor": "患有严重恐水症，死活不肯在水上飞行。"
+
 }

@@ -7,7 +7,6 @@ namespace Card;
 
 public class RollingStone : CardModel
 {
-	public override Texture2D Icon => GD.Load<Texture2D>("res://场景/僵尸卡组/滚石锦囊/滚石.png");
 	public override bool TargetFilter(FighterCardModel cardModel)
 	{
 		return cardModel.Atk.Current <= 2;

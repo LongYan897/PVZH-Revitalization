@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://bjvovywjonqca"
+path="res://.godot/imported/skeleton.atlas-63b3a37f9499c7fde3650c7ceb4e5b39.spatlas"
+
+[deps]
+
+source_file="res://素材(C#)/卡牌/召唤直升机/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-63b3a37f9499c7fde3650c7ceb4e5b39.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

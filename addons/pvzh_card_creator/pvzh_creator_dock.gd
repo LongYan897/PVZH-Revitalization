@@ -5,12 +5,14 @@ var editor_plugin: EditorPlugin
 var root: VBoxContainer
 
 var name_edit: LineEdit
+var key_name_edit: LineEdit
 var faction: OptionButton
 var card_type: OptionButton
 var hero_check: CheckBox
 
 var des_edit: TextEdit
 var animation_edit: LineEdit
+var icon_edit: LineEdit
 var label_edit: LineEdit
 var cost_spin: SpinBox
 var rarity_option: OptionButton
@@ -59,6 +61,11 @@ func _ready() -> void:
 	root.add_child(title)
 
 	# ---------- 基础 ----------
+	_add_label("类名（用于索引）")
+	key_name_edit = LineEdit.new()
+	key_name_edit.placeholder_text = "例如：SnowPea"
+	root.add_child(key_name_edit)
+
 	_add_label("名称")
 	name_edit = LineEdit.new()
 	name_edit.placeholder_text = "例如：寒冰射手"
@@ -216,6 +223,10 @@ func _ready() -> void:
 	animation_edit.placeholder_text = "res://..."
 	root.add_child(animation_edit)
 
+	_add_label("卡面（Icon）")
+	icon_edit = LineEdit.new()
+	icon_edit.placeholder_text = "res://..."
+	root.add_child(icon_edit)
 	# ---------- 按钮 ----------
 	var button := Button.new()
 	button.text = "创建"
@@ -256,7 +267,7 @@ func _build_type_text() -> String:
 	return base_text
 
 func _create() -> void:
-	var raw := name_edit.text.strip_edges()
+	var raw := key_name_edit.text.strip_edges()
 	if raw.is_empty():
 		_show_error("请输入名称")
 		return
@@ -274,7 +285,7 @@ func _create() -> void:
 
 func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 	var entry := {}
-	entry["\"%s.Title\"" % clean] = clean
+	entry["\"%s.Title\"" % clean] = name_edit.text
 	entry["\"%s.Des\"" % clean] = des_edit.text
 	entry["\"%s.Cost\"" % clean] = int(cost_spin.value)
 	entry["\"%s.Camp\"" % clean] = "植物" if side == "植物" else "僵尸"
@@ -282,6 +293,7 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 	entry["\"%s.Rarity\"" % clean] = rarity_option.get_item_text(rarity_option.selected)
 	entry["\"%s.Category\"" % clean] = category_option.get_item_text(category_option.selected)
 	entry["\"%s.Animation\"" % clean] = animation_edit.text
+	entry["\"%s.Icon\"" % clean] = icon_edit.text
 
 	var labels := []
 	for s in label_edit.text.split(",", false):
