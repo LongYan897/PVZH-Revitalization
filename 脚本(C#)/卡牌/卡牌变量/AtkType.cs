@@ -1,7 +1,9 @@
+using Battle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Card;
 /// <summary>
@@ -23,10 +25,9 @@ public class AtkType
     /// </summary>
     public virtual string IconSkelPath { get; }
     /// <summary>
-    /// 持续的攻击力效果
+    /// 攻击类型赋予的效果
     /// </summary>
-    public Buff Action { get; set; }
-
+    public Buff Buff { get; init; }
     /// <summary>
     /// 注册逻辑
     /// </summary>
@@ -77,8 +78,9 @@ public class AtkType
         foreach (var parser in Parsers)
         {
             if (parser == null) continue;
-            if (parser(parserString).Item1)
-                return parser(parserString).Item2;
+            var parsed = parser(parserString);
+            if (parsed.Item1)
+                return parsed.Item2;
         }
         return null;
     }

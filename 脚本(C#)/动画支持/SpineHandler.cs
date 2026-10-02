@@ -16,12 +16,34 @@ public partial class SpineHandler : Node2D
     public override void _Ready()
     {
         _spineSprite = GetNode<Node>("Spine");
+        ConnectAnimationEvent();
+        var spine = GetNode<Node>("Spine");
     }
     /// <summary>
     /// 获取一个动画节点
     /// </summary>
     /// <returns></returns>
     public static SpineHandler Get() => Scene.Instantiate<SpineHandler>();
+    /// <summary>
+    /// 等待动画事件
+    /// </summary>
+    /// <param name="eventName">事件名称</param>
+    /// <returns></returns>
+    public async Task<float> WaitForAnimEvent(string eventName)
+    {
+        var tcs = new TaskCompletionSource<float>();
+
+        void Handler(string name, float remaining)
+        {
+            if (name == eventName)
+                tcs.TrySetResult(remaining);
+        }
+
+        OnSpineAnimEvent += Handler;
+        try { return await tcs.Task; }
+        finally { OnSpineAnimEvent -= Handler; }
+    }
+
     /// <summary>
     /// 加载 SpineSkeletonDataResource (.tres)
     /// </summary>
@@ -69,13 +91,13 @@ public partial class SpineHandler : Node2D
         return _spineSprite.Call("get_bone_world_pos", boneName).AsVector2();
     }
 
-    public event Action<GodotObject> OnSpineAnimEvent;
+    public event Action<string,float> OnSpineAnimEvent;
 
     public void ConnectAnimationEvent()
     {
-        _spineSprite.Connect("spine_anim_event", Callable.From<GodotObject>(evt =>
+        _spineSprite.Connect("spine_anim_event", Callable.From<string,float>((name,obj) =>
         {
-            OnSpineAnimEvent?.Invoke(evt);
+            OnSpineAnimEvent?.Invoke(name,obj);
         }));
     }
     public void ClearTrack(int track)
