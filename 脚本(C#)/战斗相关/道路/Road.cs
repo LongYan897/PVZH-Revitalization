@@ -36,6 +36,10 @@ public class Road
     /// </summary>
     public int Index { get; init; }
     /// <summary>
+    /// 该道路是否是朝向植物的
+    /// </summary>
+    public bool IsUp {  get; init; }
+    /// <summary>
     /// 决定该道路的类型(高地/平地/水路)
     /// </summary>
     public RoadType Type { get; init; } = RoadType.Height;
@@ -61,10 +65,16 @@ public class Road
         var plant = fighters.FirstOrDefault(f => f.Plant2);
         if (plant != null)
             await plant?.Model?.Battle(new AtkStack(plant.Model, [], this, plant.Model.Atk.Current));
-        foreach (var fighter in fighters)
+        foreach (var fighter in fighters.ToList())
         {
-            await fighter.AfterAtk(new AtkStack(null, [],this,0));
+            await fighter.AfterAtk(new AtkStack(null, [],this,0)); 
         }
+        foreach (var fighter in fighters.ToList())
+        {
+            if (fighter.Model.IsDie)
+                await fighter.Die();
+        }
+
     }
     private readonly Variable<Environment> _environment = new("Environment", null);
     /// <summary>

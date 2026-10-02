@@ -34,7 +34,7 @@ public class FighterCardModel : CardModel
             {
                 if (Camp == Camp.Zombie)
                 {
-                    if (fighters.Count > 1)
+                    if (fighters.Count > 2)
                         return f.Plant1 && f.Model.Camp == Camp.Plant;
                     else
                         return f.Model.Camp == Camp.Plant;
@@ -67,7 +67,7 @@ public class FighterCardModel : CardModel
             await fighter.Model.FireTiming(Timing.WhenAttacked, atkStack);
             await CardCmd.TimingOnCards(fighter.Model, Timing.WhenAttacked, atkStack);
 
-            await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, atkStack);
+            await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, atkStack,true,false);
 
             await fighter.Model.FireTiming(Timing.AfterAttacked, atkStack);
             await CardCmd.TimingOnCards(fighter.Model, Timing.AfterAttacked, atkStack);
@@ -77,12 +77,6 @@ public class FighterCardModel : CardModel
 
         await FireTiming(Timing.AfterAttack, atkStack);
         await CardCmd.TimingOnCards(this, Timing.AfterAttack, atkStack);
-
-        foreach (var itg in finalTgs)
-        {
-            if (itg is Fighter fighter && fighter.Model.IsDie)
-                await fighter.Die();
-        }
 
         if (atkStack.ExtraAttacks > 0)
         {
@@ -97,9 +91,19 @@ public class FighterCardModel : CardModel
     /// <param name="amount">伤害量</param>
     /// <param name="reason">原因</param>
     /// <param name="stack">攻击上下文，非攻击伤害传 null</param>
-    public async Task ApplyDamage(int amount, Variable.VariableReason reason, AtkStack stack = null)
+    public async Task ApplyDamage(
+    int amount,
+    Variable.VariableReason reason,
+    AtkStack stack = null,
+    bool playHurtAnim = true,
+    bool immediateDeath = true)
     {
+        int before = Hp.Current;
         await Hp.Lose(amount, reason);
+        int actual = before - Hp.Current;
+
+        if (playHurtAnim && actual > 0)
+            await Fighter.GetNode(this).Hurt(actual);
 
         if (Hp.Current <= 0)
         {
@@ -113,15 +117,23 @@ public class FighterCardModel : CardModel
                 await FireTiming(Timing.OnDeath, reason);
                 await CardCmd.TimingOnCards(this, Timing.OnDeath, reason);
             }
+
+            if (immediateDeath)
+            {
+                var fighter = Fighter.GetNode(this);
+                if (fighter != null)
+                    await fighter.Die();
+            }
         }
     }
+
 
     /// <summary>
     /// 直接消灭（扣光血）
     /// </summary>
-    public async Task Kill(Variable.VariableReason reason, AtkStack stack = null)
+    public async Task Kill(Variable.VariableReason reason, AtkStack stack = null,bool immediateDeath = true)
     {
-        await ApplyDamage(Hp.Current, reason, stack);
+        await ApplyDamage(Hp.Current, reason, stack,false,immediateDeath);
     }
 
     /// <summary>
@@ -200,16 +212,6 @@ public class FighterCardModel : CardModel
     public async Task IntroPlayed()
     {
         await PlayFighterAnimationTask("intro");
-    }
-
-    public override async Task Changed<T>(string key, T valueAfter, T valueBefore)
-    {
-        if (key == "Health")
-        {
-            if (valueAfter is int i && valueBefore is int i2 && i < i2)
-                await Fighter.GetNode(this).Hurt(i2 - i);
-        }
-        await base.Changed(key, valueAfter, valueBefore);
     }
 
     public override TargetType TargetType

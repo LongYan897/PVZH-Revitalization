@@ -340,6 +340,11 @@ public partial class CardDes : Control
                 Rarity.Token => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
                 _ => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png")
             };
+            var rarity = GetNode<TextureRect>("%稀有标签");
+            rarity.AnchorLeft = 0;
+            rarity.AnchorRight = 0;
+            rarity.AnchorTop = 0;
+            rarity.AnchorBottom = 0;
             GetNode<TextureRect>("%稀有标签").Position = Model.Rarity switch
             {
                 Rarity.Rare => new(-274.0f, 163.0f),

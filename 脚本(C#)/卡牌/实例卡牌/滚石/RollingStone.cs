@@ -24,8 +24,6 @@ public class RollingStone : CardModel
             await PlayInstantAnimation("intro", target);
 
             await tg.Model.Kill(Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
-
-            await tg.Die();
         }
     }
 }

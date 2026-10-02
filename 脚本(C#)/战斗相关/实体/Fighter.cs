@@ -19,6 +19,12 @@ namespace Battle.Entity;
 /// </summary>
 public partial class Fighter : Control, ITarget, IAttackable
 {
+    /// <summary>
+    /// 检测是否有某种单位
+    /// </summary>
+    /// <param name="filter">筛选器</param>
+    /// <returns></returns>
+    public static bool HasFighter(Func<Fighter, bool> filter) => Instances.Keys.Any(filter);
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/战斗单位.tscn");
     private static readonly Dictionary<Fighter, FighterCardModel> Instances = new();
     private const int maxInstance = 20;
@@ -86,27 +92,52 @@ public partial class Fighter : Control, ITarget, IAttackable
         if (_hurtTween != null && _hurtTween.IsValid())
             _hurtTween.Kill();
     }
+    private SpineHandler _dmgSpine;
+    private SpineHandler _hpSpine;
+    private Label _dmgLabel;
+    private Label _hpLabel;
 
     /// <summary>
-    /// 受伤表现（只播动画和伤害飘字，不做逻辑）
+    /// 受伤表现
     /// </summary>
     public async Task Hurt(int amount)
     {
         KillHurtTween();
 
         GetNode<Node2D>("%额外动画").Modulate = new Color(1, 1, 1, 1);
+        GetNode<Node2D>("%额外动画").Position = new Vector2();
         Tween tween = CreateTween();
         tween.TweenProperty(GetNode<Node2D>("%额外动画"), "position", new Vector2(0, -300), 0.3f);
         tween.TweenProperty(GetNode<Node2D>("%额外动画"), "modulate", new Color(1, 1, 1, 0), 0.3f);
         GetNode<Label>("%额外血量数值").Text = $"-{amount}";
         GetNode<Node2D>("%额外动画").Visible = true;
 
-        GetNode<SpineHandler>("%伤害动画").SetAnimation(0, "hurt", false);
-        GetNode<SpineHandler>("%血量动画").SetAnimation(0, "hurt", false);
-        await GetNode<SpineHandler>("%动画").SetAnimationTask(0, "hurt");
+        _dmgSpine.SetAnimation(0, "hurt", false);
+        _hpSpine.SetAnimation(0, "hurt", false);
+        GetNode<SpineHandler>("%动画").SetAnimation(0, "hurt", false);
 
-        GetNode<Node2D>("%额外动画").Visible = false;
-        GetNode<Node2D>("%额外动画").Position = new Vector2();
+        await FollowOffset(1f);
+    }
+
+    private async Task FollowOffset(float time = 1f)
+    {
+        Vector2 worldOffset1 = _dmgSpine.GetBoneWorldPos("root");
+        Vector2 worldOffset2 = _hpSpine.GetBoneWorldPos("root");
+        Vector2 dmgLabelBase = _dmgLabel.Position;
+        Vector2 hpLabelBase = _hpLabel.Position;
+        float nTime = 0f;
+
+        while (nTime <= time)
+        {
+            Vector2 offset1 = _dmgSpine.GetBoneWorldPos("root") - worldOffset1;
+            Vector2 offset2 = _hpSpine.GetBoneWorldPos("root") - worldOffset2;
+
+            _dmgLabel.Position = dmgLabelBase + 6f * offset1;
+            _hpLabel.Position = hpLabelBase + 6f * offset2;
+
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            nTime += (float)GetProcessDeltaTime();
+        }
     }
 
     public TargetType TargetType => TargetType.Fighters;
@@ -147,46 +178,54 @@ public partial class Fighter : Control, ITarget, IAttackable
     /// </summary>
     /// <param name="target">目标</param>
     /// <param name="isInstantAmmo">是否是立刻到达目标的子弹</param>
-    public async Task Battle(List<IAttackable> target,bool isInstantAmmo)
+    public async Task Battle(List<IAttackable> target, bool isInstantAmmo)
     {
-        await PlayAnimation("attack", true);
-        if (Model.AmmoPath == null) return;
-        foreach (var attackable in target)
+        var spine = GetNode<SpineHandler>("%动画");
+        spine.ZIndex += 999;
+        var key = Road.IsUp
+            ? (Model.Camp == Camp.Zombie ? "attack" : "attack1")
+            : (Model.Camp == Camp.Zombie ? "attack1" : "attack");
+
+        var eventWait = spine.WaitForAnimEvent("attack");
+
+        var animTask = PlayAnimation(key, true);
+
+        var ammoTasks = new List<Task>();
+
+        if (Model.AmmoPath != null)
         {
-            if (attackable is Fighter fighter)
+            float remaining = await eventWait;
+            Vector2 firePoint = spine.GetBoneWorldPos("FirePoint");
+
+            foreach (var attackable in target)
             {
-                if (isInstantAmmo)
-                {
-                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
-                    {
-                        CreateAmmon(texture, fighter.GlobalPosition);
-                    }
-                    else
-                        AnimaActor.PlayInstantAnimation(Model.AmmoPath, fighter.GlobalPosition,"");
-                }
+                if (attackable is not Fighter fighter) continue;
+                Vector2 targetPos = fighter.GlobalPosition;
+
+                if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                    ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
                 else
-                {
-                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
-                    {
-                        CreateAmmon(texture, fighter.GlobalPosition);
-                    }
-                    else
-                        AnimaActor.PlayInstantAnimation(Model.AmmoPath, fighter.Position, "");
-                }
+                    AnimaActor.PlayInstantAnimation(Model.AmmoPath, targetPos, "");
             }
         }
+
+        await Task.WhenAll(ammoTasks.Append(animTask));
+        spine.ZIndex -= 999;
     }
-    private async void CreateAmmon(Texture2D texture,Vector2 vector2)
+    private async Task CreateAmmon(Texture2D texture, Vector2 from, Vector2 to, float duration)
     {
         var textureR = new TextureRect
         {
             Texture = texture,
-            Position = GlobalPosition,
+            Position = from,
+            Visible = true
         };
-        Tween tween = CreateTween();
-        tween.TweenProperty(textureR, "position", vector2, 0.5f);
         Main.Animator.AddChild(textureR);
+
+        Tween tween = CreateTween();
+        tween.TweenProperty(textureR, "position", to, duration);
         await ToSignal(tween, Tween.SignalName.Finished);
+
         textureR.QueueFree();
     }
 
@@ -311,6 +350,11 @@ public partial class Fighter : Control, ITarget, IAttackable
         GetNode<Area2D>("碰撞箱").SetMeta("TargetType", "Fighter");
         var hitBtn = GetNode<Button>("碰撞");
         hitBtn.GuiInput += OnHitButtonGuiInput;
+
+        _dmgSpine = GetNode<SpineHandler>("%伤害动画");
+        _hpSpine = GetNode<SpineHandler>("%血量动画");
+        _dmgLabel = GetNode<Label>("%伤害数值");
+        _hpLabel = GetNode<Label>("%血量数值");
     }
 
     private bool _isOpen = false;
@@ -412,14 +456,16 @@ public partial class Fighter : Control, ITarget, IAttackable
                     _ => null
                 });
             }
+            AtkAnim(true);
+            HpAnim(true);
             isFirstPlace = false;
         }
 
         if (Model is FighterCardModel fighterCard)
         {
             GetNode<Node2D>("%基础信息").Visible = true;
-            AtkAnim();
-            HpAnim();
+            AtkAnim(false);
+            HpAnim(false);
             if (fighterCard.StarType != null)
             {
                 GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
@@ -471,7 +517,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             _tweenHp.Kill();
     }
 
-    private async void AtkAnim()
+    private async void AtkAnim(bool isFirst)
     {
         if (Model is not FighterCardModel fighterCard) return;
 
@@ -480,19 +526,25 @@ public partial class Fighter : Control, ITarget, IAttackable
         var atkLabel = GetNode<Label>("%伤害数值");
         var atkSpine = GetNode<SpineHandler>("%伤害动画");
 
-        atkLabel.Text = "";
-        atkLabel.Scale = Vector2.Zero;
+        if (isFirst)
+        {
+            atkLabel.Text = "";
+            atkLabel.Scale = Vector2.Zero;
 
-        atkSpine.LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
-        atkSpine.Scale = new Vector2(0.85f, 0.85f);
+            atkSpine.LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
+            atkSpine.Scale = new Vector2(0.85f, 0.85f);
+            await atkSpine.SetAnimationTask(0, "intro");
 
-        await atkSpine.SetAnimationTask(0, "intro");
-
-        atkLabel.Text = $"{fighterCard.Atk.Current}";
-        _tweenAtk = LabelIntro(atkLabel);
+            atkLabel.Text = $"{fighterCard.Atk.Current}";
+            _tweenAtk = LabelIntro(atkLabel);
+        }
+        else
+        {
+            atkLabel.Text = $"{fighterCard.Atk.Current}";
+        }
     }
 
-    private async void HpAnim()
+    private async void HpAnim(bool isFirst)
     {
         if (Model is not FighterCardModel fighterCard) return;
 
@@ -500,19 +552,27 @@ public partial class Fighter : Control, ITarget, IAttackable
 
         var hpLabel = GetNode<Label>("%血量数值");
         var hpSpine = GetNode<SpineHandler>("%血量动画");
+        var hpSpine2 = GetNode<SpineHandler>("%额外血量动画");
 
-        hpLabel.Text = "";
-        hpLabel.Scale = Vector2.Zero;
+        if (isFirst)
+        {
+            hpLabel.Text = "";
+            hpLabel.Scale = Vector2.Zero;
 
-        hpSpine.LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
-        GetNode<SpineHandler>("%额外血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
-        GetNode<SpineHandler>("%额外血量动画").Scale = new Vector2(0.85f, 0.85f);
-        hpSpine.Scale = new Vector2(0.85f, 0.85f);
+            hpSpine.LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+            hpSpine2.LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+            hpSpine.Scale = new Vector2(0.85f, 0.85f);
+            hpSpine2.Scale = new Vector2(0.85f, 0.85f);
 
-        await hpSpine.SetAnimationTask(0, "intro");
+            await hpSpine.SetAnimationTask(0, "intro");
 
-        hpLabel.Text = $"{fighterCard.Hp.Current}";
-        _tweenHp = LabelIntro(hpLabel);
+            hpLabel.Text = $"{fighterCard.Hp.Current}";
+            _tweenHp = LabelIntro(hpLabel);
+        }
+        else
+        {
+            hpLabel.Text = $"{fighterCard.Hp.Current}";
+        }
     }
 
     private void Clear()

@@ -60,12 +60,23 @@ public partial class NodeRoad : Control, ITarget
     }
     public Vector2 GetFighterLocation(Location location)
     {
-        return location switch
+        return Model.IsUp switch
         {
-            Location.Plant => GetNode<Node2D>("%植物_僵尸1").GetNode<Marker2D>("Pos").GlobalPosition,
-            Location.PlantFront => GetNode<Node2D>("%植物2").GetNode<Marker2D>("Pos").GlobalPosition,
-            Location.Zombie => GetNode<Marker2D>("%Pos1").GlobalPosition,
-            _ => new(360, 640),
+            false => location switch
+            {
+                Location.Plant => GetNode<Node2D>("%植物_僵尸1").GetNode<Marker2D>("Pos").GlobalPosition,
+                Location.PlantFront => GetNode<Node2D>("%植物2").GetNode<Marker2D>("Pos").GlobalPosition,
+                Location.Zombie => GetNode<Marker2D>("%Pos1").GlobalPosition,
+                _ => new(360, 640),
+            },
+            true => location switch
+            {
+
+                Location.Plant => GetNode<Node2D>("%Pos1").GetNode<Marker2D>("Pos").GlobalPosition,
+                Location.PlantFront => GetNode<Node2D>("%Pos2").GetNode<Marker2D>("Pos").GlobalPosition,
+                Location.Zombie => GetNode<Marker2D>("%植物_僵尸1").GlobalPosition,
+                _ => new(360, 640),
+            }
         };
     }
     public TargetType TargetType => TargetType.Lines | TargetType.Grids | TargetType.CoopGrids;

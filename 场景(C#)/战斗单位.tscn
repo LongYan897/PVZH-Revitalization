@@ -45,6 +45,7 @@ position = Vector2(0, -80)
 
 [node name="动画" parent="单位场景" unique_id=922182681 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
+position = Vector2(0, -58)
 scale = Vector2(3.6, 3.6)
 
 [node name="基础信息" type="Node2D" parent="." unique_id=80156814]

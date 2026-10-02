@@ -42,5 +42,13 @@ public enum VariableReason
     /// <summary>
     /// 重置效果
     /// </summary>
-    Reset = 1 << 9
+    Reset = 1 << 9,
+    /// <summary>
+    /// 造成的
+    /// </summary>
+    Damaged = 1 << 10,
+    /// <summary>
+    /// 失去的
+    /// </summary>
+    Loss = 1 << 11
 }

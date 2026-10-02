@@ -14,7 +14,10 @@ public class FinalMission : CardModel
 {
     public override bool TargetFilter(ITarget target)
     {
-        return target is Fighter fighter && fighter.Model.Camp == Camp.Zombie;
+        if (Fighter.HasFighter(f => f.Model.Camp == Camp.Plant))
+            return target is Fighter fighter && fighter.Model.Camp == Camp.Zombie;
+        else
+            return false;
     }
     public override bool FriendTarget => true;
     public override async Task Play(ITarget target)
@@ -23,16 +26,16 @@ public class FinalMission : CardModel
         if (zomb.Model.Camp == Camp.Zombie)
         {
             Fighter plant = (Fighter)(await CardCmd.PlayerChoiceTarget(null, this, TargetType.Fighters, (itg) => itg is Fighter fighter && fighter.Model.Camp == Camp.Plant));
+            
             await PlayInstantAnimation("intro", zomb);
 
             await zomb.Model.Kill(Variable.VariableReason.Trick);
 
-            await zomb.Die();
-
             if (plant != null && plant.Model.Camp == Camp.Plant)
             {
                 await PlayInstantAnimation("hit", plant);
-                await plant.Model.ApplyDamage(4,Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
+                
+                await plant.Model.ApplyDamage(4,Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
             }
         }
     }

@@ -72,5 +72,19 @@
   "FinalMission.Label": [ "科学家", "木桶" ],
   "FinalMission.Tag": [],
   "FinalMission.Pack": "银河",
-  "FinalMission.Flavor": "“往返票和单程票一个价。“"
+  "FinalMission.Flavor": "“往返票和单程票一个价。“",
+
+  "StartBattle.Title": "开始战斗",
+  "StartBattle.Des": "_开始_一条线的_战斗_",
+  "StartBattle.Cost": 0,
+  "StartBattle.Camp": "植物",
+  "StartBattle.Type": "锦囊",
+  "StartBattle.Rarity": "令牌",
+  "StartBattle.Category": "有脑",
+  "StartBattle.Animation": "res://素材(C#)/卡牌/召唤直升机/召唤直升机锦囊动画.tres",
+  "StartBattle.Icon": "res://场景(C#)/卡面/stone.tscn",
+  "StartBattle.Label": [ "测试" ],
+  "StartBattle.Tag": [],
+  "StartBattle.Flavor": "你怎么找到这个的。"
+
 }
