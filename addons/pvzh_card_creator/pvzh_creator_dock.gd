@@ -1,5 +1,5 @@
 @tool
-extends ScrollContainer
+extends ScrollContainer //保留
 
 var editor_plugin: EditorPlugin
 var root: VBoxContainer
