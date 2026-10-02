@@ -1,0 +1,26 @@
+{
+  "Penelopea.Title": "绿影侠",
+  "Penelopea.Flavor": "冷知识：当脱下斗篷和面具、回归寻常生活的时候，她用的名字是\"佩妮豆\"",
+  "Penelopea.Category": [ "猛长", "聪明" ],
+  "Penelopea.Camp": "植物",
+  "Penelopea.Icon": "res://素材/ui/英雄图片/cornerimage_greenshadow.png",
+  "Penelopea.Animation": "res://素材/英雄素材/绿影侠/绿影侠.tres",
+  "Penelopea.DesScale": 0.8,
+  "Penelopea.DesOffset": 0,
+
+  "SunFlower.Title": "耀斑花",
+  "SunFlower.Flavor": "她一激动就容易起火。僵尸也一样，只不过他们是被点燃。",
+  "SunFlower.Category": [ "爆花", "光能" ],
+  "SunFlower.Camp": "植物",
+  "SunFlower.Icon": "res://素材/ui/英雄图片/cornerimage_solarflare.png",
+  "SunFlower.Animation": "res://素材/英雄素材/耀斑花.tres",
+
+  "SuperZombie.Title": "超尸",
+  "SuperZombie.Flavor": "他身上最具英雄气概的地方，就是他的发型了。",
+  "SuperZombie.Category": [ "有脑", "狡猾" ],
+  "SuperZombie.Camp": "僵尸",
+  "SuperZombie.Icon": "res://素材/ui/英雄图片/cornerimage_superbrainz.png",
+  "SuperZombie.Animation": "res://素材/英雄素材/超尸/超尸.tres",
+  "SuperZombie.DesScale": 0.8,
+  "SuperZombie.DesOffset": 200
+}

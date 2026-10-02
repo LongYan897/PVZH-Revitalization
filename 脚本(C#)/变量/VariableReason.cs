@@ -20,7 +20,7 @@ public enum VariableReason
     /// </summary>
     Hero = 1 << 3,
     /// <summary>
-    /// 单位效果,如果是超能力建议使用 Hero + Fighter
+    /// 单位效果
     /// </summary>
     Fighter = 1 << 4,
     /// <summary>
@@ -28,7 +28,7 @@ public enum VariableReason
     /// </summary>
     Trick = 1 << 5,
     /// <summary>
-    /// 环境效果,如果是超能力建议使用 Hero + Environment
+    /// 环境效果,
     /// </summary>
     Environment = 1 << 6,
     /// <summary>
@@ -42,13 +42,5 @@ public enum VariableReason
     /// <summary>
     /// 重置效果
     /// </summary>
-    Reset = 1 << 9,
-    /// <summary>
-    /// 造成的
-    /// </summary>
-    Damaged = 1 << 10,
-    /// <summary>
-    /// 失去的
-    /// </summary>
-    Loss = 1 << 11
+    Reset = 1 << 9
 }

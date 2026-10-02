@@ -1,6 +1,5 @@
 
 using Card.Cmd;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Variable;
@@ -79,58 +78,35 @@ public interface ICardVariable
 }
 
 /// <summary>
-/// 卡牌的整数变量(卡牌必须使用该变量,需要用该变量监听卡牌修改事件)
+/// 整数变量
 /// </summary>
-/// <param name="cardModel">监听的卡牌</param>
-/// <param name="sign">监听的信号</param>
-/// <param name="baseValue">基础值</param>
-/// <param name="canNegative">是否可以为负数</param>
-public class CardIntVariable(CardModel cardModel, string sign, int baseValue,bool canNegative = false)
+public class CardIntVariable(CardModel cardModel, string sign, int baseValue)
 {
     private CardModel card = cardModel;
-    private readonly IntVariable variable = new IntVariable(sign, baseValue);
+    private IntVariable variable = new IntVariable(sign, baseValue);
     public int Current => variable.Current;
-    public bool HasChanged => variable.Current != variable.Base;
-    private readonly bool canNegative = canNegative;
+    public bool HasChanged => variable.HasChanged;
     /// <summary>
-    /// 增加值，返回撤销委托
+    /// 增加值
     /// </summary>
     /// <param name="value">要增加的值</param>
     /// <param name="reason">原因</param>
-    public async Task<Func<Task>> Gain(int value, VariableReason reason)
+    public async Task Gain(int value, VariableReason reason)
     {
-        var old = variable.Current;
+        var old = variable.Current + value;
         variable.Gain(value, reason);
-        await CardCmd.ChangedCard(card, sign, old, variable.Current);
-
-        return async () =>
-        {
-            var o = variable.Current;
-            variable.Lose(value, VariableReason.Reset);
-            await CardCmd.ChangedCard(card, sign, o, variable.Current);
-        };
+        await CardCmd.ChangedCard(card, sign, old, value);
     }
-
     /// <summary>
-    /// 减少值，返回撤销委托
+    /// 减少值
     /// </summary>
     /// <param name="value">要减少的值</param>
     /// <param name="reason">原因</param>
-    public async Task<Func<Task>> Lose(int value, VariableReason reason)
+    public async Task Lose(int value, VariableReason reason)
     {
-        var before = variable.Current;
-        if (!canNegative && before - value < 0)
-            value = before;
-
+        var old = variable.Current - value;
         variable.Lose(value, reason);
-        await CardCmd.ChangedCard(card, sign, before, variable.Current);
-
-        return async () =>
-        {
-            var o = variable.Current;
-            variable.Gain(value, VariableReason.Reset);
-            await CardCmd.ChangedCard(card, sign, o, variable.Current);
-        };
+        await CardCmd.ChangedCard(card, sign, old, value);
     }
     /// <summary>
     /// 设置值

@@ -16,12 +16,7 @@ func get_bone_world_pos(bone_name:String) -> Vector2:
 	return get_global_bone_transform(bone_name).origin
 
 func _on_animation_event(sprite, anim_state, track_entry, evt):
-	var anim = track_entry.get_animation()
-	var duration = anim.get_duration()
-	var track_time = track_entry.get_track_time()
-	var time_scale = track_entry.get_time_scale()
-	var remaining = (duration - track_time) / time_scale
-	emit_signal("spine_anim_event", evt.get_data().get_event_name(), remaining)
+	emit_signal("spine_anim_event", evt)
 
 func _ready():
 	connect("animation_event", _on_animation_event)
