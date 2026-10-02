@@ -414,7 +414,7 @@ public partial class NodeCard : Control
                     var col = (NodeRoad)(GodotObject)variant;
                     if (!col.Calling) return;
                     target = col;
-                    col.Targeted(true, false, false);
+                    col.Targeted(true, false, false,null);
                     Glowing();
                 }
             }
@@ -427,7 +427,10 @@ public partial class NodeCard : Control
                 var col = (NodeRoad)(GodotObject)variant;
                 if (!col.Calling) return;
                 target = col;
-                col.Targeted(false, needGrid, coopNeedGrid);
+                FighterCardModel fighter = null;
+                if (Model is FighterCardModel fighterCard)
+                    fighter = fighterCard;
+                col.Targeted(false, needGrid, coopNeedGrid,fighter);
                 Glowing();
             }
         }

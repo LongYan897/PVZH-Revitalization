@@ -196,9 +196,17 @@ public partial class NodeRoad : Control, ITarget
         GetNode<Sprite2D>("%环境高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮2").Visible = false;
+
+        var bat = GetNode<TextureRect>("%Battle");
+        var ar1 = GetNode<TextureRect>("%Arrow");
+        var ar2 = GetNode<TextureRect>("%ArrowDown");
+
+        bat.Visible = false;
+        ar1.Visible = false;
+        ar2.Visible = false;
     }
 
-    public void Targeted(bool line, bool g1, bool g2)
+    public void Targeted(bool line, bool g1, bool g2,FighterCardModel fighterCard)
     {
         if (!Calling) return;
         KillTween();
@@ -223,7 +231,7 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             LastTargetKind = RoadTargetKind.Grid;
-            TargetedGridArrow(false);
+            TargetedGridArrow(fighterCard,false);
         }
 
         if (g2)
@@ -235,43 +243,82 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             LastTargetKind = RoadTargetKind.CoopGrid;
-            TargetedGridArrow(true);
+            TargetedGridArrow(fighterCard,true);
         }
     }
-    private void TargetedGridArrow(bool isCoop)
+    private void TargetedGridArrow(FighterCardModel fighterCard,bool isCoop)
     {
-        var bat = GetNode<Sprite2D>("%Battle");
-        var ar1 = GetNode<Sprite2D>("%Arrow");
-        var ar2 = GetNode<Sprite2D>("%ArrowDown");
-        bat.Visible = true;
-        ar1.Visible = true;
-        ar2.Visible = true;
-        var boZomb = Model.GetFighters().Any(f => f.Model.Camp == Camp.Zombie);
-        var boPlant = Model.GetFighters().Any(f => f.Model.Camp == Camp.Plant);
+        var bat = GetNode<TextureRect>("%Battle");
+        var ar1 = GetNode<TextureRect>("%Arrow");
+        var ar2 = GetNode<TextureRect>("%ArrowDown");
+        var boZomb = Model.GetFighters().Any(f => f.Model.Camp == Camp.Zombie || fighterCard.Camp == Camp.Zombie);
+        var boPlant = Model.GetFighters().Any(f => f.Model.Camp == Camp.Plant || fighterCard.Camp == Camp.Plant);
         if (boZomb && boPlant)
         {
-            Tween tween = CreateTween().BindNode(bat);
-            tween.TweenProperty(bat, "scale", new Vector2(0.8f, 0.8f), 0.08);
-            tween.TweenProperty(bat, "scale", Vector2.One, 0.25)
-                .SetTrans(Tween.TransitionType.Back)
-                .SetEase(Tween.EaseType.Out);
-        }
-        if (boPlant)
-        {
-            
-        }
-        else if (boZomb)
-        {
+            bat.Visible = true;
+            ar1.Visible = true;
+            ar2.Visible = true; Tween tween = CreateTween().BindNode(bat);
+            bat.Scale = Vector2.Zero;
+            tween.TweenProperty(bat, "scale", new Vector2(0.5f, 0.5f), 0.05)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
 
+            tween.TweenProperty(bat, "scale", new Vector2(0.8f, 0.8f), 0.08)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(bat, "scale", new Vector2(0.6f, 0.6f), 0.06)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+
+            tween.TweenProperty(bat, "scale", new Vector2(0.75f, 0.75f), 0.05)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(bat, "scale", new Vector2(0.6f, 0.6f), 0.05)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            tween.TweenProperty(bat, "scale", new Vector2(0.65f, 0.65f), 0.04)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(bat, "scale", new Vector2(0.6f, 0.6f), 0.04)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            Tween tween1 = CreateTween().BindNode(ar2);
+            Tween tween2 = CreateTween().BindNode(ar1);
+            if (isCoop)
+            {
+                ar1.Position = new(-42.0f, -57.0f);
+                ar1.Size = new(84.0f, 51.0f);
+            }
+            else
+            {
+                ar1.Position = new(-42.0f, -41.0f);
+                ar1.Size = new(84, 199.0f);
+            }
+
+            ar2.Scale = new(0, 0);
+            tween1.TweenProperty(ar2, "scale", new Vector2(1f, 1f), 0.08);
+            ar1.Scale = new(0, 0);
+            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 1f), 0.08);
+        }
+        else
+        {
+            ar1.Visible = true;
+            Tween tween2 = CreateTween().BindNode(ar1);
+            if (isCoop)
+            {
+                ar1.Position = new(-42.0f, -57.0f);
+                ar1.Size = new(84.0f, 51.0f);
+            }
+            else
+            {
+                ar1.Position = new(-42.0f, -21.0f);
+                ar1.Size = new(84, 199.0f);
+            }
+            ar1.Scale = new(0, 0);
+            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 2f), 0.08);
         }
     }
     public async void Distargeted(bool line, bool g1, bool g2)
     {
         KillTween();
 
-        var bat = GetNode<Sprite2D>("%Battle");
-        var ar1 = GetNode<Sprite2D>("%Arrow");
-        var ar2 = GetNode<Sprite2D>("%ArrowDown");
+        var bat = GetNode<TextureRect>("%Battle");
+        var ar1 = GetNode<TextureRect>("%Arrow");
+        var ar2 = GetNode<TextureRect>("%ArrowDown");
+
         bat.Visible = false;
         ar1.Visible = false;
         ar2.Visible = false;

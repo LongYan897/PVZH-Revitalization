@@ -86,7 +86,7 @@ public class CardModel
             }
         }
     }
-    public static readonly List<CardModel> AllCards = TemplateEntries.Values.ToList();
+    public static List<CardModel> AllCards => TemplateEntries.Values.ToList();
     /// <summary>
     /// 刷新卡牌的节点
     /// </summary>
