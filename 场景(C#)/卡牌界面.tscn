@@ -32,8 +32,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_right = 20.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_cnftl")
 metadata/_custom_type_script = "uid://b38mmdd52sf5k"
 
@@ -178,6 +181,7 @@ vertical_alignment = 1
 
 [node name="介绍Label" type="RichTextLabel" parent="." unique_id=2112734755]
 unique_name_in_owner = true
+z_index = 20
 layout_mode = 0
 offset_left = -216.0
 offset_top = -50.0
