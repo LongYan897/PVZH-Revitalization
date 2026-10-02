@@ -107,7 +107,9 @@ public class FighterCardModel : CardModel
 
         if (Hp.Current <= 0)
         {
-            if (stack != null)
+            bool isDamage = reason.HasFlag(Variable.VariableReason.Damaged);
+
+            if (isDamage && stack != null)
             {
                 await FireTiming(Timing.OnKilled, stack);
                 await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
