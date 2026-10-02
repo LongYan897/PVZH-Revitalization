@@ -3,6 +3,7 @@ using Card.Cmd;
 using Card.String;
 using Controller;
 using Godot;
+using Logger;
 using Pack;
 using Phrases;
 using Play;
@@ -27,14 +28,23 @@ public class CardModel
     public virtual Vector2 Size => new(1, 1);
     public virtual Vector2 Position => new(0, 0);
     public Player Player { get; private set; }
+    private static readonly Dictionary<string, CardModel> TemplateEntries = new();
     /// <summary>
-    /// 卡牌的模板(用于获取卡牌数据)(不要修改)
+    /// 按照名称获取卡牌模板
     /// </summary>
-    public static CardModel GetTemplate(string cardClassName)
+    public static CardModel GetTemplate(string title)
     {
-        var method = typeof(CardModel).GetMethod("Load", BindingFlags.Static | BindingFlags.NonPublic);
-        var genericMethod = method.MakeGenericMethod();
-        return (CardModel)genericMethod.Invoke(null, new object[] { cardClassName });
+        if (TemplateEntries.TryGetValue(title, out var template))
+            return template.Clone();
+        return null;
+    }
+
+    /// <summary>
+    /// 是否存在该名称的卡牌模板
+    /// </summary>
+    public static bool HasTemplate(string title)
+    {
+        return TemplateEntries.ContainsKey(title);
     }
     /// <summary>
     /// 卡牌的模板(用于获取卡牌数据)(不要修改)
@@ -42,6 +52,39 @@ public class CardModel
     public static CardModel GetTemplate<T>() where T : CardModel
     {
         return Load<T>();
+    }
+    /// <summary>
+    /// 初始化卡牌基类
+    /// </summary>
+    public static void Init()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var loadMethod = typeof(CardModel)
+            .GetMethod(nameof(Load), BindingFlags.Public | BindingFlags.Static, Type.EmptyTypes);
+
+        foreach (var type in assembly.GetTypes())
+        {
+            if (!typeof(CardModel).IsAssignableFrom(type)) continue;
+            if (type.IsAbstract) continue;
+            if (type == typeof(CardModel)) continue;
+            if (typeof(FighterCardModel) == type) continue;
+
+            try
+            {
+                var cardString = CardString.Loading(type.Name);
+                var loadData = typeof(CardModel)
+                    .GetMethod("Load", BindingFlags.NonPublic | BindingFlags.Static);
+
+                var generic = loadData.MakeGenericMethod(type);
+                var model = (CardModel)generic.Invoke(null, new object[] { cardString, null });
+                if (!string.IsNullOrEmpty(model.Title))
+                    TemplateEntries[model.Title] = model;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message + ex.StackTrace);
+            }
+        }
     }
     /// <summary>
     /// 刷新卡牌的节点

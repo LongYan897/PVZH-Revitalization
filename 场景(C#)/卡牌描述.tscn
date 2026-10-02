@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://vhjjhuxnq6tm"]
 
-[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="1_de7t3"]
+[ext_resource type="Script" uid="uid://sfx727dg4nvy" path="res://脚本(C#)/卡牌/节点/CardDesPanel.cs" id="1_6m622"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="2_6m622"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2sttn"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.06, 0.06, 0.06, 0.8666667)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
@@ -15,7 +16,7 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[node name="Panel" type="Panel" unique_id=974877594]
+[node name="Panel" type="Panel" unique_id=674349443]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -29,6 +30,8 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_styles/panel = SubResource("StyleBoxFlat_2sttn")
+script = ExtResource("1_6m622")
+metadata/_custom_type_script = "uid://sfx727dg4nvy"
 
 [node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=793589948]
 layout_mode = 1
@@ -48,11 +51,17 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 5
-theme_override_fonts/normal_font = ExtResource("1_de7t3")
-theme_override_font_sizes/normal_font_size = 28
+theme_override_fonts/normal_font = ExtResource("2_6m622")
+theme_override_font_sizes/normal_font_size = 36
 bbcode_enabled = true
-text = "致命：造成一百万点伤害所以就要有百万"
+text = "2222"
 fit_content = true
-autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Control" type="Control" parent="." unique_id=1666494214]
+anchors_preset = 0
+offset_left = -338.0
+offset_top = -348.0
+offset_right = 1083.0
+offset_bottom = 1647.0

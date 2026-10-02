@@ -134,7 +134,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 z_index = 2
 
-[node name="血量动画" parent="正面卡牌/生命值容器" unique_id=922182681 instance=ExtResource("7_ia5uq")]
+[node name="血量动画" parent="正面卡牌/生命值容器" unique_id=823167992 instance=ExtResource("7_ia5uq")]
 unique_name_in_owner = true
 position = Vector2(224, 157.5)
 
