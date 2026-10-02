@@ -209,6 +209,8 @@ public partial class CardDes : Control
                     else
                         GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                 }
+                else
+                    GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.Default);
 
                 if (fighterCard.Atk.HasChanged)
                 {
@@ -217,6 +219,8 @@ public partial class CardDes : Control
                     else
                         GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                 }
+                else
+                    GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.Default);
             }
             else
             {

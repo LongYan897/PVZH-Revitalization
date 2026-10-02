@@ -1,7 +1,9 @@
+using Battle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Card;
 
@@ -24,6 +26,10 @@ public class HpType
     /// </summary>
     public virtual string IconSkelPath { get; }
     /// <summary>
+    /// 血量类型给予时的Buff
+    /// </summary>
+    public Buff Buff { get; init; }
+    /// <summary>
     /// 附加到战斗卡牌时用于增加过滤条件
     /// 比如锦囊免疫等效果
     /// </summary>
@@ -33,10 +39,6 @@ public class HpType
     {
         return true;
     }
-    /// <summary>
-    /// 持续的生命值效果
-    /// </summary>
-    public Buff Action { get; set; }
 
     /// <summary>
     /// 注册逻辑

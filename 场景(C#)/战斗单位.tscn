@@ -153,3 +153,8 @@ position = Vector2(0, -344)
 [node name="体积" type="CollisionShape2D" parent="碰撞箱" unique_id=164457338]
 unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_bev64")
+
+[node name="子弹" type="TextureRect" parent="." unique_id=702666749]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

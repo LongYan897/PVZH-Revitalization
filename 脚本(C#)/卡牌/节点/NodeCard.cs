@@ -664,6 +664,8 @@ public partial class NodeCard : Control
                         else
                             hps.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                     }
+                    else
+                        hps.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.Default);
                     if (fighter.Atk.HasChanged)
                     {
                         if (fighter.Atk.PositiveChanged)
@@ -671,6 +673,8 @@ public partial class NodeCard : Control
                         else
                             atks.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                     }
+                    else
+                        atks.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.Default);
                 }
                 else
                 {

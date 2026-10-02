@@ -10,10 +10,12 @@ using Spine;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Target;
+using Variable;
 
 namespace Card;
 
@@ -258,45 +260,6 @@ public class CardModel
         ResetData();
     }
     /// <summary>
-    /// 在回合开始时
-    /// </summary>
-    /// <param name="phrase">开始的回合</param>
-    /// <returns></returns>
-    public virtual Task BeforeTurnStart(Phrase phrase)
-    {
-        return Task.CompletedTask;
-    }
-    /// <summary>
-    /// 在回合开始后
-    /// </summary>
-    /// <param name="phrase">开始的回合</param>
-    /// <returns></returns>
-    public virtual Task AfterTurnStart(Phrase phrase)
-    {
-        return Task.CompletedTask;
-    }
-    /// <summary>
-    /// 在回合打出卡牌后
-    /// </summary>
-    /// <param name="card">打出的卡牌</param>
-    /// <returns></returns>
-    public virtual Task AfterPlayCard(CardModel card, ITarget target)
-    {
-        return Task.CompletedTask;
-    }
-    /// <summary>
-    /// 在回合修改卡牌后
-    /// </summary>
-    /// <param name="card">修改的卡牌</param>
-    /// <typeparam name="T">修改值的类型</typeparam>
-    /// <param name="valueAfter">修改之前的值</param>
-    /// <param name="valueBefore">修改之后的值</param>
-    /// <returns></returns>
-    public virtual Task AfterCardBeChanged<T>(CardModel card, string key, T valueAfter, T valueBefore)
-    {
-        return Task.CompletedTask;
-    }
-    /// <summary>
     /// 修改这张卡牌时
     /// </summary>
     /// <typeparam name="T">修改值的类型</typeparam>
@@ -307,4 +270,65 @@ public class CardModel
     {
         return Task.CompletedTask;
     }
+    /// <summary>
+    /// 挂在卡牌上的效果
+    /// </summary>
+    private List<Buff> _buffs;
+
+    private List<Buff> BuffList
+    {
+        get
+        {
+            _buffs ??= [.. InitBuffs];
+            return _buffs;
+        }
+    }
+
+    public IReadOnlyList<Buff> Buffs => BuffList;
+    /// <summary>
+    /// 卡牌初始的Buff
+    /// </summary>
+    protected virtual List<Buff> InitBuffs { get; } = [];
+    /// <summary>
+    /// 添加效果
+    /// </summary>
+    public async Task AddBuff(Buff buff, VariableReason reason)
+    {
+        BuffList.Add(buff);
+        await buff.OnTiming(Timing.WhenApply, this, reason);
+    }
+
+    /// <summary>
+    /// 移除效果
+    /// </summary>
+    public async Task RemoveBuff(Buff buff, VariableReason reason)
+    {
+        BuffList.Remove(buff);
+        await buff.OnTiming(Timing.WhenRemove, this, reason);
+    }
+
+    /// <summary>
+    /// 把时点转发给所有关心它的 Buff
+    /// </summary>
+    public async Task FireTiming(Timing timing, params object[] parameters)
+    {
+        foreach (var buff in BuffList.ToList())
+        {
+            if (buff.Timings.Contains(timing))
+                await buff.OnTiming(timing, this,parameters);
+        }
+    }
+
+    /// <summary>
+    /// 把 Buff 转移到新卡
+    /// </summary>
+    public async Task TransferBuffsTo(CardModel newCard)
+    {
+        foreach (var buff in BuffList.ToList())
+        {
+            await RemoveBuff(buff,VariableReason.Self);
+            await newCard.AddBuff(buff,VariableReason.Self);
+        }
+    }
+
 }

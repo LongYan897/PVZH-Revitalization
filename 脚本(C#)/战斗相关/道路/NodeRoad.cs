@@ -64,6 +64,7 @@ public partial class NodeRoad : Control, ITarget
         {
             Location.Plant => GetNode<Node2D>("%植物_僵尸1").GetNode<Marker2D>("Pos").GlobalPosition,
             Location.PlantFront => GetNode<Node2D>("%植物2").GetNode<Marker2D>("Pos").GlobalPosition,
+            Location.Zombie => GetNode<Marker2D>("%Pos1").GlobalPosition,
             _ => new(360, 640),
         };
     }

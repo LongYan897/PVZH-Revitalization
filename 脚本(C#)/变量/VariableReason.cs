@@ -20,7 +20,7 @@ public enum VariableReason
     /// </summary>
     Hero = 1 << 3,
     /// <summary>
-    /// 单位效果
+    /// 单位效果,如果是超能力建议使用 Hero + Fighter
     /// </summary>
     Fighter = 1 << 4,
     /// <summary>
@@ -28,7 +28,7 @@ public enum VariableReason
     /// </summary>
     Trick = 1 << 5,
     /// <summary>
-    /// 环境效果,
+    /// 环境效果,如果是超能力建议使用 Hero + Environment
     /// </summary>
     Environment = 1 << 6,
     /// <summary>

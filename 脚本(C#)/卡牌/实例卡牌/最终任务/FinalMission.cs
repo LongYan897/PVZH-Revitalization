@@ -24,11 +24,15 @@ public class FinalMission : CardModel
         {
             Fighter plant = (Fighter)(await CardCmd.PlayerChoiceTarget(null, this, TargetType.Fighters, (itg) => itg is Fighter fighter && fighter.Model.Camp == Camp.Plant));
             await PlayInstantAnimation("intro", zomb);
-            await zomb.Model.Die();
+
+            await zomb.Model.Kill(Variable.VariableReason.Trick);
+
+            await zomb.Die();
+
             if (plant != null && plant.Model.Camp == Camp.Plant)
             {
                 await PlayInstantAnimation("hit", plant);
-                await plant.Model.Hp.Lose(4,Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
+                await plant.Model.ApplyDamage(4,Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
             }
         }
     }

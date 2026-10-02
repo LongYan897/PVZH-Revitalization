@@ -47,7 +47,7 @@ public static class CardCmd
         await cardModel.Changed<T>(key, before, after);
         foreach (CardModel card in CardInstances)
         {
-            await card.AfterCardBeChanged(cardModel, key, before, after);
+            await card.FireTiming(Timing.OnVariableChanged,key,before,after);
         }
     }
     /// <summary>
@@ -61,7 +61,22 @@ public static class CardCmd
         await cardModel.Play(target);
         foreach (CardModel card in CardInstances)
         {
-            await card.AfterPlayCard(cardModel, target);
+            await card.FireTiming(Timing.AfterCardPlayed,cardModel,target);
+        }
+    }
+    /// <summary>
+    /// 触发卡牌的时点
+    /// </summary>
+    /// <param name="cardModel">忽略的卡牌（一般是发起者）</param>
+    /// <param name="timing">时点</param>
+    /// <param name="paramters">参数</param>
+    /// <returns></returns>
+    public static async Task TimingOnCards(CardModel cardModel,Timing timing,params object[] paramters)
+    {
+        foreach (var card in CardInstances)
+        {
+            if (card != cardModel)
+                await card.FireTiming(timing,paramters);
         }
     }
     private static TaskCompletionSource<ITarget> _tcs;
@@ -128,7 +143,7 @@ public static class CardCmd
         var fight = Fighter.Generate(fighter,road,location);
         await fighter.IntroPlayed();
         await fighter.AnimationWhenPlayed(road);
-        await fighter.AfterPlayed(road);
+        await fighter.FireTiming(Timing.AfterPlay,NodeRoad.GetNode(road));
     }
     /// <summary>
     /// 从卡组中抽出卡牌
