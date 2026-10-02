@@ -1,6 +1,6 @@
 using Controller;
 using Godot;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Card;
@@ -11,8 +11,7 @@ public partial class CardDesPanel : Panel
     private static readonly PackedScene Scene =
         GD.Load<PackedScene>("res://场景(C#)/卡牌描述.tscn");
 
-    private static readonly Regex LinkRegex =
-        new Regex(@"_([^_]+)_", RegexOptions.Compiled);
+    private static readonly List<CardDesPanel> OpenPanels = new();
 
     private const float PanelScale = 0.8f;
 
@@ -22,38 +21,33 @@ public partial class CardDesPanel : Panel
 
     public override void _Ready()
     {
-        _rtl = GetNode<RichTextLabel>("RichTextLabel");
-        _blocker = GetNodeOrNull<Control>("Control");
+        _rtl = GetNode<RichTextLabel>("Control/RichTextLabel");
+        _blocker = GetNode<Control>("Control");
 
         MouseFilter = MouseFilterEnum.Ignore;
         _rtl.MouseFilter = MouseFilterEnum.Stop;
         _rtl.MetaClicked += OnKeywordClicked;
 
-        if (_blocker != null)
-        {
-            _blocker.MouseFilter = MouseFilterEnum.Stop;
-            _blocker.GuiInput += OnBlockerInput;
-            _blocker.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        }
+        _blocker.MouseFilter = MouseFilterEnum.Ignore;
 
         _rtl.FitContent = true;
         _rtl.ScrollActive = false;
 
         Scale = Vector2.Zero;
         Modulate = new Color(1, 1, 1, 0);
+
+        OpenPanels.Add(this);
+        ZIndex = 2048 + OpenPanels.Count - 1;
     }
 
-
-    private void OnBlockerInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
         if (_closing) return;
         if (@event is not InputEventMouseButton mb || !mb.Pressed) return;
+        if (OpenPanels[^1] != this) return;
+        if (GetGlobalRect().HasPoint(mb.GlobalPosition)) return;
 
-        _rtl._GuiInput(mb);
-        if (GetViewport().IsInputHandled())
-            return;
-
-        _blocker.AcceptEvent();
+        GetViewport().SetInputAsHandled();
         Close();
     }
 
@@ -67,14 +61,15 @@ public partial class CardDesPanel : Panel
             var template = CardModel.GetTemplate(key);
             if (template != null)
                 CardDes.ExchangeDescription(template);
-            Close();
             return;
         }
 
-        if (.TryGetKeywordDescription(key, out string desc))
+        if (CardDes.TryGetKeywordDescription(null, key, out string desc))
         {
             GetViewport().SetInputAsHandled();
+
             var globalPos = _rtl.GlobalPosition + _rtl.GetLocalMousePosition();
+
             ShowAt(desc, globalPos);
         }
     }
@@ -85,6 +80,16 @@ public partial class CardDesPanel : Panel
 
     private void FitToContent()
     {
+        _blocker.AnchorLeft = 0;
+        _blocker.AnchorTop = 0;
+        _blocker.AnchorRight = 1;
+        _blocker.AnchorBottom = 1;
+        _blocker.OffsetLeft = 0;
+        _blocker.OffsetTop = 0;
+        _blocker.OffsetRight = 0;
+        _blocker.OffsetBottom = 0;
+        _blocker.Position = Vector2.Zero;
+
         _rtl.AnchorLeft = 0;
         _rtl.AnchorTop = 0;
         _rtl.AnchorRight = 0;
@@ -92,13 +97,13 @@ public partial class CardDesPanel : Panel
 
         _rtl.FitContent = true;
         _rtl.ScrollActive = false;
-        _rtl.Size = new Vector2(MaxTextWidth, _rtl.GetContentHeight());
 
         float h = _rtl.GetContentHeight();
 
-        Size = new Vector2(MaxTextWidth + PadX * 2f, h + PadY * 2f);
         _rtl.Position = new Vector2(PadX, PadY);
         _rtl.Size = new Vector2(MaxTextWidth, h);
+
+        Size = new Vector2(MaxTextWidth + PadX * 2f, h + PadY * 2f);
     }
 
     private void PlayOpen()
@@ -117,8 +122,7 @@ public partial class CardDesPanel : Panel
         if (_closing) return;
         _closing = true;
 
-        if (_blocker != null)
-            _blocker.MouseFilter = MouseFilterEnum.Ignore;
+        OpenPanels.Remove(this);
 
         var tween = CreateTween();
         tween.SetParallel(true);
@@ -133,18 +137,14 @@ public partial class CardDesPanel : Panel
 
     public async Task SetContent(string desc)
     {
-        await CardDes.AppendWithIcons(_rtl, StripLinks(desc), convertLinks: false);
+        await CardDes.AppendWithIcons(_rtl, desc, convertLinks: true);
         FitToContent();
     }
-
-    private static string StripLinks(string text) =>
-        LinkRegex.Replace(text, m => m.Groups[1].Value);
 
     public static async void ShowAt(string desc, Vector2 globalPos)
     {
         var panel = Scene.Instantiate<CardDesPanel>();
         Main.DesLayer.AddChild(panel);
-        panel.ZIndex = 2048;
 
         await panel.SetContent(desc);
         panel.PositionPanelAbove(globalPos);

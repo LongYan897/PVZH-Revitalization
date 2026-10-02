@@ -17,4 +17,6 @@ public static class CardRegistryField
     public static string 打出 => "单位被打出到场上时。";
     [URL]
     public static string 额外攻击 => "使单位额外进行攻击。";
+    [URL]
+    public static string 召唤 => "在一条线上生成单位。";
 }
