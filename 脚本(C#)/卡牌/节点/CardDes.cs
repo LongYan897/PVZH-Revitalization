@@ -3,12 +3,29 @@ using Controller;
 using Godot;
 using Pack;
 using Spine;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Godot.OpenXRCompositionLayer;
 
 namespace Card;
 
+/// <summary>
+/// 用于给卡牌描述的URL设置描述<br/>
+/// 比如<br/>
+/// 我希望给致命设置描述<br/>
+/// 那么可以在某个类里面写<br/>
+/// [URL]<br/>
+/// public string Lethal => "攻击到的单位立即死亡"<br/>
+/// 这个就代表了 _Lethal_ 这个标签点开后显示 "攻击到的单位立即死亡"<br/>
+/// static的属性也可以这样注册<br/>
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false,Inherited = false)]
+public class URLAttribute : Attribute
+{
+
+}
 /// <summary>
 /// 卡牌描述的可视化部分
 /// </summary>
@@ -104,20 +121,6 @@ public partial class CardDes : Control
         }
     }
 
-    public override void _Input(InputEvent @event)
-    {
-        if (@event is InputEventScreenTouch touch)
-        {
-            if (!touch.Pressed) return;
-            if (!_isEnd)
-            {
-                Clear();
-                _isEnd = true;
-                GetViewport().SetInputAsHandled();
-            }
-        }
-    }
-
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
     public void CardTryFresh(CardModel cardModel)
     {
@@ -137,9 +140,13 @@ public partial class CardDes : Control
         LinkRegex.Replace(text,
             mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
 
-    public async Task SetDescription(string raw)
+    /// <summary>
+    /// 解析语法并写入。
+    /// convertLinks = true：_XXX_ 变为 URL（一般卡牌主描述用）
+    /// convertLinks = false：_XXX_ 保留（一般弹出面板用）
+    /// </summary>
+    public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks)
     {
-        var label = GetNode<RichTextLabel>("%介绍Label");
         label.Clear();
         label.BbcodeEnabled = true;
 
@@ -147,7 +154,10 @@ public partial class CardDes : Control
         foreach (Match m in IconRegex.Matches(raw))
         {
             if (m.Index > last)
-                label.AppendText(ConvertLinks(raw.Substring(last, m.Index - last)));
+            {
+                string seg = raw.Substring(last, m.Index - last);
+                label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
+            }
 
             string name = m.Groups[1].Value;
             bool hasNum = m.Groups[2].Success;
@@ -172,8 +182,106 @@ public partial class CardDes : Control
         }
 
         if (last < raw.Length)
-            label.AppendText(ConvertLinks(raw.Substring(last)));
+        {
+            string seg = raw.Substring(last);
+            label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
+        }
     }
+
+    public async Task SetDescription(string raw)
+    {
+        var label = GetNode<RichTextLabel>("%介绍Label");
+
+        await AppendWithIcons(label, raw, convertLinks: true);
+    }
+    private bool _keywordClicked = false;
+    public override void _Ready()
+    {
+        var label = GetNode<RichTextLabel>("%介绍Label");
+        label.BbcodeEnabled = true;
+        label.MouseFilter = MouseFilterEnum.Stop;
+        label.GuiInput += Label_GuiInput;
+        label.MetaClicked += OnKeywordClicked;
+        GetNode<ColorRect>("%底色").GuiInput += OnBackdropInput;
+    }
+    private bool _opening = false;
+
+    private void Label_GuiInput(InputEvent @event)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void OnBackdropInput(InputEvent @event)
+    {
+        if (!_opening) return;
+        if (@event is InputEventMouseButton mb && mb.Pressed)
+        {
+            if (_isEnd) return;
+            Clear();
+            _isEnd = true;
+            AcceptEvent();
+        }
+    }
+    private void OnKeywordClicked(Variant meta)
+    {
+        GD.Print($"[CardDes] meta clicked: {meta.AsString()}");
+        string key = meta.AsString();
+        if (!TryGetKeywordDescription(key, out string desc))
+            return;
+
+        GetViewport().SetInputAsHandled();
+
+        _keywordClicked = true;
+
+        var label = GetNode<RichTextLabel>("%介绍Label");
+        Vector2 localPos = label.GetLocalMousePosition();
+        Vector2 globalPos = label.GlobalPosition + localPos;
+
+        CardDesPanel.ShowAt(key, desc, globalPos);
+    }
+    private bool TryGetKeywordDescription(string key, out string desc)
+    {
+        desc = null;
+        if (Model == null) return false;
+
+        desc = null;
+
+        var flags = System.Reflection.BindingFlags.Public
+                  | System.Reflection.BindingFlags.Static
+                  | System.Reflection.BindingFlags.Instance
+                  | System.Reflection.BindingFlags.IgnoreCase;
+
+        if (Model != null)
+        {
+            var prop = Model.GetType().GetProperty(key, flags);
+            if (TryGetFromProp(prop, Model, out desc))
+                return true;
+        }
+
+        var regProp = typeof(CardRegistryField).GetProperty(key, flags);
+        if (TryGetFromProp(regProp, null, out desc))
+            return true;
+
+        return false;
+    }
+    private static bool TryGetFromProp(
+    System.Reflection.PropertyInfo prop, object instance, out string desc)
+    {
+        desc = null;
+        if (prop == null) return false;
+        if (!Attribute.IsDefined(prop, typeof(URLAttribute))) return false;
+        if (prop.PropertyType != typeof(string)) return false;
+
+        var getter = prop.GetGetMethod(true);
+        if (getter == null) return false;
+
+        object target = getter.IsStatic ? null : instance;
+        if (!getter.IsStatic && target == null) return false;
+
+        desc = prop.GetValue(target) as string;
+        return !string.IsNullOrEmpty(desc);
+    }
+
     private async void Fresh()
     {
         if (Model != null)
@@ -209,6 +317,8 @@ public partial class CardDes : Control
                     else
                         GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                 }
+                else
+                    GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.Default);
 
                 if (fighterCard.Atk.HasChanged)
                 {
@@ -217,11 +327,14 @@ public partial class CardDes : Control
                     else
                         GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                 }
+                else
+                    GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.Default);
             }
             else
             {
                 GetNode<Node2D>("%基础信息").Visible = false;
             }
+            GetNode<Sprite2D>("Shadow").Visible = Model.CardType.HasFlag(CardType.Fighter);
             GetNode<Label>("%属性标签").Text = $"-{string.Join(" ", Model.Labels.Current)} {Model.CardType switch
             {
                 CardType.Hero | CardType.Fighter => Model.Camp switch
@@ -335,6 +448,11 @@ public partial class CardDes : Control
                 Rarity.Token => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
                 _ => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png")
             };
+            var rarity = GetNode<TextureRect>("%稀有标签");
+            rarity.AnchorLeft = 0;
+            rarity.AnchorRight = 0;
+            rarity.AnchorTop = 0;
+            rarity.AnchorBottom = 0;
             GetNode<TextureRect>("%稀有标签").Position = Model.Rarity switch
             {
                 Rarity.Rare => new(-274.0f, 163.0f),
@@ -358,26 +476,66 @@ public partial class CardDes : Control
                 sprite.AddAnimation(0, "idle", true);
         }
     }
+    private Tween _tweenAtk;
+    private Tween _tweenHp;
+    private Tween LabelIntro(Label label, float duration = 0.5f)
+    {
+        var tween = CreateTween().BindNode(label);
+        tween.SetTrans(Tween.TransitionType.Back);
+        tween.SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(label, "scale", Vector2.One, duration);
+        return tween;
+    }
+    private void KillAtkTween()
+    {
+        if (_tweenAtk != null && _tweenAtk.IsValid())
+            _tweenAtk.Kill();
+    }
+
+    private void KillHpTween()
+    {
+        if (_tweenHp != null && _tweenHp.IsValid())
+            _tweenHp.Kill();
+    }
     private async void AtkAnim()
     {
-        if (Model is FighterCardModel fighterCard)
-        {
-            GetNode<Label>("%伤害数值").Text = $"";
-            GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
-            GetNode<SpineHandler>("%伤害动画").Scale = new(0.85f, 0.85f);
-            await GetNode<SpineHandler>("%伤害动画").SetAnimationTask(0, $"intro");
-            GetNode<Label>("%伤害数值").Text = $"{fighterCard.Atk.Current}";
-        }
+        if (Model is not FighterCardModel fighterCard) return;
+
+        KillAtkTween();
+
+        var atkLabel = GetNode<Label>("%伤害数值");
+        var atkSpine = GetNode<SpineHandler>("%伤害动画");
+
+        atkLabel.Text = "";
+        atkLabel.Scale = Vector2.Zero;
+
+        atkSpine.LoadSkeletonData(fighterCard.AtkType.Current.IconSkelPath);
+        atkSpine.Scale = new Vector2(0.85f, 0.85f);
+
+        await atkSpine.SetAnimationTask(0, "intro");
+
+        atkLabel.Text = $"{fighterCard.Atk.Current}";
+        _tweenAtk = LabelIntro(atkLabel);
     }
+
     private async void HpAnim()
     {
-        if (Model is FighterCardModel fighterCard)
-        {
-            GetNode<Label>("%血量数值").Text = $"";
-            GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
-            GetNode<SpineHandler>("%血量动画").Scale = new(0.85f, 0.85f);
-            await GetNode<SpineHandler>("%血量动画").SetAnimationTask(0, $"intro");
-            GetNode<Label>("%血量数值").Text = $"{fighterCard.Hp.Current}";
-        }
+        if (Model is not FighterCardModel fighterCard) return;
+
+        KillHpTween();
+
+        var hpLabel = GetNode<Label>("%血量数值");
+        var hpSpine = GetNode<SpineHandler>("%血量动画");
+
+        hpLabel.Text = "";
+        hpLabel.Scale = Vector2.Zero;
+
+        hpSpine.LoadSkeletonData(fighterCard.HpType.Current.IconSkelPath);
+        hpSpine.Scale = new Vector2(0.85f, 0.85f);
+
+        await hpSpine.SetAnimationTask(0, "intro");
+
+        hpLabel.Text = $"{fighterCard.Hp.Current}";
+        _tweenHp = LabelIntro(hpLabel);
     }
 }

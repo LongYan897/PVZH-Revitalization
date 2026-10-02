@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cudfegh627j4j"]
+
+[ext_resource type="Texture2D" uid="uid://bwlidj8iecqjn" path="res://素材(C#)/卡牌/滚石/Stone.png" id="1_r5bh2"]
+
+[node name="卡面" type="Control" unique_id=1329342009]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=80390799]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 16.0
+offset_right = 240.0
+offset_bottom = 200.0
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("1_r5bh2")
+expand_mode = 1
+stretch_mode = 3

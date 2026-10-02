@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://cimvexb4n4idx" path="res://素材/ui/地图高亮/选择框3.png" id="3_x76yt"]
 [ext_resource type="Texture2D" uid="uid://d4ihrs2s4rf4q" path="res://素材/对象高亮框/单位.png" id="4_ewqbq"]
 [ext_resource type="Texture2D" uid="uid://weos2ou5dc6" path="res://素材(C#)/场地/coffee_lane_base.png" id="4_qclkx"]
+[ext_resource type="Texture2D" uid="uid://b6d5gpkrnfa43" path="res://素材(C#)/其他/lane arrow.png" id="6_rx7a3"]
+[ext_resource type="Texture2D" uid="uid://i6cd35dh347r" path="res://素材(C#)/其他/fight.png" id="7_y6tdo"]
+[ext_resource type="Texture2D" uid="uid://cbfebewepeb55" path="res://素材(C#)/其他/arrow_small.png" id="8_ojbca"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qclkx"]
 size = Vector2(80, 540)
@@ -15,19 +18,20 @@ size = Vector2(89.99999, 80)
 [node name="道路" type="Control" unique_id=1720357688]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -640.0
-offset_right = -340.0
-offset_bottom = -620.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 20.0
+offset_bottom = 20.0
 script = ExtResource("1_ewqbq")
 metadata/_custom_type_script = "uid://d0fiwqlc5ur5k"
+
+[node name="碰撞" type="Button" parent="." unique_id=1720904402]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -40.0
+offset_top = -270.0
+offset_right = 40.0
+offset_bottom = 270.0
+flat = true
 
 [node name="碰撞箱" type="Area2D" parent="." unique_id=1696215677]
 unique_name_in_owner = true
@@ -59,60 +63,120 @@ position = Vector2(0, -7.499998)
 scale = Vector2(0.33, 0.37791798)
 texture = ExtResource("3_x76yt")
 
-[node name="单位高亮" type="TextureRect" parent="." unique_id=1842500548]
+[node name="植物_僵尸1" type="Node2D" parent="." unique_id=545167542]
+unique_name_in_owner = true
+position = Vector2(-55, 123)
+
+[node name="单位高亮" type="TextureRect" parent="植物_僵尸1" unique_id=1842500548]
 unique_name_in_owner = true
 z_index = 7
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -65.0
-offset_top = 105.0
-offset_right = 45.0
-offset_bottom = 201.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 110.0
+offset_bottom = 96.0
 scale = Vector2(1.0000001, 1.0000001)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("4_ewqbq")
 expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
-[node name="碰撞箱2" type="Area2D" parent="." unique_id=1825499576]
+[node name="碰撞2" type="Button" parent="植物_僵尸1" unique_id=93059963]
 unique_name_in_owner = true
-position = Vector2(0, 178)
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 100.0
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+flat = true
+metadata/_edit_use_anchors_ = true
+
+[node name="碰撞箱2" type="Area2D" parent="植物_僵尸1" unique_id=1825499576]
+unique_name_in_owner = true
+position = Vector2(55, 48)
 scale = Vector2(1.0000001, 1.0000001)
 
-[node name="体积" type="CollisionShape2D" parent="碰撞箱2" unique_id=35310815]
-position = Vector2(0, -14)
+[node name="体积" type="CollisionShape2D" parent="植物_僵尸1/碰撞箱2" unique_id=35310815]
 shape = SubResource("RectangleShape2D_rx7a3")
 
-[node name="单位高亮2" type="TextureRect" parent="." unique_id=1021507255]
+[node name="Pos" type="Marker2D" parent="植物_僵尸1" unique_id=2100969712]
+position = Vector2(55, 64)
+
+[node name="Pos" type="Marker2D" parent="." unique_id=2064773252]
+unique_name_in_owner = true
+position = Vector2(0, 98)
+
+[node name="植物_2" type="Node2D" parent="." unique_id=503027257]
+unique_name_in_owner = true
+position = Vector2(-55, -19)
+
+[node name="单位高亮2" type="TextureRect" parent="植物_2" unique_id=1021507255]
 unique_name_in_owner = true
 z_index = 7
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -65.0
-offset_top = -41.0
-offset_right = 45.0
-offset_bottom = 55.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 110.0
+offset_bottom = 96.0
 scale = Vector2(1.0000001, 1.0000001)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("4_ewqbq")
 expand_mode = 1
 
-[node name="碰撞箱3" type="Area2D" parent="." unique_id=1383307985]
+[node name="碰撞3" type="Button" parent="植物_2" unique_id=1150805435]
 unique_name_in_owner = true
-position = Vector2(-55.000008, -31.000008)
+offset_left = 10.0
+offset_top = 112.0
+offset_right = 100.0
+offset_bottom = 192.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+flat = true
+
+[node name="碰撞箱3" type="Area2D" parent="植物_2" unique_id=1383307985]
+unique_name_in_owner = true
 scale = Vector2(1.0000001, 1.0000001)
 
-[node name="体积" type="CollisionShape2D" parent="碰撞箱3" unique_id=1685226519]
+[node name="体积" type="CollisionShape2D" parent="植物_2/碰撞箱3" unique_id=1685226519]
 position = Vector2(55, 48)
 shape = SubResource("RectangleShape2D_rx7a3")
+
+[node name="Pos" type="Marker2D" parent="植物_2" unique_id=779240684]
+position = Vector2(55, 64)
+
+[node name="Arrow" type="TextureRect" parent="." unique_id=1026955378]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -42.0
+offset_top = -112.0
+offset_right = 42.0
+offset_bottom = 158.0
+pivot_offset_ratio = Vector2(0.5, 0.9)
+mouse_filter = 2
+texture = ExtResource("6_rx7a3")
+expand_mode = 1
+
+[node name="ArrowDown" type="TextureRect" parent="." unique_id=990774744]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -42.000004
+offset_top = -491.0071
+offset_right = 41.999996
+offset_bottom = -207.49783
+rotation = 3.1415927
+pivot_offset_ratio = Vector2(0.5, 0.9)
+mouse_filter = 2
+texture = ExtResource("8_ojbca")
+expand_mode = 1
+
+[node name="Battle" type="TextureRect" parent="." unique_id=1794512796]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -64.0
+offset_top = -157.0
+offset_right = 64.0
+offset_bottom = -29.0
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("7_y6tdo")
+
+[node name="Pos1" type="Marker2D" parent="." unique_id=489996065]
+unique_name_in_owner = true
+position = Vector2(0, -234)
+
+[node name="Pos2" type="Marker2D" parent="." unique_id=1774024238]
+unique_name_in_owner = true
+position = Vector2(0, -136)

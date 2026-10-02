@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bcrqblos5ckya"]
+
+[ext_resource type="Texture2D" uid="uid://ognou73yk5df" path="res://素材(C#)/卡牌/豌豆射手/Pea.png" id="1_vdsss"]
+
+[node name="卡面" type="Control" unique_id=1941107537]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=698463091]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 10.0
+offset_right = 236.0
+offset_bottom = 191.0
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("1_vdsss")
+expand_mode = 1
+stretch_mode = 3

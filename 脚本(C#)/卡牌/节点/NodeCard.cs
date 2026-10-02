@@ -40,6 +40,7 @@ public partial class NodeCard : Control
             Main.CardContainer.AddChild(node);
             node.Fresh();
             instances.Add(node, cardModel);
+            node.ZIndex = instances.Count * 30;
             return node;
         }
         else
@@ -87,6 +88,7 @@ public partial class NodeCard : Control
             node.Scale *= 0.5f;
             instances.Add(node, cardModel);
             Main.CardContainer.AddChild(node);
+            node.ZIndex = instances.Count * 30;
             node.DrawAnimation();
             return node;
         }
@@ -234,7 +236,7 @@ public partial class NodeCard : Control
                 {
                     _isDragging = true;
                     ChoiceCard = this;
-                    ZIndex += 100;
+                    ZIndex += instances.Count * 60;
 
                     KillClickTween();
                     Scale = new Vector2(0.5f, 0.5f);
@@ -265,8 +267,8 @@ public partial class NodeCard : Control
     }
     private void Drag()
     {
-        Fighter.CallFightersTargeted(Model, Model.TargetType);
-        NodeRoad.CallRoadLinesTargeted(Model, Model.TargetType);
+        Fighter.CallTargeted(Model, Model.TargetType);
+        NodeRoad.CallTargeted(Model, Model.TargetType);
     }
 
     private void OnCardClick()
@@ -277,10 +279,10 @@ public partial class NodeCard : Control
 
     private async Task EndDrag()
     {
-        ZIndex -= 100;
+        ZIndex -= instances.Count * 60;
         if (ChoiceCard == this) ChoiceCard = null;
-        Fighter.DeleteFightersTargeted(Model.TargetType);
-        NodeRoad.DeleteRoadLinesTargeted(Model.TargetType);
+        Fighter.DeleteTargeted(Model.TargetType);
+        NodeRoad.DeleteTargeted(Model.TargetType);
         if (target == null)
             ReturnToOrigin();
         else
@@ -327,9 +329,21 @@ public partial class NodeCard : Control
                     var col = (NodeRoad)(GodotObject)variant;
                     if (!col.Calling) return;
                     target = col;
-                    col.Targeted();
+                    col.Targeted(true, false, false);
                     Glowing();
                 }
+            }
+            if (type == "Grid")
+            {
+                bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
+                     || Model.TargetType.HasFlag(TargetType.CoopGrids);
+                bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.CoopGrids));
+                if (!needGrid) return;
+                var col = (NodeRoad)(GodotObject)variant;
+                if (!col.Calling) return;
+                target = col;
+                col.Targeted(false, needGrid, coopNeedGrid);
+                Glowing();
             }
         }
     }
@@ -368,8 +382,19 @@ public partial class NodeCard : Control
                     if (Model.TargetType.HasFlag(TargetType.Lines))
                     {
                         var col = (NodeRoad)(GodotObject)variant;
-                        col.Distargeted();
+                        col.Distargeted(true, false, false);
 
+                    }
+                }
+                if (type == "Grid")
+                {
+                    bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
+                         || Model.TargetType.HasFlag(TargetType.CoopGrids);
+                    bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.CoopGrids));
+                    if (needGrid)
+                    {
+                        var col = (NodeRoad)(GodotObject)variant;
+                        col.Distargeted(false,needGrid,coopNeedGrid);
                     }
                 }
                 Darken();
@@ -582,8 +607,29 @@ public partial class NodeCard : Control
                 }; ;
                 GetNode<Node2D>("正面卡牌").Visible = true;
                 GetNode<TextureRect>("牌背").Visible = false;
-                GetNode<TextureRect>("%卡牌图标").Texture = Model.Icon;
-                GetNode<TextureRect>("%卡牌发光背景").Modulate = _colorBox.Default;
+                Control control = null;
+                if (GetNode<Node2D>("%卡面容器").GetChildren().Count == 0)
+                {
+                    control = Model.Icon.Instantiate<Control>();
+                    control.MouseFilter = MouseFilterEnum.Ignore;
+                    GetNode<Node2D>("%卡面容器").AddChild(control);
+                    control.GetNode<TextureRect>("卡牌图标").MouseFilter = MouseFilterEnum.Ignore;
+                    GetNode<TextureRect>("%卡牌发光背景").Modulate = _colorBox.Default;
+                }
+                else
+                {
+                    control = GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First();
+                }
+                if (Model.CardType.HasFlag(CardType.Fighter))
+                {
+                    control.ZIndex = 1;
+                    GetNode<TextureRect>("%卡框").ZIndex = 0;
+                }
+                else
+                {
+                    control.ZIndex = 0;
+                    GetNode<TextureRect>("%卡框").ZIndex = 1;
+                }
                 GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
                 if (Model.Cost.HasChanged)
                 {
@@ -618,6 +664,8 @@ public partial class NodeCard : Control
                         else
                             hps.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                     }
+                    else
+                        hps.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.Default);
                     if (fighter.Atk.HasChanged)
                     {
                         if (fighter.Atk.PositiveChanged)
@@ -625,6 +673,8 @@ public partial class NodeCard : Control
                         else
                             atks.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
                     }
+                    else
+                        atks.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.Default);
                 }
                 else
                 {
