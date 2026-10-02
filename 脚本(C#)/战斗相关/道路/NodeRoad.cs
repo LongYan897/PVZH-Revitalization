@@ -6,6 +6,7 @@ using Logger;
 using Pack;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Target;
 
@@ -154,10 +155,6 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted.TweenProperty(line, "scale",new Vector2(0.33f, 0.378f ) * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(0.98f, 0.98f), 0.7f);
     }
-    private void CallGridArrow()
-    {
-        
-    }
     private void CallGridTargeted()
     {
         KillTween();
@@ -226,6 +223,7 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             LastTargetKind = RoadTargetKind.Grid;
+            TargetedGridArrow(false);
         }
 
         if (g2)
@@ -237,11 +235,46 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             LastTargetKind = RoadTargetKind.CoopGrid;
+            TargetedGridArrow(true);
+        }
+    }
+    private void TargetedGridArrow(bool isCoop)
+    {
+        var bat = GetNode<Sprite2D>("%Battle");
+        var ar1 = GetNode<Sprite2D>("%Arrow");
+        var ar2 = GetNode<Sprite2D>("%ArrowDown");
+        bat.Visible = true;
+        ar1.Visible = true;
+        ar2.Visible = true;
+        var boZomb = Model.GetFighters().Any(f => f.Model.Camp == Camp.Zombie);
+        var boPlant = Model.GetFighters().Any(f => f.Model.Camp == Camp.Plant);
+        if (boZomb && boPlant)
+        {
+            Tween tween = CreateTween().BindNode(bat);
+            tween.TweenProperty(bat, "scale", new Vector2(0.8f, 0.8f), 0.08);
+            tween.TweenProperty(bat, "scale", Vector2.One, 0.25)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+        }
+        if (boPlant)
+        {
+            
+        }
+        else if (boZomb)
+        {
+
         }
     }
     public async void Distargeted(bool line, bool g1, bool g2)
     {
         KillTween();
+
+        var bat = GetNode<Sprite2D>("%Battle");
+        var ar1 = GetNode<Sprite2D>("%Arrow");
+        var ar2 = GetNode<Sprite2D>("%ArrowDown");
+        bat.Visible = false;
+        ar1.Visible = false;
+        ar2.Visible = false;
 
         if (line)
             await ReturnPulse("%环境高亮", new Vector2(0.33f, 0.378f));
@@ -249,6 +282,7 @@ public partial class NodeRoad : Control, ITarget
             await ReturnPulse("%单位高亮", Vector2.One);
         if (g2)
             await ReturnPulse("%单位高亮2", Vector2.One);
+
     }
 
     private async Task ReturnPulse(string path, Vector2 baseScale)

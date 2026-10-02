@@ -5,7 +5,9 @@ using Godot;
 using Pack;
 using Spine;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Godot.OpenXRCompositionLayer;
@@ -259,30 +261,73 @@ public partial class CardDes : Control
             CardDesPanel.ShowAt(desc, globalPos);
         }
     }
-    public bool TryGetKeywordDescription(string key, out string desc)
+    private static Dictionary<string, PropertyInfo> _urlCache;
+    private static readonly object _urlCacheLock = new();
+
+    /// <summary>
+    /// 扫描当前程序集，缓存所有带 [URL] 的静态属性：key -> PropertyInfo
+    /// </summary>
+    private static Dictionary<string, PropertyInfo> GetURLCache()
+    {
+        if (_urlCache != null) return _urlCache;
+
+        lock (_urlCacheLock)
+        {
+            if (_urlCache != null) return _urlCache;
+
+            var flags = BindingFlags.Public
+                      | BindingFlags.NonPublic
+                      | BindingFlags.Static
+                      | BindingFlags.Instance
+                      | BindingFlags.FlattenHierarchy;
+
+            var cache = new Dictionary<string, PropertyInfo>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var type in typeof(CardDes).Assembly.GetTypes())
+            {
+                foreach (var prop in type.GetProperties(flags))
+                {
+                    if (!Attribute.IsDefined(prop, typeof(URLAttribute))) continue;
+                    if (prop.PropertyType != typeof(string)) continue;
+
+                    var getter = prop.GetGetMethod(true);
+                    if (getter == null) continue;
+
+                    if (!getter.IsStatic) continue;
+
+                    if (!cache.ContainsKey(prop.Name))
+                        cache[prop.Name] = prop;
+                }
+            }
+
+            _urlCache = cache;
+            return _urlCache;
+        }
+    }
+    public static bool TryGetKeywordDescription(CardModel model, string key, out string desc)
     {
         desc = null;
-        if (Model == null) return false;
+        if (string.IsNullOrEmpty(key)) return false;
 
-        desc = null;
-
-        var flags = System.Reflection.BindingFlags.Public
-                  | System.Reflection.BindingFlags.Static
-                  | System.Reflection.BindingFlags.Instance
-                  | System.Reflection.BindingFlags.IgnoreCase;
-
-        if (Model != null)
+        if (model != null)
         {
-            var prop = Model.GetType().GetProperty(key, flags);
-            if (TryGetFromProp(prop, Model, out desc))
+            var flags = BindingFlags.Public | BindingFlags.NonPublic
+                      | BindingFlags.Static | BindingFlags.Instance | BindingFlags.IgnoreCase;
+
+            var prop = model.GetType().GetProperty(key, flags);
+            if (TryGetFromProp(prop, model, out desc))
                 return true;
         }
 
-        var regProp = typeof(CardRegistryField).GetProperty(key, flags);
-        if (TryGetFromProp(regProp, null, out desc))
-            return true;
+        var cache = GetURLCache();
+        if (cache.TryGetValue(key, out var staticProp))
+            return TryGetFromProp(staticProp, null, out desc);
 
         return false;
+    }
+    public bool TryGetKeywordDescription(string key, out string desc)
+    {
+        return TryGetKeywordDescription(Model,key, out desc);
     }
     private static bool TryGetFromProp(
     System.Reflection.PropertyInfo prop, object instance, out string desc)

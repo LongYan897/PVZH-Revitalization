@@ -28,7 +28,6 @@ public class CardModel
     public virtual Vector2 Size => new(1, 1);
     public virtual Vector2 Position => new(0, 0);
     public Player Player { get; private set; }
-    public static readonly List<CardModel> AllCards = TemplateEntries.Values.ToList();
     private static readonly Dictionary<string, CardModel> TemplateEntries = new();
     /// <summary>
     /// 按照名称获取卡牌模板
@@ -87,6 +86,7 @@ public class CardModel
             }
         }
     }
+    public static readonly List<CardModel> AllCards = TemplateEntries.Values.ToList();
     /// <summary>
     /// 刷新卡牌的节点
     /// </summary>
