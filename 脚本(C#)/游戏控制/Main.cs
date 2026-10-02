@@ -26,6 +26,7 @@ public partial class Main : Node
         HpType.Init();
         AtkType.Init();
         Icon.Init();
+        CardModel.Init();
         SceneAnimaActor.Init(this);
         //初始化容器
         Animator = GetNode<CanvasLayer>("Animators");

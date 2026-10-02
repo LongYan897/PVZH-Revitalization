@@ -1,3 +1,4 @@
+using Battle;
 using Battle.Entity;
 using Controller;
 using Godot;
@@ -62,6 +63,24 @@ public partial class CardDes : Control
             instance.Fresh();
         }
     }
+    /// <summary>
+    /// 交换卡牌的描述
+    /// </summary>
+    /// <param name="card"></param>
+    public static void ExchangeDescription(CardModel card)
+    {
+        if (instance == null)
+        {
+            return;
+        }
+        else
+        {
+            instance.Model = card;
+            instance.Visible = true;
+            instance.Open();
+            instance.Fresh();
+        }
+    }
     private Tween _tween;
     private bool _isEnd = false;
     private Node2D _target;
@@ -70,17 +89,17 @@ public partial class CardDes : Control
     private void Open()
     {
         _isEnd = false;
+        GetNode<Polygon2D>("%底色").TopLevel = true;
         GetNode<Control>("%单位容器").ZIndex = 1036;
         GetNode<Control>("%单位容器").Position = new(360f, 305f);
         GetNode<Control>("%单位容器").TopLevel = true;
-        GetNode<ColorRect>("%底色").MouseFilter = MouseFilterEnum.Stop;
         Scale = Vector2.Zero;
-        GetNode<ColorRect>("%底色").Modulate = new Color(0, 0, 0, 0);
+        GetNode<Polygon2D>("%底色").Modulate = new Color(0, 0, 0, 0);
         _tween = CreateTween();
         _tween.SetTrans(Tween.TransitionType.Back);
         _tween.SetEase(Tween.EaseType.Out);
         _tween.Parallel().TweenProperty(this, "scale", Vector2.One, 0.5f);
-        _tween.Parallel().TweenProperty(GetNode<ColorRect>("%底色"), "modulate", new Color(0, 0, 0, 0.5f), 0.5f);
+        _tween.Parallel().TweenProperty(GetNode<Polygon2D>("%底色"), "modulate", new Color(0, 0, 0, 0.5f), 0.5f);
     }
 
     private async void Clear()
@@ -100,10 +119,9 @@ public partial class CardDes : Control
         _tween.SetTrans(Tween.TransitionType.Back);
         _tween.SetEase(Tween.EaseType.In);
         _tween.Parallel().TweenProperty(this, "scale", Vector2.Zero, 0.3f);
-        _tween.Parallel().TweenProperty(GetNode<ColorRect>("%底色"), "modulate", new Color(0, 0, 0, 0), 0.3f);
+        _tween.Parallel().TweenProperty(GetNode<Polygon2D>("%底色"), "modulate", new Color(0, 0, 0, 0), 0.3f);
 
         await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
-        GetNode<ColorRect>("%底色").MouseFilter = MouseFilterEnum.Ignore;
 
         await ToSignal(GetTree().CreateTimer(0.4f), Timer.SignalName.Timeout);
         Visible = false;
@@ -200,44 +218,46 @@ public partial class CardDes : Control
         var label = GetNode<RichTextLabel>("%介绍Label");
         label.BbcodeEnabled = true;
         label.MouseFilter = MouseFilterEnum.Stop;
-        label.GuiInput += Label_GuiInput;
         label.MetaClicked += OnKeywordClicked;
-        GetNode<ColorRect>("%底色").GuiInput += OnBackdropInput;
-    }
-    private bool _opening = false;
-
-    private void Label_GuiInput(InputEvent @event)
-    {
-        throw new NotImplementedException();
+        var contr = GetNode<Control>("%额外区域");
+        contr.GuiInput += ControlInput;
     }
 
-    private void OnBackdropInput(InputEvent @event)
+    public void ControlInput(InputEvent @event)
     {
-        if (!_opening) return;
-        if (@event is InputEventMouseButton mb && mb.Pressed)
-        {
-            if (_isEnd) return;
-            Clear();
-            _isEnd = true;
-            AcceptEvent();
-        }
+        if (@event is not InputEventMouseButton mb || !mb.Pressed)
+            return;
+
+        if (_isEnd) return;
+
+        Clear();
+        _isEnd = true;
+        GetViewport().SetInputAsHandled();
     }
     private void OnKeywordClicked(Variant meta)
     {
-        GD.Print($"[CardDes] meta clicked: {meta.AsString()}");
         string key = meta.AsString();
-        if (!TryGetKeywordDescription(key, out string desc))
+
+        if (CardModel.HasTemplate(key))
+        {
+            GetViewport().SetInputAsHandled();
+            _keywordClicked = true;
+
+            var template = CardModel.GetTemplate(key);
+            if (template != null)
+                ExchangeDescription(template);
             return;
+        }
 
-        GetViewport().SetInputAsHandled();
+        if (TryGetKeywordDescription(key, out string desc))
+        {
+            GetViewport().SetInputAsHandled();
+            _keywordClicked = true;
 
-        _keywordClicked = true;
-
-        var label = GetNode<RichTextLabel>("%介绍Label");
-        Vector2 localPos = label.GetLocalMousePosition();
-        Vector2 globalPos = label.GlobalPosition + localPos;
-
-        CardDesPanel.ShowAt(key, desc, globalPos);
+            var label = GetNode<RichTextLabel>("%介绍Label");
+            Vector2 globalPos = label.GlobalPosition + label.GetLocalMousePosition();
+            CardDesPanel.ShowAt(desc, globalPos);
+        }
     }
     private bool TryGetKeywordDescription(string key, out string desc)
     {
@@ -329,12 +349,36 @@ public partial class CardDes : Control
                 }
                 else
                     GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.Default);
+                GetNode<SpineHandler>("%土坑").Visible = Model.Camp switch
+                {
+                    Camp.Plant => false,
+                    Camp.Zombie => true,
+                    _ => false
+                };
+                GetNode<SpineHandler>("%土坑").LoadSkeletonData("res://数据资源/僵尸动画/土坑动画.tres");
+                Visible = true;
+                if (Model.Camp == Camp.Zombie)
+                {
+                    GetNode<SpineHandler>("%土坑").Visible = true;
+                    GetNode<SpineHandler>("%土坑").SetAnimation(0, "intro", false);
+                    if (fighterCard.CardTag.HasFlag(CardTag.Amphibious))
+                        GetNode<SpineHandler>("%土坑").SetAttachment("土坑", "zombie_water_back");
+                    else
+                        GetNode<SpineHandler>("%土坑").SetAttachment("土坑", "zombie_dirt_back"); 
+                }
             }
             else
             {
-                GetNode<Node2D>("%基础信息").Visible = false;
+                GetNode<Node2D>("%基础信息").Visible = false; 
+                GetNode<SpineHandler>("%土坑").Visible = false;
             }
             GetNode<Sprite2D>("Shadow").Visible = Model.CardType.HasFlag(CardType.Fighter);
+            GetNode<Sprite2D>("Shadow").Position = Model.Camp switch
+            {
+                Camp.Zombie => new(0, -229.0f),
+                Camp.Plant => new(0, -263.0f),
+                _ => new()
+            };
             GetNode<Label>("%属性标签").Text = $"-{string.Join(" ", Model.Labels.Current)} {Model.CardType switch
             {
                 CardType.Hero | CardType.Fighter => Model.Camp switch

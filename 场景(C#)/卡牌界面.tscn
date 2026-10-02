@@ -32,8 +32,6 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_right = 20.0
-offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
@@ -79,18 +77,19 @@ flip_h = true
 
 [node name="属性图片" type="TextureRect" parent="背景" unique_id=1120846370]
 unique_name_in_owner = true
-offset_left = 340.0
-offset_top = -300.0
-offset_right = 340.0
-offset_bottom = -300.0
+offset_left = 275.00003
+offset_top = -414.9999
+offset_right = 405.94873
+offset_bottom = -279.41583
 scale = Vector2(1.3, 1.3)
 mouse_filter = 2
 texture = ExtResource("3_setff")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=1506807958]
 unique_name_in_owner = true
-position = Vector2(-1.5258789e-05, -223)
-scale = Vector2(1.7140003, 1.0030797)
+z_index = 8
+position = Vector2(-1.5258789e-05, -229)
+scale = Vector2(1.4, 0.819)
 texture = ExtResource("4_fad38")
 
 [node name="稀有标签" type="TextureRect" parent="." unique_id=2050973622]
@@ -179,27 +178,6 @@ text = "由变形器变形而来"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="介绍Label" type="RichTextLabel" parent="." unique_id=2112734755]
-unique_name_in_owner = true
-z_index = 20
-layout_mode = 0
-offset_left = -216.0
-offset_top = -50.0
-offset_right = 213.0
-offset_bottom = 76.0
-pivot_offset_ratio = Vector2(0.5, 0)
-theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
-theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 6
-theme_override_fonts/normal_font = ExtResource("6_icp5t")
-theme_override_font_sizes/normal_font_size = 24
-bbcode_enabled = true
-text = "什么都没有
-使用[img=36]res://素材(C#)/文本图片/inhnd_brains.png[/img]而非"
-horizontal_alignment = 1
-
 [node name="花费数值" type="Sprite2D" parent="." unique_id=2012160516]
 unique_name_in_owner = true
 z_index = 8
@@ -230,9 +208,15 @@ offset_top = -335.0
 offset_bottom = -335.0
 scale = Vector2(0.8, 0.8)
 
+[node name="土坑" parent="单位容器" unique_id=1334739012 instance=ExtResource("10_fad38")]
+unique_name_in_owner = true
+z_index = -5
+position = Vector2(0, 142.5)
+scale = Vector2(0.8, 0.8)
+
 [node name="动画" parent="单位容器" unique_id=167055946 instance=ExtResource("10_fad38")]
 unique_name_in_owner = true
-position = Vector2(0, 143.33333)
+position = Vector2(0, 115.00001)
 
 [node name="单位框" type="Sprite2D" parent="." unique_id=13245324]
 unique_name_in_owner = true
@@ -334,26 +318,45 @@ show_behind_parent = true
 position = Vector2(0, 1030)
 scale = Vector2(3.333333, 3.333333)
 
-[node name="底色" type="ColorRect" parent="." unique_id=1495908590]
+[node name="底色" type="Polygon2D" parent="." unique_id=1948082941]
 unique_name_in_owner = true
 modulate = Color(0, 0, 0, 0.28627452)
 top_level = true
 z_index = -20
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -640.0
-offset_right = 362.0
-offset_bottom = 659.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
+color = Color(0, 0, 0, 0.5803922)
+polygon = PackedVector2Array(-77, -51, -153, 1438, 1163, 1322, 814, -81)
 
 [node name="IconComposer" type="Node" parent="." unique_id=2117131518]
 unique_name_in_owner = true
 script = ExtResource("17_ts65j")
 metadata/_custom_type_script = "uid://dpy81oq8meuvd"
+
+[node name="额外区域" type="Control" parent="." unique_id=1272520395]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = -423.0
+offset_top = -746.0
+offset_right = 446.0
+offset_bottom = 717.0
+
+[node name="介绍Label" type="RichTextLabel" parent="额外区域" unique_id=2112734755]
+unique_name_in_owner = true
+z_index = 20
+layout_mode = 0
+offset_left = 207.0
+offset_top = 696.0
+offset_right = 636.0
+offset_bottom = 696.0
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("6_icp5t")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "什么都没有
+使用[img=36]res://素材(C#)/文本图片/inhnd_brains.png[/img]而非"
+fit_content = true
+horizontal_alignment = 1

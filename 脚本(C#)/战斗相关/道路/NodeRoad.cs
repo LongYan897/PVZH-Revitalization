@@ -154,6 +154,10 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted.TweenProperty(line, "scale",new Vector2(0.33f, 0.378f ) * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(0.98f, 0.98f), 0.7f);
     }
+    private void CallGridArrow()
+    {
+        
+    }
     private void CallGridTargeted()
     {
         KillTween();

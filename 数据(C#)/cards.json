@@ -30,7 +30,7 @@
   "RollingStone.Animation": "res://素材(C#)/卡牌/滚石/滚石锦囊动画.tres",
 
   "HailACopter.Title": "召唤直升机",
-  "HailACopter.Des": "_召唤_一只=Strength={6}/=Health={5}的直升机敢死队小鬼。",
+  "HailACopter.Des": "_召唤_一只=Strength={6}/=Health={5}的_直升机敢死队小鬼_。",
   "HailACopter.Cost": 6,
   "HailACopter.Camp": "僵尸",
   "HailACopter.Type": "锦囊",
@@ -42,7 +42,7 @@
   "HailACopter.Pack": "高级",
   "HailACopter.Flavor": "患有严重恐水症，死活不肯在水上飞行。",
 
-  "CopterCommando.Title": "直升机小鬼",
+  "CopterCommando.Title": "直升机敢死队小鬼",
   "CopterCommando.Des": "",
   "CopterCommando.Cost": 5,
   "CopterCommando.Camp": "僵尸",
