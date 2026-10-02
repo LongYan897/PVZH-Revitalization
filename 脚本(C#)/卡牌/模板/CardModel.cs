@@ -10,12 +10,10 @@ using Spine;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Target;
-using Variable;
 
 namespace Card;
 
@@ -24,24 +22,46 @@ namespace Card;
 /// </summary>
 public class CardModel
 {
-    public virtual Vector2 Size => new(1, 1);
-    public virtual Vector2 Position => new(0, 0);
     public Player Player { get; private set; }
     /// <summary>
     /// 卡牌的模板(用于获取卡牌数据)(不要修改)
     /// </summary>
-    public static CardModel GetTemplate(string cardClassName)
+    public static CardModel Template
     {
-        var method = typeof(CardModel).GetMethod("Load", BindingFlags.Static | BindingFlags.NonPublic);
-        var genericMethod = method.MakeGenericMethod();
-        return (CardModel)genericMethod.Invoke(null, new object[] { cardClassName });
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        get
+        {
+            var caller = FindCallerType();
+            if (caller == null)
+                return null;
+            return CreateTemplate(caller);
+        }
     }
-    /// <summary>
-    /// 卡牌的模板(用于获取卡牌数据)(不要修改)
-    /// </summary>
-    public static CardModel GetTemplate<T>() where T : CardModel
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static Type FindCallerType()
     {
-        return Load<T>();
+        var trace = new StackTrace();
+        for (int i = 1; i < trace.FrameCount; i++)
+        {
+            var type = trace.GetFrame(i)?.GetMethod()?.DeclaringType;
+            if (type != null && type != typeof(CardModel) && typeof(CardModel).IsAssignableFrom(type))
+                return type;
+        }
+        return null;
+    }
+
+    private static CardModel CreateTemplate(Type caller)
+    {
+        var loadMethod = typeof(CardModel).GetMethod(
+            "Load",
+            BindingFlags.NonPublic | BindingFlags.Static,
+            null,
+            new[] { typeof(CardString), typeof(Player) },
+            null);
+
+        var generic = loadMethod.MakeGenericMethod(caller);
+        var cardString = CardString.Loading(caller.Name);
+        return (CardModel)generic.Invoke(null, new object[] { cardString, null });
     }
     /// <summary>
     /// 刷新卡牌的节点
@@ -58,10 +78,6 @@ public class CardModel
         await Destroy();
     }
     /// <summary>
-    /// 是否能把友军当作目标
-    /// </summary>
-    public virtual bool FriendTarget => false;
-    /// <summary>
     /// 卡牌费用图片
     /// </summary>
     public Texture2D CampCostIcon
@@ -76,7 +92,7 @@ public class CardModel
             };
         }
     }
-    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0)
+    protected async Task PlayInstantAnimation(string animName, ITarget target)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -84,17 +100,7 @@ public class CardModel
         sp.Scale = new(0.7f, 0.7f);
         node.AddChild(sp);
         sp.LoadSkeletonData(AnimationPath);
-        await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
-    }
-    protected async Task PlayLoopAnimation(string animName, ITarget target,int track = 0)
-    {
-        var node = Main.Animator;
-        var sp = SpineHandler.Get();
-        sp.Position = ((Control)(GodotObject)target).GlobalPosition;
-        sp.Scale = new(0.7f, 0.7f);
-        node.AddChild(sp);
-        sp.LoadSkeletonData(AnimationPath);
-        await sp.SetAnimationTask(track, animName, true);
+        await sp.SetAnimationAndFreeOnEndTask(0, animName, false);
     }
     public static CardModel Load<T>() where T : CardModel
     {
@@ -121,7 +127,7 @@ public class CardModel
         card.CardType = cardString.CardType;
         card.Pack = cardString.Pack;
         card.AnimationPath = cardString.AnimationPath;
-        card.Icon = GD.Load<PackedScene>(cardString.IconPath);
+        card.Icon = GD.Load<Texture2D>(cardString.IconPath);
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
         return (T)card.LoadData(cardString);
     }
@@ -222,7 +228,7 @@ public class CardModel
     /// <summary>
     /// 卡牌的卡面
     /// </summary>
-    public PackedScene Icon { get; private set; }
+    public Texture2D Icon { get; private set; }
     /// <summary>
     /// 卡牌打出时的效果
     /// </summary>
@@ -260,6 +266,45 @@ public class CardModel
         ResetData();
     }
     /// <summary>
+    /// 在回合开始时
+    /// </summary>
+    /// <param name="phrase">开始的回合</param>
+    /// <returns></returns>
+    public virtual Task BeforeTurnStart(Phrase phrase)
+    {
+        return Task.CompletedTask;
+    }
+    /// <summary>
+    /// 在回合开始后
+    /// </summary>
+    /// <param name="phrase">开始的回合</param>
+    /// <returns></returns>
+    public virtual Task AfterTurnStart(Phrase phrase)
+    {
+        return Task.CompletedTask;
+    }
+    /// <summary>
+    /// 在回合打出卡牌后
+    /// </summary>
+    /// <param name="card">打出的卡牌</param>
+    /// <returns></returns>
+    public virtual Task AfterPlayCard(CardModel card, ITarget target)
+    {
+        return Task.CompletedTask;
+    }
+    /// <summary>
+    /// 在回合修改卡牌后
+    /// </summary>
+    /// <param name="card">修改的卡牌</param>
+    /// <typeparam name="T">修改值的类型</typeparam>
+    /// <param name="valueAfter">修改之前的值</param>
+    /// <param name="valueBefore">修改之后的值</param>
+    /// <returns></returns>
+    public virtual Task AfterCardBeChanged<T>(CardModel card, string key, T valueAfter, T valueBefore)
+    {
+        return Task.CompletedTask;
+    }
+    /// <summary>
     /// 修改这张卡牌时
     /// </summary>
     /// <typeparam name="T">修改值的类型</typeparam>
@@ -270,65 +315,4 @@ public class CardModel
     {
         return Task.CompletedTask;
     }
-    /// <summary>
-    /// 挂在卡牌上的效果
-    /// </summary>
-    private List<Buff> _buffs;
-
-    private List<Buff> BuffList
-    {
-        get
-        {
-            _buffs ??= [.. InitBuffs];
-            return _buffs;
-        }
-    }
-
-    public IReadOnlyList<Buff> Buffs => BuffList;
-    /// <summary>
-    /// 卡牌初始的Buff
-    /// </summary>
-    protected virtual List<Buff> InitBuffs { get; } = [];
-    /// <summary>
-    /// 添加效果
-    /// </summary>
-    public async Task AddBuff(Buff buff, VariableReason reason)
-    {
-        BuffList.Add(buff);
-        await buff.OnTiming(Timing.WhenApply, this, reason);
-    }
-
-    /// <summary>
-    /// 移除效果
-    /// </summary>
-    public async Task RemoveBuff(Buff buff, VariableReason reason)
-    {
-        BuffList.Remove(buff);
-        await buff.OnTiming(Timing.WhenRemove, this, reason);
-    }
-
-    /// <summary>
-    /// 把时点转发给所有关心它的 Buff
-    /// </summary>
-    public async Task FireTiming(Timing timing, params object[] parameters)
-    {
-        foreach (var buff in BuffList.ToList())
-        {
-            if (buff.Timings.Contains(timing))
-                await buff.OnTiming(timing, this,parameters);
-        }
-    }
-
-    /// <summary>
-    /// 把 Buff 转移到新卡
-    /// </summary>
-    public async Task TransferBuffsTo(CardModel newCard)
-    {
-        foreach (var buff in BuffList.ToList())
-        {
-            await RemoveBuff(buff,VariableReason.Self);
-            await newCard.AddBuff(buff,VariableReason.Self);
-        }
-    }
-
 }

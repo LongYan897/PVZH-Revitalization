@@ -14,7 +14,6 @@ namespace Card.String;
 ///     攻击力[可选]  : 使用 "Atk" 当作Json的键<br/>
 ///     攻击类型[可选(默认是无任何特殊效果的攻击)]  : 使用 "AtkType" 当作Json的键 比较复杂 详见AtkType.cs<br/>
 ///     等级类型[可选(默认是无任何特殊效果的攻击)]  : 使用 "StarType" 当作Json的键 比较复杂 详见StarType.cs<br/>
-///     子弹[可选]  : 使用 "Ammo" 当作Json的键<br/>
 ///     费用  : 使用 "Cost" 当作Json的键<br/>
 ///     名称  : 使用 "Title" 当作Json的键<br/>
 ///     标签  : 使用 "Label" 当作Json的键 值是列表 [,..]<br/>
