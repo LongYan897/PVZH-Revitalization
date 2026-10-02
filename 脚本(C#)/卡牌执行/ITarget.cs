@@ -1,7 +1,5 @@
 
 using Card;
-using Play;
-using System.Threading.Tasks;
 
 namespace Target;
 

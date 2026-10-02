@@ -1,6 +1,5 @@
 
 using Battle.Entity;
-using Card;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,13 +35,9 @@ public class Road
     /// </summary>
     public int Index { get; init; }
     /// <summary>
-    /// 该道路是否是朝向植物的
-    /// </summary>
-    public bool IsUp {  get; init; }
-    /// <summary>
     /// 决定该道路的类型(高地/平地/水路)
     /// </summary>
-    public RoadType Type { get; init; } = RoadType.Height;
+    public RoadType Type { get; init; } = RoadType.Ground;
     /// <summary>
     /// 该道路存储的战斗单位
     /// </summary>
@@ -54,27 +49,18 @@ public class Road
     {
         foreach (var fighter in fighters)
         {
-            await fighter.BeforeAtk(new AtkStack(null, [],this,0));
+            await fighter.BeforeAtk(this);
         }
         var zombie = fighters.FirstOrDefault(f => f.Zombie);
-        if (zombie != null)
-            await zombie.Model.Battle(new AtkStack(zombie.Model, [],this,zombie.Model.Atk.Current));
+        await zombie?.Battle();
         var plantf = fighters.FirstOrDefault(f => f.Plant1);
-        if (plantf != null)
-            await plantf?.Model?.Battle(new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current));
+        await plantf?.Battle();
         var plant = fighters.FirstOrDefault(f => f.Plant2);
-        if (plant != null)
-            await plant?.Model?.Battle(new AtkStack(plant.Model, [], this, plant.Model.Atk.Current));
-        foreach (var fighter in fighters.ToList())
+        await plant?.Battle();
+        foreach (var fighter in fighters)
         {
-            await fighter.AfterAtk(new AtkStack(null, [],this,0)); 
+            await fighter.AfterAtk(this);
         }
-        foreach (var fighter in fighters.ToList())
-        {
-            if (fighter.Model.IsDie)
-                await fighter.Die();
-        }
-
     }
     private readonly Variable<Environment> _environment = new("Environment", null);
     /// <summary>

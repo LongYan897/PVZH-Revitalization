@@ -9,15 +9,7 @@ namespace Controller;
 /// </summary>
 public static class AnimaActor
 {
-    public static async Task PlayInstantAnimationTask(string skelPath, Vector2 pos, string name)
-    {
-        var sp = SpineHandler.Get();
-        sp.Position = pos;
-        Main.Animator.AddChild(sp);
-        sp.LoadSkeletonData(skelPath);
-        await sp.SetAnimationAndFreeOnEndTask(0, name);
-    }
-    public static async void PlayInstantAnimation(string skelPath, Vector2 pos, string name)
+    public static async Task PlayInstantAnimation(string skelPath, Vector2 pos, string name)
     {
         var sp = SpineHandler.Get();
         sp.Position = pos;

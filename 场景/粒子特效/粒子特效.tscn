@@ -33,8 +33,6 @@ script = ExtResource("1_ftl2d")
 
 [node name="粒子" type="GPUParticles2D" parent="." unique_id=1584936217]
 position = Vector2(0, -10)
-scale = Vector2(4, 4)
 amount = 200
 texture = ExtResource("2_ftl2d")
-visibility_rect = Rect2(-4000, -4000, 8000, 8000)
 process_material = SubResource("ParticleProcessMaterial_3xd07")
