@@ -3,8 +3,68 @@
   "WorkspaceRootPath": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u8F85\u52A9\u7C7B\\nbutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u8F85\u52A9\u7C7B\\nbutton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u82F1\u96C4\\\u8282\u70B9\\herodes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u82F1\u96C4\\\u8282\u70B9\\herodes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u573A\u666F\\deck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u573A\u666F\\deck.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u573A\u666F\\herosprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u573A\u666F\\herosprite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u8282\u70B9\\carddes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u8282\u70B9\\carddes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u6570\u636E(c#)\\heroes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u6570\u636E(c#)\\heroes.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u82F1\u96C4\\\u8282\u70B9\\heroinstance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u82F1\u96C4\\\u8282\u70B9\\heroinstance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u82F1\u96C4\\\u6A21\u7248\\heromodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u82F1\u96C4\\\u6A21\u7248\\heromodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\u6267\u884C\\targettype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\u6267\u884C\\targettype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6587\u672C\\\u82F1\u96C4\u6587\u672C\\herostring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6587\u672C\\\u82F1\u96C4\u6587\u672C\\herostring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\penelopea.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\penelopea.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u6570\u636E(c#)\\cards.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u6570\u636E(c#)\\cards.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\sunflower.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\sunflower.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6E38\u620F\u63A7\u5236\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u6A21\u677F\\cardmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u6A21\u677F\\cardmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\fighter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\fighter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|d:\\\u7F16\u7A0B2\\godot\\pvzh-revitalization\\\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u6EDA\u77F3\\rollingstone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EED157ED-818D-462D-A9D6-E0E756BA1FDE}|PVZH by \u9F99\u5F66.csproj|solutionrelative:\u811A\u672C(c#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u6EDA\u77F3\\rollingstone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,23 +74,214 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 11,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TargetType.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\u6267\u884C\\TargetType.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\u6267\u884C\\TargetType.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\u6267\u884C\\TargetType.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\u6267\u884C\\TargetType.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAYwA0AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T15:49:33.787Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "cards.json",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u6570\u636E(C#)\\cards.json",
+              "RelativeDocumentMoniker": "\u6570\u636E(C#)\\cards.json",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u6570\u636E(C#)\\cards.json",
+              "RelativeToolTip": "\u6570\u636E(C#)\\cards.json",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-01T15:34:04.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "SunFlower.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\SunFlower.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\SunFlower.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\SunFlower.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\SunFlower.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T15:31:34.18Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "HeroInstance.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroInstance.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroInstance.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroInstance.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroInstance.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T14:31:06.299Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Fighter.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u6218\u6597\u76F8\u5173\\\u5B9E\u4F53\\Fighter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T14:21:59.043Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Main.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u6E38\u620F\u63A7\u5236\\Main.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAYwA8AAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T14:00:34.196Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Penelopea.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\Penelopea.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\Penelopea.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\Penelopea.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u5B9E\u4F8B\u82F1\u96C4\\Penelopea.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T13:42:28.742Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "RollingStone.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u6EDA\u77F3\\RollingStone.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u6EDA\u77F3\\RollingStone.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u6EDA\u77F3\\RollingStone.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u5B9E\u4F8B\u5361\u724C\\\u6EDA\u77F3\\RollingStone.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T13:37:35.21Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "CardModel.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u6A21\u677F\\CardModel.cs",
+              "ViewState": "AgIAAFAAAAAAAAAAAAAswGAAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T12:50:04.585Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "HeroModel.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u6A21\u7248\\HeroModel.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u6A21\u7248\\HeroModel.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u6A21\u7248\\HeroModel.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u6A21\u7248\\HeroModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T13:28:53.382Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "HeroString.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6587\u672C\\\u82F1\u96C4\u6587\u672C\\HeroString.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u6587\u672C\\\u82F1\u96C4\u6587\u672C\\HeroString.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u6587\u672C\\\u82F1\u96C4\u6587\u672C\\HeroString.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u6587\u672C\\\u82F1\u96C4\u6587\u672C\\HeroString.cs",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAQwBMAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T13:25:22.72Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "NButton.cs",
-              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
-              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
-              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
-              "RelativeToolTip": "\u811A\u672C(C#)\\\u8F85\u52A9\u7C7B\\NButton.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "HeroDes.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\GODOT\\PVZH-REVITALIZATION\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroDes.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroDes.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\GODOT\\PVZH-REVITALIZATION\\\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroDes.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u82F1\u96C4\\\u8282\u70B9\\HeroDes.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA8wCYAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-01T10:55:05.718Z",
+              "WhenOpened": "2026-10-01T12:50:56.141Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CardDes.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\CardDes.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\CardDes.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\CardDes.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u5361\u724C\\\u8282\u70B9\\CardDes.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAlwLAAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T13:04:15.909Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "heroes.json",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u6570\u636E(C#)\\heroes.json",
+              "RelativeDocumentMoniker": "\u6570\u636E(C#)\\heroes.json",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u6570\u636E(C#)\\heroes.json",
+              "RelativeToolTip": "\u6570\u636E(C#)\\heroes.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-01T12:46:45.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Deck.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u573A\u666F\\Deck.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u573A\u666F\\Deck.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u573A\u666F\\Deck.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u573A\u666F\\Deck.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAQwDoAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T12:44:31.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HeroSprite.cs",
+              "DocumentMoniker": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u573A\u666F\\HeroSprite.cs",
+              "RelativeDocumentMoniker": "\u811A\u672C(C#)\\\u573A\u666F\\HeroSprite.cs",
+              "ToolTip": "D:\\\u7F16\u7A0B2\\godot\\PVZH-Revitalization\\\u811A\u672C(C#)\\\u573A\u666F\\HeroSprite.cs",
+              "RelativeToolTip": "\u811A\u672C(C#)\\\u573A\u666F\\HeroSprite.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAgwBgAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-01T12:23:56.035Z",
               "EditorCaption": ""
             }
           ]

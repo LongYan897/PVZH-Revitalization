@@ -3,9 +3,10 @@ using Hero;
 using Hero.String;
 using Pack;
 using System;
+using System.Collections.Generic;
 
 [GlobalClass]
-public partial class HeroSprite : Node2D
+public partial class HeroSprite : Control
 {
     private NButton Button;
     private string _heroName;

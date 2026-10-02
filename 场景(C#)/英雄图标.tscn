@@ -4,23 +4,22 @@
 [ext_resource type="Texture2D" uid="uid://dm6vx61ctijj6" path="res://素材/ui/英雄图片/cornerimage_greenshadow.png" id="2_78vrb"]
 [ext_resource type="Script" uid="uid://bhqnh1uogwt06" path="res://脚本(C#)/辅助类/NButton.cs" id="3_4p3gn"]
 
-[node name="英雄图标" type="Node2D" unique_id=1462441511]
-scale = Vector2(0.55, 0.55)
+[node name="英雄图标" type="Control" unique_id=1935674937]
+physics_interpolation_mode = 0
+layout_mode = 3
+anchors_preset = 0
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
 script = ExtResource("1_bieyg")
 metadata/_custom_type_script = "uid://6c2ve4s5erat"
 
 [node name="图标按钮" type="TextureButton" parent="." unique_id=289637077]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -113.5
-offset_top = -113.5
-offset_right = 113.5
-offset_bottom = 113.5
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 1
+offset_right = 227.0
+offset_bottom = 227.0
+scale = Vector2(0.56, 0.56)
 texture_normal = ExtResource("2_78vrb")
 script = ExtResource("3_4p3gn")
 metadata/_custom_type_script = "uid://bhqnh1uogwt06"

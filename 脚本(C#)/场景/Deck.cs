@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 
 namespace Scene;
@@ -22,6 +23,9 @@ public partial class Deck : Node2D
     private TextureButton Return; // 返回按钮
     private TextureButton Plant; // 植物按钮
     private TextureButton Zombie; // 僵尸按钮
+    private Control Information; //图鉴信息
+    private ColorRect Cards; //卡片信息
+    private List<Node> CurrentInformation = new List<Node>();
     private List<Color> ThemeColors1 => new List<Color> {
         new Color(0.411f, 0.69f, 0.38f, 1.0f),
         new Color(0.535f, 0.9f, 0.495f, 1.0f),
@@ -40,6 +44,8 @@ public partial class Deck : Node2D
         Return = FindChild("返回按钮") as TextureButton;
         Plant = FindChild("植物按钮") as TextureButton;
         Zombie = FindChild("僵尸按钮") as TextureButton;
+        Information = GetNode<Control>("%图鉴信息");
+        Cards = GetNode<ColorRect>("%卡牌标志");
         Return.Pressed += OnReturnPressed;
         Plant.Pressed += OnPlantPressed;
         Zombie.Pressed += OnZombiePressed;
@@ -47,25 +53,7 @@ public partial class Deck : Node2D
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
 
-        List<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(HeroModel))).ToList();
-        Vector2I position = new Vector2I(1, 1);
-        foreach (Type type in types)
-        {
-            string name = type.Name;
-            if (HeroString.GetData(name, "Camp").AsString() != "植物")
-            {
-                continue;
-            }
-            HeroSprite hs = HeroSprite.Create(name);
-            AddChild(hs);
-            hs.Position = new Vector2((position.X-1) * (128+6.4f)+88, (position.Y-1) * 100 + 344);
-            position.X++;
-            if (position.X > 5)
-            {
-                position.Y++;
-                position.X = 1;
-            }
-        }
+        CreateSpirtes("植物");
     }
 
     private async void OnReturnPressed() {
@@ -75,10 +63,53 @@ public partial class Deck : Node2D
         BackGround.Modulate = ThemeColors1[0];
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
+        CreateSpirtes("植物");
     }
     private void OnZombiePressed(){
         BackGround.Modulate = ThemeColors2[0];
         Top1.Modulate = ThemeColors2[1];
         Top2.Modulate = ThemeColors2[2];
+        CreateSpirtes("僵尸");
+    }
+    private void CreateSpirtes(string camp)
+    {
+        if (CurrentInformation.Count > 0)
+        {
+            foreach (Node node in CurrentInformation)
+            {
+                node.QueueFree();
+            }
+        }
+        CurrentInformation = new List<Node>();
+        List<Type> types = HeroModel.SeekHeroModel(camp);
+        Vector2I position = new Vector2I(1, 1);
+        foreach (Type type in types)
+        {
+            string name = type.Name;
+            HeroSprite hs = HeroSprite.Create(name);
+            Information.AddChild(hs);
+            CurrentInformation.Add(hs);
+            hs.Position = new Vector2((position.X - 1) * (128 + 6.4f) + 24, (position.Y - 1) * 100 + 280);
+            position.X++;
+            if (position.X > 5)
+            {
+                position.Y++;
+                position.X = 1;
+            }
+        }
+        if (position.X > 1)
+        {
+            for (int i = position.X; i < 6; i++)
+            {
+                Control hs;
+                if (camp == "植物") { hs = ResourceLoader.Load<PackedScene>("res://场景(C#)/植物英雄图标.tscn").Instantiate<Control>(); }
+                else { hs = ResourceLoader.Load<PackedScene>("res://场景(C#)/僵尸英雄图标.tscn").Instantiate<Control>(); }
+                CurrentInformation.Add(hs);
+                Information.AddChild(hs);
+                hs.Position = new Vector2((position.X - 1) * (128 + 6.4f) + 24, (position.Y - 1) * 100 + 280);
+                position.X++;
+            }
+        }
+        Cards.Position = new Vector2(-88, (position.Y - 1) * 100 + 280 + 72+64);
     }
 }

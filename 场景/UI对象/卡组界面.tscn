@@ -44,50 +44,30 @@ texture = ExtResource("2_cyq40")
 
 [node name="cardLibrary" type="Node2D" parent="." unique_id=25129087]
 
-[node name="英雄标志" type="ColorRect" parent="." unique_id=2028195356]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -87.99999
-offset_top = 208.0
-offset_right = 752.0
-offset_bottom = 258.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.32156864)
-
-[node name="文本" type="Label" parent="英雄标志" unique_id=92487783]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -318.4375
-offset_right = 401.5625
-offset_bottom = 48.0
-grow_horizontal = 2
-theme = SubResource("Theme_gvd7m")
-theme_override_fonts/font = SubResource("FontFile_gvd7m")
-theme_override_font_sizes/font_size = 32
-text = "英雄"
-
-[node name="卡牌标志" type="ColorRect" parent="." unique_id=760249681]
+[node name="图鉴信息" type="Control" parent="." unique_id=1190840872]
 unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="英雄标志" type="ColorRect" parent="图鉴信息" unique_id=2028195356]
+unique_name_in_owner = true
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -87.99999
-offset_top = 208.0
-offset_right = 752.0
-offset_bottom = 258.0
+offset_left = -107.99999
+offset_top = 188.0
+offset_right = 732.0
+offset_bottom = 238.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.32156864)
 
-[node name="文本" type="Label" parent="卡牌标志" unique_id=1083598719]
+[node name="文本" type="Label" parent="图鉴信息/英雄标志" unique_id=92487783]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -100,6 +80,36 @@ theme = SubResource("Theme_gvd7m")
 theme_override_fonts/font = SubResource("FontFile_gvd7m")
 theme_override_font_sizes/font_size = 32
 text = "英雄"
+
+[node name="卡牌标志" type="ColorRect" parent="图鉴信息" unique_id=760249681]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -107.99999
+offset_top = 188.0
+offset_right = 732.0
+offset_bottom = 238.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.32156864)
+
+[node name="文本" type="Label" parent="图鉴信息/卡牌标志" unique_id=1083598719]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -318.4375
+offset_right = 401.5625
+offset_bottom = 48.0
+grow_horizontal = 2
+theme = SubResource("Theme_gvd7m")
+theme_override_fonts/font = SubResource("FontFile_gvd7m")
+theme_override_font_sizes/font_size = 32
+text = "卡牌"
 
 [node name="顶部遮挡" type="Sprite2D" parent="." unique_id=392940115]
 z_index = 30
