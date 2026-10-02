@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bty4f55h1otna"]
+
+[ext_resource type="Texture2D" uid="uid://c5mqd4mk1qo58" path="res://素材(C#)/卡牌/最终任务/Mission.png" id="1_ihie2"]
+
+[node name="卡面" type="Control" unique_id=2062830295]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=721585615]
+layout_mode = 0
+offset_left = 13.0
+offset_top = -22.0
+offset_right = 269.0
+offset_bottom = 234.0
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("1_ihie2")
+expand_mode = 1
+stretch_mode = 3

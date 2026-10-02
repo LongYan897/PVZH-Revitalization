@@ -1,5 +1,7 @@
+using Battle;
 using Battle.Entity;
 using Card;
+using Card.Cmd;
 using Card.Imp;
 using Card.Pea;
 using Godot;
@@ -11,19 +13,20 @@ namespace Controller;
 /// 游戏的主控
 /// </summary>
 [GlobalClass]
-public partial class Main : Node2D
+public partial class Main : Node
 {
     public static Node Animator { get; private set; }
     public static Node CardContainer { get; private set; }
     public static Node FighterContainer { get; private set; }
     public static Node DesLayer { get; private set; }
     public static Node AudioContainer { get; private set; }
-    public override void _Ready()
+    public override async void _Ready()
     {
         //初始化各各组件
         HpType.Init();
         AtkType.Init();
         Icon.Init();
+        SceneAnimaActor.Init(this);
         //初始化容器
         Animator = GetNode<CanvasLayer>("Animators");
         CardContainer = GetNode<CanvasLayer>("Cards");
@@ -31,13 +34,16 @@ public partial class Main : Node2D
         DesLayer = GetNode<CanvasLayer>("Des");
         AudioContainer = GetNode<Node2D>("Audios");
         //
-        CardModel card = CardModel.Load<Peashooter>();
         CardModel card1 = CardModel.Load<HailACopter>();
-        CardModel card2 = CardModel.Load<RollingStone>();
+        CardModel card2 = CardModel.Load<Peashooter>();
+        CardModel card3 = CardModel.Load<CopterCommando>();
+        CardModel card4 = CardModel.Load<FinalMission>();
         card1.Status = Status.FaceUp;
         card2.Status = Status.FaceUp;
+        card4.Status = Status.FaceUp; 
         NodeCard.DrawACard(card1, new(0,0));
         NodeCard.DrawACard(card2, new(120, 0));
-        Fighter.Generate(card as Peashooter, new Battle.Road() { Index = 1 }, 0);
+        NodeCard.DrawACard(card4, new(240, 0));
+        await CardCmd.FighterGenerate(card3 as FighterCardModel,GetNode<NodeRoad>("道路").Model,Location.Zombie);
     }
 }
