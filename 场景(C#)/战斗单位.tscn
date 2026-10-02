@@ -1,19 +1,34 @@
 [gd_scene format=3 uid="uid://csp8yyj2i0wf3"]
 
 [ext_resource type="Script" uid="uid://cp33ms6knt1nk" path="res://脚本(C#)/战斗相关/实体/Fighter.cs" id="1_qosmd"]
-[ext_resource type="Texture2D" uid="uid://doru1f3me30oj" path="res://素材(C#)/其他/shadow.png" id="2_bev64"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="2_w5bvm"]
+[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="3_bev64"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="3_qosmd"]
+[ext_resource type="Texture2D" uid="uid://ccbyddlhdaia5" path="res://素材/属性图片/攻击.png" id="5_6cys6"]
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="6_4gq2c"]
 [ext_resource type="Texture2D" uid="uid://brf5p27vt3t6o" path="res://素材/对象高亮框/单位1.png" id="8_bev64"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ggbqp"]
+atlas = ExtResource("5_6cys6")
+region = Rect2(508.18198, 335.30182, 284.61368, 506.2005)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bev64"]
 size = Vector2(640, 540)
 
 [node name="战斗单位" type="Control" unique_id=1516114560]
+custom_minimum_size = Vector2(640, 540)
 layout_mode = 3
-anchors_preset = 0
-offset_right = 640.0
-offset_bottom = 540.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -640.0
+offset_right = 280.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_qosmd")
 metadata/_custom_type_script = "uid://cp33ms6knt1nk"
@@ -34,18 +49,12 @@ visible = false
 position = Vector2(0, -117.00001)
 scale = Vector2(3.8, 3.8)
 
-[node name="Shadow" type="Sprite2D" parent="." unique_id=316299064]
-position = Vector2(-5.9604645e-08, -114)
-scale = Vector2(5.28, 3.09)
-texture = ExtResource("2_bev64")
-
 [node name="单位场景" type="Node2D" parent="." unique_id=1751003746]
 unique_name_in_owner = true
 position = Vector2(0, -80)
 
 [node name="动画" parent="单位场景" unique_id=922182681 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
-position = Vector2(0, -58)
 scale = Vector2(3.6, 3.6)
 
 [node name="基础信息" type="Node2D" parent="." unique_id=80156814]
@@ -55,6 +64,19 @@ z_index = 34
 [node name="血量动画" parent="基础信息" unique_id=1977449702 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
 position = Vector2(140, 0)
+
+[node name="血量" type="TextureRect" parent="基础信息" unique_id=1431460387]
+unique_name_in_owner = true
+visible = false
+offset_left = 98.0
+offset_top = -40.070908
+offset_right = 185.51959
+offset_bottom = 38.929092
+scale = Vector2(3.5, 3.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = ExtResource("6_4gq2c")
+expand_mode = 1
 
 [node name="血量数值" type="Label" parent="基础信息" unique_id=1585496076]
 unique_name_in_owner = true
@@ -74,9 +96,36 @@ text = "321"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="生命值特效" type="TextureRect" parent="基础信息" unique_id=1531423819]
+unique_name_in_owner = true
+visible = false
+offset_left = -41.52652
+offset_top = -328.40405
+offset_right = 277.12656
+offset_bottom = 177.59595
+rotation = 1.5707964
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = SubResource("AtlasTexture_ggbqp")
+stretch_mode = 2
+
 [node name="伤害动画" parent="基础信息" unique_id=1188301239 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
 position = Vector2(-139, 0)
+
+[node name="伤害" type="TextureRect" parent="基础信息" unique_id=526937123]
+unique_name_in_owner = true
+visible = false
+offset_left = -185.0
+offset_top = -40.070908
+offset_right = -88.33331
+offset_bottom = 49.929092
+scale = Vector2(3.5, 3.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = ExtResource("3_bev64")
+expand_mode = 1
 
 [node name="伤害数值" type="Label" parent="基础信息" unique_id=438546615]
 unique_name_in_owner = true
@@ -91,7 +140,6 @@ offset_right = -31.0
 offset_bottom = 118.92909
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 20
 theme_override_constants/shadow_offset_y = 24
@@ -102,32 +150,21 @@ theme_override_font_sizes/font_size = 200
 text = "123"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
-[node name="额外动画" type="Node2D" parent="基础信息" unique_id=2007434438]
+[node name="攻击力特效" type="TextureRect" parent="基础信息" unique_id=515793783]
 unique_name_in_owner = true
 visible = false
-
-[node name="额外血量动画" parent="基础信息/额外动画" unique_id=146215497 instance=ExtResource("3_qosmd")]
-unique_name_in_owner = true
-position = Vector2(140, 0)
-
-[node name="额外血量数值" type="Label" parent="基础信息/额外动画" unique_id=958690880]
-unique_name_in_owner = true
-offset_left = 31.8068
-offset_top = -125.07084
-offset_right = 245.80682
-offset_bottom = 124.92916
+offset_left = -325.52652
+offset_top = -328.404
+offset_right = -6.8734436
+offset_bottom = 177.59601
+rotation = 1.5707964
+scale = Vector2(0.6, 0.6)
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 20
-theme_override_constants/shadow_offset_y = 24
-theme_override_constants/outline_size = 36
-theme_override_constants/shadow_outline_size = 5
-theme_override_fonts/font = ExtResource("2_w5bvm")
-theme_override_font_sizes/font_size = 200
-text = "321"
-horizontal_alignment = 1
-vertical_alignment = 1
+mouse_filter = 2
+texture = SubResource("AtlasTexture_ggbqp")
+stretch_mode = 2
 
 [node name="等级" parent="基础信息" unique_id=1703809306 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true
@@ -154,8 +191,3 @@ position = Vector2(0, -344)
 [node name="体积" type="CollisionShape2D" parent="碰撞箱" unique_id=164457338]
 unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_bev64")
-
-[node name="子弹" type="TextureRect" parent="." unique_id=702666749]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0

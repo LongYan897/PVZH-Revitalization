@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Battle;
+namespace Card;
 
-public interface IAttackable
+public class CopterCommando : FighterCardModel
 {
 }
