@@ -114,7 +114,7 @@ public partial class Deck : Node2D
         Cards.Position = new Vector2(-88, (position.Y - 1) * 100 + 280 + 72+64);
         return (position.Y - 1) * 100 + 280 + 72 + 64;
     }
-    private void CreateCards(Class category,Vector2 originPosition)
+    private float CreateCards(Class category,Vector2 originPosition)
     {
         List<CardModel> cards = CardModel.AllCards.Where(c =>c.Class == category).ToList();
         Vector2 position = new Vector2(1, 1);
@@ -122,9 +122,10 @@ public partial class Deck : Node2D
         {
             CardModel cardC = card.Clone();
             cardC.Status = Status.FaceUp;
-            NodeCard nodeCard = NodeCard.DrawACardAt(cardC,new Vector2(position.X * 170,position.Y * 130)+originPosition,GetNode<Control>("%图鉴信息"));
+            NodeCard nodeCard = NodeCard.DisplayCardAt(cardC,new Vector2((position.X - 1) * 170,(position.Y-1) * 130)+originPosition,GetNode<Control>("%图鉴信息"));
             nodeCard.Scale = new Vector2(1, 1) * 0.625f;
         }
+        return (position.Y - 1) * 130 + originPosition.Y + 148;
     }
 
     private void InitializeInformation(string camp)
@@ -151,7 +152,8 @@ public partial class Deck : Node2D
         Vector2 originPosition = new Vector2(40, cardOriginY+72);
         foreach (Class c in classes)
         {
-            CreateCards(c,originPosition);
+            originPosition.Y = CreateCards(c,originPosition);
+            
         }
     }
 }
