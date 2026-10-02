@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://086q8j655iyx"]
+
+[ext_resource type="Texture2D" uid="uid://dmdbw7coo3qjk" path="res://素材(C#)/英雄图标/cornerimage_zombies_create.png" id="1_vrsby"]
+
+[node name="英雄图标" type="Control" unique_id=1728515481]
+physics_interpolation_mode = 0
+layout_mode = 3
+anchors_preset = 0
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+
+[node name="图标按钮" type="TextureRect" parent="." unique_id=1007256372]
+layout_mode = 1
+offset_right = 142.0
+offset_bottom = 142.0
+scale = Vector2(0.901, 0.901)
+texture = ExtResource("1_vrsby")
