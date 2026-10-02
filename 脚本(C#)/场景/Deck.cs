@@ -54,8 +54,7 @@ public partial class Deck : Node2D
         BackGround.Modulate = ThemeColors1[0];
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
-
-        CreateSpirtes("植物");
+        InitializeInformation("植物");
     }
 
     private async void OnReturnPressed() {
@@ -65,15 +64,15 @@ public partial class Deck : Node2D
         BackGround.Modulate = ThemeColors1[0];
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
-        CreateSpirtes("植物");
+        InitializeInformation("植物");
     }
     private void OnZombiePressed(){
         BackGround.Modulate = ThemeColors2[0];
         Top1.Modulate = ThemeColors2[1];
         Top2.Modulate = ThemeColors2[2];
-        CreateSpirtes("僵尸");
+        InitializeInformation("僵尸");
     }
-    private void CreateSpirtes(string camp)
+    private float CreateSpirtes(string camp)
     {
         if (CurrentInformation.Count > 0)
         {
@@ -113,14 +112,48 @@ public partial class Deck : Node2D
             }
         }
         Cards.Position = new Vector2(-88, (position.Y - 1) * 100 + 280 + 72+64);
+        return (position.Y - 1) * 100 + 280 + 72 + 64;
     }
-    private void CreateCards(Class category)
+    private float CreateCards(Class category,Vector2 originPosition)
     {
         List<CardModel> cards = CardModel.AllCards.Where(c =>c.Class == category).ToList();
+        Vector2 position = new Vector2(1, 1);
         foreach(CardModel card in cards)
         {
             CardModel cardC = card.Clone();
             cardC.Status = Status.FaceUp;
+            NodeCard nodeCard = NodeCard.DisplayCardAt(cardC,new Vector2((position.X - 1) * 170,(position.Y-1) * 130)+originPosition,GetNode<Control>("%图鉴信息"));
+            nodeCard.Scale = new Vector2(1, 1) * 0.625f;
+        }
+        return (position.Y - 1) * 130 + originPosition.Y + 148;
+    }
+
+    private void InitializeInformation(string camp)
+    {
+        float cardOriginY = CreateSpirtes(camp);
+        List<Class> classes = camp switch
+        {
+            "植物" => [
+                Class.Guardian,
+                Class.Kabloom,
+                Class.MegaGrow,
+                Class.Smarty,
+                Class.Solar
+            ],
+            "僵尸" => [
+                Class.Sneaky,
+                Class.Hearty,
+                Class.Crazy,
+                Class.Brainy,
+                Class.Beastly,
+            ],
+            _=> []
+        };
+        Vector2 originPosition = new Vector2(40, cardOriginY+72);
+        foreach (Class c in classes)
+        {
+            originPosition.Y = CreateCards(c,originPosition);
+            
         }
     }
 }
