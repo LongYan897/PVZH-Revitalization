@@ -29,6 +29,79 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
+    public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent)
+    {
+        if (instances.Count < maxInstance)
+        {
+            var node = Scene.Instantiate<NodeCard>();
+            node.Model = cardModel;
+            node.Position = position;
+            node.Scale *= 0.5f;
+            parent.AddChild(node);
+            node.Fresh();
+            instances.Add(node, cardModel);
+            node.ZIndex = instances.Count * 30;
+            return node;
+        }
+        else
+        {
+            var node = instances.First(p => p.Value == null).Key;
+
+            if (node.GetParent() != parent)
+            {
+                node.Reparent(parent, true);
+            }
+
+            node.Model = cardModel;
+            node.Position = position;
+            node.Scale *= 0.5f;
+            node.Fresh();
+            instances[node] = cardModel;
+            return node;
+        }
+    }
+    /// <summary>
+    /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
+    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
+    /// </summary>
+    /// <param name="parent">父节点</param>
+    /// <param name="cardModel">卡牌</param>
+    public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent)
+    {
+        if (instances.Count < maxInstance)
+        {
+            var node = Scene.Instantiate<NodeCard>();
+            node.Model = cardModel;
+            node.Position = position;
+            node.Scale *= 0.5f;
+            instances.Add(node, cardModel);
+            parent.AddChild(node);
+            node.ZIndex = instances.Count * 30;
+            node.DrawAnimation();
+            return node;
+        }
+        else
+        {
+            var node = instances.First(p => p.Key.Model == null).Key;
+
+            if (node.GetParent() != parent)
+            {
+                node.Reparent(parent, true);
+            }
+
+            node.Model = cardModel;
+            node.Position = position;
+            node.Scale *= 0.5f;
+            instances[node] = cardModel;
+            node.DrawAnimation();
+            return node;
+        }
+    }
+    /// <summary>
+    /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
+    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
+    /// </summary>
+    /// <param name="cardModel">卡牌</param>
     public static NodeCard DisplayCard(CardModel cardModel, Vector2 position)
     {
         if (instances.Count < maxInstance)
@@ -46,6 +119,12 @@ public partial class NodeCard : Control
         else
         {
             var node = instances.First(p => p.Value == null).Key;
+
+            if (node.GetParent() != Main.CardContainer)
+            {
+                node.Reparent(Main.CardContainer, true);
+            }
+
             node.Model = cardModel;
             node.Position = position;
             node.Scale *= 0.5f;
@@ -74,7 +153,7 @@ public partial class NodeCard : Control
     }
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
-    /// 若场上卡牌节点数量大于等于20,则从20个节点中取暂时无绑定卡牌的节点
+    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
@@ -95,6 +174,12 @@ public partial class NodeCard : Control
         else
         {
             var node = instances.First(p => p.Key.Model == null).Key;
+
+            if (node.GetParent() != Main.CardContainer)
+            {
+                node.Reparent(Main.CardContainer, true);
+            }
+
             node.Model = cardModel;
             node.Position = position;
             node.Scale *= 0.5f;

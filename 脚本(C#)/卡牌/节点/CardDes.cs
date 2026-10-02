@@ -259,7 +259,7 @@ public partial class CardDes : Control
             CardDesPanel.ShowAt(desc, globalPos);
         }
     }
-    private bool TryGetKeywordDescription(string key, out string desc)
+    public bool TryGetKeywordDescription(string key, out string desc)
     {
         desc = null;
         if (Model == null) return false;

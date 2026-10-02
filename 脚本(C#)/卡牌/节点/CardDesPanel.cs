@@ -26,8 +26,8 @@ public partial class CardDesPanel : Panel
         _blocker = GetNodeOrNull<Control>("Control");
 
         MouseFilter = MouseFilterEnum.Ignore;
-        _rtl.MouseFilter = MouseFilterEnum.Ignore;
-
+        _rtl.MouseFilter = MouseFilterEnum.Stop;
+        _rtl.MetaClicked += OnKeywordClicked;
 
         if (_blocker != null)
         {
@@ -43,13 +43,39 @@ public partial class CardDesPanel : Panel
         Modulate = new Color(1, 1, 1, 0);
     }
 
+
     private void OnBlockerInput(InputEvent @event)
     {
         if (_closing) return;
-        if (@event is InputEventMouseButton mb && mb.Pressed)
+        if (@event is not InputEventMouseButton mb || !mb.Pressed) return;
+
+        _rtl._GuiInput(mb);
+        if (GetViewport().IsInputHandled())
+            return;
+
+        _blocker.AcceptEvent();
+        Close();
+    }
+
+    private void OnKeywordClicked(Variant meta)
+    {
+        string key = meta.AsString();
+
+        if (CardModel.HasTemplate(key))
         {
-            _blocker.AcceptEvent();
+            GetViewport().SetInputAsHandled();
+            var template = CardModel.GetTemplate(key);
+            if (template != null)
+                CardDes.ExchangeDescription(template);
             Close();
+            return;
+        }
+
+        if (.TryGetKeywordDescription(key, out string desc))
+        {
+            GetViewport().SetInputAsHandled();
+            var globalPos = _rtl.GlobalPosition + _rtl.GetLocalMousePosition();
+            ShowAt(desc, globalPos);
         }
     }
 
