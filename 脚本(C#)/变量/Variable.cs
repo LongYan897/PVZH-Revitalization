@@ -61,6 +61,7 @@ public interface IVariable
 /// </summary>
 public class Variable<T> : IVariable
 {
+    public int LastHistoryIndex => _history.Count > 0 ? _history[^1].Index : -1;
     /// <summary>
     /// 记录一次历史
     /// </summary>

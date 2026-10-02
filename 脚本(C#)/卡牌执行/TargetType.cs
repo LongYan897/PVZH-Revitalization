@@ -9,31 +9,23 @@ namespace Card;
 public enum TargetType
 {
     /// <summary>
-    /// 以可放置格子
-    /// </summary>
-    Fighter,
-    /// <summary>
     /// 以战斗单位目标
     /// </summary>
-    Fighters,
+    Fighters = 1 << 0,
     /// <summary>
     /// 以可放置行
     /// </summary>
-    Lines,
+    Lines = 1 << 1,
     /// <summary>
     /// 以可放置格子
     /// </summary>
-    Grids,
+    Grids = 1 << 2,
     /// <summary>
-    /// 以战斗单位目标和可放置格子
+    /// 以可放置组队格子
     /// </summary>
-    FighterAndGrids,
-    ///<summary>
+    CoopGrids = 1 << 3,
+    /// <summary>
     /// 以英雄为目标
-    ///</summary>
-    Hero,
-    /// <summary>
-    /// 以战斗单位和英雄为目标
     /// </summary>
-    HeroAndFighters
+    Hero = 1 << 4,
 }
