@@ -262,19 +262,11 @@ public partial class NodeRoad : Control, ITarget
             tween.TweenProperty(bat, "scale", new Vector2(0.5f, 0.5f), 0.05)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
 
-            tween.TweenProperty(bat, "scale", new Vector2(0.8f, 0.8f), 0.08)
+            tween.TweenProperty(bat, "scale", new Vector2(1.3f, 1.3f), 0.08)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(bat, "scale", new Vector2(0.6f, 0.6f), 0.06)
+            tween.TweenProperty(bat, "scale", new Vector2(0.7f, 0.7f), 0.06)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
 
-            tween.TweenProperty(bat, "scale", new Vector2(0.75f, 0.75f), 0.05)
-                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(bat, "scale", new Vector2(0.6f, 0.6f), 0.05)
-                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-            tween.TweenProperty(bat, "scale", new Vector2(0.65f, 0.65f), 0.04)
-                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(bat, "scale", new Vector2(0.6f, 0.6f), 0.04)
-                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
             Tween tween1 = CreateTween().BindNode(ar2);
             Tween tween2 = CreateTween().BindNode(ar1);
             if (isCoop)

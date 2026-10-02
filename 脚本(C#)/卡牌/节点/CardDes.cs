@@ -44,6 +44,63 @@ public partial class CardDes : Control
     /// <param name="parent"></param>
     /// <param name="card"></param>
     /// <returns></returns>
+    public static void DisplayDescription(CardModel card,Node parent)
+    {
+        if (instance == null)
+        {
+            var des = Scene.Instantiate<CardDes>();
+            des.Model = card;
+            parent.AddChild(des);
+            des.Open();
+            des.Fresh();
+            des.ZIndex = 1024;
+            instance = des;
+        }
+        else
+        {
+            if (instance.Visible == true) return;
+
+            if (instance.GetParent() != parent)
+            {
+                instance.Reparent(parent, true);
+            }
+
+            instance.Model = card;
+            instance.Visible = true;
+            instance.Open();
+            instance.Fresh();
+        }
+    }
+    /// <summary>
+    /// 交换卡牌的描述
+    /// </summary>
+    /// <param name="card"></param>
+    public static void ExchangeDescription(CardModel card, Node parent)
+    {
+        if (instance == null)
+        {
+            return;
+        }
+        else
+        {
+
+            if (instance.GetParent() != parent)
+            {
+                instance.Reparent(parent, true);
+            }
+
+            instance.Model = card;
+            instance.Visible = true;
+            instance.Open();
+            instance.Fresh();
+        }
+    }
+    /// <summary>
+    /// 创建卡牌的描述
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="card"></param>
+    /// <returns></returns>
     public static void DisplayDescription(CardModel card)
     {
         if (instance == null)

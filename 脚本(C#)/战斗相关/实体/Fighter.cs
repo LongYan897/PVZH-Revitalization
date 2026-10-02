@@ -238,7 +238,42 @@ public partial class Fighter : Control, ITarget, IAttackable
     {
         await Model.FireTiming(Timing.AfterAttack, atkStack);
     }
+    public static Fighter Generate(FighterCardModel model, Road road, Location index,Node parent)
+    {
+        if (Instances.Count < maxInstance)
+        {
+            var fighter = Scene.Instantiate<Fighter>();
+            fighter.Position = NodeRoad.GetNode(road).GetFighterLocation(index);
+            fighter.Model = model;
+            fighter.index = index;
+            parent.AddChild(fighter);
+            fighter.isFirstPlace = true;
+            fighter.Road = road;
+            road.AddFighter(fighter);
+            fighter.Fresh();
+            Instances.Add(fighter, model);
+            return fighter;
+        }
+        else
+        {
+            var fighter = Instances.First(p => p.Key.Model == null).Key;
+            fighter.Position = NodeRoad.GetNode(road).GetFighterLocation(index);
 
+            if (fighter.GetParent() != parent)
+            {
+                fighter.Reparent(parent, true);
+            }
+
+            fighter.isFirstPlace = true;
+            fighter.Model = model;
+            fighter.index = index;
+            fighter.Road = road;
+            road.AddFighter(fighter);
+            fighter.Fresh();
+            Instances[fighter] = model;
+            return fighter;
+        }
+    }
     public static Fighter Generate(FighterCardModel model, Road road, Location index)
     {
         if (Instances.Count < maxInstance)
