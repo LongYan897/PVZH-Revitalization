@@ -45,6 +45,5 @@ public partial class Main : Node
         NodeCard.DrawACard(card1, new(0,0));
         NodeCard.DrawACard(card2, new(120, 0));
         NodeCard.DrawACard(card4, new(240, 0));
-        await CardCmd.FighterGenerate(card3 as FighterCardModel,GetNode<NodeRoad>("道路").Model,Location.Zombie);
     }
 }

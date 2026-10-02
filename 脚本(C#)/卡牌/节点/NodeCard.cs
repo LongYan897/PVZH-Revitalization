@@ -22,15 +22,24 @@ public partial class NodeCard : Control
     private static NodeCard ChoiceCard;
     public CardModel Model { get; private set; }
     private static readonly Dictionary<NodeCard, CardModel> instances = new();
-    private const int maxInstance = 40;
+    private const int maxInstance = 80;
+
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
-    /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent)
+    /// <param name="position">初始位置</param>
+    /// <param name="parent">父节点，为 null 时使用 Main.CardContainer</param>
+    /// <param name="drawAnimation">是否播放抽卡动画</param>
+    public static NodeCard CreateCard(
+        CardModel cardModel,
+        Vector2 position,
+        Node parent = null,
+        bool drawAnimation = false)
     {
+        parent ??= Main.CardContainer;
+
         if (instances.Count < maxInstance)
         {
             var node = Scene.Instantiate<NodeCard>();
@@ -38,46 +47,12 @@ public partial class NodeCard : Control
             node.Position = position;
             node.Scale *= 0.5f;
             parent.AddChild(node);
-            node.Fresh();
+            if (drawAnimation)
+                node.DrawAnimation();
+            else
+                node.Fresh();
             instances.Add(node, cardModel);
             node.ZIndex = instances.Count * 30;
-            return node;
-        }
-        else
-        {
-            var node = instances.First(p => p.Value == null).Key;
-
-            if (node.GetParent() != parent)
-            {
-                node.Reparent(parent, true);
-            }
-
-            node.Model = cardModel;
-            node.Position = position;
-            node.Scale *= 0.5f;
-            node.Fresh();
-            instances[node] = cardModel;
-            return node;
-        }
-    }
-    /// <summary>
-    /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
-    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
-    /// </summary>
-    /// <param name="parent">父节点</param>
-    /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent)
-    {
-        if (instances.Count < maxInstance)
-        {
-            var node = Scene.Instantiate<NodeCard>();
-            node.Model = cardModel;
-            node.Position = position;
-            node.Scale *= 0.5f;
-            instances.Add(node, cardModel);
-            parent.AddChild(node);
-            node.ZIndex = instances.Count * 30;
-            node.DrawAnimation();
             return node;
         }
         else
@@ -92,47 +67,50 @@ public partial class NodeCard : Control
             node.Model = cardModel;
             node.Position = position;
             node.Scale *= 0.5f;
+            if (drawAnimation)
+                node.DrawAnimation();
+            else
+                node.Fresh();
             instances[node] = cardModel;
-            node.DrawAnimation();
             return node;
         }
     }
+
+    /// <summary>
+    /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
+    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
+    /// </summary>
+    /// <param name="parent">父节点</param>
+    /// <param name="cardModel">卡牌</param>
+    public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent)
+        => CreateCard(cardModel, position, parent, drawAnimation: false);
+
+    /// <summary>
+    /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
+    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
+    /// </summary>
+    /// <param name="parent">父节点</param>
+    /// <param name="cardModel">卡牌</param>
+    public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent)
+        => CreateCard(cardModel, position, parent, drawAnimation: true);
+
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
     public static NodeCard DisplayCard(CardModel cardModel, Vector2 position)
-    {
-        if (instances.Count < maxInstance)
-        {
-            var node = Scene.Instantiate<NodeCard>();
-            node.Model = cardModel;
-            node.Position = position;
-            node.Scale *= 0.5f;
-            Main.CardContainer.AddChild(node);
-            node.Fresh();
-            instances.Add(node, cardModel);
-            node.ZIndex = instances.Count * 30;
-            return node;
-        }
-        else
-        {
-            var node = instances.First(p => p.Value == null).Key;
+        => CreateCard(cardModel, position, null, drawAnimation: false);
 
-            if (node.GetParent() != Main.CardContainer)
-            {
-                node.Reparent(Main.CardContainer, true);
-            }
+    /// <summary>
+    /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
+    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
+    /// </summary>
+    /// <param name="parent">父节点</param>
+    /// <param name="cardModel">卡牌</param>
+    public static NodeCard DrawACard(CardModel cardModel, Vector2 position)
+        => CreateCard(cardModel, position, null, drawAnimation: true);
 
-            node.Model = cardModel;
-            node.Position = position;
-            node.Scale *= 0.5f;
-            node.Fresh();
-            instances[node] = cardModel;
-            return node;
-        }
-    }
     /// <summary>
     /// 暂时隐藏一个卡牌节点
     /// </summary>
@@ -142,6 +120,7 @@ public partial class NodeCard : Control
         var node = instances.FirstOrDefault(n => n.Value == card);
         await node.Key?.Close();
     }
+
     /// <summary>
     /// 获得当前卡牌对应的节点
     /// </summary>
@@ -151,43 +130,7 @@ public partial class NodeCard : Control
     {
         return instances.FirstOrDefault(k => k.Value == card).Key;
     }
-    /// <summary>
-    /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
-    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
-    /// </summary>
-    /// <param name="parent">父节点</param>
-    /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACard(CardModel cardModel, Vector2 position)
-    {
-        if (instances.Count < maxInstance)
-        {
-            var node = Scene.Instantiate<NodeCard>();
-            node.Model = cardModel;
-            node.Position = position;
-            node.Scale *= 0.5f;
-            instances.Add(node, cardModel);
-            Main.CardContainer.AddChild(node);
-            node.ZIndex = instances.Count * 30;
-            node.DrawAnimation();
-            return node;
-        }
-        else
-        {
-            var node = instances.First(p => p.Key.Model == null).Key;
 
-            if (node.GetParent() != Main.CardContainer)
-            {
-                node.Reparent(Main.CardContainer, true);
-            }
-
-            node.Model = cardModel;
-            node.Position = position;
-            node.Scale *= 0.5f;
-            instances[node] = cardModel;
-            node.DrawAnimation();
-            return node;
-        }
-    }
     private async void DrawAnimation()
     {
         var drawFrame = GetNode<Sprite2D>("%特效");
@@ -232,6 +175,7 @@ public partial class NodeCard : Control
         drawFrame.Visible = false;
         Fresh();
     }
+
     private bool _isDragging;
     private Vector2 _cardOriginPos;
     private Vector2 _mouseDownGlobal;
@@ -242,18 +186,22 @@ public partial class NodeCard : Control
     private const float ClickScaleDown = 0.9f;
     private const float ClickScaleTime = 0.08f;
     private const float DragThreshold = 10f;
+
     public override void _Ready()
     {
         var hitBtn = GetNode<Button>("碰撞");
         hitBtn.GuiInput += OnHitButtonGuiInput;
-        GetNode<Area2D>("碰撞箱").AreaEntered += AreaEntered; ;
-        GetNode<Area2D>("碰撞箱").AreaExited += AreaExited; ;
-
+        GetNode<Area2D>("碰撞箱").AreaEntered += AreaEntered;
+        GetNode<Area2D>("碰撞箱").AreaExited += AreaExited;
     }
+
+    private bool currentPlayable = true;
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
     private bool _isOpen = true;
+
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
+        if (!Model.CanPlay()) return;
         if (!_isOpen) return;
         if (!isCallDragging) return;
         if (@event is InputEventMouseButton mb)
@@ -350,6 +298,7 @@ public partial class NodeCard : Control
         if (ChoiceCard == this)
             await EndDrag();
     }
+
     private void Drag()
     {
         Fighter.CallTargeted(Model, Model.TargetType);
@@ -389,8 +338,10 @@ public partial class NodeCard : Control
     }
 
     private ITarget target;
+
     private void AreaEntered(Area2D area)
     {
+        if (!Model.CanPlay()) return;
         if (target != null) return;
         if (area.HasMeta("Target"))
         {
@@ -414,7 +365,7 @@ public partial class NodeCard : Control
                     var col = (NodeRoad)(GodotObject)variant;
                     if (!col.Calling) return;
                     target = col;
-                    col.Targeted(true, false, false,null);
+                    col.Targeted(true, false, false, null);
                     Glowing();
                 }
             }
@@ -430,22 +381,10 @@ public partial class NodeCard : Control
                 FighterCardModel fighter = null;
                 if (Model is FighterCardModel fighterCard)
                     fighter = fighterCard;
-                col.Targeted(false, needGrid, coopNeedGrid,fighter);
+                col.Targeted(false, needGrid, coopNeedGrid, fighter);
                 Glowing();
             }
         }
-    }
-
-    private void Glowing()
-    {
-        var glowNode = GetNode<TextureRect>("%卡牌发光背景");
-        if (_colorTween != null && _colorTween.IsValid())
-            _colorTween.Kill();
-        _colorTween = glowNode.CreateTween();
-        _colorTween.TweenProperty(glowNode, "modulate", _colorBox.ColorA, 0.5f)
-            .SetTrans(Tween.TransitionType.Cubic)
-            .SetEase(Tween.EaseType.Out);
-        GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
     }
 
     private void AreaExited(Area2D area)
@@ -471,7 +410,6 @@ public partial class NodeCard : Control
                     {
                         var col = (NodeRoad)(GodotObject)variant;
                         col.Distargeted(true, false, false);
-
                     }
                 }
                 if (type == "Grid")
@@ -482,13 +420,28 @@ public partial class NodeCard : Control
                     if (needGrid)
                     {
                         var col = (NodeRoad)(GodotObject)variant;
-                        col.Distargeted(false,needGrid,coopNeedGrid);
+                        col.Distargeted(false, needGrid, coopNeedGrid);
                     }
                 }
                 Darken();
             }
         }
+    }
 
+    private void Glowing()
+    {
+        var glowNode = GetNode<TextureRect>("%卡牌发光背景");
+        if (_colorTween != null && _colorTween.IsValid())
+            _colorTween.Kill();
+        _colorTween = glowNode.CreateTween();
+        _colorTween.TweenProperty(glowNode, "modulate", _colorBox.ColorA, 0.5f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+        GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
+
+        _callTween = CreateTween();
+        _callTween.TweenProperty(this, "modulate", new Color(1, 1, 1, 1), 0.1f);
+        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 1f), 0.1f);
     }
 
     private void Darken()
@@ -502,6 +455,28 @@ public partial class NodeCard : Control
             .SetEase(Tween.EaseType.Out);
         GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
         target = null;
+
+        _callTween = CreateTween();
+        _callTween.TweenProperty(this, "modulate", new Color(1, 1, 1, 1), 0.1f);
+        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 1f), 0.1f);
+    }
+
+    private void Darkest()
+    {
+        var glowNode = GetNode<TextureRect>("%卡牌发光背景");
+        KillCallTween();
+        if (_colorTween != null && _colorTween.IsValid())
+            _colorTween.Kill();
+        _colorTween = glowNode.CreateTween();
+        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.Default, 0f), 0f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+
+        _callTween = CreateTween();
+        _callTween.TweenProperty(this, "modulate", new Color(0.6f, 0.6f, 0.6f, 1), 0.1f);
+        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 0f), 0.1f);
+        GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
+        target = null;
     }
 
     private void KillReturnTween()
@@ -511,6 +486,7 @@ public partial class NodeCard : Control
             _returnTween.Kill();
         }
     }
+
     private void KillClickTween()
     {
         if (_clickTween != null && _clickTween.IsValid())
@@ -527,8 +503,10 @@ public partial class NodeCard : Control
             _callTween.Kill();
         }
     }
+
     private bool isCallDragging;
     private async void _callDragging() => await CallDragging();
+
     private async Task CallDragging()
     {
         KillCallTween();
@@ -538,6 +516,7 @@ public partial class NodeCard : Control
         _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 1), 0.1f);
         await ToSignal(_callTween, Tween.SignalName.Finished);
     }
+
     private async Task DiscallDragging()
     {
         KillCallTween();
@@ -692,7 +671,7 @@ public partial class NodeCard : Control
                     Camp.Plant => new(180.0f, -18.5f),
                     Camp.Zombie => new(180.0f, -9.5f),
                     _ => new(180.0f, -18.5f)
-                }; ;
+                };
                 GetNode<Node2D>("正面卡牌").Visible = true;
                 GetNode<TextureRect>("牌背").Visible = false;
                 Control control = null;
@@ -793,6 +772,21 @@ public partial class NodeCard : Control
                     }
                 };
             }
+
+            JustFresh();
         }
+
+    }
+    /// <summary>
+    /// 切换明暗状态
+    /// </summary>
+    public void JustFresh()
+    {
+        if (Model == null) return;
+
+        if (Model.CanPlay())
+            Darken();
+        else
+            Darkest();
     }
 }

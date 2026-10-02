@@ -13,4 +13,9 @@ namespace Hero;
 public partial class HeroInstance : Control, ITarget
 {
     public TargetType TargetType => TargetType;
+
+    public Func<CardModel, Func<ITarget, bool>, bool> CanBeTarget => (t,f) =>
+    {
+        return false;
+    };
 }

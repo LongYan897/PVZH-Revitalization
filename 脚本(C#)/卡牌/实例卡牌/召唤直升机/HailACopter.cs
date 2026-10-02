@@ -24,7 +24,7 @@ public class HailACopter : CardModel
         await PlayInstantAnimation("intro", target);
         if (target is NodeRoad road)
         {
-             await CardCmd.FighterGenerate(Load<CopterCommando>() as FighterCardModel, road.Model, Location.Plant);
+             await CardCmd.FighterGenerate(Load<CopterCommando>() as FighterCardModel, road.Model, Location.Zombie);
         }
     }
 }

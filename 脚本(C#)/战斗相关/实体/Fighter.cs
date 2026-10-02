@@ -19,6 +19,13 @@ namespace Battle.Entity;
 /// </summary>
 public partial class Fighter : Control, ITarget, IAttackable
 {
+    public static bool CanTargetedBy(CardModel card)
+    {
+        if (card.TargetType.HasFlag(TargetType.Fighters))
+            return Instances.Keys.Any(r => r.CanBeTarget(card, card.TargetFilter));
+        else
+            return false;
+    }
     /// <summary>
     /// 检测是否有某种单位
     /// </summary>

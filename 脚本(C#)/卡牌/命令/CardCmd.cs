@@ -4,6 +4,7 @@ using Godot;
 using Play;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Target;
 
@@ -15,8 +16,8 @@ namespace Card.Cmd;
 public static class CardCmd
 {
     private static List<CardModel> CardInstances = new List<CardModel>();
-    private static ITarget _cachedTarget;
 
+    public static bool IsCardPlaying { get; private set; }
     /// <summary>
     /// 向Cmd添加卡牌
     /// </summary>
@@ -45,7 +46,7 @@ public static class CardCmd
     {
         cardModel.Fresh();
         await cardModel.Changed<T>(key, before, after);
-        foreach (CardModel card in CardInstances)
+        foreach (CardModel card in CardInstances.ToList())
         {
             await card.FireTiming(Timing.OnVariableChanged,key,before,after);
         }
@@ -58,10 +59,22 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task PlayedCard(CardModel cardModel, ITarget target)
     {
+        IsCardPlaying = true;
+        JustFreshAllCards();
         await cardModel.Play(target);
-        foreach (CardModel card in CardInstances)
+        foreach (CardModel card in CardInstances.ToList())
         {
             await card.FireTiming(Timing.AfterCardPlayed,cardModel,target);
+        }
+        IsCardPlaying = false;
+        JustFreshAllCards();
+    }
+    private static void JustFreshAllCards()
+    {
+        foreach (var card in CardInstances.ToList())
+        {
+            var node = NodeCard.GetNode(card);
+            node?.JustFresh();
         }
     }
     /// <summary>
@@ -73,11 +86,13 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task TimingOnCards(CardModel cardModel,Timing timing,params object[] paramters)
     {
-        foreach (var card in CardInstances)
+        JustFreshAllCards();
+        foreach (var card in CardInstances.ToList())
         {
             if (card != cardModel)
                 await card.FireTiming(timing,paramters);
         }
+        JustFreshAllCards();
     }
     private static TaskCompletionSource<ITarget> _tcs;
     /// <summary>
@@ -141,9 +156,13 @@ public static class CardCmd
     public static async Task FighterGenerate(FighterCardModel fighter,Road road,Location location)
     {
         var fight = Fighter.Generate(fighter,road,location);
+        await fighter.FireTiming(Timing.OnFighterEnter,road,fighter);
+        await TimingOnCards(fighter,Timing.OnFighterEnter,road,fighter);
         await fighter.IntroPlayed();
         await fighter.AnimationWhenPlayed(road);
         await fighter.FireTiming(Timing.AfterPlay,NodeRoad.GetNode(road));
+        await fighter.FireTiming(Timing.AfterRoadChanged, road);
+        await TimingOnCards(fighter, Timing.AfterRoadChanged, road);
     }
     /// <summary>
     /// 从卡组中抽出卡牌

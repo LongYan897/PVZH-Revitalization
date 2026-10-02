@@ -19,6 +19,14 @@ namespace Battle;
 public partial class NodeRoad : Control, ITarget
 {
     private static Dictionary<NodeRoad, Road> Instances = new();
+    public static bool CanTargetedBy(CardModel card)
+    {
+        var tgType = card.TargetType;
+        if (NeedG1(tgType) || NeedLine(tgType))
+            return Instances.Keys.Any(r=>r.CanBeTarget(card,card.TargetFilter));
+        else
+            return false;
+    }
     /// <summary>
     /// 绑定的道路数据
     /// </summary>
@@ -149,6 +157,9 @@ public partial class NodeRoad : Control, ITarget
         KillTween();
         Calling = true;
         var line = GetNode<Sprite2D>("%环境高亮");
+        GetNode<Sprite2D>("%环境高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮2").Visible = false;
         _tweenTargeted = CreateTween().BindNode(line).SetLoops(-1);
         line.Modulate = _colortgBox.Default;
         line.Visible = true;
@@ -161,6 +172,9 @@ public partial class NodeRoad : Control, ITarget
         Calling = true;
 
         var hl = GetNode<TextureRect>("%单位高亮");
+        GetNode<Sprite2D>("%环境高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮2").Visible = false;
         _tweenTargeted = CreateTween().BindNode(hl).SetLoops(-1);
         hl.Modulate = _colortgBox.Default;
         hl.Visible = true;
@@ -174,6 +188,9 @@ public partial class NodeRoad : Control, ITarget
         Calling = true;
 
         var hl1 = GetNode<TextureRect>("%单位高亮");
+        GetNode<Sprite2D>("%环境高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮2").Visible = false;
         _tweenTargeted = CreateTween().BindNode(hl1).SetLoops(-1);
         hl1.Modulate = _colortgBox.Default;
         hl1.Visible = true;
@@ -259,13 +276,15 @@ public partial class NodeRoad : Control, ITarget
             ar1.Visible = true;
             ar2.Visible = true; Tween tween = CreateTween().BindNode(bat);
             bat.Scale = Vector2.Zero;
+
             tween.TweenProperty(bat, "scale", new Vector2(0.5f, 0.5f), 0.05)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
 
-            tween.TweenProperty(bat, "scale", new Vector2(1.3f, 1.3f), 0.08)
+            tween.TweenProperty(bat, "scale", new Vector2(1f, 1f), 0.1)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(bat, "scale", new Vector2(0.7f, 0.7f), 0.06)
-                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+
+            tween.TweenProperty(bat, "scale", new Vector2(0.6f, 0.6f), 0.15)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
 
             Tween tween1 = CreateTween().BindNode(ar2);
             Tween tween2 = CreateTween().BindNode(ar1);
@@ -281,9 +300,9 @@ public partial class NodeRoad : Control, ITarget
             }
 
             ar2.Scale = new(0, 0);
-            tween1.TweenProperty(ar2, "scale", new Vector2(1f, 1f), 0.08);
+            tween1.TweenProperty(ar2, "scale", new Vector2(1f, 1f), 0.06);
             ar1.Scale = new(0, 0);
-            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 1f), 0.08);
+            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 1f), 0.06);
         }
         else
         {
@@ -296,11 +315,18 @@ public partial class NodeRoad : Control, ITarget
             }
             else
             {
-                ar1.Position = new(-42.0f, -21.0f);
+                ar1.Position = new(-42.0f, -38.0f);
                 ar1.Size = new(84, 199.0f);
             }
             ar1.Scale = new(0, 0);
-            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 2f), 0.08);
+            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 1.3f), 0.02)
+                .SetTrans(Tween.TransitionType.Quad);
+
+            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 1.2f), 0.02)
+                .SetTrans(Tween.TransitionType.Quad);
+
+            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 2.8f), 0.02)
+                .SetTrans(Tween.TransitionType.Quad);
         }
     }
     public async void Distargeted(bool line, bool g1, bool g2)

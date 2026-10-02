@@ -139,31 +139,34 @@ position = Vector2(55, 64)
 
 [node name="Arrow" type="TextureRect" parent="." unique_id=1026955378]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = -42.0
 offset_top = -41.0
 offset_right = 42.0
 offset_bottom = 158.0
-pivot_offset_ratio = Vector2(0.5, 1)
+pivot_offset_ratio = Vector2(0.5, 0.9)
 mouse_filter = 2
 texture = ExtResource("6_rx7a3")
 expand_mode = 1
 
 [node name="ArrowDown" type="TextureRect" parent="." unique_id=990774744]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = -42.000004
 offset_top = -457.0
 offset_right = 41.999996
 offset_bottom = -243.21274
 rotation = 3.1415927
-pivot_offset_ratio = Vector2(0.5, 1)
+pivot_offset_ratio = Vector2(0.5, 0.9)
 mouse_filter = 2
 texture = ExtResource("8_ojbca")
 expand_mode = 1
 
 [node name="Battle" type="TextureRect" parent="." unique_id=1794512796]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = -64.0
 offset_top = -130.0

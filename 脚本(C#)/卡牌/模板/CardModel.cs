@@ -1,3 +1,4 @@
+using Battle;
 using Battle.Entity;
 using Card.Cmd;
 using Card.String;
@@ -25,10 +26,12 @@ namespace Card;
 /// </summary>
 public class CardModel
 {
-    public virtual Vector2 Size => new(1, 1);
-    public virtual Vector2 Position => new(0, 0);
     public Player Player { get; private set; }
     private static readonly Dictionary<string, CardModel> TemplateEntries = new();
+    public bool CanPlay()
+    {
+        return (Fighter.CanTargetedBy(this) || NodeRoad.CanTargetedBy(this) ) && !CardCmd.IsCardPlaying;
+    }
     /// <summary>
     /// 按照名称获取卡牌模板
     /// </summary>
