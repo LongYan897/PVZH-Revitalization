@@ -1,4 +1,5 @@
 using Card;
+using Card.String;
 using Controller;
 using Godot;
 using Hero.Model;
@@ -26,6 +27,7 @@ public partial class Deck : Node2D
     private Control Information; //图鉴信息
     private ColorRect Cards; //卡片信息
     private List<Node> CurrentInformation = new List<Node>();
+    private List<Node> CurrentCards = new List<Node>();
     private List<Color> ThemeColors1 => new List<Color> {
         new Color(0.411f, 0.69f, 0.38f, 1.0f),
         new Color(0.535f, 0.9f, 0.495f, 1.0f),
@@ -111,5 +113,14 @@ public partial class Deck : Node2D
             }
         }
         Cards.Position = new Vector2(-88, (position.Y - 1) * 100 + 280 + 72+64);
+    }
+    private void CreateCards(Class category)
+    {
+        List<CardModel> cards = CardModel.AllCards.Where(c =>c.Class == category).ToList();
+        foreach(CardModel card in cards)
+        {
+            CardModel cardC = card.Clone();
+            cardC.Status = Status.FaceUp;
+        }
     }
 }
