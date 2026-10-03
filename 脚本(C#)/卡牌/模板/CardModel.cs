@@ -123,7 +123,7 @@ public class CardModel
             };
         }
     }
-    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0)
+    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0,string eventName = null)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -131,7 +131,10 @@ public class CardModel
         sp.Scale = new(0.7f, 0.7f);
         node.AddChild(sp);
         sp.LoadSkeletonData(AnimationPath);
-        await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
+        if (eventName != null)
+            await sp.SetAnimationAndFreeOnEvent(track, animName, eventName,false);
+        else
+            await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
     }
     protected async Task PlayLoopAnimation(string animName, ITarget target,int track = 0)
     {

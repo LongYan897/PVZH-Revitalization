@@ -163,4 +163,73 @@ public partial class SpineHandler : Node2D
 
         QueueFree();
     }
+    /// <summary>
+    /// 播放动画，并等待指定事件触发后返回。
+    /// loop 为 true 时也会等待事件，不会立即返回。
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="animName">动画名</param>
+    /// <param name="eventName">要等待的事件名</param>
+    /// <param name="loop">是否循环播放</param>
+    /// <returns>事件触发时返回 remaining（和 WaitForAnimEvent 一致）</returns>
+    public async Task<float> SetAnimationAndWaitEvent(
+        int track,
+        string animName,
+        string eventName,
+        bool loop = false)
+    {
+        var tcs = new TaskCompletionSource<float>();
+
+        void Handler(string name, float remaining)
+        {
+            if (name == eventName)
+                tcs.TrySetResult(remaining);
+        }
+
+        OnSpineAnimEvent += Handler;
+        try
+        {
+            SetAnimation(track, animName, loop);
+            return await tcs.Task;
+        }
+        finally
+        {
+            OnSpineAnimEvent -= Handler;
+        }
+    }
+    /// <summary>
+    /// 播放动画，等待指定事件触发后销毁自身。
+    /// loop 为 true 时也会等待事件，不会立即返回。
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="animName">动画名</param>
+    /// <param name="eventName">要等待的事件名</param>
+    /// <param name="loop">是否循环播放</param>
+    public async Task SetAnimationAndFreeOnEvent(
+        int track,
+        string animName,
+        string eventName,
+        bool loop = false)
+    {
+        var tcs = new TaskCompletionSource<float>();
+
+        void Handler(string name, float remaining)
+        {
+            if (name == eventName)
+                tcs.TrySetResult(remaining);
+        }
+
+        OnSpineAnimEvent += Handler;
+        try
+        {
+            SetAnimation(track, animName, loop);
+            await tcs.Task;
+        }
+        finally
+        {
+            OnSpineAnimEvent -= Handler;
+        }
+
+        QueueFree();
+    }
 }

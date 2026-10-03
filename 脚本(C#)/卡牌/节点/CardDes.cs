@@ -277,7 +277,6 @@ public partial class CardDes : Control
         var label = GetNode<RichTextLabel>("%介绍Label");
         label.BbcodeEnabled = true;
         label.MouseFilter = MouseFilterEnum.Stop;
-<<<<<<< Updated upstream
         label.MetaClicked += OnKeywordClicked;
         var contr = GetNode<Control>("%额外区域");
         contr.GuiInput += ControlInput;
@@ -306,18 +305,9 @@ public partial class CardDes : Control
             var template = CardModel.GetTemplate(key);
             if (template != null)
                 ExchangeDescription(template);
-=======
-        label.GuiInput += OnLabelGuiInput;
-        GetNode<ColorRect>("%底色").MouseFilter = MouseFilterEnum.Ignore;
-    }
-    private void OnLabelGuiInput(InputEvent @event)
-    {
-        if (@event is not InputEventMouseButton mb || !mb.Pressed)
->>>>>>> Stashed changes
             return;
         }
 
-<<<<<<< Updated upstream
         if (TryGetKeywordDescription(key, out string desc))
         {
             GetViewport().SetInputAsHandled();
@@ -372,26 +362,6 @@ public partial class CardDes : Control
         }
     }
     public static bool TryGetKeywordDescription(CardModel model, string key, out string desc)
-=======
-        var label = GetNode<RichTextLabel>("%介绍Label");
-
-        string key = label.GetMetaUnderCursor();
-        if (!string.IsNullOrEmpty(key) && TryGetKeywordDescription(key, out string desc))
-        {
-            Vector2 globalPos = label.GetGlobalMousePosition();
-            CardDesPanel.ShowAt(key, desc, globalPos);
-            AcceptEvent();
-            return;
-        }
-
-        if (_isEnd) return;
-        Clear();
-        _isEnd = true;
-        AcceptEvent();
-    }
-
-    private bool TryGetKeywordDescription(string key, out string desc)
->>>>>>> Stashed changes
     {
         desc = null;
         if (string.IsNullOrEmpty(key)) return false;
