@@ -44,12 +44,6 @@ public partial class NodeCard : Control
     private const int maxInstance = int.MaxValue;
 
     /// <summary>
-    /// 卡牌初始大小
-    /// </summary>
-    private const float BaseScaleFactor = 0.5f;
-    private Vector2 _baseScale;
-
-    /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
@@ -70,8 +64,7 @@ public partial class NodeCard : Control
             var node = Scene.Instantiate<NodeCard>();
             node.Model = cardModel;
             node.Position = position;
-            node._baseScale = node.Scale * BaseScaleFactor;
-            node.Scale = node._baseScale;
+            node.Scale *= 0.5f;
             node.CardViewMode = cardView;
             if (drawAnimation)
                 node.DrawAnimation();
@@ -93,7 +86,7 @@ public partial class NodeCard : Control
 
             node.Model = cardModel;
             node.Position = position;
-            node.Scale = node._baseScale;
+            node.Scale *= 0.5f;
             node.CardViewMode = cardView;
             if (drawAnimation)
                 node.DrawAnimation();
@@ -110,7 +103,7 @@ public partial class NodeCard : Control
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
     public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle)
-        => CreateCard(cardModel, position, cardView, parent, drawAnimation: false);
+        => CreateCard(cardModel, position,cardView, parent, drawAnimation: false);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
@@ -118,14 +111,14 @@ public partial class NodeCard : Control
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
     public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle)
-        => CreateCard(cardModel, position, cardView, parent, drawAnimation: true);
+        => CreateCard(cardModel, position,cardView, parent, drawAnimation: true);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
     public static NodeCard DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle)
-        => CreateCard(cardModel, position, cardView, null, drawAnimation: false);
+        => CreateCard(cardModel, position,cardView, null, drawAnimation: false);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
@@ -133,7 +126,7 @@ public partial class NodeCard : Control
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
     public static NodeCard DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle)
-        => CreateCard(cardModel, position, cardView, null, drawAnimation: true);
+        => CreateCard(cardModel, position,cardView, null, drawAnimation: true);
 
     /// <summary>
     /// 暂时隐藏一个卡牌节点
@@ -292,7 +285,7 @@ public partial class NodeCard : Control
                     _clickAnimationPlayed = false;
 
                     _clickTween = CreateTween();
-                    _clickTween.TweenProperty(this, "scale", _baseScale * ClickScaleDown, ClickScaleTime)
+                    _clickTween.TweenProperty(this, "scale", Scale * ClickScaleDown, ClickScaleTime)
                         .SetTrans(Tween.TransitionType.Quad)
                         .SetEase(Tween.EaseType.Out);
                 }
@@ -310,7 +303,7 @@ public partial class NodeCard : Control
                         {
                             KillClickTween();
                             _clickTween = CreateTween();
-                            _clickTween.TweenProperty(this, "scale", _baseScale, ClickScaleTime)
+                            _clickTween.TweenProperty(this, "scale", new Vector2(0.5f, 0.5f), ClickScaleTime)
                                 .SetTrans(Tween.TransitionType.Quad)
                                 .SetEase(Tween.EaseType.Out);
 
@@ -320,7 +313,7 @@ public partial class NodeCard : Control
                         {
                             KillClickTween();
                             _clickTween = CreateTween();
-                            _clickTween.TweenProperty(this, "scale", _baseScale, ClickScaleTime)
+                            _clickTween.TweenProperty(this, "scale", new Vector2(0.5f, 0.5f), ClickScaleTime)
                                 .SetTrans(Tween.TransitionType.Quad)
                                 .SetEase(Tween.EaseType.Out);
                         }
@@ -350,7 +343,7 @@ public partial class NodeCard : Control
                     ZIndex += instances.Count * 60;
 
                     KillClickTween();
-                    Scale = _baseScale;
+                    Scale = new Vector2(0.5f, 0.5f);
 
                     Drag();
                 }
@@ -660,7 +653,7 @@ public partial class NodeCard : Control
         if (_colorTween != null && _colorTween.IsValid())
             _colorTween.Kill();
         _colorTween = glowNode.CreateTween();
-        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.ColorA, 1f), 0.5f)
+        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.ColorA,1f), 0.5f)
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
         GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
@@ -675,7 +668,7 @@ public partial class NodeCard : Control
         if (_colorTween != null && _colorTween.IsValid())
             _colorTween.Kill();
         _colorTween = glowNode.CreateTween();
-        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.Default, 1f), 0.5f)
+        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.Default,1f), 0.5f)
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
         GetNode<GpuParticles2D>("%粒子特效").Emitting = false;

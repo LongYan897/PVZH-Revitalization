@@ -35,5 +35,18 @@ public partial class Main : Node
         DesLayer = GetNode<CanvasLayer>("Des");
         AudioContainer = GetNode<Node2D>("Audios");
         //
+        CardModel card1 = CardModel.Load<HailACopter>();
+        CardModel card2 = CardModel.Load<Peashooter>();
+        CardModel card3 = CardModel.Load<CopterCommando>();
+        CardModel card4 = CardModel.Load<FinalMission>();
+        CardModel card5 = CardModel.Load<StartBattle>();
+        card1.Status = Status.FaceUp;
+        card2.Status = Status.FaceUp;
+        card4.Status = Status.FaceUp;
+        card5.Status = Status.FaceUp;
+        NodeCard.DrawACard(card1, new(0,0),CardView.Deck);
+        NodeCard.DrawACard(card2, new(120, 0),CardView.Battle);
+        NodeCard.DrawACard(card4, new(240, 0));
+        NodeCard.DrawACard(card5, new(360, 0));
     }
 }
