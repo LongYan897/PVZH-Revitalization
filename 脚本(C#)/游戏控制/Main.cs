@@ -44,9 +44,6 @@ public partial class Main : Node
         card2.Status = Status.FaceUp;
         card4.Status = Status.FaceUp;
         card5.Status = Status.FaceUp;
-        NodeCard.DrawACard(card1, new(0,0));
-        NodeCard.DrawACard(card2, new(120, 0));
-        NodeCard.DrawACard(card4, new(240, 0));
-        NodeCard.DrawACard(card5, new(360, 0));
+        NodeCard.DrawACard(card1, new(0,0),CardView.Deck);
     }
 }

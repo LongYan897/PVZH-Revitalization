@@ -13,20 +13,38 @@ using Target;
 namespace Card;
 
 /// <summary>
+/// 卡牌的预览模式
+/// </summary>
+public enum CardView
+{
+    /// <summary>
+    /// 战斗中
+    /// </summary>
+    Battle,
+    /// <summary>
+    /// 图鉴中
+    /// </summary>
+    Collection,
+    /// <summary>
+    /// 卡组中
+    /// </summary>
+    Deck
+}
+/// <summary>
 /// 卡牌的可视化部分
 /// </summary>
 [GlobalClass]
 public partial class NodeCard : Control
 {
+    private CardView CardViewMode;
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌.tscn");
     public static NodeCard ChoiceCard { get; private set; }
     public CardModel Model { get; private set; }
     private static readonly Dictionary<NodeCard, CardModel> instances = new();
-    private const int maxInstance = 80;
+    private const int maxInstance = int.MaxValue;
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
-    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
     /// <param name="position">初始位置</param>
@@ -35,6 +53,7 @@ public partial class NodeCard : Control
     public static NodeCard CreateCard(
         CardModel cardModel,
         Vector2 position,
+        CardView cardView = CardView.Battle,
         Node parent = null,
         bool drawAnimation = false)
     {
@@ -46,12 +65,13 @@ public partial class NodeCard : Control
             node.Model = cardModel;
             node.Position = position;
             node.Scale *= 0.5f;
-            parent.AddChild(node);
+            node.CardViewMode = cardView;
             if (drawAnimation)
                 node.DrawAnimation();
             else
                 node.Fresh();
             instances.Add(node, cardModel);
+            parent.AddChild(node);
             node.ZIndex = instances.Count * 30;
             return node;
         }
@@ -67,6 +87,7 @@ public partial class NodeCard : Control
             node.Model = cardModel;
             node.Position = position;
             node.Scale *= 0.5f;
+            node.CardViewMode = cardView;
             if (drawAnimation)
                 node.DrawAnimation();
             else
@@ -78,38 +99,34 @@ public partial class NodeCard : Control
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
-    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent)
-        => CreateCard(cardModel, position, parent, drawAnimation: false);
+    public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle)
+        => CreateCard(cardModel, position,cardView, parent, drawAnimation: false);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
-    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent)
-        => CreateCard(cardModel, position, parent, drawAnimation: true);
+    public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle)
+        => CreateCard(cardModel, position,cardView, parent, drawAnimation: true);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
-    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCard(CardModel cardModel, Vector2 position)
-        => CreateCard(cardModel, position, null, drawAnimation: false);
+    public static NodeCard DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle)
+        => CreateCard(cardModel, position,cardView, null, drawAnimation: false);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
-    /// 若场上卡牌节点数量大于等于40,则从40个节点中取暂时无绑定卡牌的节点
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACard(CardModel cardModel, Vector2 position)
-        => CreateCard(cardModel, position, null, drawAnimation: true);
+    public static NodeCard DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle)
+        => CreateCard(cardModel, position,cardView, null, drawAnimation: true);
 
     /// <summary>
     /// 暂时隐藏一个卡牌节点
@@ -193,16 +210,66 @@ public partial class NodeCard : Control
         hitBtn.GuiInput += OnHitButtonGuiInput;
         GetNode<Area2D>("碰撞箱").AreaEntered += AreaEntered;
         GetNode<Area2D>("碰撞箱").AreaExited += AreaExited;
+
+        var infoBtn = GetNode<NinePatchRect>("%信息按钮");
+        BindControlClickAnimation(infoBtn, OnInfoButtonPressed);
+
+        var opBtn = GetNode<NinePatchRect>("%操作按钮");
+        BindControlClickAnimation(opBtn);
+    }
+    private void BindControlClickAnimation(Control control, System.Action onClick = null)
+    {
+        if (control == null) return;
+        SetupPivot(control);
+        var originScale = control.Scale;
+        bool pressing = false;
+
+        control.GuiInput += (@event) =>
+        {
+            if (!control.Visible) return;
+            if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
+
+            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
+            {
+                if (mb.Pressed)
+                {
+                    pressing = true;
+                    var tween = control.CreateTween();
+                    tween.TweenProperty(control, "scale", originScale * 0.9f, 0.06f)
+                        .SetTrans(Tween.TransitionType.Quad)
+                        .SetEase(Tween.EaseType.Out);
+                }
+                else
+                {
+                    if (pressing)
+                    {
+                        pressing = false;
+                        var tween = control.CreateTween();
+                        tween.TweenProperty(control, "scale", originScale, 0.08f)
+                            .SetTrans(Tween.TransitionType.Back)
+                            .SetEase(Tween.EaseType.Out);
+
+                        onClick?.Invoke();
+                    }
+                }
+            }
+        };
     }
 
     private bool currentPlayable = true;
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
     private bool _isOpen = true;
+    private void OnInfoButtonPressed()
+    {
+        if (CardViewMode == CardView.Battle) return;
+        if (Model == null) return;
 
+        CardDes.DisplayDescription(Model);
+    }
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;
-        if (!isCallDragging) return;
+        if (CardViewMode == CardView.Battle && !isCallDragging) return;
         if (@event is InputEventMouseButton mb)
         {
             if (mb.ButtonIndex == MouseButton.Left)
@@ -258,6 +325,8 @@ public partial class NodeCard : Control
         }
         else if (@event is InputEventMouseMotion)
         {
+            if (CardViewMode != CardView.Battle) return;
+
             if (!Input.IsMouseButtonPressed(MouseButton.Left))
                 return;
 
@@ -306,15 +375,160 @@ public partial class NodeCard : Control
         Fighter.CallTargeted(Model, Model.TargetType);
         NodeRoad.CallTargeted(Model, Model.TargetType);
     }
+    private void SetNode2DVisible(Node2D node, bool visible)
+    {
+        if (node == null) return;
+        node.Visible = visible;
+    }
 
+    private void SetControlVisible(Control control, bool visible)
+    {
+        if (control == null) return;
+
+        control.Visible = visible;
+        control.MouseFilter = visible
+            ? Control.MouseFilterEnum.Stop
+            : Control.MouseFilterEnum.Ignore;
+    }
     private void OnCardClick()
     {
         ChoiceCard = this;
-        CardDes.DisplayDescription(Model);
+
+        if (CardViewMode == CardView.Battle)
+        {
+            CardDes.DisplayDescription(Model);
+            return;
+        }
+
+        ToggleNonBattle();
+    }
+    private Tween _nonBattleTween;
+    private Tween _nonBattleScaleTween;
+
+    private async void ToggleNonBattle()
+    {
+        var nonBattle = GetNode<Node2D>("%非战斗");
+        bool willOpen = !nonBattle.Visible;
+
+        var infoBg = GetNode<Control>("%信息背景");
+        var infoBtn = GetNode<NinePatchRect>("%信息按钮");
+        var opBtn = GetNode<NinePatchRect>("%操作按钮");
+
+        if (_nonBattleTween != null && _nonBattleTween.IsValid())
+            _nonBattleTween.Kill();
+        if (_nonBattleScaleTween != null && _nonBattleScaleTween.IsValid())
+            _nonBattleScaleTween.Kill();
+
+        bool isCollection = CardViewMode == CardView.Collection;
+        bool isDeck = CardViewMode == CardView.Deck;
+
+        if (willOpen)
+        {
+            nonBattle.Visible = true;
+
+            infoBg.PivotOffset = infoBg.Size / 2f;
+            infoBg.Scale = Vector2.Zero;
+            _nonBattleScaleTween = infoBg.CreateTween();
+            _nonBattleScaleTween.TweenProperty(infoBg, "scale", Vector2.One * 1.05f, 0.2f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+            await ToSignal(_nonBattleScaleTween, Tween.SignalName.Finished);
+
+            _nonBattleTween = infoBg.CreateTween();
+            _nonBattleTween.TweenProperty(infoBg, "size:y", 368f, 0.25f)
+                .SetTrans(Tween.TransitionType.Cubic)
+                .SetEase(Tween.EaseType.Out);
+            await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
+
+            if (isCollection)
+            {
+                SetControlVisible(infoBtn, true);
+            }
+            else if (isDeck)
+            {
+                SetControlVisible(opBtn, true);
+
+                _nonBattleTween = infoBg.CreateTween();
+                _nonBattleTween.TweenProperty(infoBg, "size:y", 528f, 0.25f)
+                    .SetTrans(Tween.TransitionType.Cubic)
+                    .SetEase(Tween.EaseType.Out);
+                await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
+
+                SetControlVisible(infoBtn, true);
+            }
+        }
+        else
+        {
+            if (isCollection)
+            {
+                SetControlVisible(infoBtn, false);
+
+                _nonBattleTween = infoBg.CreateTween();
+                _nonBattleTween.TweenProperty(infoBg, "size:y", 205f, 0.25f)
+                    .SetTrans(Tween.TransitionType.Cubic)
+                    .SetEase(Tween.EaseType.Out);
+                await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
+
+                infoBg.PivotOffset = infoBg.Size / 2f;
+                _nonBattleScaleTween = infoBg.CreateTween();
+                _nonBattleScaleTween.TweenProperty(infoBg, "scale", Vector2.Zero, 0.2f)
+                    .SetTrans(Tween.TransitionType.Back)
+                    .SetEase(Tween.EaseType.In);
+                await ToSignal(_nonBattleScaleTween, Tween.SignalName.Finished);
+
+                nonBattle.Visible = false;
+            }
+            else if (isDeck)
+            {
+                SetControlVisible(infoBtn, false);
+
+                _nonBattleTween = infoBg.CreateTween();
+                _nonBattleTween.TweenProperty(infoBg, "size:y", 368f, 0.25f)
+                    .SetTrans(Tween.TransitionType.Cubic)
+                    .SetEase(Tween.EaseType.Out);
+                await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
+
+                SetControlVisible(opBtn, false);
+
+                _nonBattleTween = infoBg.CreateTween();
+                _nonBattleTween.TweenProperty(infoBg, "size:y", 205f, 0.25f)
+                    .SetTrans(Tween.TransitionType.Cubic)
+                    .SetEase(Tween.EaseType.Out);
+                await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
+
+                infoBg.PivotOffset = infoBg.Size / 2f;
+                _nonBattleScaleTween = infoBg.CreateTween();
+                _nonBattleScaleTween.TweenProperty(infoBg, "scale", Vector2.Zero, 0.2f)
+                    .SetTrans(Tween.TransitionType.Back)
+                    .SetEase(Tween.EaseType.In);
+                await ToSignal(_nonBattleScaleTween, Tween.SignalName.Finished);
+
+                nonBattle.Visible = false;
+            }
+            else
+            {
+                SetControlVisible(infoBtn, false);
+                SetControlVisible(opBtn, false);
+                nonBattle.Visible = false;
+            }
+        }
     }
 
     private async Task EndDrag()
     {
+        if (CardViewMode != CardView.Battle)
+        {
+            _isDragging = false;
+            if (target != null)
+            {
+                Fighter.DeleteTargeted(Model.TargetType);
+                NodeRoad.DeleteTargeted(Model.TargetType);
+                target = null;
+            }
+            ReturnToOrigin();
+            return;
+        }
+
         var savedTarget = target;
         ZIndex -= instances.Count * 60;
         if (ChoiceCard == this) ChoiceCard = null;
@@ -344,6 +558,7 @@ public partial class NodeCard : Control
 
     private void AreaEntered(Area2D area)
     {
+        if (CardViewMode != CardView.Battle) return;
         if (!Model.CanPlay()) return;
         if (target != null) return;
         if (area.HasMeta("Target"))
@@ -392,6 +607,7 @@ public partial class NodeCard : Control
 
     private void AreaExited(Area2D area)
     {
+        if (CardViewMode != CardView.Battle) return;
         if (target == null) return;
         if (area.HasMeta("Target"))
         {
@@ -462,6 +678,23 @@ public partial class NodeCard : Control
         _callTween.TweenProperty(this, "modulate", new Color(1, 1, 1, 1), 0.1f);
     }
 
+    private void DarkenLight()
+    {
+        var glowNode = GetNode<TextureRect>("%卡牌发光背景");
+        KillCallTween();
+        if (_colorTween != null && _colorTween.IsValid())
+            _colorTween.Kill();
+        _colorTween = glowNode.CreateTween();
+        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.Default, 0f), 0f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+
+        _callTween = CreateTween();
+        _callTween.TweenProperty(this, "modulate", new Color(1f, 1f, 1f, 1), 0.1f);
+        GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
+        target = null;
+    }
+
     private void Darkest()
     {
         var glowNode = GetNode<TextureRect>("%卡牌发光背景");
@@ -527,6 +760,18 @@ public partial class NodeCard : Control
         await ToSignal(_callTween, Tween.SignalName.Finished);
     }
 
+    private void SetupPivot(Control control)
+    {
+        CallDeferred(nameof(ApplyPivot), control);
+        control.Resized += () => ApplyPivot(control);
+    }
+
+    private void ApplyPivot(Control control)
+    {
+        if (control == null || !IsInstanceValid(control)) return;
+        control.PivotOffset = control.Size / 2f;
+    }
+
     /// <summary>
     /// 每次修改卡牌时调用 用于刷新卡牌属性
     /// </summary>
@@ -534,6 +779,27 @@ public partial class NodeCard : Control
     {
         if (Model != null)
         {
+
+            if (CardViewMode == CardView.Battle)
+            {
+                GetNode<Node2D>("%非战斗").Visible = false;
+            }
+            else
+            {
+                var opBtn = GetNode<NinePatchRect>("%操作按钮");
+                SetControlVisible(opBtn, false);
+
+                var infoBtn = GetNode<NinePatchRect>("%信息按钮");
+                SetControlVisible(infoBtn, false);
+
+                var nonBattle = GetNode<Node2D>("%非战斗");
+                nonBattle.Visible = false;
+
+                var infoBg = GetNode<Control>("%信息背景");
+                infoBg.Size = new Vector2(infoBg.Size.X, 205f);
+                infoBg.Scale = Vector2.Zero;
+                infoBg.PivotOffset = infoBg.Size / 2f;
+            }
             _isOpen = true;
             if (Model.Status == Status.FaceUp)
             {
@@ -640,20 +906,7 @@ public partial class NodeCard : Control
                         CardType.None | CardType.Environment => new(128.0f, 92f),
                         _ => new(128.0f, 96f)
                     };
-                    frameBg.Modulate = Model.Class switch
-                    {
-                        Class.Smarty => new Color("ffffff"),
-                        Class.Solar => new Color("f5c728"),
-                        Class.Guardian => new Color("844837"),
-                        Class.MegaGrow => new Color("3d9854"),
-                        Class.Kabloom => new Color("f43939"),
-                        Class.Brainy => new Color("e652c8"),
-                        Class.Sneaky => new Color("393a39"),
-                        Class.Beastly => new Color("2ebbda"),
-                        Class.Crazy => new Color("661dd1"),
-                        Class.Hearty => new Color("f19409"),
-                        _ => new Color("ffffff")
-                    };
+                    frameBg.Modulate = Model.Class.ToColor();
                     frameBg.Texture = Model.CardType switch
                     {
                         CardType.Hero | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
@@ -766,6 +1019,7 @@ public partial class NodeCard : Control
                     hps.Visible = false;
                     GetNode<Node2D>("%等级").Visible = false;
                 }
+                JustFresh();
             }
             else if (Model.Status == Status.FaceDown)
             {
@@ -787,8 +1041,6 @@ public partial class NodeCard : Control
                     }
                 };
             }
-
-            JustFresh();
         }
 
     }
@@ -798,10 +1050,16 @@ public partial class NodeCard : Control
     public void JustFresh()
     {
         if (Model == null) return;
-
-        if (Model.CanPlay())
-            Darken();
+        if (CardViewMode == CardView.Battle)
+        {
+            if (Model.CanPlay())
+                Darken();
+            else
+                Darkest();
+        }
         else
-            Darkest();
+        {
+            DarkenLight();
+        }
     }
 }

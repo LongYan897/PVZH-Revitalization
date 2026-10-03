@@ -74,17 +74,18 @@
   "FinalMission.Pack": "银河",
   "FinalMission.Flavor": "“往返票和单程票一个价。“",
 
-  "StartBattle.Title": "皮纳他战斗",
+  "StartBattle.Title": "皮纳他总动员",
   "StartBattle.Des": "让一条线额外_战斗_一次",
-  "StartBattle.Cost": 0,
+  "StartBattle.Cost": 2,
   "StartBattle.Camp": "僵尸",
   "StartBattle.Type": "锦囊",
-  "StartBattle.Rarity": "令牌",
-  "StartBattle.Category": "疯狂",
+  "StartBattle.Rarity": "传说",
+  "StartBattle.Category": "健壮",
   "StartBattle.Animation": "res://素材(C#)/卡牌/召唤直升机/召唤直升机锦囊动画.tres",
   "StartBattle.Icon": "res://场景(C#)/卡面/startBattle.tscn",
-  "StartBattle.Label": [ "" ],
+  "StartBattle.Label": [ "运动员" ],
   "StartBattle.Tag": [],
+  "StartBattle.Pack": "高级",
   "StartBattle.Flavor": "敲开它，里面全是僵尸。没人知道为什么僵尸会藏在皮纳塔里，但大家都假装这是正常的。"
 
 }
