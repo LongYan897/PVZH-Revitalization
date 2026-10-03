@@ -6,6 +6,7 @@
 variation_transform = Transform2D(1, 0.3, 0, 1, 0, 0)
 
 [node name="派系条" type="Control" unique_id=940418284]
+custom_minimum_size = Vector2(720, 40)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,3 +38,10 @@ offset_right = 123.0
 offset_bottom = 120.0
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("1_2ufvv")
+
+[node name="排列" type="HFlowContainer" parent="." unique_id=1383357058]
+layout_mode = 0
+offset_top = 60.0
+offset_right = 1036.0
+offset_bottom = 253.0
+scale = Vector2(0.694, 0.694)

@@ -111,6 +111,13 @@ theme_override_fonts/font = SubResource("FontFile_gvd7m")
 theme_override_font_sizes/font_size = 32
 text = "卡牌"
 
+[node name="卡牌列表" type="HFlowContainer" parent="图鉴信息" unique_id=567356080]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 300.0
+offset_right = 720.0
+offset_bottom = 400.0
+
 [node name="顶部遮挡" type="Sprite2D" parent="." unique_id=392940115]
 z_index = 30
 position = Vector2(361.5, 150)
