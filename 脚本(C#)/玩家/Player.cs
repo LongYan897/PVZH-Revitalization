@@ -17,10 +17,10 @@ public class Player
     /// 玩家的名称
     /// </summary>
     public string Id { get; private set; }
-    /// <summary>
-    /// 玩家获得的卡牌(这里面的卡牌均为克隆模板切勿修改)
-    /// </summary>
     private readonly List<CardModel> _cards = new List<CardModel>();
+    /// <summary>
+    /// 玩家在游戏中收集的卡牌(这里面的卡牌均为克隆模板切勿修改)
+    /// </summary>
     public IReadOnlyList<CardModel> Cards => _cards;
     /// <summary>
     /// 玩家的战斗状态

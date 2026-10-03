@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://bveho05qklxli"]
+
+[ext_resource type="Script" uid="uid://ccaq7lefsnojt" path="res://脚本(C#)/游戏控制/Main.cs" id="1_u0aj0"]
+
+[node name="MainController" type="Node" unique_id=2010804404]
+script = ExtResource("1_u0aj0")
+metadata/_custom_type_script = "uid://ccaq7lefsnojt"
+
+[node name="Fighters" type="CanvasLayer" parent="." unique_id=627124979]
+layer = 25
+
+[node name="Animators" type="CanvasLayer" parent="." unique_id=1250929900]
+layer = 100
+
+[node name="Cards" type="CanvasLayer" parent="." unique_id=1406632363]
+layer = 50
+
+[node name="Des" type="CanvasLayer" parent="." unique_id=1151842865]
+layer = 1000
+
+[node name="Audios" type="Node2D" parent="." unique_id=95414566]
+
+[node name="SceneAnimF" type="CanvasLayer" parent="." unique_id=846727921]
+unique_name_in_owner = true
+layer = 15
+
+[node name="SceneAnimFToC" type="CanvasLayer" parent="." unique_id=952960160]
+unique_name_in_owner = true
+layer = 40
+
+[node name="SceneAnimCToA" type="CanvasLayer" parent="." unique_id=401318343]
+unique_name_in_owner = true
+layer = 75
+
+[node name="SceneAnimAToD" type="CanvasLayer" parent="." unique_id=1035361643]
+unique_name_in_owner = true
+layer = 150
