@@ -27,7 +27,7 @@ public class BackupDancer : FighterCardModel
                     {
                         if (CardCmd.AnyZombie(z => z.HasLabel("跳舞")))
                         {
-                            FighterCardModel fighter = await CardCmd.PlayerChoiceFighter(null, card, null);
+                            FighterCardModel fighter = await CardCmd.PlayerChoiceZombie(null, card,(z)=>z.HasLabel("跳舞"));
                             target = fighter;
                             redo = await fighter.Atk.Gain(2,Variable.VariableReason.Zombie);
                         }

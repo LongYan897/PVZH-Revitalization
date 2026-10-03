@@ -145,14 +145,37 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task<FighterCardModel> PlayerChoiceFighter(Player player, CardModel cardModel, Func<FighterCardModel, bool> filter = null)
     {
-        if (filter == null)
-            filter = (f) => true;
+        filter ??= (f) => true;
         Func<ITarget, bool> itgFilter = (itg) =>
         {
             return itg.CanBeFighter(out var c) && filter(c);
         };
         var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Fighters, itgFilter);
         return itg.CanBeFighter(out var fighter) ? fighter : null;
+    }
+    /// <summary>
+    /// 让玩家选择一个僵尸(自定义过滤器)
+    /// </summary>
+    /// <param name="player">选中的玩家</param>
+    /// <param name="cardModel">是哪个卡牌调用的</param>
+    /// <param name="filter">过滤器</param>
+    /// <returns></returns>
+    public static async Task<FighterCardModel> PlayerChoiceZombie(Player player, CardModel cardModel, Func<FighterCardModel, bool> filter = null)
+    {
+        filter ??= (f) => true;
+        return await PlayerChoiceFighter(player, cardModel, (f) => f.Camp == Camp.Zombie && filter(f));
+    }
+    /// <summary>
+    /// 让玩家选择一个植物(自定义过滤器)
+    /// </summary>
+    /// <param name="player">选中的玩家</param>
+    /// <param name="cardModel">是哪个卡牌调用的</param>
+    /// <param name="filter">过滤器</param>
+    /// <returns></returns>
+    public static async Task<FighterCardModel> PlayerChoicePlant(Player player, CardModel cardModel, Func<FighterCardModel, bool> filter = null)
+    {
+        filter ??= (f) => true;
+        return await PlayerChoiceFighter(player, cardModel, (f) => f.Camp == Camp.Plant && filter(f));
     }
     /// <summary>
     /// 让玩家选择一条线(自定义过滤器)
@@ -163,8 +186,7 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task<Road> PlayerChoiceRoad(Player player, CardModel cardModel, Func<Road, bool> filter = null)
     {
-        if (filter == null)
-            filter = (f) => true;
+        filter ??= (f) => true;
         Func<ITarget, bool> itgFilter = (itg) =>
         {
             return itg.CanBeRoad(out var r) && filter(r);
