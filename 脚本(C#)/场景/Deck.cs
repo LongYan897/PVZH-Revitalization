@@ -26,8 +26,11 @@ public partial class Deck : Node2D
     private TextureButton Zombie; // 僵尸按钮
     private Control Information; //图鉴信息
     private ColorRect Cards; //卡片信息
+    private PackedScene classScene;
     private List<Node> CurrentInformation = new List<Node>();
-    private List<Node> CurrentCards = new List<Node>();
+    private List<NodeCard> CurrentCards = new List<NodeCard>();
+    private Dictionary<Class, List<CardModel>> CurrentClassCards = new Dictionary<Class, List<CardModel>>();
+    
     private List<Color> ThemeColors1 => new List<Color> {
         new Color(0.411f, 0.69f, 0.38f, 1.0f),
         new Color(0.535f, 0.9f, 0.495f, 1.0f),
@@ -48,6 +51,7 @@ public partial class Deck : Node2D
         Zombie = FindChild("僵尸按钮") as TextureButton;
         Information = GetNode<Control>("%图鉴信息");
         Cards = GetNode<ColorRect>("%卡牌标志");
+        classScene = ResourceLoader.Load<PackedScene>("res://场景(C#)/派系条.tscn");
         Return.Pressed += OnReturnPressed;
         Plant.Pressed += OnPlantPressed;
         Zombie.Pressed += OnZombiePressed;
@@ -114,29 +118,75 @@ public partial class Deck : Node2D
         Cards.Position = new Vector2(-88, (position.Y - 1) * 100 + 280 + 72+64);
         return (position.Y - 1) * 100 + 280 + 72 + 64;
     }
-    private float CreateCards(Class category,Vector2 originPosition)
+
+    private void CreateCurrent80Cards(int line,float y)
     {
-        List<CardModel> cards = CardModel.AllCards.Where(c =>c.Class == category).ToList();
-        Vector2 position = new Vector2(1, 1);
-        foreach(CardModel card in cards)
+        int count = 0;
+        foreach (Class c in CurrentClassCards.Keys) count += CurrentClassCards[c].Count;
+        int currentClassN = 0;
+        Vector2 originPosition = new Vector2(-80+16,y+36);
+        Vector2 position = originPosition;
+        Control classI = classScene.Instantiate<Control>();
+        classI.Position = new Vector2(0, y - 36);
+        classI.GetNode<TextureRect>("图标").Texture = ResourceLoader.Load<Texture2D>(CurrentClassCards.Keys.ToList()[currentClassN].ToPath());
+        classI.GetNode<Label>("文本").Text = CurrentClassCards.Keys.ToList()[currentClassN].ToString();
+        int ReadedClassCount = 0;
+        GD.Print(count);
+        Class currentClass = CurrentClassCards.Keys.ToList()[currentClassN];
+        for (int i = 0;i < Math.Min(count,80); i++)
         {
-            CardModel cardC = card.Clone();
-            cardC.Status = Status.FaceUp;
-            NodeCard nodeCard = NodeCard.DisplayCardAt(cardC,new Vector2((position.X - 1) * 170,(position.Y-1) * 130)+originPosition,GetNode<Control>("%图鉴信息"));
-            nodeCard.Scale = new Vector2(1, 1) * 0.625f;
+            NodeCard nodeCard = NodeCard.DisplayCardAt(CurrentClassCards[currentClass][i-ReadedClassCount],position,GetNode<Control>("图鉴信息"));
+            nodeCard.Scale = Vector2.One * 0.625f;
+            position += new Vector2(1, 0) * 176;
+            if (position.X > originPosition.X + 4 * 176)
+            {
+                position.X = originPosition.X;
+                position.Y += 140.625f;
+            }
+            if (i + 1 > CurrentClassCards[currentClass].Count && currentClassN+1 != CurrentClassCards.Keys.ToList().Count)
+            {
+                ReadedClassCount += CurrentClassCards[currentClass].Count;
+                currentClassN++;
+                currentClass = CurrentClassCards.Keys.ToList()[currentClassN];
+                Control neoclassI = classScene.Instantiate<Control>();
+                neoclassI.Position = new Vector2(0, position.Y + 36+120.625f/2);
+                neoclassI.GetNode<TextureRect>("图标").Texture = ResourceLoader.Load<Texture2D>(CurrentClassCards.Keys.ToList()[currentClassN].ToPath());
+                neoclassI.GetNode<Label>("文本").Text = CurrentClassCards.Keys.ToList()[currentClassN].ToString();
+                position.Y += 72 + 120.625f;
+            }
         }
-        return (position.Y - 1) * 130 + originPosition.Y + 148;
     }
+    
 
     private void InitializeInformation(string camp)
     {
         float cardOriginY = CreateSpirtes(camp);
-        List<Class> classes = camp switch
+        foreach (NodeCard card in CurrentCards)
+        {
+            _ = card.Model.DestroyMe();
+        }
+        List<Class> classes = sortClassFromCamp(camp);
+        foreach (Class c in classes)
+        {
+            CurrentClassCards[c] = new List<CardModel>();
+            int cost = 0;
+            while (true){
+                List<CardModel> cards = CardModel.AllCards.Where(cm => cm.Cost.Current == cost && cm.Class == c).ToList();
+                if (cards.Count == 0) break;
+                CurrentClassCards[c].AddRange(cards);
+                cost++;
+            }
+        }
+        CreateCurrent80Cards(1,cardOriginY);
+    }
+    private List<Class> sortClassFromCamp(string camp)
+    {
+        return camp switch
         {
             "植物" => [
+                Class.MegaGrow,
                 Class.Guardian,
                 Class.Kabloom,
-                Class.MegaGrow,
                 Class.Smarty,
                 Class.Solar
             ],
@@ -147,13 +197,7 @@ public partial class Deck : Node2D
                 Class.Brainy,
                 Class.Beastly,
             ],
-            _=> []
+            _ => []
         };
-        Vector2 originPosition = new Vector2(40, cardOriginY+72);
-        foreach (Class c in classes)
-        {
-            originPosition.Y = CreateCards(c,originPosition);
-            
-        }
     }
 }

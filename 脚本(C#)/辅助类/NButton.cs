@@ -10,7 +10,7 @@ namespace Pack;
 [GlobalClass]
 public partial class NButton : TextureButton
 {
-    private Vector2 Size;
+    private new Vector2 Size;
     public override void _Ready()
     {
         ButtonDown += OnNButtonDown;

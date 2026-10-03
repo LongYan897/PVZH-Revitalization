@@ -21,14 +21,14 @@ public partial class HeroModel : Control
     /// <param name="camp"></param>
     /// <param name="category"></param>
     /// <returns></returns>
-    public static List<Type> SeekHeroModel(string camp = "null",string category = "null") 
+    public static List<Type> SeekHeroModel(string camp = null,string category = null) 
     {
         List<Type> heroModels = new List<Type>();
         List<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(HeroModel))).ToList();
         foreach(Type type in types)
         {
             string name = type.Name;
-            if (camp == "null" || HeroString.GetData(name, "Camp").AsString() == camp && (category == "null" || HeroString.GetData(name, "Category").AsStringArray().Contains(category)))
+            if (camp == null || HeroString.GetData(name, "Camp").AsString() == camp && (category == null || HeroString.GetData(name, "Category").AsStringArray().Contains(category)))
             {
                 heroModels.Add(type);
             }
