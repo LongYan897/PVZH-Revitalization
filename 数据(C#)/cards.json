@@ -81,7 +81,7 @@
   "StartBattle.Type": "锦囊",
   "StartBattle.Rarity": "传说",
   "StartBattle.Category": "有脑",
-  "StartBattle.Animation": "res://素材(C#)/卡牌/召唤直升机/召唤直升机锦囊动画.tres",
+  "StartBattle.Animation": "res://素材(C#)/卡牌/皮纳塔总动员/penata.tres",
   "StartBattle.Icon": "res://场景(C#)/卡面/penata.tscn",
   "StartBattle.Label": [ "运动员", "派对" ],
   "StartBattle.Tag": [],

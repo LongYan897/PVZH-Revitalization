@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://bpe88v218ur1n"
+path="res://.godot/imported/skeleton.atlas-0509c06226e4278aab9e798443ea0137.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/皮纳塔总动员/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-0509c06226e4278aab9e798443ea0137.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

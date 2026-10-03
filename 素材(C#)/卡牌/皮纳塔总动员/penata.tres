@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://bl387q1pbkgur"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://bpe88v218ur1n" path="res://场景/僵尸卡/皮纳塔总动员/skeleton.atlas" id="1_8daa4"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://df1ajr8frbdp0" path="res://场景/僵尸卡/皮纳塔总动员/skeleton.skel" id="2_buxhf"]
+
+[resource]
+atlas_res = ExtResource("1_8daa4")
+skeleton_file_res = ExtResource("2_buxhf")

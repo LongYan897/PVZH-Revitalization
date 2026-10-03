@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://df1ajr8frbdp0"
+path="res://.godot/imported/skeleton.skel-1440c5cca5400e7fa1187e871fffe2c5.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/皮纳塔总动员/skeleton.skel"
+dest_files=["res://.godot/imported/skeleton.skel-1440c5cca5400e7fa1187e871fffe2c5.spskel"]
+
+[params]
+
