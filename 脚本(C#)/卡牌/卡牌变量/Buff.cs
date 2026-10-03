@@ -13,6 +13,10 @@ namespace Card;
 public abstract class Buff
 {
     /// <summary>
+    /// 能否被转移到其他卡牌上
+    /// </summary>
+    public virtual bool IsTransferable => true;
+    /// <summary>
     /// 关心的时点
     /// </summary>
     public abstract Timing[] Timings { get; }
@@ -24,6 +28,30 @@ public abstract class Buff
     /// <param name="card">当前挂载的卡牌</param>
     /// <param name="parameters">传入的参数（按照时点类型传参）</param>
     public abstract Task OnTiming(Timing timing, CardModel card, params object[] parameters);
+}
+
+/// <summary>
+/// 可自定义时点的 Buff，供 Mod 使用
+/// </summary>
+public class CustomBuff : Buff
+{
+    private readonly Timing[] _timings;
+    private readonly Func<Timing, CardModel, object[], Task> _callback;
+
+    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback)
+    {
+        _timings = timings ?? Array.Empty<Timing>();
+        _callback = callback;
+    }
+
+    public override Timing[] Timings => _timings;
+
+    public override Task OnTiming(Timing timing, CardModel card, params object[] parameters)
+    {
+        if (_callback == null)
+            return Task.CompletedTask;
+        return _callback(timing, card, parameters);
+    }
 }
 
 /// <summary>

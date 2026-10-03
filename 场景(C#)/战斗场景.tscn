@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://dn6rnqlp2dsir"]
 
-[ext_resource type="Script" uid="uid://cis7io23yp5ee" path="res://脚本(C#)/战斗相关/BattleHandler.cs" id="1_clb5w"]
 [ext_resource type="PackedScene" uid="uid://dklertu5xn7l" path="res://场景(C#)/道路.tscn" id="1_fcwtx"]
 [ext_resource type="Texture2D" uid="uid://coy0lm12aip86" path="res://素材/地图/迪斯科/BGDisco_top.png" id="2_bggyq"]
 [ext_resource type="Texture2D" uid="uid://j446ojku4fbu" path="res://素材/地图/迪斯科/BGDisco_cover.png" id="3_41p5g"]
@@ -13,9 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://c5h40kyhmmcp5" path="res://场景/UI对象/护盾.tscn" id="17_ttxd2"]
 [ext_resource type="PackedScene" uid="uid://dk5iqnymyusuv" path="res://场景/UI对象/设置按钮.tscn" id="18_tsqrd"]
 
-[node name="战斗场景" type="Node2D" unique_id=630781186]
-script = ExtResource("1_clb5w")
-metadata/_custom_type_script = "uid://cis7io23yp5ee"
+[node name="战斗场景" type="Node2D" unique_id=405729562]
 
 [node name="顶部" type="Sprite2D" parent="." unique_id=313599328]
 position = Vector2(364, 155)
@@ -69,21 +66,39 @@ type = 1
 [node name="设置按钮" parent="." unique_id=2042087439 instance=ExtResource("18_tsqrd")]
 visible = false
 
-[node name="单位层" type="CanvasLayer" parent="." unique_id=1587027923]
-
 [node name="道路层" type="CanvasLayer" parent="." unique_id=1236996177]
+layer = 10
 
 [node name="1" parent="道路层" unique_id=1887504612 instance=ExtResource("1_fcwtx")]
-position = Vector2(152, 612)
+offset_left = 152.0
+offset_top = 612.0
+offset_right = 172.0
+offset_bottom = 632.0
 
 [node name="2" parent="道路层" unique_id=1552096424 instance=ExtResource("1_fcwtx")]
-position = Vector2(256, 612)
+offset_left = 256.0
+offset_top = 612.0
+offset_right = 276.0
+offset_bottom = 632.0
+Index = 1
 
 [node name="3" parent="道路层" unique_id=755354881 instance=ExtResource("1_fcwtx")]
-position = Vector2(360, 612)
+offset_left = 360.0
+offset_top = 612.0
+offset_right = 380.0
+offset_bottom = 632.0
+Index = 2
 
 [node name="4" parent="道路层" unique_id=357991681 instance=ExtResource("1_fcwtx")]
-position = Vector2(464, 612)
+offset_left = 464.0
+offset_top = 612.0
+offset_right = 484.0
+offset_bottom = 632.0
+Index = 3
 
 [node name="5" parent="道路层" unique_id=1640761240 instance=ExtResource("1_fcwtx")]
-position = Vector2(568, 612)
+offset_left = 568.0
+offset_top = 612.0
+offset_right = 588.0
+offset_bottom = 632.0
+Index = 4

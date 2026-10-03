@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://07qyvp0gc3k1"]
+
+[ext_resource type="Texture2D" uid="uid://4cui08ofncle" path="res://场景/僵尸卡组/爱尔兰小鬼僵尸/icon.png" id="1_sbyj1"]
+
+[node name="卡面" type="Control" unique_id=31635480]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=611447287]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 27.0
+offset_right = 229.0
+offset_bottom = 211.0
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("1_sbyj1")
+expand_mode = 1
+stretch_mode = 3

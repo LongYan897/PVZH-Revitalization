@@ -232,13 +232,19 @@ expand_mode = 1
 
 [node name="卡框" type="TextureRect" parent="正面卡牌" unique_id=1111197190]
 unique_name_in_owner = true
-offset_left = 128.0
-offset_top = 96.5
-offset_right = 128.0
-offset_bottom = 96.5
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+offset_right = 256.0
+offset_bottom = 224.0
+grow_horizontal = 0
+grow_vertical = 0
+pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 texture = ExtResource("6_yam0n")
-expand_mode = 1
 stretch_mode = 3
 
 [node name="卡面容器" type="Node2D" parent="正面卡牌" unique_id=346698980]
@@ -252,7 +258,8 @@ z_index = 2
 unique_name_in_owner = true
 position = Vector2(224, 157.5)
 
-[node name="数值" type="RichTextLabel" parent="正面卡牌/生命值容器" unique_id=507951206]
+[node name="血量数值" type="RichTextLabel" parent="正面卡牌/生命值容器" unique_id=507951206]
+unique_name_in_owner = true
 offset_left = 195.0
 offset_top = 120.5
 offset_right = 254.0
@@ -278,7 +285,8 @@ position = Vector2(7, 0)
 unique_name_in_owner = true
 position = Vector2(135, 157.5)
 
-[node name="数值" type="RichTextLabel" parent="正面卡牌/攻击力容器" unique_id=967735247]
+[node name="伤害数值" type="RichTextLabel" parent="正面卡牌/攻击力容器" unique_id=967735247]
+unique_name_in_owner = true
 offset_left = 105.0
 offset_top = 120.5
 offset_right = 164.0
@@ -319,6 +327,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="数值" type="RichTextLabel" parent="正面卡牌/费用容器" unique_id=1026296633]
+unique_name_in_owner = true
 offset_left = 201.0
 offset_top = 2.0
 offset_right = 255.0

@@ -22,20 +22,19 @@ public class FinalMission : CardModel
     public override bool FriendTarget => true;
     public override async Task Play(ITarget target)
     {
-        var zomb = target as Fighter;
-        if (zomb.Model.Camp == Camp.Zombie)
+        if (target.CanBeFighter(out var zomb) && zomb.Camp == Camp.Zombie)
         {
-            Fighter plant = (Fighter)(await CardCmd.PlayerChoiceTarget(null, this, TargetType.Fighters, (itg) => itg is Fighter fighter && fighter.Model.Camp == Camp.Plant));
+            FighterCardModel plant = await CardCmd.PlayerChoiceFighter(null, this, (itg) => itg.Camp == Camp.Plant);
             
-            await PlayInstantAnimation("intro", zomb);
+            await PlayInstantAnimation("intro", target);
 
-            await zomb.Model.Kill(Variable.VariableReason.Trick);
+            await zomb.Kill(Variable.VariableReason.Trick);
 
-            if (plant != null && plant.Model.Camp == Camp.Plant)
+            if (plant != null)
             {
-                await PlayInstantAnimation("hit", plant);
+                await PlayInstantAnimation("hit", plant.Targeting());
                 
-                await plant.Model.ApplyDamage(4,Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
+                await plant.ApplyDamage(4,Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
             }
         }
     }

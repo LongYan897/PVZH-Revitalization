@@ -19,7 +19,7 @@ public class StartBattle : CardModel
     {
         if (target is NodeRoad road)
         {
-            if (road.LastTargetKind == NodeRoad.RoadTargetKind.Line)
+            if (road.LastTargetKind == RoadTargetKind.Line)
             {
                 await PlayInstantAnimation("bloom",target);
                 await road.Model.Start();

@@ -198,7 +198,8 @@ public partial class CardDes : Control
         }
     }
 
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     public void CardTryFresh(CardModel cardModel)
     {
         if (cardModel == null) return;
@@ -418,9 +419,9 @@ public partial class CardDes : Control
             if (Model.Cost.HasChanged)
             {
                 if (Model.Cost.PositiveChanged)
-                    cost.AddThemeColorOverride("default_color", _colorBox.ColorB);
+                    cost.Modulate = _colorBox.ColorB;
                 else
-                    cost.AddThemeColorOverride("default_color", _colorBox.ColorC);
+                    cost.Modulate = _colorBox.ColorC;
             }
             if (Model is FighterCardModel fighterCard)
             {
@@ -435,22 +436,28 @@ public partial class CardDes : Control
                 if (fighterCard.Hp.HasChanged)
                 {
                     if (fighterCard.Hp.PositiveChanged)
-                        GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.ColorB);
+                        GetNode<Label>("%血量数值").SelfModulate = _colorBox.ColorB;
                     else
-                        GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
+                    {
+                        if (fighterCard.MaxHp.Current == fighterCard.Hp.Current)
+                            GetNode<Label>("%血量数值").SelfModulate = _colorBox2.Default;
+                        else
+                            GetNode<Label>("%血量数值").SelfModulate = _colorBox.ColorC;
+                    }
                 }
                 else
-                    GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.Default);
+                    GetNode<Label>("%血量数值").SelfModulate = _colorBox.Default;
 
                 if (fighterCard.Atk.HasChanged)
                 {
                     if (fighterCard.Atk.PositiveChanged)
-                        GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.ColorB);
+                        GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorB;
                     else
-                        GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
+                        GetNode<Label>("%伤害数值").SelfModulate = _colorBox2.Default;
                 }
                 else
-                    GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.Default);
+                    GetNode<Label>("%伤害数值").SelfModulate = _colorBox.Default;
+
                 GetNode<SpineHandler>("%土坑").Visible = Model.Camp switch
                 {
                     Camp.Plant => false,
@@ -478,7 +485,7 @@ public partial class CardDes : Control
             GetNode<Sprite2D>("Shadow").Position = Model.Camp switch
             {
                 Camp.Zombie => new(0, -229.0f),
-                Camp.Plant => new(0, -263.0f),
+                Camp.Plant => new(0, -233.0f),
                 _ => new()
             };
             GetNode<Label>("%属性标签").Text = $"-{string.Join(" ", Model.Labels.Current)} {Model.CardType switch

@@ -17,13 +17,11 @@ public class RollingStone : CardModel
 
     public override async Task Play(ITarget target)
     {
-        var tg = (Fighter)target;
-        if (tg.Model.Camp == Camp.Plant)
+        if (target.CanBeFighter(out FighterCardModel tg))
         {
             WavPlayer.Play("res://素材(C#)/卡牌/滚石/intro_1.wav");
             await PlayInstantAnimation("intro", target);
-
-            await tg.Model.Kill(Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
+            await tg.Kill(Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
         }
     }
 }

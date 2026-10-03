@@ -18,4 +18,26 @@ public partial class HeroInstance : Control, ITarget
     {
         return false;
     };
+
+    public bool Calling => throw new NotImplementedException();
+
+    public void OnCallTargeted(TargetType type)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnDeleteTargeted(TargetType type)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnDistargeted(TargetContext ctx)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnTargeted(TargetContext ctx)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -12,11 +12,11 @@ layer = 25
 [node name="Animators" type="CanvasLayer" parent="." unique_id=1250929900]
 layer = 100
 
-[node name="Cards" type="CanvasLayer" parent="." unique_id=1406632363]
-layer = 50
-
 [node name="Des" type="CanvasLayer" parent="." unique_id=1151842865]
 layer = 1000
+
+[node name="Cards" type="CanvasLayer" parent="." unique_id=1406632363]
+layer = 50
 
 [node name="Audios" type="Node2D" parent="." unique_id=95414566]
 

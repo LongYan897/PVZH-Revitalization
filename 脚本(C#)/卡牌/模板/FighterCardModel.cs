@@ -2,9 +2,13 @@ using Battle;
 using Battle.Entity;
 using Card.Cmd;
 using Card.String;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
+using Variable;
+using Variable.Special;
+using static Godot.HttpRequest;
 
 namespace Card;
 
@@ -18,16 +22,50 @@ public class FighterCardModel : CardModel
         Atk = new(this, "Attack", cardString.Attack);
         AtkType = new(this, "AttackType", cardString.AtkType);
         Hp = new(this, "Health", cardString.Health);
+        MaxHp = new(this, "HealthMax", cardString.Health);
         HpType = new(this, "HealthType", cardString.HpType);
         CardTag = cardString.CardTag;
+        _ = AddBuff(new HpBuff(), VariableReason.Self);
         return LoadCustomData(cardString);
     }
+    /// <summary>
+    /// 控制单位血量不超过最大血量
+    /// </summary>
+    private class HpBuff : Buff
+    {
+        public override bool IsTransferable => false;
+        public override Timing[] Timings => [Timing.OnVariableChanged];
+
+        public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
+        {
+            if (card is not FighterCardModel fighter) return;
+
+            if (timing == Timing.OnVariableChanged)
+            {
+                if (parameters.Length < 1) return;
+                var key = parameters[0] as string;
+                if (key != "Health" && key != "HealthMax") return;
+            }
+
+            if (fighter.Hp.Current > fighter.MaxHp.Current)
+                await fighter.Hp.Set(fighter.MaxHp.Current, VariableReason.Reset);
+        }
+    }
+    public ITarget Targeting() => Fighter.GetNode(this);
+    /// <summary>
+    /// 所处的道路
+    /// </summary>
+    public Road Road { get; internal set; }
+    /// <summary>
+    /// 所在的位置
+    /// </summary>
+    public Location Location { get; internal set; }
     /// <summary>
     /// 创建一个攻击堆栈
     /// </summary>
     /// <returns></returns>
     private AtkStack CreateOwnedStack()
-    => new(this, [], Fighter.GetNode(this).Road, Atk.Current);
+    => new(this, [], Road, Atk.Current);
     /// <summary>
     /// 额外攻击一次
     /// </summary>
@@ -61,7 +99,7 @@ public class FighterCardModel : CardModel
         await FireTiming(Timing.ModifyDamage, atkStack);
         await CardCmd.TimingOnCards(this, Timing.ModifyDamage, atkStack);
 
-        await Fighter.GetNode(this).Battle(atkStack.Targets,InstantAmmo);
+        await Fighter.GetNode(this).Battle(atkStack.Targets, InstantAmmo);
 
         await FireTiming(Timing.OnAttack, atkStack);
         await CardCmd.TimingOnCards(this, Timing.OnAttack, atkStack);
@@ -78,7 +116,7 @@ public class FighterCardModel : CardModel
             await fighter.Model.FireTiming(Timing.WhenAttacked, atkStack);
             await CardCmd.TimingOnCards(fighter.Model, Timing.WhenAttacked, atkStack);
 
-            await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, atkStack,true,false);
+            await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, atkStack, true, false);
 
             await fighter.Model.FireTiming(Timing.AfterAttacked, atkStack);
             await CardCmd.TimingOnCards(fighter.Model, Timing.AfterAttacked, atkStack);
@@ -144,9 +182,9 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 直接消灭（扣光血）
     /// </summary>
-    public async Task Kill(Variable.VariableReason reason, AtkStack stack = null,bool immediateDeath = true)
+    public async Task Kill(Variable.VariableReason reason, AtkStack stack = null, bool immediateDeath = true)
     {
-        await ApplyDamage(Hp.Current, reason, stack,false,immediateDeath);
+        await ApplyDamage(Hp.Current, reason, stack, false, immediateDeath);
     }
 
     /// <summary>
@@ -179,10 +217,11 @@ public class FighterCardModel : CardModel
     /// <param name="returnToIdle"></param>
     /// <param name="track"></param>
     /// <returns></returns>
-    protected async Task PlayFighterAnimationTask(string name, bool returnToIdle = true, int track = 0)
+    public async Task PlayFighterAnimationTask(string name, bool returnToIdle = true, int track = 0)
     {
         var fighter = Fighter.GetNode(this);
-        await fighter.PlayAnimation(name, returnToIdle, track);
+        if (fighter != null)
+            await fighter.PlayAnimation(name, returnToIdle, track);
     }
 
     protected virtual CardModel LoadCustomData(CardString cardString) { return this; }
@@ -204,6 +243,10 @@ public class FighterCardModel : CardModel
     /// </summary>
     public CardIntVariable Hp { get; private set; }
     /// <summary>
+    /// 最大血量
+    /// </summary>
+    public CardIntVariable MaxHp { get; private set; }
+    /// <summary>
     /// 血量类型
     /// </summary>
     public CardVariable<HpType> HpType { get; private set; }
@@ -211,6 +254,22 @@ public class FighterCardModel : CardModel
     /// 等级类型(提示特殊能力)
     /// </summary>
     public StarType StarType { get; private set; }
+    /// <summary>
+    /// 恢复血量
+    /// </summary>
+    /// <param name="amount">恢复数量</param>
+    /// <param name="reason">原因</param>
+    /// <returns></returns>
+    public async Task Heal(int amount, Variable.VariableReason reason)
+    {
+        int cap = MaxHp.Current;
+        if (Hp.Current + amount > cap)
+            amount = cap - Hp.Current;
+        if (amount <= 0) return;
+        await Hp.Gain(amount, reason);
+        await FireTiming(Timing.OnHealed, amount);
+        await CardCmd.TimingOnCards(this, Timing.OnHealed, amount);
+    }
 
     public virtual Task AnimationWhenPlayed(Road road) { return Task.CompletedTask; }
     /// <summary>
@@ -239,12 +298,12 @@ public class FighterCardModel : CardModel
 
     public sealed override async Task Play(ITarget target)
     {
-        if (target is NodeRoad road)
+        if (target.CanBeRoad(out Road road))
         {
-            if (road.LastTargetKind == NodeRoad.RoadTargetKind.Grid)
-                await CardCmd.FighterGenerate(this, road.Model, Location.Plant);
-            else if (road.LastTargetKind == NodeRoad.RoadTargetKind.CoopGrid)
-                await CardCmd.FighterGenerate(this, road.Model, Location.PlantFront);
+            if (road.LastTargetKind == RoadTargetKind.Grid)
+                await CardCmd.FighterGenerate(this, road, Location.Plant);
+            else if (road.LastTargetKind == RoadTargetKind.CoopGrid)
+                await CardCmd.FighterGenerate(this, road, Location.PlantFront);
         }
     }
 }

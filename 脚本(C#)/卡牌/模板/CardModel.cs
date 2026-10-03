@@ -376,9 +376,17 @@ public class CardModel
     {
         foreach (var buff in BuffList.ToList())
         {
+            if (!buff.IsTransferable) continue;
             await RemoveBuff(buff,VariableReason.Self);
             await newCard.AddBuff(buff,VariableReason.Self);
         }
     }
 
+}
+public static class CardModelExtensions
+{
+    public static bool HasLabel(this CardModel model, string label)
+        => model != null && model.Labels.Current.Contains(label);
+    public static bool IsClass(this CardModel model, Class @class)
+        => model != null && model.Class.HasFlag(@class);
 }

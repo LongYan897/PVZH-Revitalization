@@ -18,14 +18,17 @@ namespace Battle;
 /// </summary>
 public partial class NodeRoad : Control, ITarget
 {
-    private static Dictionary<NodeRoad, Road> Instances = new();
+    [Export]
+    public int Index { get; private set; }
+    private static readonly Dictionary<NodeRoad, Road> Instances = new();
+    public override void _ExitTree()
+    {
+        TargetRegistry.Unregister(this);
+        Instances.Remove(this);
+    }
     public static bool CanTargetedBy(CardModel card)
     {
-        var tgType = card.TargetType;
-        if (NeedG1(tgType) || NeedLine(tgType))
-            return Instances.Keys.Any(r=>r.CanBeTarget(card,card.TargetFilter));
-        else
-            return false;
+        return TargetRegistry.AnyCanBeTarget(card, card.TargetType, card.TargetFilter);
     }
     /// <summary>
     /// 绑定的道路数据
@@ -34,12 +37,7 @@ public partial class NodeRoad : Control, ITarget
     /// <summary>
     /// 最近一次被选中的类型
     /// </summary>
-    public enum RoadTargetKind { None, Line, Grid, CoopGrid }
-
-    /// <summary>
-    /// 最近一次被选中的类型
-    /// </summary>
-    public RoadTargetKind LastTargetKind { get; private set; } = RoadTargetKind.None;
+    public RoadTargetKind LastTargetKind => Model.LastTargetKind;
     /// <summary>
     /// 绑定道路数据
     /// </summary>
@@ -56,13 +54,24 @@ public partial class NodeRoad : Control, ITarget
         bool b = true;
         if (t is FighterCardModel fighter)
             b = Fighter.CanGenerate(fighter, Model);
-        return (bool)a && b;
+        if (a != null)
+            b = (bool)a && b;
+        return b;
     };
     public static NodeRoad GetNode(Road road)
     {
         foreach (var item in Instances)
         {
             if (item.Value == road)
+                return item.Key;
+        }
+        return null;
+    }
+    public static NodeRoad GetNodeByIndex(int index)
+    {
+        foreach (var item in Instances)
+        {
+            if (item.Value.Index == index)
                 return item.Key;
         }
         return null;
@@ -98,44 +107,29 @@ public partial class NodeRoad : Control, ITarget
 
     private static bool NeedG2(TargetType t) =>
         t.HasFlag(TargetType.CoopGrids);
-    public static void CallTargeted(CardModel cardModel, TargetType targetType)
-    {
-        CallTargeted(cardModel, targetType, cardModel.TargetFilter);
-    }
 
-    public static void CallTargeted(CardModel cardModel, TargetType targetType, Func<ITarget, bool> filter)
+    public void OnCallTargeted(TargetType targetType)
     {
         bool line = NeedLine(targetType);
         bool g1 = NeedG1(targetType);
         bool g2 = NeedG2(targetType);
-        if (!line && !g1) return; 
+        if (!line && !g1) return;
 
-        var list = new List<NodeRoad>();
-        foreach (var road in Instances.Keys)
-        {
-            if (road.CanBeTarget(cardModel, filter))
-                list.Add(road);
-        }
+        if (line) CallLineTargeted();
+        else if (g2) CallCoopGridTargeted();
+        else if (g1) CallGridTargeted();
 
-        foreach (var road in list)
-        {
-            if (line) road.CallLineTargeted();
-            else if (g2) road.CallCoopGridTargeted();
-            else if (g1) road.CallGridTargeted();
-
-            road.SetMonitoring(line, g1, g2);
-        }
+        SetMonitoring(line, g1, g2);
     }
-    public static void DeleteTargeted(TargetType targetType)
+
+    public void OnDeleteTargeted(TargetType targetType)
     {
         if (NeedG1(targetType) || NeedG2(targetType) || NeedLine(targetType))
         {
-            foreach (var road in Instances.Keys)
-            {
-                road.DeleteLineTargeted();
-            }
+            DeleteLineTargeted();
         }
     }
+
     private Tween _tweenTargeted2;
     private Tween _tweenTargeted;
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
@@ -163,7 +157,7 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted = CreateTween().BindNode(line).SetLoops(-1);
         line.Modulate = _colortgBox.Default;
         line.Visible = true;
-        _tweenTargeted.TweenProperty(line, "scale",new Vector2(0.33f, 0.378f ) * new Vector2(1.02f, 1.02f), 0.7f);
+        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(0.98f, 0.98f), 0.7f);
     }
     private void CallGridTargeted()
@@ -225,7 +219,7 @@ public partial class NodeRoad : Control, ITarget
         SetMonitoring(false, false, false);
     }
 
-    public void Targeted(bool line, bool g1, bool g2,FighterCardModel fighterCard)
+    public void OnTargeted(TargetContext ctx)
     {
         if (!Calling) return;
         KillTween();
@@ -234,7 +228,7 @@ public partial class NodeRoad : Control, ITarget
         GetNode<TextureRect>("%单位高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮2").Visible = false;
 
-        if (line)
+        if (ctx.Line)
         {
             var hl = GetNode<Sprite2D>("%环境高亮");
             _tweenTargeted = CreateTween().BindNode(hl);
@@ -242,10 +236,10 @@ public partial class NodeRoad : Control, ITarget
             hl.Visible = true;
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(0.33f, 0.378f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
-            LastTargetKind = RoadTargetKind.Line;
+            Model.LastTargetKind = RoadTargetKind.Line;
         }
 
-        if (g1)
+        if (ctx.Grid)
         {
             var hl = GetNode<TextureRect>("%单位高亮");
             _tweenTargeted = CreateTween().BindNode(hl);
@@ -253,11 +247,11 @@ public partial class NodeRoad : Control, ITarget
             hl.Visible = true;
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
-            LastTargetKind = RoadTargetKind.Grid;
-            TargetedGridArrow(fighterCard,false);
+            Model.LastTargetKind = RoadTargetKind.Grid;
+            TargetedGridArrow(ctx.FighterCard, false);
         }
 
-        if (g2)
+        if (ctx.CoopGrid)
         {
             var hl = GetNode<TextureRect>("%单位高亮2");
             _tweenTargeted = CreateTween().BindNode(hl);
@@ -265,11 +259,11 @@ public partial class NodeRoad : Control, ITarget
             hl.Visible = true;
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
-            LastTargetKind = RoadTargetKind.CoopGrid;
-            TargetedGridArrow(fighterCard,true);
+            Model.LastTargetKind = RoadTargetKind.CoopGrid;
+            TargetedGridArrow(ctx.FighterCard, true);
         }
     }
-    private void TargetedGridArrow(FighterCardModel fighterCard,bool isCoop)
+    private void TargetedGridArrow(FighterCardModel fighterCard, bool isCoop)
     {
         var bat = GetNode<TextureRect>("%Battle");
         var ar1 = GetNode<TextureRect>("%Arrow");
@@ -280,7 +274,7 @@ public partial class NodeRoad : Control, ITarget
         {
             bat.Visible = true;
             ar1.Visible = true;
-            ar2.Visible = true; 
+            ar2.Visible = true;
             Tween tween = CreateTween().BindNode(bat);
             bat.Scale = Vector2.Zero;
 
@@ -336,7 +330,7 @@ public partial class NodeRoad : Control, ITarget
                 .SetTrans(Tween.TransitionType.Quad);
         }
     }
-    public async void Distargeted(bool line, bool g1, bool g2)
+    public async void OnDistargeted(TargetContext ctx)
     {
         KillTween();
 
@@ -348,11 +342,11 @@ public partial class NodeRoad : Control, ITarget
         ar1.Visible = false;
         ar2.Visible = false;
 
-        if (line)
+        if (ctx.Line)
             await ReturnPulse("%环境高亮", new Vector2(0.33f, 0.378f));
-        if (g1)
+        if (ctx.Grid)
             await ReturnPulse("%单位高亮", Vector2.One);
-        if (g2)
+        if (ctx.CoopGrid)
             await ReturnPulse("%单位高亮2", Vector2.One);
 
     }
@@ -381,17 +375,18 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(0.98f, 0.98f), 0.7f);
 
-        LastTargetKind = RoadTargetKind.None;
+        Model.LastTargetKind = RoadTargetKind.None;
     }
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
         GetNode<Area2D>("%碰撞箱").SetMeta("Target", this);
         GetNode<Area2D>("%碰撞箱").SetMeta("TargetType", "Road");
         GetNode<Area2D>("%碰撞箱2").SetMeta("Target", this);
         GetNode<Area2D>("%碰撞箱2").SetMeta("TargetType", "Grid");
         GetNode<Area2D>("%碰撞箱3").SetMeta("Target", this);
-        GetNode<Area2D>("%碰撞箱3").SetMeta("TargetType", "Grid");
+        GetNode<Area2D>("%碰撞箱3").SetMeta("TargetType", "CoopGrid");
+        TargetRegistry.Register(this);
         Instances.Add(this, Model);
         GetNode<Node2D>("%环境高亮").Visible = false;
         GetNode<Node2D>("%植物_僵尸1").Visible = false;
@@ -410,7 +405,7 @@ public partial class NodeRoad : Control, ITarget
         if (mb.ButtonIndex != MouseButton.Left || !mb.Pressed) return;
         if (!_isRoadOn) return;
 
-        LastTargetKind = RoadTargetKind.Line;
+        Model.LastTargetKind = RoadTargetKind.Line;
         CardCmd.SelectTarget(this);
     }
 
@@ -421,7 +416,7 @@ public partial class NodeRoad : Control, ITarget
         if (mb.ButtonIndex != MouseButton.Left || !mb.Pressed) return;
         if (!_isGridOn1) return;
 
-        LastTargetKind = RoadTargetKind.Grid;
+        Model.LastTargetKind = RoadTargetKind.Grid;
         CardCmd.SelectTarget(this);
     }
 
@@ -432,10 +427,10 @@ public partial class NodeRoad : Control, ITarget
         if (mb.ButtonIndex != MouseButton.Left || !mb.Pressed) return;
         if (!_isGridOn2) return;
 
-        LastTargetKind = RoadTargetKind.CoopGrid;
+        Model.LastTargetKind = RoadTargetKind.CoopGrid;
         CardCmd.SelectTarget(this);
     }
-    public void SetMonitoring(bool roadOn,bool gridOn1,bool gridOn2)
+    public void SetMonitoring(bool roadOn, bool gridOn1, bool gridOn2)
     {
         _isRoadOn = roadOn;
         _isGridOn1 = gridOn1;

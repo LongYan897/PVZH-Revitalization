@@ -1,5 +1,6 @@
 using Battle;
 using Battle.Entity;
+using Controller;
 using Godot;
 using Play;
 using System;
@@ -18,6 +19,7 @@ public static class CardCmd
     private static List<CardModel> CardInstances = new List<CardModel>();
 
     public static bool IsCardPlaying { get; private set; }
+    public static void Clear() => CardInstances.Clear();
     /// <summary>
     /// 向Cmd添加卡牌
     /// </summary>
@@ -48,7 +50,7 @@ public static class CardCmd
         await cardModel.Changed<T>(key, before, after);
         foreach (CardModel card in CardInstances.ToList())
         {
-            await card.FireTiming(Timing.OnVariableChanged,key,before,after);
+            await card.FireTiming(Timing.OnVariableChanged, key, before, after);
         }
     }
     /// <summary>
@@ -64,7 +66,7 @@ public static class CardCmd
         await cardModel.Play(target);
         foreach (CardModel card in CardInstances.ToList())
         {
-            await card.FireTiming(Timing.AfterCardPlayed,cardModel,target);
+            await card.FireTiming(Timing.AfterCardPlayed, cardModel, target);
         }
         IsCardPlaying = false;
         JustFreshAllCards();
@@ -84,13 +86,13 @@ public static class CardCmd
     /// <param name="timing">时点</param>
     /// <param name="paramters">参数</param>
     /// <returns></returns>
-    public static async Task TimingOnCards(CardModel cardModel,Timing timing,params object[] paramters)
+    public static async Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
     {
         JustFreshAllCards();
         foreach (var card in CardInstances.ToList())
         {
             if (card != cardModel)
-                await card.FireTiming(timing,paramters);
+                await card.FireTiming(timing, paramters);
         }
         JustFreshAllCards();
     }
@@ -104,14 +106,12 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType)
     {
-        Fighter.CallTargeted(cardModel, targetType);
-        NodeRoad.CallTargeted(cardModel, targetType);
+        TargetRegistry.CallTargeted(cardModel, targetType);
 
         _tcs = new TaskCompletionSource<ITarget>();
         var result = await _tcs.Task;
 
-        Fighter.DeleteTargeted(targetType);
-        NodeRoad.DeleteTargeted(targetType);
+        TargetRegistry.DeleteTargeted(targetType);
 
         _tcs = null;
         return result;
@@ -120,23 +120,57 @@ public static class CardCmd
     /// 让玩家选择一个目标(自定义过滤器)
     /// </summary>
     /// <param name="player">选中的玩家</param>
-    /// <param name="cardModel">选中的卡牌</param>
+    /// <param name="cardModel">是哪个卡牌调用的</param>
     /// <param name="targetType">目标类型</param>
     /// <param name="filter">过滤器</param>
     /// <returns></returns>
-    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, Func<ITarget, bool> filter)
+    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, Func<ITarget, bool> filter = null)
     {
-        Fighter.CallTargeted(cardModel, targetType, filter);
-        NodeRoad.CallTargeted(cardModel, targetType, filter);
+        TargetRegistry.CallTargeted(cardModel, targetType, filter);
 
         _tcs = new TaskCompletionSource<ITarget>();
         var result = await _tcs.Task;
 
-        Fighter.DeleteTargeted(targetType);
-        NodeRoad.DeleteTargeted(targetType);
+        TargetRegistry.DeleteTargeted(targetType);
 
         _tcs = null;
         return result;
+    }
+    /// <summary>
+    /// 让玩家选择一个单位(自定义过滤器)
+    /// </summary>
+    /// <param name="player">选中的玩家</param>
+    /// <param name="cardModel">是哪个卡牌调用的</param>
+    /// <param name="filter">过滤器</param>
+    /// <returns></returns>
+    public static async Task<FighterCardModel> PlayerChoiceFighter(Player player, CardModel cardModel, Func<FighterCardModel, bool> filter = null)
+    {
+        if (filter == null)
+            filter = (f) => true;
+        Func<ITarget, bool> itgFilter = (itg) =>
+        {
+            return itg.CanBeFighter(out var c) && filter(c);
+        };
+        var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Fighters, itgFilter);
+        return itg.CanBeFighter(out var fighter) ? fighter : null;
+    }
+    /// <summary>
+    /// 让玩家选择一条线(自定义过滤器)
+    /// </summary>
+    /// <param name="player">选中的玩家</param>
+    /// <param name="cardModel">是哪个卡牌调用的</param>
+    /// <param name="filter">过滤器</param>
+    /// <returns></returns>
+    public static async Task<Road> PlayerChoiceRoad(Player player, CardModel cardModel, Func<Road, bool> filter = null)
+    {
+        if (filter == null)
+            filter = (f) => true;
+        Func<ITarget, bool> itgFilter = (itg) =>
+        {
+            return itg.CanBeRoad(out var r) && filter(r);
+        };
+        var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Lines, itgFilter);
+        return itg.CanBeRoad(out var road) ? road : null;
     }
     /// <summary>
     /// 选中目标后调用此方法
@@ -153,23 +187,104 @@ public static class CardCmd
     /// <param name="road">打出的道路</param>
     /// <param name="location">打出的位置</param>
     /// <returns></returns>
-    public static async Task FighterGenerate(FighterCardModel fighter,Road road,Location location)
+    public static async Task FighterGenerate(FighterCardModel fighter, Road road, Location location)
     {
-        var fight = Fighter.Generate(fighter,road,location);
-        await fighter.FireTiming(Timing.OnFighterEnter,road,fighter);
-        await TimingOnCards(fighter,Timing.OnFighterEnter,road,fighter);
+        var fight = Fighter.Generate(fighter, road, location);
+        await fighter.FireTiming(Timing.OnFighterEnter, road, fighter);
+        await TimingOnCards(fighter, Timing.OnFighterEnter, road, fighter);
         await fighter.IntroPlayed();
         await fighter.AnimationWhenPlayed(road);
-        await fighter.FireTiming(Timing.AfterPlay,NodeRoad.GetNode(road));
+        await fighter.FireTiming(Timing.AfterPlay, NodeRoad.GetNode(road));
         await fighter.FireTiming(Timing.AfterRoadChanged, road);
         await TimingOnCards(fighter, Timing.AfterRoadChanged, road);
     }
     /// <summary>
-    /// 从卡组中抽出卡牌
+    /// 搜寻有没有可以作为Target的对象
     /// </summary>
-    /// <param name="amount"></param>
+    /// <param name="predicate">过滤器</param>
     /// <returns></returns>
-    public static async Task Draw(int amount = 1)
+    public static bool AnyTarget(Func<ITarget, bool> predicate)
     {
+        return TargetRegistry.All.Any(predicate);
+    }
+    /// <summary>
+    /// 搜寻有没有符合目标的单位
+    /// </summary>
+    /// <param name="predicate">过滤器</param>
+    /// <returns></returns>
+    public static bool AnyFighter(Func<FighterCardModel, bool> predicate)
+    => TargetRegistry.All.Any(t => t is Fighter f && predicate(f.Model));
+
+    /// <summary>
+    /// 搜寻有没有符合目标的僵尸单位
+    /// </summary>
+    /// <param name="predicate">过滤器</param>
+    /// <returns></returns>
+    public static bool AnyZombie(Func<FighterCardModel, bool> predicate = null)
+        => AnyFighter(f => f != null
+            && f.Camp == Camp.Zombie
+            && (predicate == null || predicate(f)));
+
+    /// <summary>
+    /// 搜寻有没有符合目标的植物单位
+    /// </summary>
+    /// <param name="predicate">过滤器</param>
+    /// <returns></returns>
+    public static bool AnyPlant(Func<FighterCardModel, bool> predicate = null)
+        => AnyFighter(f => f != null
+            && f.Camp == Camp.Plant
+            && (predicate == null || predicate(f)));
+    /// <summary>
+    /// 播放场景动画
+    /// </summary>
+    /// <param name="kind">场景动画类型</param>
+    /// <param name="startAt">起始位置（全局坐标）</param>
+    /// <param name="endAt">结束位置（全局坐标）</param>
+    /// <param name="duration">位移时长（秒）</param>
+    /// <param name="soundPath">可选：音效路径，为 null 不播</param>
+    /// <param name="soundVolumeDb">音效音量</param>
+    /// <param name="soundPitch">音效音调</param>
+    public static async Task PlaySceneAnim(
+        SceneAnimaActor.SceneAnimKind kind,
+        Vector2 startAt,
+        Vector2 endAt,
+        float duration,
+        string soundPath = null,
+        float soundVolumeDb = 0f,
+        float soundPitch = 1f)
+    {
+        await SceneAnimaActor.PlayCardAsync(kind, startAt, endAt, duration, soundPath, soundVolumeDb, soundPitch);
+    }
+
+    /// <summary>
+    /// 战斗单位倒下动画
+    /// </summary>
+    public static async Task FighterDown(Vector2 startAt, Vector2 endAt, float duration, string soundPath = null)
+    {
+        await SceneAnimaActor.FighterDownAsync(startAt, endAt, duration, soundPath);
+    }
+
+    /// <summary>
+    /// 卡牌落下动画
+    /// </summary>
+    public static async Task CardDown(Vector2 startAt, Vector2 endAt, float duration, string soundPath = null)
+    {
+        await SceneAnimaActor.CardDownAsync(startAt, endAt, duration, soundPath);
+    }
+
+    /// <summary>
+    /// 卡牌到动画
+    /// </summary>
+    public static async Task CardToAnim(Vector2 startAt, Vector2 endAt, float duration, string soundPath = null)
+    {
+        await SceneAnimaActor.CardToAnimAsync(startAt, endAt, duration, soundPath);
+    }
+
+    /// <summary>
+    /// 动画到描述
+    /// </summary>
+    public static async Task AnimToDes(Vector2 startAt, Vector2 endAt, float duration, string soundPath = null)
+    {
+        await SceneAnimaActor.AnimToDesAsync(startAt, endAt, duration, soundPath);
     }
 }

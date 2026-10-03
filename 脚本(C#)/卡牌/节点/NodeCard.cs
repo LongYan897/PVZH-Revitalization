@@ -317,7 +317,8 @@ public partial class NodeCard : Control
     }
 
     private bool currentPlayable = true;
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     private bool _isOpen = true;
     private void OnInfoButtonPressed()
     {
@@ -432,8 +433,7 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
-        Fighter.CallTargeted(Model, Model.TargetType);
-        NodeRoad.CallTargeted(Model, Model.TargetType);
+        TargetRegistry.CallTargeted(Model, Model.TargetType);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
     {
@@ -605,8 +605,7 @@ public partial class NodeCard : Control
             _isDragging = false;
             if (target != null)
             {
-                Fighter.DeleteTargeted(Model.TargetType);
-                NodeRoad.DeleteTargeted(Model.TargetType);
+                TargetRegistry.DeleteTargeted(Model.TargetType);
                 target = null;
             }
             ReturnToOrigin();
@@ -615,8 +614,7 @@ public partial class NodeCard : Control
 
         var savedTarget = target;
         if (ChoiceCard == this) ChoiceCard = null;
-        Fighter.DeleteTargeted(Model.TargetType);
-        NodeRoad.DeleteTargeted(Model.TargetType);
+        TargetRegistry.DeleteTargeted(Model.TargetType);
         if (target == null)
             ReturnToOrigin();
         else
@@ -644,90 +642,48 @@ public partial class NodeCard : Control
         if (CardViewMode != CardView.Battle) return;
         if (!Model.CanPlay()) return;
         if (target != null) return;
-        if (area.HasMeta("Target"))
+        if (!area.HasMeta("Target")) return;
+
+        var col = (ITarget)(GodotObject)area.GetMeta("Target");
+        if (!col.Calling) return;
+        if (!col.CanBeTarget(Model, Model.TargetFilter)) return;
+
+        var kind = (string)area.GetMeta("TargetType");
+        var fighter = Model as FighterCardModel;
+        var ctx = kind switch
         {
-            var variant = area.GetMeta("Target");
-            var type = (string)area.GetMeta("TargetType");
-            if (type == "Fighter")
-            {
-                if (Model.TargetType.HasFlag(TargetType.Fighters))
-                {
-                    var col = (Fighter)(GodotObject)variant;
-                    if (!col.Calling) return;
-                    target = col;
-                    col.Targeted();
-                    Glowing();
-                }
-            }
-            if (type == "Road")
-            {
-                if (Model.TargetType.HasFlag(TargetType.Lines))
-                {
-                    var col = (NodeRoad)(GodotObject)variant;
-                    if (!col.Calling) return;
-                    target = col;
-                    col.Targeted(true, false, false, null);
-                    Glowing();
-                }
-            }
-            if (type == "Grid")
-            {
-                bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
-                     || Model.TargetType.HasFlag(TargetType.CoopGrids);
-                bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.CoopGrids));
-                if (!needGrid) return;
-                var col = (NodeRoad)(GodotObject)variant;
-                if (!col.Calling) return;
-                target = col;
-                FighterCardModel fighter = null;
-                if (Model is FighterCardModel fighterCard)
-                    fighter = fighterCard;
-                col.Targeted(false, needGrid, coopNeedGrid, fighter);
-                Glowing();
-            }
-        }
+            "Road" => new TargetContext { Line = true, FighterCard = fighter },
+            "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
+            "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+            _ => default
+        };
+
+        target = col;
+        col.OnTargeted(ctx);
+        Glowing();
     }
 
     private void AreaExited(Area2D area)
     {
         if (CardViewMode != CardView.Battle) return;
         if (target == null) return;
-        if (area.HasMeta("Target"))
+        if (!area.HasMeta("Target")) return;
+
+        var col = (ITarget)(GodotObject)area.GetMeta("Target");
+        if (target != col) return;
+
+        var kind = (string)area.GetMeta("TargetType");
+        var fighter = Model as FighterCardModel;
+        var ctx = kind switch
         {
-            var variant = area.GetMeta("Target");
-            if (target == (ITarget)(GodotObject)variant)
-            {
-                var type = (string)area.GetMeta("TargetType");
-                if (type == "Fighter")
-                {
-                    if (Model.TargetType.HasFlag(TargetType.Fighters))
-                    {
-                        var col = (Fighter)(GodotObject)variant;
-                        col.Distargeted();
-                    }
-                }
-                if (type == "Road")
-                {
-                    if (Model.TargetType.HasFlag(TargetType.Lines))
-                    {
-                        var col = (NodeRoad)(GodotObject)variant;
-                        col.Distargeted(true, false, false);
-                    }
-                }
-                if (type == "Grid")
-                {
-                    bool needGrid = Model.TargetType.HasFlag(TargetType.Grids)
-                         || Model.TargetType.HasFlag(TargetType.CoopGrids);
-                    bool coopNeedGrid = (Model.TargetType.HasFlag(TargetType.CoopGrids));
-                    if (needGrid)
-                    {
-                        var col = (NodeRoad)(GodotObject)variant;
-                        col.Distargeted(false, needGrid, coopNeedGrid);
-                    }
-                }
-                Darken();
-            }
-        }
+            "Road" => new TargetContext { Line = true, FighterCard = fighter },
+            "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
+            "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+            _ => default
+        };
+
+        col.OnDistargeted(ctx);
+        Darken();
     }
 
     private void Glowing()
@@ -981,7 +937,7 @@ public partial class NodeCard : Control
                     frame.Position = Model.CardType switch
                     {
                         CardType.None | CardType.Environment => new(128.0f, 92f),
-                        _ => new(128.0f, 96f)
+                        _ => new(0, -32.0f)
                     };
                     frameBg.Modulate = Model.Class.ToColor();
                     frameBg.Texture = Model.CardType switch
@@ -1046,9 +1002,9 @@ public partial class NodeCard : Control
                 if (Model.Cost.HasChanged)
                 {
                     if (Model.Cost.PositiveChanged)
-                        costs.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorB);
+                        costs.GetNode<RichTextLabel>("%数值").Modulate = _colorBox.ColorB;
                     else
-                        costs.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
+                        costs.GetNode<RichTextLabel>("%数值").Modulate = _colorBox2.Default;
                 }
                 if (Model is FighterCardModel fighter)
                 {
@@ -1057,8 +1013,8 @@ public partial class NodeCard : Control
                     var hps = GetNode<Node2D>("%生命值容器");
                     hps.Visible = true;
                     GetNode<Node2D>("%等级").Visible = true;
-                    atks.GetNode<RichTextLabel>("数值").Text = $"[center]{fighter.Atk.Current}[/center]";
-                    hps.GetNode<RichTextLabel>("数值").Text = $"[center]{fighter.Hp.Current}[/center]";
+                    atks.GetNode<RichTextLabel>("%伤害数值").Text = $"[center]{fighter.Atk.Current}[/center]";
+                    hps.GetNode<RichTextLabel>("%血量数值").Text = $"[center]{fighter.Hp.Current}[/center]";
                     GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
                     GetNode<SpineHandler>("%伤害动画").Scale = new(0.28f, 0.28f);
                     GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
@@ -1069,24 +1025,31 @@ public partial class NodeCard : Control
                         GetNode<SpineHandler>("%等级").Scale = new(0.28f, 0.28f);
                         GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
                     }
+
                     if (fighter.Hp.HasChanged)
                     {
                         if (fighter.Hp.PositiveChanged)
-                            hps.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorB);
+                            GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorB;
                         else
-                            hps.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
+                        {
+                            if (fighter.MaxHp.Current == fighter.Hp.Current)
+                                GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox2.Default;
+                            else
+                                GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorC;
+                        }
                     }
                     else
-                        hps.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.Default);
+                        GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.Default;
+
                     if (fighter.Atk.HasChanged)
                     {
                         if (fighter.Atk.PositiveChanged)
-                            atks.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorB);
+                            GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.ColorB;
                         else
-                            atks.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
+                            GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox2.Default;
                     }
                     else
-                        atks.GetNode<RichTextLabel>("数值").AddThemeColorOverride("default_color", _colorBox.Default);
+                        GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.Default;
                 }
                 else
                 {

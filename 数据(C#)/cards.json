@@ -61,7 +61,7 @@
   "CopterCommando.Flavor": "患有严重恐水症，死活不肯在水上飞行。",
 
   "FinalMission.Title": "最终任务",
-  "FinalMission.Des": "_消灭_一只僵尸。然后对一株植物造成=Health={-4}",
+  "FinalMission.Des": "_消灭_一只僵尸。然后对一株植物造成=Health={-4}。",
   "FinalMission.Cost": 2,
   "FinalMission.Camp": "僵尸",
   "FinalMission.Type": "锦囊",
@@ -75,16 +75,34 @@
   "FinalMission.Flavor": "“往返票和单程票一个价。“",
 
   "StartBattle.Title": "皮纳塔总动员",
-  "StartBattle.Des": "一条线_额外战斗_一次",
+  "StartBattle.Des": "一条线_额外战斗_一次。",
   "StartBattle.Cost": 2,
   "StartBattle.Camp": "僵尸",
   "StartBattle.Type": "锦囊",
-  "StartBattle.Rarity": "传说",
+  "StartBattle.Rarity": "令牌",
   "StartBattle.Category": "有脑",
   "StartBattle.Animation": "res://素材(C#)/卡牌/皮纳塔总动员/penata.tres",
   "StartBattle.Icon": "res://场景(C#)/卡面/penata.tscn",
   "StartBattle.Label": [ "运动员", "派对" ],
   "StartBattle.Tag": [],
   "StartBattle.Pack": "高级",
-  "StartBattle.Flavor": "敲开它，里面全是僵尸。没人知道为什么僵尸会藏在皮纳塔里，但大家都假装这是正常的。"
+  "StartBattle.Flavor": "敲开它，里面全是僵尸。没人知道为什么僵尸会藏在皮纳塔里，但大家都假装这是正常的。",
+
+  "BackupDancer.Title": "伴舞僵尸",
+  "BackupDancer.Des": "一只跳舞僵尸获得=Strength={+2}。",
+  "BackupDancer.Cost": 1,
+  "BackupDancer.Camp": "僵尸",
+  "BackupDancer.Type": "单位",
+  "BackupDancer.Rarity": "基础",
+  "BackupDancer.Category": "疯狂",
+  "BackupDancer.Animation": "res://数据资源/僵尸动画/跳舞僵尸动画.tres",
+  "BackupDancer.Icon": "res://场景(C#)/卡面/backup_dancer.tscn",
+  "BackupDancer.Label": [ "跳舞", "胡须" ],
+  "BackupDancer.Tag": [],
+  "BackupDancer.Hp": 1,
+  "BackupDancer.HpType": "普通",
+  "BackupDancer.Atk": 1,
+  "BackupDancer.AtkType": "普通",
+  "BackupDancer.Flavor": "曾在Chewliard表演艺术学院苦练六年。"
+
 }

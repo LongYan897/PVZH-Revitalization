@@ -232,4 +232,13 @@ public partial class SpineHandler : Node2D
 
         QueueFree();
     }
+    /// <summary>
+    /// 获得动画的时长
+    /// </summary>
+    /// <param name="animName">动画名称</param>
+    /// <returns></returns>
+    public float GetAnimationDuration(string animName)
+    {
+        return _spineSprite.Call("get_animation_duration", animName).AsSingle();
+    }
 }

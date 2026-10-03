@@ -34,3 +34,9 @@ func clear_tracks():
 
 func set_attachment(id:String,name:String):
 	get_skeleton().set_attachment(id,name)
+
+func get_animation_duration(anim_name:String) -> float:
+	var anim = get_skeleton().get_data().find_animation(anim_name)
+	if anim == null:
+		return 0.0
+	return anim.get_duration()
