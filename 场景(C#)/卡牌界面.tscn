@@ -178,6 +178,28 @@ text = "由变形器变形而来"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+<<<<<<< Updated upstream
+=======
+[node name="底色" type="ColorRect" parent="." unique_id=1495908590]
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 0.28627452)
+top_level = true
+z_index = -20
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -640.0
+offset_right = 362.0
+offset_bottom = 659.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+>>>>>>> Stashed changes
 [node name="花费数值" type="Sprite2D" parent="." unique_id=2012160516]
 unique_name_in_owner = true
 z_index = 8
@@ -318,6 +340,7 @@ show_behind_parent = true
 position = Vector2(0, 1030)
 scale = Vector2(3.333333, 3.333333)
 
+<<<<<<< Updated upstream
 [node name="底色" type="Polygon2D" parent="." unique_id=1948082941]
 unique_name_in_owner = true
 modulate = Color(0, 0, 0, 0.28627452)
@@ -326,11 +349,14 @@ z_index = -20
 color = Color(0, 0, 0, 0.5803922)
 polygon = PackedVector2Array(-77, -51, -153, 1438, 1163, 1322, 814, -81)
 
+=======
+>>>>>>> Stashed changes
 [node name="IconComposer" type="Node" parent="." unique_id=2117131518]
 unique_name_in_owner = true
 script = ExtResource("17_ts65j")
 metadata/_custom_type_script = "uid://dpy81oq8meuvd"
 
+<<<<<<< Updated upstream
 [node name="额外区域" type="Control" parent="." unique_id=1272520395]
 unique_name_in_owner = true
 anchors_preset = 0
@@ -347,6 +373,16 @@ offset_left = 207.0
 offset_top = 696.0
 offset_right = 636.0
 offset_bottom = 696.0
+=======
+[node name="介绍Label" type="RichTextLabel" parent="." unique_id=2112734755]
+unique_name_in_owner = true
+z_index = 20
+layout_mode = 0
+offset_left = -216.0
+offset_top = -50.0
+offset_right = 213.0
+offset_bottom = 76.0
+>>>>>>> Stashed changes
 pivot_offset_ratio = Vector2(0.5, 0)
 theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
 theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
@@ -358,5 +394,8 @@ theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
 text = "什么都没有
 使用[img=36]res://素材(C#)/文本图片/inhnd_brains.png[/img]而非"
+<<<<<<< Updated upstream
 fit_content = true
+=======
+>>>>>>> Stashed changes
 horizontal_alignment = 1
