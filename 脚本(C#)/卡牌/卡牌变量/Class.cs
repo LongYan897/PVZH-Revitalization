@@ -37,7 +37,7 @@ public enum Class
 public static class ClassExtension
 {
 
-    public static string ToString(this Class c)
+    public static string ToName(this Class c)
     {
         return c switch {
             Class.Beastly =>"野兽",
