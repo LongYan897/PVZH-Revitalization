@@ -62,6 +62,7 @@ public partial class Deck : Node2D
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
         InitializeInformation(Camp.Plant.ToName());
+        ZIndex = 20;
     }
 
     private async void OnReturnPressed() {

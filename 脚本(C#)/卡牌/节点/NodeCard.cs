@@ -78,12 +78,12 @@ public partial class NodeCard : Control
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
             node.Scale = node._baseScale;
             node.CardViewMode = cardView;
+            parent.AddChild(node);
             if (drawAnimation)
                 node.DrawAnimation();
             else
                 node.Fresh();
             instances.Add(node, cardModel);
-            parent.AddChild(node);
             return node;
         }
         else
@@ -890,12 +890,6 @@ public partial class NodeCard : Control
                     var frame = GetNode<TextureRect>("%卡框");
                     var frameGlowBg = GetNode<TextureRect>("%卡牌发光背景");
                     var frameBg = GetNode<TextureRect>("%卡牌底板");
-
-                    KillCallTween();
-                    isCallDragging = false;
-                    _callTween = CreateTween();
-                    _callTween.TweenProperty(this, "modulate", new Color(0.6f, 0.6f, 0.6f, 1), 0.4f);
-                    _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 0f), 0.4f);
                     _callDragging();
                     frame.Texture = Model.CardType switch
                     {
