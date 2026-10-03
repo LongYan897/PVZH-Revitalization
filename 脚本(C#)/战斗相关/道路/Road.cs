@@ -1,6 +1,7 @@
 
 using Battle.Entity;
 using Card;
+using Card.Cmd;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ public enum RoadType
 /// </summary>
 public class Road
 {
+    public static bool IsBattling { get; private set; }
     /// <summary>
     /// 决定该道路是第几行的
     /// </summary>
@@ -52,7 +54,8 @@ public class Road
     /// </summary>
     public async Task Start()
     {
-        foreach (var fighter in fighters)
+        IsBattling = true;
+        foreach (var fighter in fighters.ToList())
         {
             await fighter.BeforeAtk(new AtkStack(null, [],this,0));
         }
@@ -74,7 +77,7 @@ public class Road
             if (fighter.Model.IsDie)
                 await fighter.Die();
         }
-
+        IsBattling = false;
     }
     private readonly Variable<Environment> _environment = new("Environment", null);
     /// <summary>

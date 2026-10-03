@@ -1,0 +1,276 @@
+[gd_scene format=3 uid="uid://dytypygjoxadi"]
+
+[ext_resource type="Texture2D" uid="uid://dcerf2quenlpf" path="res://素材(C#)/其他/Test/Pinata_A_Piece_01.png" id="2_0174f"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="3_ee56n"]
+[ext_resource type="Texture2D" uid="uid://c2et0k3lgbyod" path="res://素材(C#)/其他/Test/piedpiperzombie_flute.png" id="3_qjmk4"]
+[ext_resource type="Texture2D" uid="uid://6ebfl7u8s8vo" path="res://素材(C#)/其他/Test/Pinata_A_Piece_02.png" id="4_ee56n"]
+[ext_resource type="Texture2D" uid="uid://cy0v1y0ahfh6l" path="res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R1.png" id="4_n6lme"]
+[ext_resource type="Texture2D" uid="uid://cav3xomupya5o" path="res://素材(C#)/其他/Test/Pinata_C_Piece_02.png" id="4_qjmk4"]
+[ext_resource type="Texture2D" uid="uid://ows7vjt7pmxu" path="res://素材(C#)/其他/Test/Pinata_B_Piece_01.png" id="4_x8lqh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qfsc3"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(0.59399986, 0.42000002, 1, 0.30980393)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="Shader" id="Shader_de7fs"]
+code = "shader_type canvas_item;
+
+uniform vec4 color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float strength : hint_range(0.0, 1.0) = 1.0;
+uniform float keep_saturation : hint_range(0.0, 1.0) = 1.0;
+
+vec3 rgb2hsl(vec3 c) {
+	float maxc = max(max(c.r, c.g), c.b);
+	float minc = min(min(c.r, c.g), c.b);
+	float l = (maxc + minc) * 0.5;
+	float h = 0.0;
+	float s = 0.0;
+	if (maxc != minc) {
+		float d = maxc - minc;
+		s = l > 0.5 ? d / (2.0 - maxc - minc) : d / (maxc + minc);
+		if (maxc == c.r)      h = (c.g - c.b) / d + (c.g < c.b ? 6.0 : 0.0);
+		else if (maxc == c.g) h = (c.b - c.r) / d + 2.0;
+		else                  h = (c.r - c.g) / d + 4.0;
+		h /= 6.0;
+	}
+	return vec3(h, s, l);
+}
+
+float hue2rgb(float p, float q, float t) {
+	if (t < 0.0) t += 1.0;
+	if (t > 1.0) t -= 1.0;
+	if (t < 1.0/6.0) return p + (q - p) * 6.0 * t;
+	if (t < 1.0/2.0) return q;
+	if (t < 2.0/3.0) return p + (q - p) * (2.0/3.0 - t) * 6.0;
+	return p;
+}
+
+vec3 hsl2rgb(vec3 hsl) {
+	float h = hsl.x, s = hsl.y, l = hsl.z;
+	if (s == 0.0) return vec3(l);
+	float q = l < 0.5 ? l * (1.0 + s) : l + s - l * s;
+	float p = 2.0 * l - q;
+	return vec3(
+		hue2rgb(p, q, h + 1.0/3.0),
+		hue2rgb(p, q, h),
+		hue2rgb(p, q, h - 1.0/3.0)
+	);
+}
+
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	vec3 hsl = rgb2hsl(tex.rgb);
+	vec3 target = rgb2hsl(color.rgb);
+	float newHue = mix(hsl.x, target.x, strength);
+	float newSat = mix(target.y, hsl.y, keep_saturation);
+	vec3 result = hsl2rgb(vec3(newHue, newSat, hsl.z));
+	COLOR = vec4(result, tex.a * color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ktjd2"]
+shader = SubResource("Shader_de7fs")
+shader_parameter/color = Color(0.65433335, 0.39, 1, 0.4862745)
+shader_parameter/strength = 1.0
+shader_parameter/keep_saturation = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qjmk4"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(0.6855249, 0.4031673, 0.9128854, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ee56n"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(1, 0.65500003, 0.100000024, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.03500004916249999
+shader_parameter/saturation = 2.0
+shader_parameter/contrast = 1.18400005624
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0174f"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(1, 0.97, 0.100000024, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x8lqh"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(0.264, 0.7876001, 0.88, 0.38431373)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mh47d"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(0.3293, 0.77785987, 0.89, 0.627451)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n6lme"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(0.42629716, 0.788212, 0.67261016, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7oblh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ymbcl"]
+shader = ExtResource("3_ee56n")
+shader_parameter/color = Color(1, 0.8333334, 0, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.3660000648849999
+shader_parameter/saturation = 2.0
+shader_parameter/contrast = 1.6990000807025
+
+[node name="卡面" type="Control" unique_id=1076683461]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="PinataAPiece06" type="Sprite2D" parent="." unique_id=898583319]
+material = SubResource("ShaderMaterial_qfsc3")
+position = Vector2(161.92342, 78.36361)
+rotation = -0.044074807
+scale = Vector2(0.18564232, 0.1700527)
+texture = ExtResource("2_0174f")
+
+[node name="PinataAPiece05" type="Sprite2D" parent="." unique_id=612802780]
+material = SubResource("ShaderMaterial_ktjd2")
+position = Vector2(159.92342, 69.36361)
+rotation = -0.044074807
+scale = Vector2(0.18564232, 0.1700527)
+texture = ExtResource("2_0174f")
+
+[node name="PinataAPiece01" type="Sprite2D" parent="." unique_id=717792552]
+material = SubResource("ShaderMaterial_qjmk4")
+position = Vector2(160.92342, 59.3636)
+rotation = -0.044074807
+scale = Vector2(0.18564232, 0.1700527)
+texture = ExtResource("2_0174f")
+
+[node name="PinataBPiece01" type="Sprite2D" parent="." unique_id=2078955395]
+modulate = Color(1, 1, 1, 0.25882354)
+position = Vector2(53.02029, 72.84191)
+rotation = 0.20143554
+scale = Vector2(0.14944813, 0.18690474)
+texture = ExtResource("4_x8lqh")
+
+[node name="PinataBPiece02" type="Sprite2D" parent="." unique_id=660966419]
+modulate = Color(1, 1, 1, 0.5882353)
+position = Vector2(47, 72)
+rotation = 0.20143554
+scale = Vector2(0.14944813, 0.18690474)
+texture = ExtResource("4_x8lqh")
+
+[node name="PinataBPiece03" type="Sprite2D" parent="." unique_id=1385520269]
+modulate = Color(1, 1, 1, 0.6627451)
+position = Vector2(62.000004, 70)
+rotation = 0.20143554
+scale = Vector2(0.14944813, 0.18690474)
+texture = ExtResource("4_x8lqh")
+
+[node name="卡牌图标6" type="TextureRect" parent="." unique_id=634018250]
+material = SubResource("ShaderMaterial_ee56n")
+layout_mode = 0
+offset_left = 155.0
+offset_top = 65.0
+offset_right = 155.0
+offset_bottom = 65.0
+rotation = 0.0401901
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("3_qjmk4")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="卡牌图标5" type="TextureRect" parent="." unique_id=1288349447]
+material = SubResource("ShaderMaterial_0174f")
+layout_mode = 0
+offset_left = 191.00002
+offset_top = 102.0
+offset_right = 191.00002
+offset_bottom = 102.0
+rotation = -0.969852
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("3_qjmk4")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="PinataAPiece04" type="Sprite2D" parent="." unique_id=1232043155]
+material = SubResource("ShaderMaterial_x8lqh")
+position = Vector2(203.54237, 91.85481)
+rotation = -0.89485365
+scale = Vector2(0.3560606, 0.35606062)
+texture = ExtResource("4_ee56n")
+
+[node name="PinataAPiece03" type="Sprite2D" parent="." unique_id=1335023508]
+material = SubResource("ShaderMaterial_mh47d")
+position = Vector2(199.54239, 100.854805)
+rotation = -0.89485365
+scale = Vector2(0.3560606, 0.35606062)
+texture = ExtResource("4_ee56n")
+
+[node name="PinataAPiece02" type="Sprite2D" parent="." unique_id=1908928027]
+material = SubResource("ShaderMaterial_n6lme")
+position = Vector2(201.54237, 111.85482)
+rotation = -0.89485365
+scale = Vector2(0.3560606, 0.35606062)
+texture = ExtResource("4_ee56n")
+
+[node name="PinataCPiece02" type="Sprite2D" parent="." unique_id=681028065]
+modulate = Color(1, 1, 1, 0.48235294)
+material = SubResource("ShaderMaterial_7oblh")
+position = Vector2(61.650608, 139.33322)
+rotation = -0.4381745
+scale = Vector2(0.2904561, 0.29045606)
+texture = ExtResource("4_qjmk4")
+
+[node name="PinataCPiece03" type="Sprite2D" parent="." unique_id=1174141827]
+modulate = Color(1, 1, 1, 0.38039216)
+position = Vector2(52.650608, 131.33322)
+rotation = -0.4381745
+scale = Vector2(0.2904561, 0.29045606)
+texture = ExtResource("4_qjmk4")
+
+[node name="PinataCPiece04" type="Sprite2D" parent="." unique_id=289168932]
+position = Vector2(58.650608, 135.33322)
+rotation = -0.4381745
+scale = Vector2(0.2904561, 0.29045606)
+texture = ExtResource("4_qjmk4")
+
+[node name="卡牌图标4" type="TextureRect" parent="." unique_id=1444165011]
+material = SubResource("ShaderMaterial_ymbcl")
+layout_mode = 0
+offset_left = 163.0
+offset_top = 86.00001
+offset_right = 163.0
+offset_bottom = 86.00001
+rotation = -0.49275333
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("3_qjmk4")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="卡框" type="TextureRect" parent="." unique_id=1725776239]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 128.0
+offset_top = 96.5
+offset_right = 128.0
+offset_bottom = 96.5
+mouse_filter = 2
+texture = ExtResource("4_n6lme")
+expand_mode = 1
+stretch_mode = 3

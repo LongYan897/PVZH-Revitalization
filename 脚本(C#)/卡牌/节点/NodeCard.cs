@@ -19,7 +19,7 @@ namespace Card;
 public partial class NodeCard : Control
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌.tscn");
-    private static NodeCard ChoiceCard;
+    public static NodeCard ChoiceCard { get; private set; }
     public CardModel Model { get; private set; }
     private static readonly Dictionary<NodeCard, CardModel> instances = new();
     private const int maxInstance = 80;
@@ -201,7 +201,6 @@ public partial class NodeCard : Control
 
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
-        if (!Model.CanPlay()) return;
         if (!_isOpen) return;
         if (!isCallDragging) return;
         if (@event is InputEventMouseButton mb)
@@ -262,6 +261,9 @@ public partial class NodeCard : Control
             if (!Input.IsMouseButtonPressed(MouseButton.Left))
                 return;
 
+            if (!Model.CanPlay()) return;
+            if (!isCallDragging) return;
+
             if (!_isDragging)
             {
                 float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
@@ -313,6 +315,7 @@ public partial class NodeCard : Control
 
     private async Task EndDrag()
     {
+        var savedTarget = target;
         ZIndex -= instances.Count * 60;
         if (ChoiceCard == this) ChoiceCard = null;
         Fighter.DeleteTargeted(Model.TargetType);
@@ -323,7 +326,7 @@ public partial class NodeCard : Control
         {
             await DiscallDragging();
             Visible = false;
-            await CardCmd.PlayedCard(Model, target);
+            await CardCmd.PlayedCard(Model, savedTarget);
             await Model.DestroyMe();
         }
     }
@@ -434,14 +437,13 @@ public partial class NodeCard : Control
         if (_colorTween != null && _colorTween.IsValid())
             _colorTween.Kill();
         _colorTween = glowNode.CreateTween();
-        _colorTween.TweenProperty(glowNode, "modulate", _colorBox.ColorA, 0.5f)
+        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.ColorA,1f), 0.5f)
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
         GetNode<GpuParticles2D>("%粒子特效").Emitting = true;
 
         _callTween = CreateTween();
         _callTween.TweenProperty(this, "modulate", new Color(1, 1, 1, 1), 0.1f);
-        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 1f), 0.1f);
     }
 
     private void Darken()
@@ -450,7 +452,7 @@ public partial class NodeCard : Control
         if (_colorTween != null && _colorTween.IsValid())
             _colorTween.Kill();
         _colorTween = glowNode.CreateTween();
-        _colorTween.TweenProperty(glowNode, "modulate", _colorBox.Default, 0.5f)
+        _colorTween.TweenProperty(glowNode, "modulate", new Color(_colorBox.Default,1f), 0.5f)
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
         GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
@@ -458,7 +460,6 @@ public partial class NodeCard : Control
 
         _callTween = CreateTween();
         _callTween.TweenProperty(this, "modulate", new Color(1, 1, 1, 1), 0.1f);
-        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 1f), 0.1f);
     }
 
     private void Darkest()
@@ -474,7 +475,6 @@ public partial class NodeCard : Control
 
         _callTween = CreateTween();
         _callTween.TweenProperty(this, "modulate", new Color(0.6f, 0.6f, 0.6f, 1), 0.1f);
-        _callTween.TweenProperty(GetNode<TextureRect>("%卡牌发光背景"), "modulate", new Color(1, 1, 1, 0f), 0.1f);
         GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
         target = null;
     }
@@ -640,7 +640,20 @@ public partial class NodeCard : Control
                         CardType.None | CardType.Environment => new(128.0f, 92f),
                         _ => new(128.0f, 96f)
                     };
-                    frameBg.Modulate = new("d6db23");
+                    frameBg.Modulate = Model.Class switch
+                    {
+                        Class.Smarty => new Color("ffffff"),
+                        Class.Solar => new Color("f5c728"),
+                        Class.Guardian => new Color("844837"),
+                        Class.MegaGrow => new Color("3d9854"),
+                        Class.Kabloom => new Color("f43939"),
+                        Class.Brainy => new Color("e652c8"),
+                        Class.Sneaky => new Color("393a39"),
+                        Class.Beastly => new Color("2ebbda"),
+                        Class.Crazy => new Color("661dd1"),
+                        Class.Hearty => new Color("f19409"),
+                        _ => new Color("ffffff")
+                    };
                     frameBg.Texture = Model.CardType switch
                     {
                         CardType.Hero | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
@@ -680,8 +693,10 @@ public partial class NodeCard : Control
                     control = Model.Icon.Instantiate<Control>();
                     control.MouseFilter = MouseFilterEnum.Ignore;
                     GetNode<Node2D>("%卡面容器").AddChild(control);
-                    control.GetNode<TextureRect>("卡牌图标").MouseFilter = MouseFilterEnum.Ignore;
-                    GetNode<TextureRect>("%卡牌发光背景").Modulate = _colorBox.Default;
+                    foreach (var cot in control.GetChildren().OfType<Control>())
+                    {
+                        cot.MouseFilter = MouseFilterEnum.Ignore;
+                    }
                 }
                 else
                 {

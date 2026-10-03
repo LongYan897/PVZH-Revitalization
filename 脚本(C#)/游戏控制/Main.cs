@@ -39,11 +39,14 @@ public partial class Main : Node
         CardModel card2 = CardModel.Load<Peashooter>();
         CardModel card3 = CardModel.Load<CopterCommando>();
         CardModel card4 = CardModel.Load<FinalMission>();
+        CardModel card5 = CardModel.Load<StartBattle>();
         card1.Status = Status.FaceUp;
         card2.Status = Status.FaceUp;
-        card4.Status = Status.FaceUp; 
+        card4.Status = Status.FaceUp;
+        card5.Status = Status.FaceUp;
         NodeCard.DrawACard(card1, new(0,0));
         NodeCard.DrawACard(card2, new(120, 0));
         NodeCard.DrawACard(card4, new(240, 0));
+        NodeCard.DrawACard(card5, new(360, 0));
     }
 }

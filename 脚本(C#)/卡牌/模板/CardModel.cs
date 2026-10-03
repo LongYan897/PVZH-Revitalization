@@ -30,7 +30,7 @@ public class CardModel
     private static readonly Dictionary<string, CardModel> TemplateEntries = new();
     public bool CanPlay()
     {
-        return (Fighter.CanTargetedBy(this) || NodeRoad.CanTargetedBy(this) ) && !CardCmd.IsCardPlaying;
+        return (Fighter.CanTargetedBy(this) || NodeRoad.CanTargetedBy(this) ) && !CardCmd.IsCardPlaying && !Road.IsBattling;
     }
     /// <summary>
     /// 按照名称获取卡牌模板

@@ -22,14 +22,24 @@ public class FighterCardModel : CardModel
         CardTag = cardString.CardTag;
         return LoadCustomData(cardString);
     }
-
+    /// <summary>
+    /// 创建一个攻击堆栈
+    /// </summary>
+    /// <returns></returns>
+    private AtkStack CreateOwnedStack()
+    => new(this, [], Fighter.GetNode(this).Road, Atk.Current);
+    /// <summary>
+    /// 额外攻击一次
+    /// </summary>
+    /// <returns></returns>
+    public async Task Battle() => await Battle(CreateOwnedStack());
     /// <summary>
     /// 开始战斗
     /// </summary>
     public async Task Battle(AtkStack atkStack)
     {
         var fighters = atkStack.Road.GetFighters();
-        var target = (IAttackable)fighters.First(
+        var target = (IAttackable)fighters.FirstOrDefault(
             f =>
             {
                 if (Camp == Camp.Zombie)
@@ -43,6 +53,7 @@ public class FighterCardModel : CardModel
                     return f.Model.Camp == Camp.Zombie;
             }
             );
+        if (target == null) return;
         atkStack.Targeting(target);
 
         await FireTiming(Timing.ModifyTarget, atkStack);
@@ -103,7 +114,7 @@ public class FighterCardModel : CardModel
         int actual = before - Hp.Current;
 
         if (playHurtAnim && actual > 0)
-            await Fighter.GetNode(this).Hurt(actual);
+            await Fighter.GetNode(this).Hurt(amount);
 
         if (Hp.Current <= 0)
         {
@@ -216,7 +227,7 @@ public class FighterCardModel : CardModel
         await PlayFighterAnimationTask("intro");
     }
 
-    public override TargetType TargetType
+    public sealed override TargetType TargetType
     {
         get
         {
@@ -226,7 +237,7 @@ public class FighterCardModel : CardModel
         }
     }
 
-    public override async Task Play(ITarget target)
+    public sealed override async Task Play(ITarget target)
     {
         if (target is NodeRoad road)
         {

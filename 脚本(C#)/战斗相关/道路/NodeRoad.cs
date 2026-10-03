@@ -108,7 +108,7 @@ public partial class NodeRoad : Control, ITarget
         bool line = NeedLine(targetType);
         bool g1 = NeedG1(targetType);
         bool g2 = NeedG2(targetType);
-        if (!line && !g1) return;
+        if (!line && !g1) return; 
 
         var list = new List<NodeRoad>();
         foreach (var road in Instances.Keys)
@@ -221,12 +221,18 @@ public partial class NodeRoad : Control, ITarget
         bat.Visible = false;
         ar1.Visible = false;
         ar2.Visible = false;
+
+        SetMonitoring(false, false, false);
     }
 
     public void Targeted(bool line, bool g1, bool g2,FighterCardModel fighterCard)
     {
         if (!Calling) return;
         KillTween();
+
+        GetNode<Sprite2D>("%环境高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮").Visible = false;
+        GetNode<TextureRect>("%单位高亮2").Visible = false;
 
         if (line)
         {
@@ -274,7 +280,8 @@ public partial class NodeRoad : Control, ITarget
         {
             bat.Visible = true;
             ar1.Visible = true;
-            ar2.Visible = true; Tween tween = CreateTween().BindNode(bat);
+            ar2.Visible = true; 
+            Tween tween = CreateTween().BindNode(bat);
             bat.Scale = Vector2.Zero;
 
             tween.TweenProperty(bat, "scale", new Vector2(0.5f, 0.5f), 0.05)
@@ -361,7 +368,6 @@ public partial class NodeRoad : Control, ITarget
         {
             node = GetNode<TextureRect>(path);
         }
-
         _tweenTargeted = CreateTween().BindNode(node);
         _tweenTargeted2 = CreateTween().BindNode(node);
         _tweenTargeted.TweenProperty(node, "scale", baseScale, 0.2f);

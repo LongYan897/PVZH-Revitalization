@@ -37,7 +37,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     private const int maxInstance = 20;
 
     public FighterCardModel Model { get; private set; }
-    private Road Road;
+    public Road Road { get; private set; }
     private Location index;
 
     public bool Zombie => Model.Camp == Camp.Zombie;
