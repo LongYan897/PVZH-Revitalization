@@ -40,9 +40,12 @@ public partial class NodeCard : Control
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌.tscn");
     public static NodeCard ChoiceCard { get; private set; }
     public CardModel Model { get; private set; }
-    private static readonly Dictionary<NodeCard, CardModel> instances = new();
+    private static readonly System.Collections.Generic.Dictionary<NodeCard, CardModel> instances = new();
     private const int maxInstance = int.MaxValue;
-
+    /// <summary>
+    /// 当前展开信息背景的卡，全局唯一
+    /// </summary>
+    private static NodeCard _openedCard;
     /// <summary>
     /// 卡牌初始大小
     /// </summary>
@@ -81,7 +84,6 @@ public partial class NodeCard : Control
                 node.Fresh();
             instances.Add(node, cardModel);
             parent.AddChild(node);
-            node.ZIndex = instances.Count * 30;
             return node;
         }
         else
@@ -106,6 +108,34 @@ public partial class NodeCard : Control
             return node;
         }
     }
+
+    /// <summary>
+    /// 在指定 CanvasLayer 下创建一张卡。
+    /// group 为 null 时退回默认父节点 Main.CardContainer。
+    /// </summary>
+    /// <param name="cardModel">卡牌</param>
+    /// <param name="position">初始位置</param>
+    /// <param name="group">目标 CanvasLayer</param>
+    /// <param name="cardView">预览模式</param>
+    /// <param name="drawAnimation">是否播放抽卡动画</param>
+    /// <param name="scaleFactor">缩放系数</param>
+    public static NodeCard CreateCardInGroup(
+        CardModel cardModel,
+        Vector2 position,
+        CanvasLayer group,
+        CardView cardView = CardView.Battle,
+        bool drawAnimation = false,
+        float scaleFactor = BaseScaleFactor)
+    {
+        Node parent = group;
+
+        var container = group?.GetNodeOrNull<Node>("CardContainer");
+        if (container != null)
+            parent = container;
+
+        return CreateCard(cardModel, position, cardView, parent, drawAnimation, scaleFactor);
+    }
+
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// </summary>
@@ -155,6 +185,27 @@ public partial class NodeCard : Control
     public static NodeCard GetNode(CardModel card)
     {
         return instances.FirstOrDefault(k => k.Value == card).Key;
+    }
+
+    /// <summary>
+    /// 把这张卡提到它所在父节点下的最顶层
+    /// </summary>
+    public void BringToFront()
+    {
+        var parent = GetParent();
+        if (parent == null) return;
+
+        var siblings = parent.GetChildren().OfType<NodeCard>().ToList();
+        if (siblings.Count == 0) return;
+
+        int maxZ = 0;
+        foreach (var s in siblings)
+        {
+            if (s == this) continue;
+            if (s.ZIndex > maxZ) maxZ = s.ZIndex;
+        }
+
+        ZIndex = maxZ + 20;
     }
 
     private async void DrawAnimation()
@@ -349,7 +400,7 @@ public partial class NodeCard : Control
                 {
                     _isDragging = true;
                     ChoiceCard = this;
-                    ZIndex += instances.Count * 60;
+                    BringToFront();
 
                     KillClickTween();
                     Scale = _baseScale;
@@ -402,6 +453,7 @@ public partial class NodeCard : Control
     private void OnCardClick()
     {
         ChoiceCard = this;
+        BringToFront();
 
         if (CardViewMode == CardView.Battle)
         {
@@ -409,15 +461,34 @@ public partial class NodeCard : Control
             return;
         }
 
+        if (_openedCard != null && _openedCard != this && IsInstanceValid(_openedCard))
+            _openedCard.CloseNonBattle();
+
         ToggleNonBattle();
+    }
+    /// <summary>
+    /// 关闭信息背景
+    /// </summary>
+    public void CloseNonBattle()
+    {
+        var nonBattle = GetNode<Node2D>("%非战斗");
+        if (!nonBattle.Visible) return;
+
+        _ = ToggleNonBattleAsync(false);
     }
     private Tween _nonBattleTween;
     private Tween _nonBattleScaleTween;
 
-    private async void ToggleNonBattle()
+    private void ToggleNonBattle()
     {
         var nonBattle = GetNode<Node2D>("%非战斗");
-        bool willOpen = !nonBattle.Visible;
+        _ = ToggleNonBattleAsync(!nonBattle.Visible);
+    }
+
+    private async Task ToggleNonBattleAsync(bool willOpen)
+    {
+        var nonBattle = GetNode<Node2D>("%非战斗");
+        if (willOpen == nonBattle.Visible) return;
 
         var infoBg = GetNode<Control>("%信息背景");
         var infoBtn = GetNode<NinePatchRect>("%信息按钮");
@@ -433,6 +504,8 @@ public partial class NodeCard : Control
 
         if (willOpen)
         {
+            _openedCard = this;
+
             nonBattle.Visible = true;
 
             infoBg.PivotOffset = infoBg.Size / 2f;
@@ -468,6 +541,8 @@ public partial class NodeCard : Control
         }
         else
         {
+            if (_openedCard == this) _openedCard = null;
+
             if (isCollection)
             {
                 SetControlVisible(infoBtn, false);
@@ -539,7 +614,6 @@ public partial class NodeCard : Control
         }
 
         var savedTarget = target;
-        ZIndex -= instances.Count * 60;
         if (ChoiceCard == this) ChoiceCard = null;
         Fighter.DeleteTargeted(Model.TargetType);
         NodeRoad.DeleteTargeted(Model.TargetType);
