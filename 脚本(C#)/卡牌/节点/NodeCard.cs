@@ -209,7 +209,7 @@ public partial class NodeCard : Control
     private Tween _colorTween;
     private Tween _clickTween;
     private bool _clickAnimationPlayed;
-    private const float ClickScaleDown = 1.1f;
+    private const float ClickScaleDown = 1.2f;
     private const float ClickScaleTime = 0.08f;
     private const float DragThreshold = 10f;
 
