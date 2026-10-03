@@ -155,7 +155,7 @@ public partial class Deck : Node2D
             {
                 CardModel cardClone = card;
                 cardClone.Status = Status.FaceUp;
-                NodeCard.DisplayCardAt(cardClone,Vector2.Zero,classSprite.GetNode<HFlowContainer>("排列"),CardView.Collection);
+                NodeCard.DisplayCardAt(cardClone,Vector2.Zero,classSprite.GetNode<HFlowContainer>("排列"),CardView.Collection,1);
             }
         }
     }
