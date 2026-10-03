@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://b7i1dp6fw8xho" path="res://脚本/信息按钮.gd" id="2_d2tyt"]
 
 [node name="信息按钮" type="TextureButton" unique_id=339220146]
-self_modulate = Color(0, 1.1696075, 1.5467359, 1)
+self_modulate = Color(0, 1.1672679, 1.5468544, 1)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

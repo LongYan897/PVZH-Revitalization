@@ -19,4 +19,6 @@ public static class CardRegistryField
     public static string 额外攻击 => "使单位额外进行攻击。";
     [URL]
     public static string 召唤 => "在一条线上生成单位。";
+    [URL]
+    public static string 额外战斗 => "使一条线上的所有单位额外进行攻击";
 }

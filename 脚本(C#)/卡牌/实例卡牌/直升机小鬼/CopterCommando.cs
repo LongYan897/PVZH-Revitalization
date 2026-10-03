@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Card;
+namespace Card.Imp;
 
 public class CopterCommando : FighterCardModel
 {
