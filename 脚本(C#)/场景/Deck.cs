@@ -25,6 +25,7 @@ public partial class Deck : Node2D
     private TextureButton Plant; // 植物按钮
     private TextureButton Zombie; // 僵尸按钮
     private Control Information; //图鉴信息
+    private ColorRect HeroLabel; //英雄标志
     private ColorRect Cards; //卡片信息
     private HFlowContainer CardInformation; //卡牌列表
     private PackedScene classScene;
@@ -50,6 +51,7 @@ public partial class Deck : Node2D
         Plant = FindChild("植物按钮") as TextureButton;
         Zombie = FindChild("僵尸按钮") as TextureButton;
         Information = GetNode<Control>("%图鉴信息");
+        HeroLabel = GetNode<ColorRect>("%英雄标志");
         Cards = GetNode<ColorRect>("%卡牌标志");
         CardInformation = GetNode<HFlowContainer>("%卡牌列表");
         classScene = ResourceLoader.Load<PackedScene>("res://场景(C#)/派系条.tscn");
@@ -116,6 +118,7 @@ public partial class Deck : Node2D
                 position.X++;
             }
         }
+        HeroLabel.Position = new Vector2(-88, 24);
         Cards.Position = new Vector2(-88, (position.Y - 1) * 100 + 280 + 72+64);
         CardInformation.Position = new Vector2(0, Cards.Position.Y + 60);
         return (position.Y - 1) * 100 + 280 + 72 + 64;
