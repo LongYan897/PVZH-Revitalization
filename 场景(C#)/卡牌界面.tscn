@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="7_cnftl"]
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="8_m1m2k"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="10_fad38"]
+[ext_resource type="Shader" uid="uid://wfa2v4nircfk" path="res://着色器/裁剪着色器.gdshader" id="10_setff"]
 [ext_resource type="FontFile" uid="uid://hsayw12ab5vm" path="res://素材/字体/CAFR____.ttf" id="11_fad38"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="12_setff"]
 [ext_resource type="Script" uid="uid://dpy81oq8meuvd" path="res://脚本(C#)/辅助类/IconComposer.cs" id="17_ts65j"]
@@ -20,6 +21,16 @@ base_font = ExtResource("6_icp5t")
 
 [sub_resource type="FontVariation" id="FontVariation_voqjy"]
 base_font = ExtResource("6_icp5t")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_setff"]
+shader = ExtResource("10_setff")
+shader_parameter/circle_center = Vector2(0.5, 0.5)
+shader_parameter/circle_radius = 0.42000001995
+shader_parameter/edge_softness = 0.01
+shader_parameter/invert_mask = false
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_oon7a"]
+viewport_path = NodePath("单位容器/裁剪")
 
 [sub_resource type="FontVariation" id="FontVariation_fad38"]
 base_font = ExtResource("11_fad38")
@@ -37,6 +48,8 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_cnftl")
 metadata/_custom_type_script = "uid://b38mmdd52sf5k"
+metadata/_edit_horizontal_guides_ = [235.0, 236.0]
+metadata/_edit_vertical_guides_ = [235.0]
 
 [node name="背景" type="Node2D" parent="." unique_id=649810752]
 unique_name_in_owner = true
@@ -208,6 +221,27 @@ offset_top = -335.0
 offset_bottom = -335.0
 scale = Vector2(0.8, 0.8)
 
+[node name="裁剪" type="SubViewport" parent="单位容器" unique_id=783624152]
+unique_name_in_owner = true
+transparent_bg = true
+size = Vector2i(314, 314)
+
+[node name="纹理" type="TextureRect" parent="单位容器" unique_id=1160664082]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_setff")
+layout_mode = 0
+offset_left = -157.0
+offset_top = -88.25
+offset_right = 157.0
+offset_bottom = 225.75
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = SubResource("ViewportTexture_oon7a")
+
+[node name="中心位置" type="Marker2D" parent="单位容器/纹理" unique_id=1113259368]
+unique_name_in_owner = true
+position = Vector2(157, 157)
+scale = Vector2(0.9999998, 0.9999998)
+
 [node name="土坑" parent="单位容器" unique_id=1334739012 instance=ExtResource("10_fad38")]
 unique_name_in_owner = true
 z_index = -5
@@ -216,7 +250,7 @@ scale = Vector2(0.8, 0.8)
 
 [node name="动画" parent="单位容器" unique_id=167055946 instance=ExtResource("10_fad38")]
 unique_name_in_owner = true
-position = Vector2(4.9999995, 140)
+position = Vector2(0, 140)
 
 [node name="单位框" type="Sprite2D" parent="." unique_id=13245324]
 unique_name_in_owner = true

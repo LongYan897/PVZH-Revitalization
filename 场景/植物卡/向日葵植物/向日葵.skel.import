@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://cd84awg4eki04"
+path="res://.godot/imported/向日葵.skel-402ba80db1bfa2aa938876370fd39b5d.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/向日葵植物/向日葵.skel"
+dest_files=["res://.godot/imported/向日葵.skel-402ba80db1bfa2aa938876370fd39b5d.spskel"]
+
+[params]
+

@@ -7,6 +7,7 @@ using Spine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -423,6 +424,34 @@ public partial class CardDes : Control
                 else
                     cost.Modulate = _colorBox.ColorC;
             }
+            if (Model.AnimationScenePath != null)
+            {
+                var scene = GD.Load<PackedScene>(Model.AnimationScenePath).Instantiate<Node2D>();
+                var col1 = scene.GetNode<Node2D>("Collection").Position;
+                var col2 = scene.GetNode<Node2D>("Collection2").Position;
+                GetNode<SpineHandler>("%动画").Position = (col1-col2)+ GetNode<SpineHandler>("%土坑").Position;
+                if (scene.GetChildren().Any(c=>c.Name.ToString().Contains("Saved")))
+                {
+                    GetNode<SubViewport>("%裁剪").AddChild(scene);
+                    scene.Position = GetNode<Marker2D>("%中心位置").Position - col1;
+                    scene.ZIndex = GetNode<SpineHandler>("%土坑").ZIndex - 3;
+                    foreach (var child in scene.GetChildren())
+                    {
+                        if (!child.Name.ToString().Contains("Saved"))
+                        {
+                            child.QueueFree();
+                        }
+                        else if (child is Control control)
+                        {
+                            control.MouseFilter = MouseFilterEnum.Ignore;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                GetNode<SpineHandler>("%动画").Position = new(5f, 140.0f);
+            }
             if (Model is FighterCardModel fighterCard)
             {
                 GetNode<Node2D>("%基础信息").Visible = true;
@@ -473,12 +502,12 @@ public partial class CardDes : Control
                     if (fighterCard.CardTag.HasFlag(CardTag.Amphibious))
                         GetNode<SpineHandler>("%土坑").SetAttachment("土坑", "zombie_water_back");
                     else
-                        GetNode<SpineHandler>("%土坑").SetAttachment("土坑", "zombie_dirt_back"); 
+                        GetNode<SpineHandler>("%土坑").SetAttachment("土坑", "zombie_dirt_back");
                 }
             }
             else
             {
-                GetNode<Node2D>("%基础信息").Visible = false; 
+                GetNode<Node2D>("%基础信息").Visible = false;
                 GetNode<SpineHandler>("%土坑").Visible = false;
             }
             GetNode<Sprite2D>("Shadow").Visible = Model.CardType.HasFlag(CardType.Fighter);
@@ -658,7 +687,16 @@ public partial class CardDes : Control
 
         var atkLabel = GetNode<Label>("%伤害数值");
         var atkSpine = GetNode<SpineHandler>("%伤害动画");
-
+        if (fighterCard.Atk.Current <= 0 && !fighterCard.BornWithAtk)
+        {
+            atkLabel.Visible = false;
+            atkSpine.Visible = false;
+        }
+        else
+        {
+            atkLabel.Visible = true;
+            atkSpine.Visible = true;
+        }
         atkLabel.Text = "";
         atkLabel.Scale = Vector2.Zero;
 

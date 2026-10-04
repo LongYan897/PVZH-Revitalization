@@ -29,11 +29,6 @@ offset_right = 320.0
 offset_bottom = -74.0
 flat = true
 
-[node name="土坑" parent="." unique_id=1531348011 instance=ExtResource("3_qosmd")]
-visible = false
-position = Vector2(0, -117.00001)
-scale = Vector2(3.8, 3.8)
-
 [node name="Shadow" type="Sprite2D" parent="." unique_id=316299064]
 position = Vector2(-5.9604645e-08, -114)
 scale = Vector2(5.28, 3.09)
@@ -42,6 +37,12 @@ texture = ExtResource("2_bev64")
 [node name="单位场景" type="Node2D" parent="." unique_id=1751003746]
 unique_name_in_owner = true
 position = Vector2(0, -80)
+
+[node name="土坑" parent="单位场景" unique_id=1531348011 instance=ExtResource("3_qosmd")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, -37.000008)
+scale = Vector2(3.8, 3.8)
 
 [node name="动画" parent="单位场景" unique_id=922182681 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true

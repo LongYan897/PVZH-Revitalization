@@ -122,6 +122,7 @@ public class Road
     /// <param name="fighter">要添加的战斗单位</param>
     public async Task AddFighter(CardModel cardModel,Fighter fighter)
     {
+        await cardModel.FireTiming(Timing.OnFighterEnter, this, fighter.Model);
         fighters.Add(fighter);
         await CardCmd.TimingOnCards(cardModel,Timing.AfterRoadChanged,this);
     }
@@ -133,6 +134,7 @@ public class Road
 
     public async Task RemoveFighter(CardModel cardModel, Fighter fighter)
     {
+        await cardModel.FireTiming(Timing.OnFighterExit, this, fighter.Model);
         fighters.Remove(fighter);
         await CardCmd.TimingOnCards(cardModel, Timing.AfterRoadChanged, this);
     }

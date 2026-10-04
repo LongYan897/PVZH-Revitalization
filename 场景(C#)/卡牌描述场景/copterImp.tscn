@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://b1x81urk4jn4g"]
+
+[ext_resource type="Texture2D" uid="uid://c4yunnsxr58kl" path="res://素材/ui/界面ui/smallinspectionframe.png" id="1_gaymm"]
+[ext_resource type="Texture2D" uid="uid://cov63gqkfb3l7" path="res://素材/ui/界面ui/frame_circle_grass.png" id="2_55lo2"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://mavpbw56r5bl" path="res://数据资源/僵尸动画/土坑动画.tres" id="3_3mhgx"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cdl53jquamw3q" path="res://数据资源/僵尸动画/直升机小鬼僵尸动画.tres" id="4_gwuwk"]
+
+[node name="Copter" type="Node2D" unique_id=288799511]
+
+[node name="Ignore5" type="Sprite2D" parent="." unique_id=949480861]
+unique_name_in_owner = true
+z_index = -19
+position = Vector2(0, -280)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_gaymm")
+
+[node name="Ignore6" type="Sprite2D" parent="Ignore5" unique_id=397161122]
+unique_name_in_owner = true
+z_index = -8
+texture = ExtResource("2_55lo2")
+
+[node name="Collection" type="Marker2D" parent="." unique_id=1996817975]
+position = Vector2(-46, -214)
+
+[node name="Collection2" type="SpineSprite" parent="." unique_id=13806803]
+skeleton_data_res = ExtResource("3_3mhgx")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(2, -192.5)
+scale = Vector2(0.64, 0.64)
+
+[node name="Battle" type="Marker2D" parent="." unique_id=359838686]
+position = Vector2(-43, -137)
+
+[node name="Battle2" type="SpineSprite" parent="." unique_id=1865176069]
+skeleton_data_res = ExtResource("3_3mhgx")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(0, -117)
+
+[node name="Ignore3" type="SpineSprite" parent="." unique_id=475056851]
+skeleton_data_res = ExtResource("4_gwuwk")
+preview_skin = "default"
+preview_animation = "idle"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(-46, -214)
+
+[node name="Ignore4" type="SpineSprite" parent="." unique_id=1114602827]
+skeleton_data_res = ExtResource("4_gwuwk")
+preview_skin = "default"
+preview_animation = "idle"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(-43, -137)

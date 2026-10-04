@@ -101,7 +101,7 @@ position = Vector2(55, 64)
 
 [node name="Pos" type="Marker2D" parent="." unique_id=2064773252]
 unique_name_in_owner = true
-position = Vector2(0, 98)
+position = Vector2(0, 119)
 
 [node name="植物_2" type="Node2D" parent="." unique_id=503027257]
 unique_name_in_owner = true

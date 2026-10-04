@@ -83,16 +83,16 @@ public partial class NodeRoad : Control, ITarget
             false => location switch
             {
                 Location.Plant => GetNode<Node2D>("%植物_僵尸1").GetNode<Marker2D>("Pos").GlobalPosition,
-                Location.PlantFront => GetNode<Node2D>("%植物2").GetNode<Marker2D>("Pos").GlobalPosition,
+                Location.PlantFront => GetNode<Node2D>("%植物_2").GetNode<Marker2D>("Pos").GlobalPosition,
                 Location.Zombie => GetNode<Marker2D>("%Pos1").GlobalPosition,
                 _ => new(360, 640),
             },
             true => location switch
             {
 
-                Location.Plant => GetNode<Node2D>("%Pos1").GetNode<Marker2D>("Pos").GlobalPosition,
-                Location.PlantFront => GetNode<Node2D>("%Pos2").GetNode<Marker2D>("Pos").GlobalPosition,
-                Location.Zombie => GetNode<Marker2D>("%植物_僵尸1").GlobalPosition,
+                Location.Plant => GetNode<Node2D>("%Pos1").GlobalPosition,
+                Location.PlantFront => GetNode<Node2D>("%Pos2").GlobalPosition,
+                Location.Zombie => GetNode<Marker2D>("%植物_僵尸1").GetNode<Marker2D>("Pos").GlobalPosition,
                 _ => new(360, 640),
             }
         };
@@ -112,7 +112,8 @@ public partial class NodeRoad : Control, ITarget
     {
         bool line = NeedLine(targetType);
         bool g1 = NeedG1(targetType);
-        bool g2 = NeedG2(targetType);
+        bool g2 = (NeedG2(targetType) || (NeedG1(targetType) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant && p.Model.CardTag.HasFlag(CardTag.Coop)))) && Model.GetFighters().Any(p=>p.Model.Camp == Camp.Plant);
+
         if (!line && !g1) return;
 
         if (line) CallLineTargeted();
@@ -130,6 +131,8 @@ public partial class NodeRoad : Control, ITarget
         }
     }
 
+    private Tween _tweenTargeted4;
+    private Tween _tweenTargeted3;
     private Tween _tweenTargeted2;
     private Tween _tweenTargeted;
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
@@ -144,6 +147,14 @@ public partial class NodeRoad : Control, ITarget
         if (_tweenTargeted2 != null && _tweenTargeted2.IsValid())
         {
             _tweenTargeted2.Kill();
+        }
+        if (_tweenTargeted != null && _tweenTargeted.IsValid())
+        {
+            _tweenTargeted3.Kill();
+        }
+        if (_tweenTargeted2 != null && _tweenTargeted2.IsValid())
+        {
+            _tweenTargeted4.Kill();
         }
     }
     private void CallLineTargeted()
@@ -197,6 +208,14 @@ public partial class NodeRoad : Control, ITarget
         hl2.Visible = true;
         _tweenTargeted2.TweenProperty(hl2, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted2.TweenProperty(hl2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
+
+        if (!Model.IsUp)
+        {
+            var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
+            P1roadTargetKine = f.Model.Location;
+            _tweenTargeted4 = CreateTween().BindNode(f);
+            _tweenTargeted4.TweenProperty(f, "position", GetNode<Node2D>("%Pos").GlobalPosition, 0.2f);
+        }
     }
 
     private void DeleteLineTargeted()
@@ -216,6 +235,26 @@ public partial class NodeRoad : Control, ITarget
         ar1.Visible = false;
         ar2.Visible = false;
 
+        if (Model.GetFighters().Count(f=> f.Model.Camp == Camp.Plant) == 1 && !Model.IsUp)
+        {
+            if (P1roadTargetKine != Location.Zombie)
+            {
+                if (P2roadTargetKine != P1roadTargetKine)
+                {
+                    var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
+                    _tweenTargeted4 = CreateTween().BindNode(f);
+                    _tweenTargeted4.TweenProperty(f, "position", GetFighterLocation(P1roadTargetKine), 0.2f);
+                }
+                else
+                {
+                    var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
+                    f.SwitchLayer(f.Model.Location);
+                }
+                P1roadTargetKine = Location.Zombie;
+            }
+            P2roadTargetKine = Location.Zombie;
+        }
+
         SetMonitoring(false, false, false);
     }
 
@@ -223,10 +262,6 @@ public partial class NodeRoad : Control, ITarget
     {
         if (!Calling) return;
         KillTween();
-
-        GetNode<Sprite2D>("%环境高亮").Visible = false;
-        GetNode<TextureRect>("%单位高亮").Visible = false;
-        GetNode<TextureRect>("%单位高亮2").Visible = false;
 
         if (ctx.Line)
         {
@@ -248,6 +283,22 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             Model.LastTargetKind = RoadTargetKind.Grid;
+            var h2 = GetNode<TextureRect>("%单位高亮2");
+            _tweenTargeted3 = CreateTween().BindNode(hl);
+            h2.Visible = true;
+            _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
+            _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
+            _tweenTargeted3.TweenProperty(h2, "modulate", _colortgBox.Default, 0.2f);
+            if (!Model.IsUp && Model.GetFighters().Count(p=>p.Model.Camp == Camp.Plant) == 1)
+            {
+                var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
+                P1roadTargetKine = f.Model.Location;
+                _tweenTargeted4 = CreateTween().BindNode(f);
+                _tweenTargeted4.TweenProperty(f, "position", GetFighterLocation(Location.PlantFront), 0.2f);
+                f.Model.Location = Location.PlantFront;
+                f.SwitchLayer(f.Model.Location);
+                P2roadTargetKine = Location.Plant;
+            }
             TargetedGridArrow(ctx.FighterCard, false);
         }
 
@@ -260,9 +311,27 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             Model.LastTargetKind = RoadTargetKind.CoopGrid;
+            var h2 = GetNode<TextureRect>("%单位高亮");
+            _tweenTargeted3 = CreateTween().BindNode(hl);
+            h2.Visible = true;
+            _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
+            _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
+            _tweenTargeted3.TweenProperty(h2, "modulate", _colortgBox.Default, 0.2f);
+            if (!Model.IsUp)
+            {
+                var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
+                P1roadTargetKine = f.Model.Location;
+                _tweenTargeted4 = CreateTween().BindNode(f);
+                _tweenTargeted4.TweenProperty(f, "position", GetFighterLocation(Location.Plant), 0.2f);
+                f.Model.Location = Location.Plant;
+                f.SwitchLayer(f.Model.Location);
+                P2roadTargetKine = Location.PlantFront;
+            }
             TargetedGridArrow(ctx.FighterCard, true);
         }
     }
+    private Location P2roadTargetKine {  get; set; }
+    private Location P1roadTargetKine {  get; set; }
     private void TargetedGridArrow(FighterCardModel fighterCard, bool isCoop)
     {
         var bat = GetNode<TextureRect>("%Battle");
@@ -326,7 +395,7 @@ public partial class NodeRoad : Control, ITarget
             tween2.TweenProperty(ar1, "scale", new Vector2(1f, 1.2f), 0.02)
                 .SetTrans(Tween.TransitionType.Quad);
 
-            tween2.TweenProperty(ar1, "scale", new Vector2(1f, 2.8f), 0.02)
+            tween2.TweenProperty(ar1, "scale", new Vector2(1f, isCoop ? 8.0f : 2.8f), 0.02)
                 .SetTrans(Tween.TransitionType.Quad);
         }
     }

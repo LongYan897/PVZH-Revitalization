@@ -3,6 +3,7 @@ using Battle.Entity;
 using Card;
 using Card.Cmd;
 using Card.Dance;
+using Card.Flower;
 using Card.Imp;
 using Card.Pea;
 using Godot;
@@ -20,6 +21,10 @@ public partial class Main : Node
     public static Node Animator { get; private set; }
     public static Node CardContainer { get; private set; }
     public static Node FighterContainer { get; private set; }
+    public static Node FighterUp {  get; private set; }
+    public static Node FighterDown { get; private set; }
+    public static Node FighterFrontUp { get; private set; }
+    public static Node FighterFrontDown { get; private set; }
     public static Node DesLayer { get; private set; }
     public static Node AudioContainer { get; private set; }
     public override async void _Ready()
@@ -34,13 +39,17 @@ public partial class Main : Node
         Animator = GetNode<CanvasLayer>("Animators");
         CardContainer = GetNode<CanvasLayer>("Cards");
         FighterContainer = GetNode<CanvasLayer>("Fighters");
+        FighterUp = FighterContainer.GetNode<Node>("Up");
+        FighterFrontUp = FighterContainer.GetNode<Node>("FrontUp");
+        FighterDown = FighterContainer.GetNode<Node>("Down");
+        FighterFrontDown = FighterContainer.GetNode<Node>("FrontDown");
         DesLayer = GetNode<CanvasLayer>("Des");
         AudioContainer = GetNode<Node2D>("Audios");
         //
         CardModel card1 = CardModel.Load<HailACopter>();
         CardModel card2 = CardModel.Load<Peashooter>();
-        CardModel card3 = CardModel.Load<BackupDancer>();
-        CardModel card4 = CardModel.Load<BackupDancer>();
+        CardModel card3 = CardModel.Load<SunFlower>();
+        CardModel card4 = CardModel.Load<SunFlower>();
         CardModel card6 = CardModel.Load<FinalMission>();
         CardModel card5 = CardModel.Load<StartBattle>();
         card1.Status = Status.FaceUp;

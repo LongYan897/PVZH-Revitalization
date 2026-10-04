@@ -403,6 +403,9 @@ public partial class NodeCard : Control
                     ChoiceCard = this;
                     BringToFront();
 
+                    _overlappingAreas.Clear();
+                    ClearTarget();
+
                     KillClickTween();
                     Scale = _baseScale;
 
@@ -414,6 +417,8 @@ public partial class NodeCard : Control
             {
                 Vector2 delta = GetGlobalMousePosition() - _mouseDownGlobal;
                 Position = _cardOriginPos + delta;
+
+                RefreshNearestTarget();
             }
         }
     }
@@ -426,6 +431,8 @@ public partial class NodeCard : Control
         GetNode<TextureRect>("牌背").Visible = false;
         KillReturnTween();
         KillClickTween();
+        _overlappingAreas.Clear();
+        ClearTarget();
         _isOpen = false;
         if (ChoiceCard == this)
             await EndDrag();
@@ -600,14 +607,12 @@ public partial class NodeCard : Control
 
     private async Task EndDrag()
     {
+        _overlappingAreas.Clear();
+
         if (CardViewMode != CardView.Battle)
         {
             _isDragging = false;
-            if (target != null)
-            {
-                TargetRegistry.DeleteTargeted(Model.TargetType);
-                target = null;
-            }
+            ClearTarget();
             ReturnToOrigin();
             return;
         }
@@ -615,7 +620,8 @@ public partial class NodeCard : Control
         var savedTarget = target;
         if (ChoiceCard == this) ChoiceCard = null;
         TargetRegistry.DeleteTargeted(Model.TargetType);
-        if (target == null)
+        ClearTarget();
+        if (savedTarget == null)
             ReturnToOrigin();
         else
         {
@@ -636,53 +642,113 @@ public partial class NodeCard : Control
     }
 
     private ITarget target;
+    private Area2D _currentTargetArea;
+
+    private readonly System.Collections.Generic.HashSet<Area2D> _overlappingAreas = new();
 
     private void AreaEntered(Area2D area)
     {
         if (CardViewMode != CardView.Battle) return;
         if (!Model.CanPlay()) return;
-        if (target != null) return;
-        if (!area.HasMeta("Target")) return;
 
-        var col = (ITarget)(GodotObject)area.GetMeta("Target");
-        if (!col.Calling) return;
-        if (!col.CanBeTarget(Model, Model.TargetFilter)) return;
-
-        var kind = (string)area.GetMeta("TargetType");
-        var fighter = Model as FighterCardModel;
-        var ctx = kind switch
-        {
-            "Road" => new TargetContext { Line = true, FighterCard = fighter },
-            "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
-            "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
-            _ => default
-        };
-
-        target = col;
-        col.OnTargeted(ctx);
-        Glowing();
+        _overlappingAreas.Add(area);
+        RefreshNearestTarget();
     }
 
     private void AreaExited(Area2D area)
     {
         if (CardViewMode != CardView.Battle) return;
-        if (target == null) return;
-        if (!area.HasMeta("Target")) return;
 
-        var col = (ITarget)(GodotObject)area.GetMeta("Target");
-        if (target != col) return;
+        _overlappingAreas.Remove(area);
 
-        var kind = (string)area.GetMeta("TargetType");
-        var fighter = Model as FighterCardModel;
-        var ctx = kind switch
+        if (target != null && area.HasMeta("Target") &&
+            (ITarget)(GodotObject)area.GetMeta("Target") == target)
         {
-            "Road" => new TargetContext { Line = true, FighterCard = fighter },
-            "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
-            "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
-            _ => default
-        };
+            ClearTarget();
+            RefreshNearestTarget();
+        }
+    }
 
-        col.OnDistargeted(ctx);
+    private void RefreshNearestTarget()
+    {
+        if (CardViewMode != CardView.Battle) return;
+        if (!Model.CanPlay()) return;
+        if (!_isDragging) return;
+
+        var myPos = GetGlobalMousePosition();
+
+        Area2D bestArea = null;
+        ITarget bestTarget = null;
+        float bestDist = float.MaxValue;
+
+        foreach (var area in _overlappingAreas)
+        {
+            if (!IsInstanceValid(area)) continue;
+            if (!area.HasMeta("Target")) continue;
+
+            var col = (ITarget)(GodotObject)area.GetMeta("Target");
+            if (col == null) continue;
+            if (!col.Calling) continue;
+            if (!col.CanBeTarget(Model, Model.TargetFilter)) continue;
+
+            Vector2 areaPos = area is Node2D n2d
+                ? n2d.GlobalPosition
+                : (area.GetParent() as Node2D)?.GlobalPosition ?? Vector2.Zero;
+
+            float dist = myPos.DistanceSquaredTo(areaPos);
+
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestArea = area;
+                bestTarget = col;
+            }
+        }
+
+        if (bestTarget == target) return;
+
+        ClearTarget();
+
+        if (bestTarget != null && bestArea != null)
+        {
+            target = bestTarget;
+            _currentTargetArea = bestArea;
+
+            var kind = (string)bestArea.GetMeta("TargetType");
+            var fighter = Model as FighterCardModel;
+            var ctx = kind switch
+            {
+                "Road" => new TargetContext { Line = true, FighterCard = fighter },
+                "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
+                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+                _ => default
+            };
+
+            bestTarget.OnTargeted(ctx);
+            Glowing();
+        }
+    }
+
+    private void ClearTarget()
+    {
+        if (target == null) return;
+
+        var fighter = Model as FighterCardModel;
+        if (_currentTargetArea != null && IsInstanceValid(_currentTargetArea))
+        {
+            var kind = (string)_currentTargetArea.GetMeta("TargetType");
+            var ctx = kind switch
+            {
+                "Road" => new TargetContext { Line = true, FighterCard = fighter },
+                "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
+                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+                _ => default
+            };
+            target.OnDistargeted(ctx);
+        }
+
+        target = null;
+        _currentTargetArea = null;
         Darken();
     }
 
@@ -1009,7 +1075,7 @@ public partial class NodeCard : Control
                 if (Model is FighterCardModel fighter)
                 {
                     var atks = GetNode<Node2D>("%攻击力容器");
-                    atks.Visible = true;
+                    atks.Visible = fighter.Atk.Current > 0 && fighter.BornWithAtk;
                     var hps = GetNode<Node2D>("%生命值容器");
                     hps.Visible = true;
                     GetNode<Node2D>("%等级").Visible = true;

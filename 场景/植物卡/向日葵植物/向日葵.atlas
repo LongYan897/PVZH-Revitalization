@@ -1,0 +1,55 @@
+向日葵.png
+size:400,417
+filter:Linear,Linear
+pma:true
+Template_R4_glow_1 #33948
+bounds:2,195,220,220
+offsets:3,0,223,223
+sunflower_eyes
+bounds:352,12,64,35
+offsets:1,1,66,37
+rotate:90
+sunflower_eyes_blink
+bounds:383,338,77,15
+offsets:1,2,79,18
+rotate:90
+sunflower_eyes_blink_1
+bounds:383,269,67,13
+offsets:0,2,67,17
+rotate:90
+sunflower_leaf_1
+bounds:297,41,53,59
+offsets:1,1,55,61
+sunflower_leaf_2
+bounds:224,27,58,52
+offsets:1,2,60,55
+sunflower_leaf_3
+bounds:224,81,71,66
+offsets:1,1,73,68
+sunflower_leaf_4
+bounds:224,149,86,55
+offsets:1,1,88,57
+sunflower_mouth_1 #21793
+bounds:363,163,104,25
+offsets:1,1,106,27
+rotate:90
+sunflower_mouth_2 #21792
+bounds:224,206,137,86
+offsets:1,1,139,88
+sunflower_mouth_3
+bounds:312,102,102,38
+offsets:1,1,104,40
+rotate:90
+sunflower_mouth_4_spit #15328
+bounds:284,17,22,28
+offsets:1,1,24,30
+rotate:90
+sunflower_petals
+bounds:2,2,220,191
+offsets:1,2,222,194
+向日葵-脸
+bounds:224,294,157,121
+offsets:1,1,159,123
+向日葵-茎
+bounds:352,78,40,83
+offsets:1,1,42,85

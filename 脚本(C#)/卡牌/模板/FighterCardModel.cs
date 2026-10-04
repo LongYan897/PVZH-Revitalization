@@ -20,6 +20,7 @@ public class FighterCardModel : CardModel
     protected override CardModel LoadData(CardString cardString)
     {
         Atk = new(this, "Attack", cardString.Attack);
+        BornWithAtk = Atk.Current > 0;
         AtkType = new(this, "AttackType", cardString.AtkType);
         Hp = new(this, "Health", cardString.Health);
         MaxHp = new(this, "HealthMax", cardString.Health);
@@ -76,6 +77,7 @@ public class FighterCardModel : CardModel
     /// </summary>
     public async Task Battle(AtkStack atkStack)
     {
+        if (Atk.Current <= 0) return;
         var fighters = atkStack.Road.GetFighters();
         var target = (IAttackable)fighters.FirstOrDefault(
             f =>
@@ -186,7 +188,7 @@ public class FighterCardModel : CardModel
     {
         await ApplyDamage(Hp.Current, reason, stack, false, immediateDeath);
     }
-
+    public bool BornWithAtk { get; private set; }
     /// <summary>
     /// 是否已死亡（Hp ≤ 0）
     /// </summary>

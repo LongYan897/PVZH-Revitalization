@@ -18,6 +18,7 @@ namespace Card;
 public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVariable
 {
     private CardModel card = cardModel;
+    public string Key => variable.Sign;
     private Variable<T> variable = new Variable<T>(sign, obj);
     public T Current => variable.Current;
     public bool HasChanged => variable.HasChanged;
@@ -76,6 +77,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
 
 public interface ICardVariable
 {
+    string Key {  get; }
 }
 
 /// <summary>
@@ -85,9 +87,10 @@ public interface ICardVariable
 /// <param name="sign">监听的信号</param>
 /// <param name="baseValue">基础值</param>
 /// <param name="canNegative">是否可以为负数</param>
-public class CardIntVariable(CardModel cardModel, string sign, int baseValue,bool canNegative = false)
+public class CardIntVariable(CardModel cardModel, string sign, int baseValue,bool canNegative = false) : ICardVariable
 {
     private CardModel card = cardModel;
+    public string Key => variable.Sign;
     private readonly IntVariable variable = new IntVariable(sign, baseValue);
     public int Current => variable.Current;
     public bool HasChanged => variable.Current != variable.Base;
@@ -192,4 +195,22 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
     /// 是否是相较于Base的值增加
     /// </summary>
     public bool PositiveChanged => variable.PositiveChanged;
+}
+
+/// <summary>
+/// 从卡牌描述里解析出来的变量：=XXX={+N} / =XXX={-N}
+/// 数值永远存绝对值，方向单独存
+/// </summary>
+public class DescriptionVariable(string key, int absValue, bool isNegative) : ICardVariable
+{
+    /// <summary>XXX，例如 Strength、Health</summary>
+    public string Key { get; } = key;
+
+    /// <summary>绝对值，永远 >= 0</summary>
+    public int AbsValue { get; } = absValue;
+
+    /// <summary>true 表示描述里带 "-"，是负向；false 表示 "+" 或没有符号</summary>
+    public bool IsNegative { get; } = isNegative;
+
+    public override string ToString() => $"={Key}={{+/-{AbsValue}}}";
 }

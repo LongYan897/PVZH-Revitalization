@@ -9,6 +9,16 @@ metadata/_custom_type_script = "uid://ccaq7lefsnojt"
 [node name="Fighters" type="CanvasLayer" parent="." unique_id=627124979]
 layer = 25
 
+[node name="Up" type="CanvasLayer" parent="Fighters" unique_id=1827987908]
+
+[node name="FrontUp" type="CanvasLayer" parent="Fighters" unique_id=211827059]
+layer = 2
+
+[node name="FrontDown" type="CanvasLayer" parent="Fighters" unique_id=789388824]
+
+[node name="Down" type="CanvasLayer" parent="Fighters" unique_id=1944813616]
+layer = 2
+
 [node name="Animators" type="CanvasLayer" parent="." unique_id=1250929900]
 layer = 100
 

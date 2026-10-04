@@ -12,6 +12,7 @@ var hero_check: CheckBox
 
 var des_edit: TextEdit
 var animation_edit: LineEdit
+var animation_extra_edit: LineEdit
 var icon_edit: LineEdit
 var label_edit: LineEdit
 var cost_spin: SpinBox
@@ -216,6 +217,11 @@ func _ready() -> void:
 	animation_edit.placeholder_text = "res://..."
 	root.add_child(animation_edit)
 
+	_add_label("额外动画场景")
+	animation_extra_edit = LineEdit.new()
+	animation_extra_edit.placeholder_text = "res://..."
+	root.add_child(animation_extra_edit)
+	
 	_add_label("卡面")
 	icon_edit = LineEdit.new()
 	icon_edit.placeholder_text = "res://..."
@@ -291,6 +297,8 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 	entry["\"%s.Rarity\"" % clean] = rarity_option.get_item_text(rarity_option.selected)
 	entry["\"%s.Category\"" % clean] = category_option.get_item_text(category_option.selected)
 	entry["\"%s.Animation\"" % clean] = animation_edit.text
+	if !animation_extra_edit.text.is_empty():
+		entry["\"%s.Scene\"" % clean] = animation_extra_edit.text
 	entry["\"%s.Icon\"" % clean] = icon_edit.text
 
 	var labels := []
@@ -314,13 +322,15 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 		if include_atk.button_pressed:
 			entry["\"%s.Atk\"" % clean] = int(atk_spin.value)
 			entry["\"%s.AtkType\"" % clean] = atk_type_option.get_item_text(atk_type_option.selected)
-
+		else:
+			entry["\"%s.Atk\"" % clean] = 0
+			entry["\"%s.AtkType\"" % clean] = "普通"
+		
 		if include_star_type.button_pressed:
 			entry["\"%s.StarType\"" % clean] = star_type_option.get_item_text(star_type_option.selected)
 
 	if include_pack.button_pressed:
 		entry["\"%s.Pack\"" % clean] = pack_edit.text
-
 	entry["\"%s.Flavor\"" % clean] = flavor_edit.text
 
 	print("===== cards.json ：" + clean + " =====")

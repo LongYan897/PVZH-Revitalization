@@ -11,7 +11,7 @@ public class RollingStone : CardModel
     public override bool TargetFilter(ITarget target)
     {
         if (target is Fighter fighter)
-            return fighter.Model.Atk.Current <= 2;
+            return fighter.Model.Atk.Current <= GetSignInt("Strength");
         return false;
     }
 

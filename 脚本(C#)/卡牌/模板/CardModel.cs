@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Target;
 using Variable;
@@ -28,6 +29,48 @@ public class CardModel
 {
     public Player Player { get; private set; }
     private static readonly Dictionary<string, CardModel> TemplateEntries = new();
+    /// <summary>
+    /// 获取卡牌已有的变量
+    /// </summary>
+    /// <param name="sign">变量名称</param>
+    /// <returns></returns>
+    public ICardVariable this[string sign]
+    {
+        get
+        {
+            foreach (var variable in _variables)
+            {
+                if (variable.Key == sign)
+                    return variable;
+            }
+            return null;
+        }
+    }
+    /// <summary>
+    /// 从描述中获取整数变量的值
+    /// </summary>
+    /// <param name="sign">变量名称</param>
+    /// <returns></returns>
+    public int GetSignInt(string sign)
+        => GetSignVariable(sign).AbsValue;
+    /// <summary>
+    /// 从描述中获取整数变量
+    /// </summary>
+    /// <param name="sign">变量名称</param>
+    /// <returns></returns>
+    public DescriptionVariable GetSignVariable(string sign)
+    {
+        foreach (var variable in _variables)
+        {
+            if (variable.Key == sign && variable is DescriptionVariable description)
+                return description;
+        }
+        return null;
+    }
+    /// <summary>
+    /// 检测卡牌是否能打出
+    /// </summary>
+    /// <returns></returns>
     public bool CanPlay()
     {
         return (Fighter.CanTargetedBy(this) || NodeRoad.CanTargetedBy(this) ) && !CardCmd.IsCardPlaying && !Road.IsBattling;
@@ -171,6 +214,8 @@ public class CardModel
         card.CardType = cardString.CardType;
         card.Pack = cardString.Pack;
         card.AnimationPath = cardString.AnimationPath;
+        card.AnimationScenePath = cardString.AnimationScenePath;
+        card.ParseDescriptionVariables(cardString.Description);
         card.Icon = GD.Load<PackedScene>(cardString.IconPath);
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
         return (T)card.LoadData(cardString);
@@ -203,10 +248,10 @@ public class CardModel
         return true;
     }
 
-    [IconText("ffffff")]
+    [IconText("000000")]
     public const string Sun = "res://素材(C#)/文本图片/inhnd_sun_gb.png";
 
-    [IconText("ffffff")]
+    [IconText("000000")]
     public const string Brain = "res://素材(C#)/文本图片/inhnd_brains.png";
     /// <summary>
     /// 卡牌的特殊标签
@@ -232,6 +277,10 @@ public class CardModel
     /// 卡牌的动画路径
     /// </summary>
     public string AnimationPath { get; private set; }
+    /// <summary>
+    /// 卡牌的动画场景路径
+    /// </summary>
+    public string AnimationScenePath {  get; private set; }
     /// <summary>
     /// 卡牌的稀有度
     /// </summary>
@@ -293,6 +342,31 @@ public class CardModel
         CardModel card = MemberwiseClone() as CardModel;
         card.AfterClone();
         return card;
+    }
+    private static readonly Regex DescriptionVarRegex =
+    new(@"=([^=]+)=\{([+-]?)(\d+)\}", RegexOptions.Compiled);
+
+    /// <summary>
+    /// 从描述文本里解析 =XXX={+N} / =XXX={-N} / =XXX={N}，
+    /// 把数值按绝对值 + 方向存入 _variables
+    /// </summary>
+    private void ParseDescriptionVariables(string description)
+    {
+        if (string.IsNullOrEmpty(description)) return;
+
+        foreach (Match m in DescriptionVarRegex.Matches(description))
+        {
+            string key = m.Groups[1].Value;
+            string sign = m.Groups[2].Value;
+            string numStr = m.Groups[3].Value;
+
+            if (!int.TryParse(numStr, out int absValue)) continue;
+            if (absValue < 0) absValue = -absValue;
+
+            bool isNegative = sign == "-";
+
+            _variables.Add(new DescriptionVariable(key, absValue, isNegative));
+        }
     }
     /// <summary>
     /// 子类重置卡牌数值的逻辑

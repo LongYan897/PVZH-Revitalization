@@ -1,4 +1,5 @@
 using Card;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ public static class TargetRegistry
         if (card == null) return false;
         foreach (var t in _targets)
         {
-            if (!t.TargetType.HasFlag(type)) continue;
+            if ((t.TargetType & type) == 0) continue;
             if (t.CanBeTarget(card, filter)) return true;
         }
         return false;
@@ -47,7 +48,7 @@ public static class TargetRegistry
             filter = (tg) => true;
         foreach (var t in _targets.ToList())
         {
-            if (!t.TargetType.HasFlag(type)) continue;
+            if ((t.TargetType & type) == 0) continue;
             if (!t.CanBeTarget(card, filter)) continue;
             t.OnCallTargeted(type);
         }
@@ -57,7 +58,7 @@ public static class TargetRegistry
     {
         foreach (var t in _targets.ToList())
         {
-            if (!t.TargetType.HasFlag(type)) continue;
+            if ((t.TargetType & type) == 0) continue;
             t.OnDeleteTargeted(type);
         }
     }

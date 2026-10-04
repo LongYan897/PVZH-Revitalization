@@ -34,7 +34,7 @@ public class FinalMission : CardModel
             {
                 await PlayInstantAnimation("hit", plant.Targeting());
                 
-                await plant.ApplyDamage(4,Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
+                await plant.ApplyDamage(GetSignInt("Health"),Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
             }
         }
     }

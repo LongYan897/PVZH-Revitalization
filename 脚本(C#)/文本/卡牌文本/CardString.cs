@@ -26,7 +26,15 @@ namespace Card.String;
 ///     阵营 : 使用 "Camp" 当作Json的键<br/>
 ///     特别描述 : 使用 "Flavor" 当作Json的键<br/>
 ///     骨骼 : 使用 "Animation" 当作Json的键<br/>
-///     卡面 : 使用 "Icon" 当作Json的键<br/>
+///     骨骼场景 : 使用 "Scene" 当作Json的键 需要tscn的场景 该场景内部使用相对位置确定动画位置<br/>
+///     <br/>
+///     ***<br/>
+///     Marker2D *Collection(Marker2D) 代表图鉴中动画位置 Collection2(SpineSprite)是土坑位置 Marker2D *Battle(Marker2D)  代表战斗中动画位置 Battle2(SpineSprite)是土坑位置 <br/>
+///     如果不是单位 *Collection(Marker2D) 代表图鉴中动画位置 Collection2(Marker2D)是原点位置<br/>
+///     加载场景时会销毁所有名称不带Saved的节点<br/>
+///     ***<br/>
+///     <br/>
+///     卡面 : 使用 "Icon" 当作Json的键 需要tscn的场景<br/>
 ///     描述  : 使用 "Description" 或 "Des"<br/>
 ///     <br/>
 ///     ***<br/>
@@ -77,6 +85,10 @@ public class CardString
     /// 动画路径
     /// </summary>
     public string AnimationPath { get; private set; }
+    /// <summary>
+    /// 动画场景路径
+    /// </summary>
+    public string AnimationScenePath { get; private set; }
     /// <summary>
     /// 卡面路径
     /// </summary>
@@ -297,6 +309,10 @@ public class CardString
         if (GetData(cardTitle, "StarType").VariantType != Variant.Type.Nil)
         {
             cardString.StarType = StarType.Parser(GetData(cardTitle, "StarType").AsString());
+        }
+        if (GetData(cardTitle, "Scene").VariantType != Variant.Type.Nil)
+        {
+            cardString.AnimationScenePath = GetData(cardTitle, "Scene").AsString();
         }
         return cardString;
     }

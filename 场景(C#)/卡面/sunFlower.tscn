@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cci23aa7sjqxq"]
+
+[ext_resource type="Texture2D" uid="uid://dwpc70dnanreh" path="res://场景/植物卡组/向日葵植物/向日葵.png" id="1_hlbs3"]
+
+[node name="卡面" type="Control" unique_id=580918590]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1881433537]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 12.0
+offset_right = 213.0
+offset_bottom = 196.0
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("1_hlbs3")
+expand_mode = 1
+stretch_mode = 3
