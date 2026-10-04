@@ -69,6 +69,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     /// <param name="location"></param>
     public void SwitchLayer(Location location)
     {
+        index = location;
         if (GetParent().GetParent() != Main.FighterContainer) return;
         var parent = Road.IsUp switch
         {

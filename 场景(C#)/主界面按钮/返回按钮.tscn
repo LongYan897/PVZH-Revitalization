@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cmokbn4rntjp7"]
+
+[ext_resource type="Texture2D" uid="uid://ch3wbbhd3qoud" path="res://素材/ui/界面ui/backbutton.png" id="1_4758t"]
+[ext_resource type="Script" uid="uid://cpa2gg7fa2reo" path="res://脚本(C#)/场景/BackButton.cs" id="2_os4y6"]
+
+[node name="返回按钮" type="TextureButton" unique_id=68017161]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1168.0
+offset_right = -608.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("1_4758t")
+script = ExtResource("2_os4y6")
+metadata/_custom_type_script = "uid://cpa2gg7fa2reo"

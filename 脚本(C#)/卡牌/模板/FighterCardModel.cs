@@ -26,6 +26,7 @@ public class FighterCardModel : CardModel
         MaxHp = new(this, "HealthMax", cardString.Health);
         HpType = new(this, "HealthType", cardString.HpType);
         CardTag = cardString.CardTag;
+        StarType = cardString.StarType;
         _ = AddBuff(new HpBuff(), VariableReason.Self);
         return LoadCustomData(cardString);
     }

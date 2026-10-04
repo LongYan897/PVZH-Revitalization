@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="PVZH by 龙彦"
-run/main_scene="uid://bn3qpdql1tnn2"
+run/main_scene="uid://dpkt1ueqhr37q"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 boot_splash/show_image=false
 config/icon="uid://cbfvp0frn80qp"
@@ -22,23 +22,6 @@ buses/default_bus_layout="uid://b0bcsxeewyscg"
 
 [autoload]
 
-AQ="*uid://txe2pn3h5adi"
-DragManager="*uid://dk8caps8t4ojv"
-DrawCard="*uid://oflkaq8naciq"
-CardManager="*uid://cjpvtljr8pcf2"
-Enemy="*uid://b28xfb6o8lksb"
-RoadList="*uid://dry15mkpg02x3"
-TurnManager="*uid://b761qquwo6mdd"
-HeroManager="*uid://225dd3fv1fyb"
-SceneManager="*uid://j20v4cg7v8m1"
-MessageBox="*uid://b0t616ntnnppr"
-ChooseManager="*uid://wgbm36d4xr7h"
-AIManager="*uid://d121qf8yqhf32"
-WebSocketClient="*uid://dnn1hi7xujtqd"
-SoundManager="*uid://b2rqlnc407lr5"
-CameraManager="*uid://eleplmcq515q"
-BattleEffectManager="*uid://bmgcbfoafsa4c"
-Console="*uid://ouiu5xh1cs8n"
 MainController="*uid://bveho05qklxli"
 
 [display]

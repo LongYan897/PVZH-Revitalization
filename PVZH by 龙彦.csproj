@@ -9,6 +9,7 @@
 		<None Include="**\*.png;**\*.jpg;**\*.json" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="脚本%28C#%29\游戏控制\动态音乐\鼓点\" />
 	  <Folder Include="脚本%28C#%29\随机\" />
 	</ItemGroup>
 </Project>

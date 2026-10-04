@@ -4,7 +4,7 @@
 [ext_resource type="SpineSkeletonFileResource" uid="uid://cd84awg4eki04" path="res://场景/植物卡/向日葵植物/向日葵.skel" id="2_rietf"]
 
 [sub_resource type="SpineAnimationMix" id="SpineAnimationMix_il75w"]
-from = "attack_down"
+from = "special"
 to = "attack_down"
 
 [sub_resource type="SpineAnimationMix" id="SpineAnimationMix_rietf"]

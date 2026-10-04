@@ -17,7 +17,6 @@ public partial class SpineHandler : Node2D
     {
         _spineSprite = GetNode<Node>("Spine");
         ConnectAnimationEvent();
-        var spine = GetNode<Node>("Spine");
     }
     /// <summary>
     /// 获取一个动画节点
@@ -240,5 +239,44 @@ public partial class SpineHandler : Node2D
     public float GetAnimationDuration(string animName)
     {
         return _spineSprite.Call("get_animation_duration", animName).AsSingle();
+    }
+    /// <summary>
+    /// 递归预加载目录下所有 Spine .tres 资源，填充 Godot 资源缓存，
+    /// 避免首次冷加载触发绑定层的 update_mixes 缺陷。
+    /// </summary>
+    /// <param name="dirPath">资源目录，如 "res://素材(C#)/卡牌"</param>
+    public static void Init(string dirPath)
+    {
+        using var dir = DirAccess.Open(dirPath);
+        if (dir == null)
+        {
+            GD.PushWarning($"[SpineHandler.Init] 无法打开目录: {dirPath}");
+            return;
+        }
+
+        dir.ListDirBegin();
+        string fileName = dir.GetNext();
+        while (fileName != "")
+        {
+            if (!fileName.StartsWith("."))
+            {
+                string fullPath = dirPath.PathJoin(fileName);
+
+                if (dir.CurrentIsDir())
+                {
+                    Init(fullPath);
+                }
+                else if (fileName.EndsWith(".tres"))
+                {
+                    var res = ResourceLoader.Load(fullPath);
+                    if (res != null && res.ToString().Contains("SpineSkeletonDataResource"))
+                    {
+                        GD.Print($"[SpineHandler.Init] 已预加载: {fullPath}");
+                    }
+                }
+            }
+            fileName = dir.GetNext();
+        }
+        dir.ListDirEnd();
     }
 }

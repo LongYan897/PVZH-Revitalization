@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://c0yfhr8tvx5fh"]
+
+[ext_resource type="Texture2D" uid="uid://c24j1jhci62x" path="res://素材/ui/图标/Zomboss_head.png" id="1_dqq4y"]
+[ext_resource type="Script" uid="uid://4c4i8ptdqmhi" path="res://脚本(C#)/场景/Loading.cs" id="1_el382"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="2_uagl4"]
+
+[node name="加载" type="Node2D" unique_id=2051238835]
+script = ExtResource("1_el382")
+metadata/_custom_type_script = "uid://4c4i8ptdqmhi"
+
+[node name="背景" type="Polygon2D" parent="." unique_id=1300482017]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-376, -257, -385, 1490, 1152, 1496, 1145, -252)
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=924814522]
+offset_left = 420.0
+offset_top = 930.0
+offset_right = 710.0
+offset_bottom = 1268.0
+texture = ExtResource("1_dqq4y")
+
+[node name="Label" type="Label" parent="." unique_id=1361170369]
+offset_left = 302.0
+offset_top = 1176.0
+offset_right = 576.0
+offset_bottom = 1287.0
+theme_override_fonts/font = ExtResource("2_uagl4")
+theme_override_font_sizes/font_size = 80
+text = "加载中..."

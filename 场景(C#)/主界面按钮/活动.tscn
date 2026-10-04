@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://5hwxyxyj6q0i"]
+
+[ext_resource type="Script" uid="uid://dqd1eccumxe7" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_6fntb"]
+[ext_resource type="Texture2D" uid="uid://0b7q13tt6hoq" path="res://素材/ui/界面ui/packsbutton.png" id="1_yar6y"]
+[ext_resource type="Texture2D" uid="uid://cophm26o1o4e" path="res://素材/ui/界面ui/Badge_Event.png" id="2_6fntb"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tkfu5"]
+
+[node name="活动" type="Control" unique_id=1622892872]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_6fntb")
+metadata/_custom_type_script = "uid://dqd1eccumxe7"
+
+[node name="Button" type="Button" parent="." unique_id=1399182124]
+layout_mode = 0
+offset_left = -120.0
+offset_top = -83.0
+offset_right = 120.0
+offset_bottom = 83.0
+flat = true
+
+[node name="底" type="Sprite2D" parent="." unique_id=1865452987]
+modulate = Color(0.79, 0.3856517, 0.13430002, 1)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("1_yar6y")
+
+[node name="图片" type="Sprite2D" parent="." unique_id=57696354]
+material = SubResource("ShaderMaterial_tkfu5")
+position = Vector2(7.1428127, -47.142857)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_6fntb")
+
+[node name="Label" type="Label" parent="." unique_id=818627071]
+layout_mode = 0
+offset_left = -76.25003
+offset_top = 19.999996
+offset_right = 79.74997
+offset_bottom = 74.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 39
+text = "每周活动"
+horizontal_alignment = 1
+vertical_alignment = 1

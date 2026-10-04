@@ -3,8 +3,10 @@ using Battle.Entity;
 using Card.Cmd;
 using Controller;
 using Godot;
+using Logger;
 using Pack;
 using Spine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -882,273 +884,279 @@ public partial class NodeCard : Control
     /// </summary>
     public void Fresh()
     {
-        if (Model != null)
+        try
         {
-
-            if (CardViewMode == CardView.Battle)
+            if (Model != null)
             {
-                GetNode<Node2D>("%非战斗").Visible = false;
-            }
-            else
-            {
-                var opBtn = GetNode<NinePatchRect>("%操作按钮");
-                SetControlVisible(opBtn, false);
 
-                var infoBtn = GetNode<NinePatchRect>("%信息按钮");
-                SetControlVisible(infoBtn, false);
-
-                var nonBattle = GetNode<Node2D>("%非战斗");
-                nonBattle.Visible = false;
-
-                var infoBg = GetNode<Control>("%信息背景");
-                infoBg.Size = new Vector2(infoBg.Size.X, 205f);
-                infoBg.Scale = Vector2.Zero;
-                infoBg.PivotOffset = infoBg.Size / 2f;
-            }
-            _isOpen = true;
-            if (Model.Status == Status.FaceUp)
-            {
+                if (CardViewMode == CardView.Battle)
                 {
-                    var frame = GetNode<TextureRect>("%卡框");
-                    var frameGlowBg = GetNode<TextureRect>("%卡牌发光背景");
-                    var frameBg = GetNode<TextureRect>("%卡牌底板");
-                    _callDragging();
-                    frame.Texture = Model.CardType switch
-                    {
-                        CardType.Hero | CardType.Trick => Model.Rarity switch
-                        {
-                            Rarity.Legend => Model.Camp switch
-                            {
-                                Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_plant.png"),
-                                Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_zombie.png"),
-                                _ => null
-                            },
-                            _ => Model.Camp switch
-                            {
-                                Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_plant.png"),
-                                Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_zombie.png"),
-                                _ => null
-                            }
-                        },
-                        CardType.Hero | CardType.Fighter => Model.Rarity switch
-                        {
-                            Rarity.Legend => Model.Camp switch
-                            {
-                                Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_plant.png"),
-                                Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_zombie.png"),
-                                _ => null
-                            },
-                            _ => Model.Camp switch
-                            {
-                                Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_plant.png"),
-                                Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_zombie.png"),
-                                _ => null
-                            }
-                        },
-                        CardType.Hero | CardType.Environment => Model.Rarity switch
-                        {
-                            Rarity.Legend => Model.Camp switch
-                            {
-                                Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_plant.png"),
-                                Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_zombie.png"),
-                                _ => null
-                            },
-                            _ => Model.Camp switch
-                            {
-                                Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_plant.png"),
-                                Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_zombie.png"),
-                                _ => null
-                            }
-                        },
-                        CardType.None | CardType.Fighter => Model.Rarity switch
-                        {
-                            Rarity.Basic => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_FRONT.png"),
-                            Rarity.Common => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_FRONT.png"),
-                            Rarity.Uncommon => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R2.png"),
-                            Rarity.Rare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R3.png"),
-                            Rarity.SuperRare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R4.png"),
-                            Rarity.Legend => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R5.png"),
-                            Rarity.Activity => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Event.png"),
-                            _ => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_FRONT.png"),
-                        },
-                        CardType.None | CardType.Environment => Model.Rarity switch
-                        {
-                            Rarity.Basic => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R1.png"),
-                            Rarity.Common => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R1.png"),
-                            Rarity.Uncommon => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R2.png"),
-                            Rarity.Rare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R3.png"),
-                            Rarity.SuperRare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R4.png"),
-                            Rarity.Legend => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R5.png"),
-                            Rarity.Activity => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_Event.png"),
-                            _ => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R1.png"),
-                        },
-                        CardType.None | CardType.Trick => Model.Rarity switch
-                        {
-                            Rarity.Basic => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R1.png"),
-                            Rarity.Common => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R1.png"),
-                            Rarity.Uncommon => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R2.png"),
-                            Rarity.Rare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R3.png"),
-                            Rarity.SuperRare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R4.png"),
-                            Rarity.Legend => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R5.png"),
-                            Rarity.Activity => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_Event.png"),
-                            _ => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R1.png"),
-                        },
-                        _ => null
-                    };
-                    frame.Scale = Model.CardType switch
-                    {
-                        CardType.None | CardType.Environment => new(0.55f, 0.55f),
-                        _ => new(1f, 1f)
-                    };
-                    frame.Position = Model.CardType switch
-                    {
-                        CardType.None | CardType.Environment => new(128.0f, 92f),
-                        _ => new(0, -32.0f)
-                    };
-                    frameBg.Modulate = Model.Class.ToColor();
-                    frameBg.Texture = Model.CardType switch
-                    {
-                        CardType.Hero | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
-                        CardType.Hero | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
-                        CardType.Hero | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
-                        CardType.None | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_BACK.png"),
-                        CardType.None | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_Back.png"),
-                        CardType.None | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
-                        _ => null
-                    };
-                    frameGlowBg.Modulate = new("20ff07");
-                    frameGlowBg.Texture = Model.CardType switch
-                    {
-                        CardType.Hero | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
-                        CardType.Hero | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
-                        CardType.Hero | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
-                        CardType.None | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/背景底版1.png"),
-                        CardType.None | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_GlowBack.png"),
-                        CardType.None | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
-                        _ => null
-                    };
-                }
-                var costs = GetNode<Node2D>("%费用容器");
-                costs.GetNode<RichTextLabel>("数值").Text = $"[center]{Model.Cost.Current}[/center]";
-                costs.GetNode<TextureRect>("费用").Texture = Model.CampCostIcon;
-                costs.GetNode<TextureRect>("费用").Position = Model.Camp switch
-                {
-                    Camp.Plant => new(180.0f, -18.5f),
-                    Camp.Zombie => new(180.0f, -9.5f),
-                    _ => new(180.0f, -18.5f)
-                };
-                GetNode<Node2D>("正面卡牌").Visible = true;
-                GetNode<TextureRect>("牌背").Visible = false;
-                Control control = null;
-                if (GetNode<Node2D>("%卡面容器").GetChildren().Count == 0)
-                {
-                    control = Model.Icon.Instantiate<Control>();
-                    control.MouseFilter = MouseFilterEnum.Ignore;
-                    GetNode<Node2D>("%卡面容器").AddChild(control);
-                    foreach (var cot in control.GetChildren().OfType<Control>())
-                    {
-                        cot.MouseFilter = MouseFilterEnum.Ignore;
-                    }
+                    GetNode<Node2D>("%非战斗").Visible = false;
                 }
                 else
                 {
-                    control = GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First();
-                }
-                if (Model.CardType.HasFlag(CardType.Fighter))
-                {
-                    control.ZIndex = 1;
-                    GetNode<TextureRect>("%卡框").ZIndex = 0;
-                }
-                else
-                {
-                    control.ZIndex = 0;
-                    GetNode<TextureRect>("%卡框").ZIndex = 1;
-                }
-                GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
-                if (Model.Cost.HasChanged)
-                {
-                    if (Model.Cost.PositiveChanged)
-                        costs.GetNode<RichTextLabel>("%数值").Modulate = _colorBox.ColorB;
-                    else
-                        costs.GetNode<RichTextLabel>("%数值").Modulate = _colorBox2.Default;
-                }
-                if (Model is FighterCardModel fighter)
-                {
-                    var atks = GetNode<Node2D>("%攻击力容器");
-                    atks.Visible = fighter.Atk.Current > 0 && fighter.BornWithAtk;
-                    var hps = GetNode<Node2D>("%生命值容器");
-                    hps.Visible = true;
-                    GetNode<Node2D>("%等级").Visible = true;
-                    atks.GetNode<RichTextLabel>("%伤害数值").Text = $"[center]{fighter.Atk.Current}[/center]";
-                    hps.GetNode<RichTextLabel>("%血量数值").Text = $"[center]{fighter.Hp.Current}[/center]";
-                    GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
-                    GetNode<SpineHandler>("%伤害动画").Scale = new(0.28f, 0.28f);
-                    GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
-                    GetNode<SpineHandler>("%血量动画").Scale = new(0.28f, 0.28f);
-                    if (fighter.StarType != null)
-                    {
-                        GetNode<SpineHandler>("%等级").LoadSkeletonData(fighter.StarType.IconSkelPath);
-                        GetNode<SpineHandler>("%等级").Scale = new(0.28f, 0.28f);
-                        GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
-                    }
+                    var opBtn = GetNode<NinePatchRect>("%操作按钮");
+                    SetControlVisible(opBtn, false);
 
-                    if (fighter.Hp.HasChanged)
+                    var infoBtn = GetNode<NinePatchRect>("%信息按钮");
+                    SetControlVisible(infoBtn, false);
+
+                    var nonBattle = GetNode<Node2D>("%非战斗");
+                    nonBattle.Visible = false;
+
+                    var infoBg = GetNode<Control>("%信息背景");
+                    infoBg.Size = new Vector2(infoBg.Size.X, 205f);
+                    infoBg.Scale = Vector2.Zero;
+                    infoBg.PivotOffset = infoBg.Size / 2f;
+                }
+                _isOpen = true;
+                if (Model.Status == Status.FaceUp)
+                {
                     {
-                        if (fighter.Hp.PositiveChanged)
-                            GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorB;
-                        else
+                        var frame = GetNode<TextureRect>("%卡框");
+                        var frameGlowBg = GetNode<TextureRect>("%卡牌发光背景");
+                        var frameBg = GetNode<TextureRect>("%卡牌底板");
+                        _callDragging();
+                        frame.Texture = Model.CardType switch
                         {
-                            if (fighter.MaxHp.Current == fighter.Hp.Current)
-                                GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox2.Default;
-                            else
-                                GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorC;
+                            CardType.Hero | CardType.Trick => Model.Rarity switch
+                            {
+                                Rarity.Legend => Model.Camp switch
+                                {
+                                    Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_plant.png"),
+                                    Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_zombie.png"),
+                                    _ => null
+                                },
+                                _ => Model.Camp switch
+                                {
+                                    Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_plant.png"),
+                                    Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_zombie.png"),
+                                    _ => null
+                                }
+                            },
+                            CardType.Hero | CardType.Fighter => Model.Rarity switch
+                            {
+                                Rarity.Legend => Model.Camp switch
+                                {
+                                    Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_plant.png"),
+                                    Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_zombie.png"),
+                                    _ => null
+                                },
+                                _ => Model.Camp switch
+                                {
+                                    Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_plant.png"),
+                                    Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_zombie.png"),
+                                    _ => null
+                                }
+                            },
+                            CardType.Hero | CardType.Environment => Model.Rarity switch
+                            {
+                                Rarity.Legend => Model.Camp switch
+                                {
+                                    Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_plant.png"),
+                                    Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_HeroPower_zombie.png"),
+                                    _ => null
+                                },
+                                _ => Model.Camp switch
+                                {
+                                    Camp.Plant => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_plant.png"),
+                                    Camp.Zombie => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Superpower_zombie.png"),
+                                    _ => null
+                                }
+                            },
+                            CardType.None | CardType.Fighter => Model.Rarity switch
+                            {
+                                Rarity.Basic => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_FRONT.png"),
+                                Rarity.Common => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_FRONT.png"),
+                                Rarity.Uncommon => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R2.png"),
+                                Rarity.Rare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R3.png"),
+                                Rarity.SuperRare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R4.png"),
+                                Rarity.Legend => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_R5.png"),
+                                Rarity.Activity => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Event.png"),
+                                _ => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_FRONT.png"),
+                            },
+                            CardType.None | CardType.Environment => Model.Rarity switch
+                            {
+                                Rarity.Basic => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R1.png"),
+                                Rarity.Common => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R1.png"),
+                                Rarity.Uncommon => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R2.png"),
+                                Rarity.Rare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R3.png"),
+                                Rarity.SuperRare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R4.png"),
+                                Rarity.Legend => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R5.png"),
+                                Rarity.Activity => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_Event.png"),
+                                _ => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_R1.png"),
+                            },
+                            CardType.None | CardType.Trick => Model.Rarity switch
+                            {
+                                Rarity.Basic => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R1.png"),
+                                Rarity.Common => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R1.png"),
+                                Rarity.Uncommon => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R2.png"),
+                                Rarity.Rare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R3.png"),
+                                Rarity.SuperRare => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R4.png"),
+                                Rarity.Legend => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R5.png"),
+                                Rarity.Activity => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_Event.png"),
+                                _ => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_onetime_R1.png"),
+                            },
+                            _ => null
+                        };
+                        frame.Scale = Model.CardType switch
+                        {
+                            CardType.None | CardType.Environment => new(0.55f, 0.55f),
+                            _ => new(1f, 1f)
+                        };
+                        frame.Position = Model.CardType switch
+                        {
+                            CardType.None | CardType.Environment => new(128.0f, 92f),
+                            _ => new(0, -32.0f)
+                        };
+                        frameBg.Modulate = Model.Class.ToColor();
+                        frameBg.Texture = Model.CardType switch
+                        {
+                            CardType.Hero | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
+                            CardType.Hero | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
+                            CardType.Hero | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
+                            CardType.None | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_BACK.png"),
+                            CardType.None | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_Back.png"),
+                            CardType.None | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime.png"),
+                            _ => null
+                        };
+                        frameGlowBg.Modulate = new("20ff07");
+                        frameGlowBg.Texture = Model.CardType switch
+                        {
+                            CardType.Hero | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
+                            CardType.Hero | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
+                            CardType.Hero | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
+                            CardType.None | CardType.Fighter => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/背景底版1.png"),
+                            CardType.None | CardType.Environment => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/Environment_GlowBack.png"),
+                            CardType.None | CardType.Trick => GD.Load<Texture2D>("res://素材(C#)/卡牌属性/SEEDPACKET_Back_onetime_glow.png"),
+                            _ => null
+                        };
+                    }
+                    var costs = GetNode<Node2D>("%费用容器");
+                    costs.GetNode<RichTextLabel>("数值").Text = $"[center]{Model.Cost.Current}[/center]";
+                    costs.GetNode<TextureRect>("费用").Texture = Model.CampCostIcon;
+                    costs.GetNode<TextureRect>("费用").Position = Model.Camp switch
+                    {
+                        Camp.Plant => new(180.0f, -18.5f),
+                        Camp.Zombie => new(180.0f, -9.5f),
+                        _ => new(180.0f, -18.5f)
+                    };
+                    GetNode<Node2D>("正面卡牌").Visible = true;
+                    GetNode<TextureRect>("牌背").Visible = false;
+                    Control control = null;
+                    if (GetNode<Node2D>("%卡面容器").GetChildren().Count == 0)
+                    {
+                        control = Model.Icon.Instantiate<Control>();
+                        control.MouseFilter = MouseFilterEnum.Ignore;
+                        GetNode<Node2D>("%卡面容器").AddChild(control);
+                        foreach (var cot in control.GetChildren().OfType<Control>())
+                        {
+                            cot.MouseFilter = MouseFilterEnum.Ignore;
                         }
                     }
                     else
-                        GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.Default;
-
-                    if (fighter.Atk.HasChanged)
                     {
-                        if (fighter.Atk.PositiveChanged)
-                            GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.ColorB;
-                        else
-                            GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox2.Default;
+                        control = GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First();
+                    }
+                    if (Model.CardType.HasFlag(CardType.Fighter))
+                    {
+                        control.ZIndex = 1;
+                        GetNode<TextureRect>("%卡框").ZIndex = 0;
                     }
                     else
-                        GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.Default;
-                }
-                else
-                {
-                    var atks = GetNode<Node2D>("%攻击力容器");
-                    atks.Visible = false;
-                    var hps = GetNode<Node2D>("%生命值容器");
-                    hps.Visible = false;
-                    GetNode<Node2D>("%等级").Visible = false;
-                }
-                JustFresh();
-            }
-            else if (Model.Status == Status.FaceDown)
-            {
-                GetNode<Node2D>("正面卡牌").Visible = false;
-                GetNode<TextureRect>("牌背").Visible = true;
-                GetNode<TextureRect>("牌背").Texture = Model.CardType switch
-                {
-                    CardType.None | CardType.Trick => Model.Camp switch
                     {
-                        Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants_trick.png"),
-                        Camp.Zombie => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_zombies_trick.png"),
-                        _ => null
-                    },
-                    _ => Model.Camp switch
-                    {
-                        Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants.png"),
-                        Camp.Zombie => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_zombies.png"),
-                        _ => null
+                        control.ZIndex = 0;
+                        GetNode<TextureRect>("%卡框").ZIndex = 1;
                     }
-                };
+                    GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
+                    if (Model.Cost.HasChanged)
+                    {
+                        if (Model.Cost.PositiveChanged)
+                            costs.GetNode<RichTextLabel>("%数值").Modulate = _colorBox.ColorB;
+                        else
+                            costs.GetNode<RichTextLabel>("%数值").Modulate = _colorBox2.Default;
+                    }
+                    if (Model is FighterCardModel fighter)
+                    {
+                        var atks = GetNode<Node2D>("%攻击力容器");
+                        atks.Visible = fighter.Atk.Current > 0 && fighter.BornWithAtk;
+                        var hps = GetNode<Node2D>("%生命值容器");
+                        hps.Visible = true;
+                        GetNode<Node2D>("%等级").Visible = true;
+                        atks.GetNode<RichTextLabel>("%伤害数值").Text = $"[center]{fighter.Atk.Current}[/center]";
+                        hps.GetNode<RichTextLabel>("%血量数值").Text = $"[center]{fighter.Hp.Current}[/center]";
+                        GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
+                        GetNode<SpineHandler>("%伤害动画").Scale = new(0.28f, 0.28f);
+                        GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
+                        GetNode<SpineHandler>("%血量动画").Scale = new(0.28f, 0.28f);
+                        if (fighter.StarType != null)
+                        {
+                            GetNode<SpineHandler>("%等级").LoadSkeletonData(fighter.StarType.IconSkelPath);
+                            GetNode<SpineHandler>("%等级").Scale = new(0.28f, 0.28f);
+                            GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
+                        }
+
+                        if (fighter.Hp.HasChanged)
+                        {
+                            if (fighter.Hp.PositiveChanged)
+                                GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorB;
+                            else
+                            {
+                                if (fighter.MaxHp.Current == fighter.Hp.Current)
+                                    GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox2.Default;
+                                else
+                                    GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorC;
+                            }
+                        }
+                        else
+                            GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.Default;
+
+                        if (fighter.Atk.HasChanged)
+                        {
+                            if (fighter.Atk.PositiveChanged)
+                                GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.ColorB;
+                            else
+                                GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox2.Default;
+                        }
+                        else
+                            GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.Default;
+                    }
+                    else
+                    {
+                        var atks = GetNode<Node2D>("%攻击力容器");
+                        atks.Visible = false;
+                        var hps = GetNode<Node2D>("%生命值容器");
+                        hps.Visible = false;
+                        GetNode<Node2D>("%等级").Visible = false;
+                    }
+                    JustFresh();
+                }
+                else if (Model.Status == Status.FaceDown)
+                {
+                    GetNode<Node2D>("正面卡牌").Visible = false;
+                    GetNode<TextureRect>("牌背").Visible = true;
+                    GetNode<TextureRect>("牌背").Texture = Model.CardType switch
+                    {
+                        CardType.None | CardType.Trick => Model.Camp switch
+                        {
+                            Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants_trick.png"),
+                            Camp.Zombie => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_zombies_trick.png"),
+                            _ => null
+                        },
+                        _ => Model.Camp switch
+                        {
+                            Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants.png"),
+                            Camp.Zombie => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_zombies.png"),
+                            _ => null
+                        }
+                    };
+                }
             }
         }
-
+        catch (Exception ex)
+        {
+            Log.Error(ex.Message + ex.StackTrace);
+        }
     }
     /// <summary>
     /// 切换明暗状态

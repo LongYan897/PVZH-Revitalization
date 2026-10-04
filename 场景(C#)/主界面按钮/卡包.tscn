@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://gopjysvuqotu"]
+
+[ext_resource type="Script" uid="uid://dqd1eccumxe7" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_6oypm"]
+[ext_resource type="Texture2D" uid="uid://0b7q13tt6hoq" path="res://素材/ui/界面ui/packsbutton.png" id="1_7v3gg"]
+[ext_resource type="Texture2D" uid="uid://d1qad2d3x5mhc" path="res://素材/ui/界面ui/button_store.png" id="2_6oypm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bkuyn"]
+
+[node name="卡包" type="Control" unique_id=740313634]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_6oypm")
+metadata/_custom_type_script = "uid://dqd1eccumxe7"
+
+[node name="Button" type="Button" parent="." unique_id=535995990]
+layout_mode = 0
+offset_left = -120.0
+offset_top = -83.0
+offset_right = 120.0
+offset_bottom = 83.0
+flat = true
+
+[node name="底" type="Sprite2D" parent="." unique_id=1020919476]
+modulate = Color(0.52156866, 0.3019608, 0.7019608, 1)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("1_7v3gg")
+
+[node name="图片" type="Sprite2D" parent="." unique_id=265846438]
+material = SubResource("ShaderMaterial_bkuyn")
+position = Vector2(4.285713, -52.85714)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_6oypm")
+
+[node name="Label" type="Label" parent="." unique_id=1357974190]
+layout_mode = 0
+offset_left = -56.249992
+offset_top = 19.999996
+offset_right = 60.750008
+offset_bottom = 74.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 39
+text = "组合包"
+horizontal_alignment = 1
+vertical_alignment = 1

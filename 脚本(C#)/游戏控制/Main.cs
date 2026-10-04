@@ -6,8 +6,10 @@ using Card.Dance;
 using Card.Flower;
 using Card.Imp;
 using Card.Pea;
+using Controller.WavPlay;
 using Godot;
 using Pack;
+using Spine;
 using Target;
 
 namespace Controller;
@@ -27,6 +29,8 @@ public partial class Main : Node
     public static Node FighterFrontDown { get; private set; }
     public static Node DesLayer { get; private set; }
     public static Node AudioContainer { get; private set; }
+    public static Node SceneContainer { get; private set; }
+    public static Node2D Load { get; private set; }
     public override async void _Ready()
     {
         //初始化各各组件
@@ -35,35 +39,21 @@ public partial class Main : Node
         Icon.Init();
         CardModel.Init();
         SceneAnimaActor.Init(this);
+        SpineHandler.Init("res://数据资源");
         //初始化容器
         Animator = GetNode<CanvasLayer>("Animators");
         CardContainer = GetNode<CanvasLayer>("Cards");
         FighterContainer = GetNode<CanvasLayer>("Fighters");
+        SceneContainer = GetNode<CanvasLayer>("Scene");
         FighterUp = FighterContainer.GetNode<Node>("Up");
         FighterFrontUp = FighterContainer.GetNode<Node>("FrontUp");
         FighterDown = FighterContainer.GetNode<Node>("Down");
         FighterFrontDown = FighterContainer.GetNode<Node>("FrontDown");
         DesLayer = GetNode<CanvasLayer>("Des");
         AudioContainer = GetNode<Node2D>("Audios");
+        Load = GetNode<Node2D>("%Load");
         //
-        CardModel card1 = CardModel.Load<HailACopter>();
-        CardModel card2 = CardModel.Load<Peashooter>();
-        CardModel card3 = CardModel.Load<SunFlower>();
-        CardModel card4 = CardModel.Load<SunFlower>();
-        CardModel card6 = CardModel.Load<FinalMission>();
-        CardModel card5 = CardModel.Load<StartBattle>();
-        card1.Status = Status.FaceUp;
-        card2.Status = Status.FaceUp;
-        card3.Status = Status.FaceUp;
-        card4.Status = Status.FaceUp;
-        card5.Status = Status.FaceUp;
-        card6.Status = Status.FaceUp;
-        NodeCard.DrawACard(card1, new(0,0));
-        NodeCard.DrawACard(card2, new(120, 0));
-        NodeCard.DrawACard(card3, new(240, 0));
-        NodeCard.DrawACard(card4, new(360, 0));
-        NodeCard.DrawACard(card5, new(480, 0));
-        NodeCard.DrawACard(card6, new(600, 0));
+        WavPlayer.SetBgMusic<MainMenuWav>();
     }
 
     public void Clear()

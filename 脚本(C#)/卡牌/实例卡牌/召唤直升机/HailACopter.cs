@@ -2,6 +2,7 @@ using Battle;
 using Battle.Entity;
 using Card.Cmd;
 using Controller;
+using Controller.WavPlay;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ public class HailACopter : CardModel
     }
     public override async Task Play(ITarget target)
     {
-        WavPlayer.Play("res://素材(C#)/卡牌/召唤直升机/intro_1.wav");
+        WavPlayer.Play<HailWav>();
         await PlayInstantAnimation("intro", target);
         if (target.CanBeRoad(out Road road))
         {

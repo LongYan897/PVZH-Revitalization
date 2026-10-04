@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dklertu5xn7l"]
 
 [ext_resource type="Script" uid="uid://d0fiwqlc5ur5k" path="res://脚本(C#)/战斗相关/道路/NodeRoad.cs" id="1_ewqbq"]
-[ext_resource type="Texture2D" uid="uid://mt3i5jc608yf" path="res://素材/地图/迪斯科/BGDisco_lane1.png" id="1_x76yt"]
+[ext_resource type="Texture2D" uid="uid://dpn15dwxsxpxm" path="res://素材/地图/迪斯科/BGDisco_high.png" id="2_ojbca"]
 [ext_resource type="Texture2D" uid="uid://cimvexb4n4idx" path="res://素材/ui/地图高亮/选择框3.png" id="3_x76yt"]
 [ext_resource type="Texture2D" uid="uid://d4ihrs2s4rf4q" path="res://素材/对象高亮框/单位.png" id="4_ewqbq"]
 [ext_resource type="Texture2D" uid="uid://weos2ou5dc6" path="res://素材(C#)/场地/coffee_lane_base.png" id="4_qclkx"]
@@ -41,7 +41,7 @@ shape = SubResource("RectangleShape2D_qclkx")
 
 [node name="图标" type="Sprite2D" parent="." unique_id=1560511930]
 unique_name_in_owner = true
-texture = ExtResource("1_x76yt")
+texture = ExtResource("2_ojbca")
 
 [node name="环境" type="TextureRect" parent="." unique_id=1090838795]
 unique_name_in_owner = true
