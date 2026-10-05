@@ -1,5 +1,6 @@
 using Battle;
 using Battle.Entity;
+using Battle.Texture;
 using Card;
 using Card.Cmd;
 using Card.Dance;
@@ -54,6 +55,7 @@ public partial class Main : Node
         Load = GetNode<Node2D>("%Load");
         //
         WavPlayer.SetBgMusic<MainMenuWav>();
+        TextureBag.SetCurrent<DiscoBag>();
     }
 
     public void Clear()

@@ -65,6 +65,7 @@ texture = ExtResource("3_x76yt")
 
 [node name="植物_僵尸1" type="Node2D" parent="." unique_id=545167542]
 unique_name_in_owner = true
+z_index = 10
 position = Vector2(-55, 123)
 
 [node name="单位高亮" type="TextureRect" parent="植物_僵尸1" unique_id=1842500548]
@@ -105,6 +106,7 @@ position = Vector2(0, 119)
 
 [node name="植物_2" type="Node2D" parent="." unique_id=503027257]
 unique_name_in_owner = true
+z_index = 10
 position = Vector2(-55, -19)
 
 [node name="单位高亮2" type="TextureRect" parent="植物_2" unique_id=1021507255]
@@ -140,6 +142,7 @@ position = Vector2(55, 64)
 [node name="Arrow" type="TextureRect" parent="." unique_id=1026955378]
 unique_name_in_owner = true
 visible = false
+z_index = 40
 layout_mode = 0
 offset_left = -42.0
 offset_top = -41.0
@@ -153,6 +156,7 @@ expand_mode = 1
 [node name="ArrowDown" type="TextureRect" parent="." unique_id=990774744]
 unique_name_in_owner = true
 visible = false
+z_index = 40
 layout_mode = 0
 offset_left = -42.000004
 offset_top = -457.0
@@ -167,6 +171,7 @@ expand_mode = 1
 [node name="Battle" type="TextureRect" parent="." unique_id=1794512796]
 unique_name_in_owner = true
 visible = false
+z_index = 40
 layout_mode = 0
 offset_left = -64.0
 offset_top = -130.0

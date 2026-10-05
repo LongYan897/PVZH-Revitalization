@@ -101,6 +101,7 @@ mouse_filter = 2
 [node name="cardLibrary" type="Node2D" parent="Midd" unique_id=25129087]
 
 [node name="Fore" type="CanvasLayer" parent="." unique_id=925622240]
+layer = 0
 
 [node name="顶部遮挡" type="Sprite2D" parent="Fore" unique_id=392940115]
 z_index = 30

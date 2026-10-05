@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://dy7pegrhba8bu"]
+
+[ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="1_qrkul"]
+[ext_resource type="Texture2D" uid="uid://cophm26o1o4e" path="res://素材/ui/界面ui/Badge_Event.png" id="2_kdrji"]
+[ext_resource type="Texture2D" uid="uid://w7edbn6x42ea" path="res://素材/ui/界面ui/按钮4.png" id="3_kdrji"]
+
+[sub_resource type="FontVariation" id="FontVariation_6wrbx"]
+base_font = ExtResource("1_qrkul")
+variation_opentype = {
+2003265652: 500
+}
+variation_embolden = 0.1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhrkk"]
+bg_color = Color(0, 0, 0, 0.5568628)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.6431373)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="每日挑战" type="Control" unique_id=1298529303]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -720.0
+offset_bottom = -1280.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="." unique_id=1590716165]
+layout_mode = 0
+offset_left = -205.0
+offset_top = -48.0
+offset_right = 205.0
+offset_bottom = 48.0
+flat = true
+
+[node name="背景" type="Sprite2D" parent="." unique_id=241290528]
+self_modulate = Color(0.9882353, 0.44705883, 0.19607843, 1)
+texture = ExtResource("3_kdrji")
+
+[node name="今日挑战" type="Label" parent="." unique_id=73961676]
+self_modulate = Color(0.8819366, 0.8819366, 0.88193655, 1)
+layout_mode = 0
+offset_left = -205.0
+offset_top = -71.0
+offset_right = 205.0
+offset_bottom = 23.577759
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = SubResource("FontVariation_6wrbx")
+theme_override_font_sizes/font_size = 22
+text = "今日挑战!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="提前获得" type="Label" parent="." unique_id=1100619427]
+layout_mode = 0
+offset_left = -205.0
+offset_top = -39.095
+offset_right = 205.0
+offset_bottom = 55.482758
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = SubResource("FontVariation_6wrbx")
+theme_override_font_sizes/font_size = 32
+text = "提前获得"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="提示框" type="Panel" parent="." unique_id=918246600]
+layout_mode = 0
+offset_left = 129.70001
+offset_top = -32.375023
+offset_right = 186.50003
+offset_bottom = 33.224983
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_uhrkk")
+
+[node name="左边奖励图片" type="Sprite2D" parent="." unique_id=1075710363]
+position = Vector2(-143.89996, 0.42500687)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_kdrji")

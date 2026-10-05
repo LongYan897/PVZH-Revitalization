@@ -3,19 +3,13 @@
 [ext_resource type="Script" uid="uid://ccaq7lefsnojt" path="res://脚本(C#)/游戏控制/Main.cs" id="1_u0aj0"]
 [ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="2_d5m1c"]
 [ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="2_n74wj"]
-[ext_resource type="Texture2D" uid="uid://1mjkm3cumarw" path="res://素材/ui/界面ui/landingscreen_plants.png" id="2_sjdq6"]
 [ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="3_n74wj"]
-[ext_resource type="Texture2D" uid="uid://wrr2b522bbue" path="res://素材/ui/界面ui/按钮2.png" id="3_otykl"]
 [ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="4_8ffxo"]
-[ext_resource type="Texture2D" uid="uid://vdebwuwdm4yq" path="res://素材/ui/界面ui/featureunlock_plantHQ.png" id="5_blu83"]
 [ext_resource type="Texture2D" uid="uid://cophm26o1o4e" path="res://素材/ui/界面ui/Badge_Event.png" id="6_7aet4"]
-[ext_resource type="Texture2D" uid="uid://d0cw22xbrdrqa" path="res://素材/ui/界面ui/landingscreen_zombies.png" id="6_ugq3t"]
-[ext_resource type="Texture2D" uid="uid://cdbn38w0t5erj" path="res://素材/ui/界面ui/按钮3.png" id="7_dyv2o"]
-[ext_resource type="Texture2D" uid="uid://bx3epq8oxb2ei" path="res://素材/ui/界面ui/featureunlock_zombiehq.png" id="8_bd5vv"]
 [ext_resource type="Texture2D" uid="uid://w7edbn6x42ea" path="res://素材/ui/界面ui/按钮4.png" id="9_mvnmw"]
-[ext_resource type="Texture2D" uid="uid://dsnag66lhgvmy" path="res://素材/ui/界面ui/pvpimage_New.png" id="11_swicf"]
-[ext_resource type="Texture2D" uid="uid://djrnhsnaoecwq" path="res://素材/ui/界面ui/渐变纹理.png" id="12_ev275"]
-[ext_resource type="Texture2D" uid="uid://br5nuly1nj771" path="res://素材/ui/界面ui/按钮5.png" id="13_go1g7"]
+[ext_resource type="PackedScene" uid="uid://b5x4veawhq8g4" path="res://场景(C#)/主界面按钮/僵尸任务.tscn" id="14_2lx20"]
+[ext_resource type="PackedScene" uid="uid://b82k587le8ukv" path="res://场景(C#)/主界面按钮/对战.tscn" id="18_1pb50"]
+[ext_resource type="PackedScene" uid="uid://d4jtuyxkgf5da" path="res://场景(C#)/主界面按钮/植物任务.tscn" id="19_quj4d"]
 [ext_resource type="PackedScene" uid="uid://c0yfhr8tvx5fh" path="res://场景(C#)/加载.tscn" id="21_8ffxo"]
 [ext_resource type="PackedScene" uid="uid://cmokbn4rntjp7" path="res://场景(C#)/主界面按钮/返回按钮.tscn" id="21_otykl"]
 [ext_resource type="PackedScene" uid="uid://5hwxyxyj6q0i" path="res://场景(C#)/主界面按钮/活动.tscn" id="21_quj4d"]
@@ -59,10 +53,10 @@ script = ExtResource("1_u0aj0")
 metadata/_custom_type_script = "uid://ccaq7lefsnojt"
 
 [node name="Scene" type="CanvasLayer" parent="." unique_id=2006048324]
-layer = 10
+layer = 5
 
 [node name="ButtomScene" type="CanvasLayer" parent="Scene" unique_id=1049355677]
-layer = -5
+layer = -80
 
 [node name="Bg" type="Sprite2D" parent="Scene/ButtomScene" unique_id=929997243]
 modulate = Color(0.13725491, 0.53333336, 0.6745098, 1)
@@ -74,80 +68,6 @@ Color = Color(0.13725491, 0.53333336, 0.6745098, 1)
 metadata/_custom_type_script = "uid://c4d6enygyoawb"
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
-
-[node name="植物战斗按钮" type="TextureButton" parent="Scene/ButtomScene" unique_id=365318613]
-offset_left = 95.0
-offset_top = 100.0
-offset_right = 362.0
-offset_bottom = 520.0
-scale = Vector2(0.9, 0.9)
-pivot_offset_ratio = Vector2(1, 0.5)
-texture_normal = ExtResource("2_sjdq6")
-
-[node name="底部栏" type="Sprite2D" parent="Scene/ButtomScene/植物战斗按钮" unique_id=704468084]
-self_modulate = Color(0.568, 1, 0.52, 1)
-position = Vector2(123, 346.5)
-scale = Vector2(1.43, 1.40625)
-texture = ExtResource("3_otykl")
-
-[node name="植物任务" type="Label" parent="Scene/ButtomScene/植物战斗按钮/底部栏" unique_id=695919917]
-offset_left = -90.20979
-offset_top = -47.28888
-offset_right = 99.30069
-offset_bottom = 47.28888
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 3
-theme_override_constants/shadow_outline_size = 3
-theme_override_fonts/font = SubResource("FontVariation_s3dxf")
-theme_override_font_sizes/font_size = 32
-text = "植物任务"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="植物属性" type="Sprite2D" parent="Scene/ButtomScene/植物战斗按钮" unique_id=1997712696]
-position = Vector2(134, 250)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("5_blu83")
-
-[node name="僵尸战斗按钮" type="TextureButton" parent="Scene/ButtomScene" unique_id=1479428401]
-offset_left = 360.0
-offset_top = 100.0
-offset_right = 627.0
-offset_bottom = 520.0
-scale = Vector2(0.9, 0.9)
-pivot_offset_ratio = Vector2(0, 0.5)
-texture_normal = ExtResource("6_ugq3t")
-
-[node name="底部栏" type="Sprite2D" parent="Scene/ButtomScene/僵尸战斗按钮" unique_id=127967838]
-self_modulate = Color(0.60844016, 0.114799984, 0.82, 1)
-position = Vector2(143.33331, 346.6667)
-scale = Vector2(1.43, 1.40625)
-texture = ExtResource("7_dyv2o")
-
-[node name="僵尸任务" type="Label" parent="Scene/ButtomScene/僵尸战斗按钮/底部栏" unique_id=286800736]
-offset_left = -96.3481
-offset_top = -47.407417
-offset_right = 93.162384
-offset_bottom = 47.17034
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 3
-theme_override_constants/shadow_outline_size = 3
-theme_override_fonts/font = SubResource("FontVariation_s3dxf")
-theme_override_font_sizes/font_size = 32
-text = "僵尸任务"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="僵尸属性" type="Sprite2D" parent="Scene/ButtomScene/僵尸战斗按钮" unique_id=1597219395]
-position = Vector2(134, 250)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("8_bd5vv")
 
 [node name="今日挑战" type="TextureButton" parent="Scene/ButtomScene" unique_id=630912637]
 self_modulate = Color(0.99, 0.4488, 0.19799998, 1)
@@ -208,76 +128,14 @@ position = Vector2(61.10002, 48.000004)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("6_7aet4")
 
-[node name="对战" type="TextureButton" parent="Scene/ButtomScene" unique_id=87521771]
-self_modulate = Color(1, 1, 1, 0)
-offset_left = -152.0
-offset_top = 465.0
-offset_right = 866.0
-offset_bottom = 1175.0
+[node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
+offset_left = 360.0
+offset_top = 838.0
+offset_right = -51.000244
+offset_bottom = 742.0
 scale = Vector2(0.5, 0.5)
-pivot_offset_ratio = Vector2(0.5, 0.5)
-texture_normal = ExtResource("11_swicf")
-
-[node name="卡片" type="Sprite2D" parent="Scene/ButtomScene/对战" unique_id=479479363]
-clip_children = 2
-position = Vector2(512.6724, 223.00003)
-texture = ExtResource("11_swicf")
-
-[node name="紫色渐变" type="Sprite2D" parent="Scene/ButtomScene/对战/卡片" unique_id=764051870]
-self_modulate = Color(0.60784316, 0.11372549, 0.81960785, 1)
-position = Vector2(2.3275757, 66)
-scale = Vector2(1, 0.22015655)
-texture = ExtResource("12_ev275")
-
-[node name="草坪战争" type="Label" parent="Scene/ButtomScene/对战" unique_id=370516113]
-layout_mode = 0
-offset_left = 11.0
-offset_top = 1.0000496
-offset_right = 1007.0
-offset_bottom = 369.00006
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 8
-theme_override_constants/shadow_offset_y = 8
-theme_override_constants/outline_size = 15
-theme_override_constants/shadow_outline_size = 1
-theme_override_fonts/font = SubResource("FontVariation_s3dxf")
-theme_override_font_sizes/font_size = 80
-text = "草坪战争"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="卡牌" type="Sprite2D" parent="Scene/ButtomScene/对战" unique_id=1578071099]
-self_modulate = Color(0.97, 0.8742934, 0.2522, 1)
-clip_children = 2
-position = Vector2(511, 571)
-scale = Vector2(2.5, 2.5)
-texture = ExtResource("13_go1g7")
-
-[node name="紫色渐变" type="Sprite2D" parent="Scene/ButtomScene/对战/卡牌" unique_id=645836466]
-self_modulate = Color(0.97, 0.67091674, 0.2522, 1)
-position = Vector2(0.30906677, 22.399992)
-scale = Vector2(0.37872863, 0.08576323)
-texture = ExtResource("12_ev275")
-
-[node name="战斗" type="Label" parent="Scene/ButtomScene/对战" unique_id=1999228872]
-layout_mode = 0
-offset_left = 39.0
-offset_top = 395.0
-offset_right = 983.0
-offset_bottom = 723.0
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 12
-theme_override_constants/shadow_offset_y = 12
-theme_override_constants/outline_size = 8
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_s3dxf")
-theme_override_font_sizes/font_size = 87
-text = "战斗"
-horizontal_alignment = 1
-vertical_alignment = 1
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="卡包" parent="Scene/ButtomScene" unique_id=1529838576 instance=ExtResource("22_sjdq6")]
 offset_left = 447.0
@@ -315,18 +173,28 @@ scale = Vector2(0.7, 0.7)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="Load" type="CanvasLayer" parent="Scene" unique_id=1189937301]
-layer = -1
+[node name="植物任务" parent="Scene/ButtomScene" unique_id=1509446347 instance=ExtResource("19_quj4d")]
+offset_left = 244.0
+offset_top = 240.0
+offset_right = -476.0
+offset_bottom = -1040.0
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
-[node name="Load" parent="Scene/Load" unique_id=2051238835 instance=ExtResource("21_8ffxo")]
-unique_name_in_owner = true
-visible = false
+[node name="僵尸任务" parent="Scene/ButtomScene" unique_id=443452423 instance=ExtResource("14_2lx20")]
+offset_left = 476.0
+offset_top = 240.0
+offset_right = -244.0
+offset_bottom = -1040.0
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="UponScene" type="CanvasLayer" parent="Scene" unique_id=552437376]
 unique_name_in_owner = true
 layer = 0
 
 [node name="Button" type="CanvasLayer" parent="Scene" unique_id=948884562]
+layer = 80
 
 [node name="返回按钮" parent="Scene/Button" unique_id=68017161 instance=ExtResource("21_otykl")]
 unique_name_in_owner = true
@@ -374,3 +242,10 @@ layer = 75
 [node name="SceneAnimAToD" type="CanvasLayer" parent="." unique_id=1035361643]
 unique_name_in_owner = true
 layer = 150
+
+[node name="Load" type="CanvasLayer" parent="." unique_id=1189937301]
+layer = 1020
+
+[node name="Load" parent="Load" unique_id=2051238835 instance=ExtResource("21_8ffxo")]
+unique_name_in_owner = true
+visible = false

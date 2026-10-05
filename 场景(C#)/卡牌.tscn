@@ -94,6 +94,7 @@ visible = false
 [node name="信息背景" type="Panel" parent="非战斗" unique_id=1871479733]
 unique_name_in_owner = true
 z_index = -5
+clip_contents = true
 offset_left = -7.5
 offset_top = -11.0
 offset_right = 266.5
@@ -102,17 +103,18 @@ scale = Vector2(1.05, 1.05)
 pivot_offset = Vector2(137, 0)
 theme_override_styles/panel = SubResource("StyleBoxFlat_5lf5m")
 
-[node name="按钮" type="VBoxContainer" parent="非战斗" unique_id=740684855]
+[node name="按钮" type="VBoxContainer" parent="非战斗/信息背景" unique_id=740684855]
 unique_name_in_owner = true
-offset_left = -90.0
-offset_top = 90.0
-offset_right = 350.0
-offset_bottom = 640.0
-scale = Vector2(0.6, 0.6)
+layout_mode = 0
+offset_left = -84.0
+offset_top = 84.0
+offset_right = 356.0
+offset_bottom = 634.0
+scale = Vector2(0.54, 0.54)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_constants/separation = 20
 
-[node name="操作按钮" type="NinePatchRect" parent="非战斗/按钮" unique_id=1545944670]
+[node name="操作按钮" type="NinePatchRect" parent="非战斗/信息背景/按钮" unique_id=1545944670]
 unique_name_in_owner = true
 self_modulate = Color(0.083333254, 1, 0, 1)
 material = SubResource("ShaderMaterial_yam0n")
@@ -125,7 +127,7 @@ patch_margin_top = 40
 patch_margin_right = 40
 patch_margin_bottom = 40
 
-[node name="Label" type="Label" parent="非战斗/按钮/操作按钮" unique_id=1101989939]
+[node name="Label" type="Label" parent="非战斗/信息背景/按钮/操作按钮" unique_id=1101989939]
 layout_mode = 0
 offset_left = 96.667
 offset_top = 20.0
@@ -141,7 +143,7 @@ text = "添加"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="信息按钮" type="NinePatchRect" parent="非战斗/按钮" unique_id=1962327141]
+[node name="信息按钮" type="NinePatchRect" parent="非战斗/信息背景/按钮" unique_id=1962327141]
 unique_name_in_owner = true
 self_modulate = Color(0, 0.75, 1, 1)
 material = SubResource("ShaderMaterial_yam0n")
@@ -154,7 +156,7 @@ patch_margin_top = 40
 patch_margin_right = 40
 patch_margin_bottom = 40
 
-[node name="Label" type="Label" parent="非战斗/按钮/信息按钮" unique_id=1211443661]
+[node name="Label" type="Label" parent="非战斗/信息背景/按钮/信息按钮" unique_id=1211443661]
 layout_mode = 0
 offset_left = 96.667
 offset_top = 20.0

@@ -1,3 +1,4 @@
+using Card;
 using Godot;
 using Scene;
 using System;
@@ -33,10 +34,15 @@ public static class SceneManager
     }
     private static async Task LoadEnd()
     {
-        Main.Load.Visible = true;
         Tween tween = Main.Load.CreateTween();
         tween.TweenProperty(Main.Load, "modulate", new Color(1, 1, 1, 0), 0.2f);
         await Main.Load.ToSignal(tween, Tween.SignalName.Finished);
+        Main.Load.Visible = false;
+    }
+    private static Task Clear()
+    {
+        NodeCard.Clear();
+        return Task.CompletedTask;
     }
     /// <summary>
     /// 打开一个子目录
@@ -45,10 +51,10 @@ public static class SceneManager
     public static async void JumpToSub(SubMenu subMenu)
     {
         if (subMenu == null) return;
+        await Clear();
         var parent =
             Main.SceneContainer;
         _LoadTask = new TaskCompletionSource<bool>();
-        parent.GetNode<CanvasLayer>("%UponScene").Layer = 0;
         var scene = subMenu.Instantiate(); ;
         if (Menus.Count == 0)
         {
@@ -64,13 +70,10 @@ public static class SceneManager
             scene.Visible = false;
             parent.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
         }
-        parent.GetNode<CanvasLayer>("Load").Layer = 1;
         await Load();
         await LoadTask;
         scene.Visible = true;
         await LoadEnd();
-        parent.GetNode<CanvasLayer>("Load").Layer = 0;
-        parent.GetNode<CanvasLayer>("%UponScene").Layer = 1;
     }
     /// <summary>
     /// 关闭顶层子目录
@@ -81,15 +84,12 @@ public static class SceneManager
         Menus.Remove(last.Key);
         if (last.Value == null)
         {
+            await Clear();
             var parent =
                 Main.SceneContainer;
-            parent.GetNode<CanvasLayer>("%UponScene").Layer = 0;
-            parent.GetNode<CanvasLayer>("Load").Layer = 1;
             await Load();
             last.Key.Destory();
             await LoadEnd();
-            parent.GetNode<CanvasLayer>("Load").Layer = 0;
-            parent.GetNode<CanvasLayer>("%UponScene").Layer = 1;
         }
         else
         {

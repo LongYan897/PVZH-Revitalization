@@ -24,7 +24,8 @@ public static class PlayerManager
     /// <param name="p2">玩家2</param>
     public static void FillPlayer(Player p1, Player p2)
     {
-
+        P1 = p1;
+        P2 = p2;
     }
     public static Player GetPlayer(Camp camp)
     {

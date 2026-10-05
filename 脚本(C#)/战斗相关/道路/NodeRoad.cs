@@ -1,4 +1,5 @@
 using Battle.Entity;
+using Battle.Texture;
 using Card;
 using Card.Cmd;
 using Godot;
@@ -26,18 +27,6 @@ public partial class NodeRoad : Control, ITarget
         TargetRegistry.Unregister(this);
         Instances.Remove(this);
     }
-    public static bool CanTargetedBy(CardModel card)
-    {
-        return TargetRegistry.AnyCanBeTarget(card, card.TargetType, card.TargetFilter);
-    }
-    /// <summary>
-    /// 绑定的道路数据
-    /// </summary>
-    public Road Model { get; private set; } = new() { Index = 1, Type = RoadType.Ground };
-    /// <summary>
-    /// 最近一次被选中的类型
-    /// </summary>
-    public RoadTargetKind LastTargetKind => Model.LastTargetKind;
     /// <summary>
     /// 绑定道路数据
     /// </summary>
@@ -45,7 +34,42 @@ public partial class NodeRoad : Control, ITarget
     public void Bind(Road model)
     {
         Model = model;
+        TargetRegistry.Register(this);
+        Instances.Add(this, Model);
+        Position += model.Type switch
+        {
+            RoadType.Ground => new Vector2(0, 20),
+            _ => new()
+        };
+        GetNode<Sprite2D>("%图标").Texture = TextureBag.LoadCurrent().ForRoad(Model.Type, Model.Index % 2 == 0);
     }
+    public override void _EnterTree()
+    {
+        GetNode<Area2D>("%碰撞箱").SetMeta("Target", this);
+        GetNode<Area2D>("%碰撞箱").SetMeta("TargetType", "Road");
+        GetNode<Area2D>("%碰撞箱2").SetMeta("Target", this);
+        GetNode<Area2D>("%碰撞箱2").SetMeta("TargetType", "Grid");
+        GetNode<Area2D>("%碰撞箱3").SetMeta("Target", this);
+        GetNode<Area2D>("%碰撞箱3").SetMeta("TargetType", "CoopGrid");
+        GetNode<Node2D>("%环境高亮").Visible = false;
+        GetNode<Node2D>("%植物_僵尸1").Visible = false;
+        GetNode<Node2D>("%植物_2").Visible = false;
+        GetNode<Button>("%碰撞").GuiInput += OnRoadGuiInput1;
+        GetNode<Button>("%碰撞2").GuiInput += OnRoadGuiInput2;
+        GetNode<Button>("%碰撞3").GuiInput += OnRoadGuiInput3;
+    }
+    public static bool CanTargetedBy(CardModel card)
+    {
+        return TargetRegistry.AnyCanBeTarget(card, card.TargetType, card.TargetFilter);
+    }
+    /// <summary>
+    /// 绑定的道路数据
+    /// </summary>
+    public Road Model { get; private set; }
+    /// <summary>
+    /// 最近一次被选中的类型
+    /// </summary>
+    public RoadTargetKind LastTargetKind => Model.LastTargetKind;
     public Func<CardModel, Func<ITarget, bool>, bool> CanBeTarget =>
     (t, f) =>
     {
@@ -445,24 +469,6 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(0.98f, 0.98f), 0.7f);
 
         Model.LastTargetKind = RoadTargetKind.None;
-    }
-
-    public override void _EnterTree()
-    {
-        GetNode<Area2D>("%碰撞箱").SetMeta("Target", this);
-        GetNode<Area2D>("%碰撞箱").SetMeta("TargetType", "Road");
-        GetNode<Area2D>("%碰撞箱2").SetMeta("Target", this);
-        GetNode<Area2D>("%碰撞箱2").SetMeta("TargetType", "Grid");
-        GetNode<Area2D>("%碰撞箱3").SetMeta("Target", this);
-        GetNode<Area2D>("%碰撞箱3").SetMeta("TargetType", "CoopGrid");
-        TargetRegistry.Register(this);
-        Instances.Add(this, Model);
-        GetNode<Node2D>("%环境高亮").Visible = false;
-        GetNode<Node2D>("%植物_僵尸1").Visible = false;
-        GetNode<Node2D>("%植物_2").Visible = false;
-        GetNode<Button>("%碰撞").GuiInput += OnRoadGuiInput1;
-        GetNode<Button>("%碰撞2").GuiInput += OnRoadGuiInput2;
-        GetNode<Button>("%碰撞3").GuiInput += OnRoadGuiInput3;
     }
     private bool _isRoadOn = true;
     private bool _isGridOn1 = false;

@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://d4jtuyxkgf5da"]
+
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_dympk"]
+[ext_resource type="Texture2D" uid="uid://wrr2b522bbue" path="res://素材/ui/界面ui/按钮2.png" id="2_bka45"]
+[ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="3_8gf6f"]
+[ext_resource type="Texture2D" uid="uid://vdebwuwdm4yq" path="res://素材/ui/界面ui/featureunlock_plantHQ.png" id="4_7s325"]
+[ext_resource type="Texture2D" uid="uid://1mjkm3cumarw" path="res://素材/ui/界面ui/landingscreen_plants.png" id="5_8gf6f"]
+
+[sub_resource type="FontVariation" id="FontVariation_5fg8k"]
+base_font = ExtResource("3_8gf6f")
+variation_opentype = {
+2003265652: 500
+}
+variation_embolden = 0.1
+
+[node name="植物任务" type="Control" unique_id=1509446347]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -720.0
+offset_bottom = -1280.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dympk")
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="." unique_id=1567682655]
+layout_mode = 0
+offset_left = -120.0
+offset_top = -128.0
+offset_right = 120.0
+offset_bottom = 255.0
+flat = true
+
+[node name="植物战斗按钮" type="Sprite2D" parent="." unique_id=958847393]
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("5_8gf6f")
+
+[node name="底部栏" type="Sprite2D" parent="." unique_id=1174698145]
+self_modulate = Color(0.568, 1, 0.52, 1)
+position = Vector2(-11.500004, 188.25)
+scale = Vector2(1.3149999, 1.40625)
+texture = ExtResource("2_bka45")
+
+[node name="植物任务" type="Label" parent="底部栏" unique_id=2105874446]
+offset_left = -90.20979
+offset_top = -47.28888
+offset_right = 99.30069
+offset_bottom = 47.28888
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 3
+theme_override_constants/shadow_outline_size = 3
+theme_override_fonts/font = SubResource("FontVariation_5fg8k")
+theme_override_font_sizes/font_size = 32
+text = "植物任务"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="植物属性" type="Sprite2D" parent="." unique_id=1855154713]
+position = Vector2(0, 91.75)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_7s325")

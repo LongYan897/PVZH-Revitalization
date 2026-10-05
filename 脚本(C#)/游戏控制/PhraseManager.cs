@@ -1,4 +1,5 @@
 using Battle;
+using Godot;
 using Logger;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,14 +42,28 @@ public static class PhraseManager
     /// <summary>
     /// 记录战斗中的道路
     /// </summary>
-    private static readonly List<Road> Roads = new()
-    {
+    private static readonly List<Road> Roads =
+    [
         new Road() {Index = 1,Type = RoadType.Height},
         new Road() {Index = 2,Type = RoadType.Ground},
         new Road() {Index = 3,Type = RoadType.Ground},
         new Road() {Index = 4,Type = RoadType.Ground},
         new Road() {Index = 5,Type = RoadType.Water},
-    };
+    ];
+    /// <summary>
+    /// 构建战斗的道路
+    /// </summary>
+    public static void BuildUp(Node node)
+    {
+        foreach (var nRoad in node.GetChildren().OfType<NodeRoad>())
+        {
+            foreach (var road in Roads)
+            {
+                if (road.Index == nRoad.Index + 1)
+                    nRoad.Bind(road);
+            }
+        }
+    }
     /// <summary>
     /// 获取战斗中的道路
     /// </summary>

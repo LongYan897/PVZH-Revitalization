@@ -297,7 +297,7 @@ public class CardModel
     /// <summary>
     /// 卡牌的状态（正面/反面）
     /// </summary>
-    public Status Status { get; set; } = Status.FaceDown;
+    public Status Status { get; set; } = Status.FaceUp;
     /// <summary>
     /// 卡牌的类别
     /// </summary>

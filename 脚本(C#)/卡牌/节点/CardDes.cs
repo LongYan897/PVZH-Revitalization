@@ -215,6 +215,13 @@ public partial class CardDes : Control
     private static readonly Regex LinkRegex =
         new Regex(@"_([^_]+)_", RegexOptions.Compiled);
 
+    private static readonly Regex LabelRegex =
+        new Regex(@"\$([^$]+)\$", RegexOptions.Compiled);
+
+    private static string ConvertLabels(string text) =>
+        LabelRegex.Replace(text,
+            mm => $"[color=#b3ff30][u]{mm.Groups[1].Value}[/u][/color]");
+
     private static string ConvertLinks(string text) =>
         LinkRegex.Replace(text,
             mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
@@ -235,6 +242,7 @@ public partial class CardDes : Control
             if (m.Index > last)
             {
                 string seg = raw.Substring(last, m.Index - last);
+                seg = ConvertLabels(seg);
                 label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
             }
 
@@ -263,6 +271,7 @@ public partial class CardDes : Control
         if (last < raw.Length)
         {
             string seg = raw.Substring(last);
+            seg = ConvertLabels(seg);
             label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
         }
     }

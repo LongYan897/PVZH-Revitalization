@@ -48,8 +48,7 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_cnftl")
 metadata/_custom_type_script = "uid://b38mmdd52sf5k"
-metadata/_edit_horizontal_guides_ = [235.0, 236.0]
-metadata/_edit_vertical_guides_ = [235.0]
+metadata/_edit_horizontal_guides_ = [235.0]
 
 [node name="背景" type="Node2D" parent="." unique_id=649810752]
 unique_name_in_owner = true

@@ -5,12 +5,14 @@
 [node name="道路层" type="Node2D" unique_id=1692843012]
 
 [node name="1" parent="." unique_id=1720357688 instance=ExtResource("1_x4gbs")]
-offset_left = 152.0
+z_index = 5
+offset_left = 147.0
 offset_top = 612.0
-offset_right = 172.0
+offset_right = 167.0
 offset_bottom = 632.0
 
 [node name="2" parent="." unique_id=1066117273 instance=ExtResource("1_x4gbs")]
+z_index = -10
 offset_left = 256.0
 offset_top = 612.0
 offset_right = 276.0
@@ -18,6 +20,7 @@ offset_bottom = 632.0
 Index = 1
 
 [node name="3" parent="." unique_id=2563964 instance=ExtResource("1_x4gbs")]
+z_index = -15
 offset_left = 360.0
 offset_top = 612.0
 offset_right = 380.0
@@ -25,6 +28,7 @@ offset_bottom = 632.0
 Index = 2
 
 [node name="4" parent="." unique_id=159569896 instance=ExtResource("1_x4gbs")]
+z_index = -10
 offset_left = 464.0
 offset_top = 612.0
 offset_right = 484.0
@@ -32,6 +36,7 @@ offset_bottom = 632.0
 Index = 3
 
 [node name="5" parent="." unique_id=481194125 instance=ExtResource("1_x4gbs")]
+z_index = 4
 offset_left = 568.0
 offset_top = 612.0
 offset_right = 588.0

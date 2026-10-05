@@ -13,10 +13,17 @@ public partial class SpineHandler : Node2D
     private static PackedScene Scene => GD.Load<PackedScene>("res://场景(C#)/动画.tscn");
     private Node _spineSprite;
 
-    public override void _Ready()
+    private Node SpineSprite
     {
-        _spineSprite = GetNode<Node>("Spine");
-        ConnectAnimationEvent();
+        get
+        {
+            if (_spineSprite == null)
+            {
+                _spineSprite = GetNode<Node>("Spine");
+                ConnectAnimationEvent();
+            }
+            return _spineSprite;
+        }
     }
     /// <summary>
     /// 获取一个动画节点
@@ -48,7 +55,7 @@ public partial class SpineHandler : Node2D
     /// </summary>
     public void LoadSkeletonData(string tresPath)
     {
-        if (_spineSprite == null)
+        if (SpineSprite == null)
         {
             return;
         }
@@ -57,7 +64,7 @@ public partial class SpineHandler : Node2D
         {
             return;
         }
-        _spineSprite.Set("skeleton_data_res", data);
+        SpineSprite.Set("skeleton_data_res", data);
 
     }
 
@@ -66,48 +73,48 @@ public partial class SpineHandler : Node2D
     /// </summary>
     public void SetAnimation(int track, string animName, bool loop)
     {
-        _spineSprite.Call("set_animation", track, animName, loop);
+        SpineSprite.Call("set_animation", track, animName, loop);
     }
     /// <summary>
     /// 添加动画。
     /// </summary>
     public void AddAnimation(int track, string animName, bool loop, float delay = 0.0f)
     {
-        _spineSprite.Call("add_animation", track, animName, loop, delay);
+        SpineSprite.Call("add_animation", track, animName, loop, delay);
     }
 
     public void SetAttachment(string id, string attachment)
     {
-        _spineSprite.Call("set_attachment", id, attachment);
+        SpineSprite.Call("set_attachment", id, attachment);
     }
     public void SetSkin(string skinName)
     {
-        _spineSprite.Call("set_skin", skinName);
+        SpineSprite.Call("set_skin", skinName);
     }
 
     public Vector2 GetBoneWorldPos(string boneName)
     {
-        return _spineSprite.Call("get_bone_world_pos", boneName).AsVector2();
+        return SpineSprite.Call("get_bone_world_pos", boneName).AsVector2();
     }
 
     public event Action<string,float> OnSpineAnimEvent;
 
     public void ConnectAnimationEvent()
     {
-        _spineSprite.Connect("spine_anim_event", Callable.From<string,float>((name,obj) =>
+        SpineSprite.Connect("spine_anim_event", Callable.From<string,float>((name,obj) =>
         {
             OnSpineAnimEvent?.Invoke(name,obj);
         }));
     }
     public void ClearTrack(int track)
     {
-        if (_spineSprite == null) return;
-        _spineSprite.Call("clear_track", track);
+        if (SpineSprite == null) return;
+        SpineSprite.Call("clear_track", track);
     }
     public void ClearTracks()
     {
-        if (_spineSprite == null) return;
-        _spineSprite.Call("clear_tracks");
+        if (SpineSprite == null) return;
+        SpineSprite.Call("clear_tracks");
     }
 
     /// <summary>
@@ -121,7 +128,7 @@ public partial class SpineHandler : Node2D
         var callable = Callable.From<GodotObject, GodotObject, GodotObject>(
             (sprite, state, entry) => CallDeferred(nameof(QueueFree)));
 
-        _spineSprite.Connect("animation_completed", callable,
+        SpineSprite.Connect("animation_completed", callable,
             (uint)GodotObject.ConnectFlags.OneShot);
     }
 
@@ -137,7 +144,7 @@ public partial class SpineHandler : Node2D
         Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
             (sprite, state, entry) => tcs.TrySetResult(true));
 
-        _spineSprite.Connect("animation_completed", callable,
+        SpineSprite.Connect("animation_completed", callable,
             (uint)GodotObject.ConnectFlags.OneShot);
 
         await tcs.Task;
@@ -155,7 +162,7 @@ public partial class SpineHandler : Node2D
         Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
             (sprite, state, entry) => tcs.TrySetResult(true));
 
-        _spineSprite.Connect("animation_completed", callable,
+        SpineSprite.Connect("animation_completed", callable,
             (uint)GodotObject.ConnectFlags.OneShot);
 
         await tcs.Task;
@@ -238,7 +245,7 @@ public partial class SpineHandler : Node2D
     /// <returns></returns>
     public float GetAnimationDuration(string animName)
     {
-        return _spineSprite.Call("get_animation_duration", animName).AsSingle();
+        return SpineSprite.Call("get_animation_duration", animName).AsSingle();
     }
     /// <summary>
     /// 递归预加载目录下所有 Spine .tres 资源，填充 Godot 资源缓存，

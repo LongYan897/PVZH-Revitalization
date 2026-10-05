@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://b82k587le8ukv"]
+
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_f1i2d"]
+[ext_resource type="Texture2D" uid="uid://dsnag66lhgvmy" path="res://素材/ui/界面ui/pvpimage_New.png" id="2_iabat"]
+[ext_resource type="Texture2D" uid="uid://djrnhsnaoecwq" path="res://素材/ui/界面ui/渐变纹理.png" id="3_wx2ff"]
+[ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="4_pta5a"]
+[ext_resource type="Texture2D" uid="uid://br5nuly1nj771" path="res://素材/ui/界面ui/按钮5.png" id="5_p6jnt"]
+
+[sub_resource type="FontVariation" id="FontVariation_j7747"]
+base_font = ExtResource("4_pta5a")
+variation_opentype = {
+2003265652: 500
+}
+variation_embolden = 0.1
+
+[node name="Control" type="Control" unique_id=260714909]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -720.0
+offset_bottom = -1280.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f1i2d")
+SubScene = "res://场景(C#)/战斗场景.tscn"
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="." unique_id=1394770203]
+layout_mode = 0
+offset_left = -515.0
+offset_top = -397.0
+offset_right = 512.0
+offset_bottom = 356.0
+flat = true
+
+[node name="Frame" type="Node2D" parent="." unique_id=1524062516]
+position = Vector2(-512.672, -393)
+
+[node name="卡片" type="Sprite2D" parent="Frame" unique_id=1547979496]
+clip_children = 2
+position = Vector2(512.6724, 223.00003)
+texture = ExtResource("2_iabat")
+
+[node name="紫色渐变" type="Sprite2D" parent="Frame/卡片" unique_id=2123813251]
+self_modulate = Color(0.60784316, 0.11372549, 0.81960785, 1)
+position = Vector2(2.3275757, 66)
+scale = Vector2(1, 0.22015655)
+texture = ExtResource("3_wx2ff")
+
+[node name="草坪战争" type="Label" parent="Frame" unique_id=1184699845]
+offset_left = 11.0
+offset_top = 1.0000496
+offset_right = 1007.0
+offset_bottom = 369.00006
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 8
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 15
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = SubResource("FontVariation_j7747")
+theme_override_font_sizes/font_size = 80
+text = "草坪战争"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="卡牌" type="Sprite2D" parent="Frame" unique_id=423790578]
+self_modulate = Color(0.97, 0.8742934, 0.2522, 1)
+clip_children = 2
+position = Vector2(511, 571)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("5_p6jnt")
+
+[node name="紫色渐变" type="Sprite2D" parent="Frame/卡牌" unique_id=294127909]
+self_modulate = Color(0.97, 0.67091674, 0.2522, 1)
+position = Vector2(0.30906677, 22.399992)
+scale = Vector2(0.37872863, 0.08576323)
+texture = ExtResource("3_wx2ff")
+
+[node name="战斗" type="Label" parent="Frame" unique_id=1366428717]
+offset_left = 39.0
+offset_top = 395.0
+offset_right = 983.0
+offset_bottom = 723.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 12
+theme_override_constants/shadow_offset_y = 12
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = SubResource("FontVariation_j7747")
+theme_override_font_sizes/font_size = 87
+text = "战斗"
+horizontal_alignment = 1
+vertical_alignment = 1

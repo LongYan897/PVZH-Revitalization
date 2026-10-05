@@ -38,6 +38,14 @@ public enum CardView
 [GlobalClass]
 public partial class NodeCard : Control
 {
+    public static void Clear()
+    {
+        foreach (var inst in instances.ToList())
+        {
+            instances.Remove(inst.Key);
+            inst.Key.QueueFree();
+        }
+    }
     private CardView CardViewMode;
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌.tscn");
     public static NodeCard ChoiceCard { get; private set; }
@@ -459,6 +467,7 @@ public partial class NodeCard : Control
             ? Control.MouseFilterEnum.Stop
             : Control.MouseFilterEnum.Ignore;
     }
+
     private void OnCardClick()
     {
         ChoiceCard = this;
@@ -514,8 +523,17 @@ public partial class NodeCard : Control
         if (willOpen)
         {
             _openedCard = this;
-
             nonBattle.Visible = true;
+
+            if (isCollection)
+            {
+                SetControlVisible(infoBtn, true);
+            }
+            else if (isDeck)
+            {
+                SetControlVisible(opBtn, true);
+                SetControlVisible(infoBtn, true);
+            }
 
             infoBg.PivotOffset = infoBg.Size / 2f;
             infoBg.Scale = Vector2.Zero;
@@ -531,21 +549,13 @@ public partial class NodeCard : Control
                 .SetEase(Tween.EaseType.Out);
             await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
 
-            if (isCollection)
+            if (isDeck)
             {
-                SetControlVisible(infoBtn, true);
-            }
-            else if (isDeck)
-            {
-                SetControlVisible(opBtn, true);
-
                 _nonBattleTween = infoBg.CreateTween();
                 _nonBattleTween.TweenProperty(infoBg, "size:y", 528f, 0.25f)
                     .SetTrans(Tween.TransitionType.Cubic)
                     .SetEase(Tween.EaseType.Out);
                 await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
-
-                SetControlVisible(infoBtn, true);
             }
         }
         else
@@ -554,7 +564,6 @@ public partial class NodeCard : Control
 
             if (isCollection)
             {
-                SetControlVisible(infoBtn, false);
 
                 _nonBattleTween = infoBg.CreateTween();
                 _nonBattleTween.TweenProperty(infoBg, "size:y", 205f, 0.25f)
@@ -569,11 +578,11 @@ public partial class NodeCard : Control
                     .SetEase(Tween.EaseType.In);
                 await ToSignal(_nonBattleScaleTween, Tween.SignalName.Finished);
 
+                SetControlVisible(infoBtn, false);
                 nonBattle.Visible = false;
             }
             else if (isDeck)
             {
-                SetControlVisible(infoBtn, false);
 
                 _nonBattleTween = infoBg.CreateTween();
                 _nonBattleTween.TweenProperty(infoBg, "size:y", 368f, 0.25f)
@@ -581,8 +590,6 @@ public partial class NodeCard : Control
                     .SetEase(Tween.EaseType.Out);
                 await ToSignal(_nonBattleTween, Tween.SignalName.Finished);
 
-                SetControlVisible(opBtn, false);
-
                 _nonBattleTween = infoBg.CreateTween();
                 _nonBattleTween.TweenProperty(infoBg, "size:y", 205f, 0.25f)
                     .SetTrans(Tween.TransitionType.Cubic)
@@ -596,6 +603,8 @@ public partial class NodeCard : Control
                     .SetEase(Tween.EaseType.In);
                 await ToSignal(_nonBattleScaleTween, Tween.SignalName.Finished);
 
+                SetControlVisible(infoBtn, false);
+                SetControlVisible(opBtn, false);
                 nonBattle.Visible = false;
             }
             else
@@ -1085,10 +1094,10 @@ public partial class NodeCard : Control
                         GetNode<Node2D>("%等级").Visible = true;
                         atks.GetNode<RichTextLabel>("%伤害数值").Text = $"[center]{fighter.Atk.Current}[/center]";
                         hps.GetNode<RichTextLabel>("%血量数值").Text = $"[center]{fighter.Hp.Current}[/center]";
-                        GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
                         GetNode<SpineHandler>("%伤害动画").Scale = new(0.28f, 0.28f);
-                        GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
+                        GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
                         GetNode<SpineHandler>("%血量动画").Scale = new(0.28f, 0.28f);
+                        GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
                         if (fighter.StarType != null)
                         {
                             GetNode<SpineHandler>("%等级").LoadSkeletonData(fighter.StarType.IconSkelPath);
@@ -1175,5 +1184,18 @@ public partial class NodeCard : Control
         {
             DarkenLight();
         }
+    }
+    public override void _ExitTree()
+    {
+        KillReturnTween();
+        KillClickTween();
+        KillCallTween();
+
+        if (_nonBattleTween != null && _nonBattleTween.IsValid())
+            _nonBattleTween.Kill();
+        if (_nonBattleScaleTween != null && _nonBattleScaleTween.IsValid())
+            _nonBattleScaleTween.Kill();
+        if (_colorTween != null && _colorTween.IsValid())
+            _colorTween.Kill();
     }
 }

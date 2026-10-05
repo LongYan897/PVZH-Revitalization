@@ -6,12 +6,12 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4eplb"]
 
-[node name="图鉴" type="Control" unique_id=615603176]
+[node name="图鉴" type="Control" unique_id=2120193542]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_kkntg")
 SubScene = "res://场景(C#)/卡组界面.tscn"
-metadata/_custom_type_script = "uid://dqd1eccumxe7"
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="." unique_id=323777181]
 layout_mode = 0

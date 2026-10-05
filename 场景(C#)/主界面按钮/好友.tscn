@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://dyxb552oiab4"]
 
-[ext_resource type="Script" uid="uid://dqd1eccumxe7" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_lr5el"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_lr5el"]
 [ext_resource type="Texture2D" uid="uid://cb6v4ucf0lkow" path="res://素材/ui/界面ui/button_friends.png" id="1_yhjd8"]
 [ext_resource type="Texture2D" uid="uid://vnc01rbpilbn" path="res://素材/ui/界面ui/friendsbutton.png" id="2_a16dm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a16dm"]
 
-[node name="好友" type="Control" unique_id=1955490909]
+[node name="好友" type="Control" unique_id=1755457138]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_lr5el")
-metadata/_custom_type_script = "uid://dqd1eccumxe7"
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="." unique_id=1494606156]
 layout_mode = 0

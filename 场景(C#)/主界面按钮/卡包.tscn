@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://gopjysvuqotu"]
 
-[ext_resource type="Script" uid="uid://dqd1eccumxe7" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_6oypm"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_6oypm"]
 [ext_resource type="Texture2D" uid="uid://0b7q13tt6hoq" path="res://素材/ui/界面ui/packsbutton.png" id="1_7v3gg"]
 [ext_resource type="Texture2D" uid="uid://d1qad2d3x5mhc" path="res://素材/ui/界面ui/button_store.png" id="2_6oypm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bkuyn"]
 
-[node name="卡包" type="Control" unique_id=740313634]
+[node name="卡包" type="Control" unique_id=655203899]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_6oypm")
-metadata/_custom_type_script = "uid://dqd1eccumxe7"
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="." unique_id=535995990]
 layout_mode = 0

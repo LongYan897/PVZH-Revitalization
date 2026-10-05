@@ -33,7 +33,7 @@
   "SunFlower.Flavor": "",
 
   "BackupDancer.Title": "伴舞僵尸",
-  "BackupDancer.Des": "一只跳舞僵尸获得=Strength={+1}。",
+  "BackupDancer.Des": "一只$跳舞$僵尸获得=Strength={+2}。",
   "BackupDancer.Cost": 1,
   "BackupDancer.Camp": "僵尸",
   "BackupDancer.Type": "单位",
