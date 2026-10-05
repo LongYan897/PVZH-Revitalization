@@ -1,5 +1,6 @@
 using Card;
 using Godot;
+using Hero.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace Hero;
 public partial class HeroInstance : Control, ITarget
 {
     public TargetType TargetType => TargetType;
-
+    public HeroModel hero { get; private set; }
+    public HeroVariable<int> health;
     public Func<CardModel, Func<ITarget, bool>, bool> CanBeTarget => (t,f) =>
     {
         return false;
