@@ -7,11 +7,19 @@ using System.Threading.Tasks;
 using Variable;
 
 namespace Hero;
-public class HeroVariable<T>(HeroModel hero,string sign,T BaseValue) : Variable<T>(sign,BaseValue)
+public class HeroVariable<T>(HeroModel hero,string sign,T baseValue) : Variable<T>(sign,baseValue)
 {
     public HeroModel hero { get; init; } = hero;
-    public override int Set(T value, VariableReason reason)
+}
+
+public class HeroIntVariable(HeroModel hero,string sign,int baseValue) : HeroVariable<int>(hero,sign,baseValue)
+{
+    public async Task<int> Remove(int value,VariableReason reason)
     {
-        return base.Set(value, reason);
+        return base.Set(Current - value,reason);
+    }
+    public async Task<int> Add(int value,VariableReason reason)
+    {
+        return base.Set(Current + value, reason);
     }
 }

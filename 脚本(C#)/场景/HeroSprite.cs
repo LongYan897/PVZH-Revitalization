@@ -20,9 +20,8 @@ public partial class HeroSprite : Control
     private void OnNButtonPressed()
     {
         HeroDes heroDes = HeroDes.Create(_heroName);
-        GetTree().CurrentScene.AddChild(heroDes);
+        GetTree().Root.GetNode<CanvasLayer>("MainController/Des").AddChild(heroDes);
         heroDes.Position = new Vector2(360,640);
-        heroDes.ZIndex = 1000;
         heroDes.Display();
     }
 

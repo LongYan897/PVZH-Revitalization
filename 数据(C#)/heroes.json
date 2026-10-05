@@ -13,7 +13,7 @@
   "SunFlower.Category": [ "爆花", "光能" ],
   "SunFlower.Camp": "植物",
   "SunFlower.Icon": "res://素材/ui/英雄图片/cornerimage_solarflare.png",
-  "SunFlower.Animation": "res://素材/英雄素材/耀斑花.tres",
+  "SunFlower.Animation": "res://素材/英雄素材/耀斑花/耀斑花.tres",
 
   "SuperZombie.Title": "超尸",
   "SuperZombie.Flavor": "他身上最具英雄气概的地方，就是他的发型了。",

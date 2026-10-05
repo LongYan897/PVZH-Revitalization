@@ -2,6 +2,14 @@
 
 [ext_resource type="Texture2D" uid="uid://bmrkrr7e86k7a" path="res://素材/ui/界面ui/健壮.png" id="1_2ufvv"]
 
+[sub_resource type="Gradient" id="Gradient_c3mtk"]
+offsets = PackedFloat32Array(0.002, 0.994)
+colors = PackedColorArray(0, 0, 0, 0.39215687, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2ufvv"]
+gradient = SubResource("Gradient_c3mtk")
+height = 40
+
 [sub_resource type="FontVariation" id="FontVariation_lxdyv"]
 variation_transform = Transform2D(1, 0.3, 0, 1, 0, 0)
 
@@ -16,12 +24,12 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="底板" type="ColorRect" parent="." unique_id=1510652408]
+[node name="底板" type="TextureRect" parent="." unique_id=1429923300]
 layout_mode = 0
 offset_right = 720.0
 offset_bottom = 40.0
 mouse_filter = 2
-color = Color(0, 0, 0, 0.32156864)
+texture = SubResource("GradientTexture2D_2ufvv")
 
 [node name="文本" type="Label" parent="." unique_id=139183322]
 layout_mode = 0

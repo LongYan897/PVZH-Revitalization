@@ -46,59 +46,65 @@ texture = ExtResource("2_6s3qr")
 [node name="Midd" type="CanvasLayer" parent="." unique_id=1275829866]
 layer = -2
 
-[node name="图鉴信息" type="Control" parent="Midd" unique_id=1880372525]
-unique_name_in_owner = true
-layout_mode = 3
-anchors_preset = 0
+[node name="cardLibrary" type="Node2D" parent="Midd" unique_id=25129087]
 
-[node name="英雄标志" type="ColorRect" parent="Midd/图鉴信息" unique_id=2028195356]
+[node name="图鉴信息" type="ScrollContainer" parent="Midd" unique_id=1166029761]
 unique_name_in_owner = true
-layout_mode = 0
+offset_top = 200.0
+offset_right = 720.0
+offset_bottom = 1280.0
+
+[node name="容器" type="HFlowContainer" parent="Midd/图鉴信息" unique_id=1561317865]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(720, 0)
+layout_mode = 2
+
+[node name="英雄标志" type="ColorRect" parent="Midd/图鉴信息/容器" unique_id=2028195356]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(720, 40)
+layout_mode = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.32156864)
 
-[node name="文本" type="Label" parent="Midd/图鉴信息/英雄标志" unique_id=92487783]
+[node name="文本" type="Label" parent="Midd/图鉴信息/容器/英雄标志" unique_id=92487783]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -318.4375
-offset_right = 401.5625
+offset_right = 720.0
 offset_bottom = 48.0
-grow_horizontal = 2
 theme = SubResource("Theme_gvd7m")
 theme_override_fonts/font = SubResource("FontFile_gvd7m")
 theme_override_font_sizes/font_size = 32
 text = "英雄"
 
-[node name="卡牌标志" type="ColorRect" parent="Midd/图鉴信息" unique_id=760249681]
+[node name="标志栏" type="HFlowContainer" parent="Midd/图鉴信息/容器" unique_id=887816353]
 unique_name_in_owner = true
-layout_mode = 0
-grow_horizontal = 2
-grow_vertical = 2
+custom_minimum_size = Vector2(720, 0)
+layout_mode = 2
+
+[node name="卡牌标志" type="ColorRect" parent="Midd/图鉴信息/容器" unique_id=760249681]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(720, 40)
+layout_mode = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.32156864)
 
-[node name="文本" type="Label" parent="Midd/图鉴信息/卡牌标志" unique_id=1083598719]
+[node name="文本" type="Label" parent="Midd/图鉴信息/容器/卡牌标志" unique_id=1083598719]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -318.4375
-offset_right = 401.5625
+offset_right = 720.0
 offset_bottom = 48.0
-grow_horizontal = 2
 theme = SubResource("Theme_gvd7m")
 theme_override_fonts/font = SubResource("FontFile_gvd7m")
 theme_override_font_sizes/font_size = 32
 text = "卡牌"
 
-[node name="卡牌列表" type="HFlowContainer" parent="Midd/图鉴信息" unique_id=567356080]
-unique_name_in_owner = true
-layout_mode = 0
-mouse_filter = 2
+[node name="占位符" type="Control" parent="Midd/图鉴信息/容器" unique_id=204688436]
+custom_minimum_size = Vector2(720, 20)
+layout_mode = 2
 
-[node name="cardLibrary" type="Node2D" parent="Midd" unique_id=25129087]
+[node name="卡牌列表" type="HFlowContainer" parent="Midd/图鉴信息/容器" unique_id=567356080]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(720, 0)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="Fore" type="CanvasLayer" parent="." unique_id=925622240]
 layer = 0

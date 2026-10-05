@@ -23,7 +23,7 @@ public partial class DeckSubMenuScene : SubMenuScene
     private Sprite2D Top2; // 顶部遮挡1
     private TextureButton Plant; // 植物按钮
     private TextureButton Zombie; // 僵尸按钮
-    private Control Information; //图鉴信息
+    private Control Container; //图鉴信息
     private ColorRect HeroLabel; //英雄标志
     private ColorRect Cards; //卡片信息
     private HFlowContainer CardInformation; //卡牌列表
@@ -48,7 +48,7 @@ public partial class DeckSubMenuScene : SubMenuScene
         Top2 = FindChild("顶部遮挡1") as Sprite2D;
         Plant = FindChild("植物按钮") as TextureButton;
         Zombie = FindChild("僵尸按钮") as TextureButton;
-        Information = GetNode<Control>("%图鉴信息");
+        Container = GetNode<HFlowContainer>("%容器");
         HeroLabel = GetNode<ColorRect>("%英雄标志");
         Cards = GetNode<ColorRect>("%卡牌标志");
         CardInformation = GetNode<HFlowContainer>("%卡牌列表");
@@ -88,7 +88,7 @@ public partial class DeckSubMenuScene : SubMenuScene
         {
             string name = type.Name;
             HeroSprite hs = HeroSprite.Create(name);
-            Information.AddChild(hs);
+            Container.GetNode<HFlowContainer>("标志栏").AddChild(hs);
             CurrentInformation.Add(hs);
             hs.Position = new Vector2((position.X - 1) * (128 + 6.4f) + 24, (position.Y - 1) * 100 + 280);
             position.X++;
@@ -106,7 +106,7 @@ public partial class DeckSubMenuScene : SubMenuScene
                 if (camp == Camp.Plant.ToName()) { hs = ResourceLoader.Load<PackedScene>("res://场景(C#)/植物英雄图标.tscn").Instantiate<Control>(); }
                 else { hs = ResourceLoader.Load<PackedScene>("res://场景(C#)/僵尸英雄图标.tscn").Instantiate<Control>(); }
                 CurrentInformation.Add(hs);
-                Information.AddChild(hs);
+                Container.GetNode<HFlowContainer>("标志栏").AddChild(hs);
                 hs.Position = new Vector2((position.X - 1) * (128 + 6.4f) + 24, (position.Y - 1) * 100 + 280);
                 position.X++;
             }
