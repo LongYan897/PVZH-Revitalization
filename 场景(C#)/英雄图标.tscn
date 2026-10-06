@@ -6,23 +6,31 @@
 
 [node name="英雄图标" type="Control" unique_id=1935674937]
 physics_interpolation_mode = 0
-custom_minimum_size = Vector2(140, 140)
+custom_minimum_size = Vector2(224, 224)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -70.0
-offset_top = -70.0
-offset_right = 70.0
-offset_bottom = 70.0
+offset_left = -112.0
+offset_top = -112.0
+offset_right = 112.0
+offset_bottom = 112.0
 script = ExtResource("1_bieyg")
 metadata/_custom_type_script = "uid://6c2ve4s5erat"
 
 [node name="图标按钮" type="TextureButton" parent="." unique_id=289637077]
 layout_mode = 1
-offset_left = 6.0
-offset_top = 6.0
-offset_right = 233.0
-offset_bottom = 233.0
-scale = Vector2(0.56, 0.56)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -113.5
+offset_top = -113.5
+offset_right = 113.5
+offset_bottom = 113.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.8, 0.8)
+pivot_offset = Vector2(113.5, 113.5)
 texture_normal = ExtResource("2_78vrb")
 script = ExtResource("3_4p3gn")
 metadata/_custom_type_script = "uid://bhqnh1uogwt06"

@@ -4,6 +4,7 @@ using Controller;
 using Godot;
 using Hero.Model;
 using Hero.String;
+using Pack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +73,7 @@ public partial class DeckSubMenuScene : SubMenuScene
         Top2.Modulate = ThemeColors2[2];
         await InitializeInformation(Camp.Zombie.ToName());
     }
-    private float CreateSpirtes(string camp)
+    private void CreateSpirtes(string camp)
     {
         if (CurrentInformation.Count > 0)
         {
@@ -90,11 +91,9 @@ public partial class DeckSubMenuScene : SubMenuScene
             HeroSprite hs = HeroSprite.Create(name);
             Container.GetNode<HFlowContainer>("标志栏").AddChild(hs);
             CurrentInformation.Add(hs);
-            hs.Position = new Vector2((position.X - 1) * (128 + 6.4f) + 24, (position.Y - 1) * 100 + 280);
             position.X++;
             if (position.X > 5)
             {
-                position.Y++;
                 position.X = 1;
             }
         }
@@ -107,14 +106,9 @@ public partial class DeckSubMenuScene : SubMenuScene
                 else { hs = ResourceLoader.Load<PackedScene>("res://场景(C#)/僵尸英雄图标.tscn").Instantiate<Control>(); }
                 CurrentInformation.Add(hs);
                 Container.GetNode<HFlowContainer>("标志栏").AddChild(hs);
-                hs.Position = new Vector2((position.X - 1) * (128 + 6.4f) + 24, (position.Y - 1) * 100 + 280);
                 position.X++;
             }
         }
-        HeroLabel.Position = new Vector2(-88, 24);
-        Cards.Position = new Vector2(-88, (position.Y - 1) * 100 + 280 + 72+64);
-        CardInformation.Position = new Vector2(0, Cards.Position.Y + 60);
-        return (position.Y - 1) * 100 + 280 + 72 + 64;
     }
 
     private Task CreateCurrentCards()
@@ -122,23 +116,10 @@ public partial class DeckSubMenuScene : SubMenuScene
         
         int count = 0;
         foreach (Class c in CurrentClassCards.Keys) count += CurrentClassCards[c].Count;
-        Class currentClass = CurrentClassCards.Keys.ToList()[0];
-        Control classSprite = CreateClassSprite(currentClass);
-        CurrentClasses.Add(classSprite);
-        for (int n = 1;n < CurrentClassCards.Keys.Count;n++)
+        Class currentClass;
+        Control classSprite;
+        for (int n = 0;n < CurrentClassCards.Keys.Count;n++)
         {
-            int x = 3;
-            Class last = currentClass;
-            foreach (CardModel card in CurrentClassCards[last])
-            {
-                x++;
-                if (x > 3)
-                {
-                    x = 0;
-                    classSprite.CustomMinimumSize += new Vector2(0,1)*134;
-                }
-            }
-            classSprite.CustomMinimumSize += new Vector2(0,1)*40;
             currentClass = CurrentClassCards.Keys.ToList()[n];
             classSprite = CreateClassSprite(currentClass);
             CurrentClasses.Add(classSprite);
@@ -151,7 +132,7 @@ public partial class DeckSubMenuScene : SubMenuScene
             {
                 CardModel cardClone = card;
                 cardClone.Status = Status.FaceUp;
-                NodeCard.DisplayCardAt(cardClone,Vector2.Zero,classSprite.GetNode<HFlowContainer>("排列"),CardView.Collection,1);
+                NodeCard Ncard = NodeCard.DisplayCardAt(cardClone,Vector2.Zero,classSprite.GetNode<HFlowContainer>("排列"),CardView.Collection,1);
             }
         }
         return Task.CompletedTask;
@@ -163,7 +144,7 @@ public partial class DeckSubMenuScene : SubMenuScene
     /// <param name="camp">阵营</param>
     private async Task InitializeInformation(string camp) 
     {
-        float cardOriginY = CreateSpirtes(camp);
+        CreateSpirtes(camp);
         foreach (Control control in CurrentClasses) control.QueueFree();
         CurrentClasses = new List<Control>();
         CurrentClassCards = new Dictionary<Class, List<CardModel>>();
@@ -178,9 +159,9 @@ public partial class DeckSubMenuScene : SubMenuScene
     /// <returns></returns>
     private Control CreateClassSprite(Class c)
     {
-        Control classI = classScene.Instantiate<Control>();
-        classI.GetNode<TextureRect>("图标").Texture = ResourceLoader.Load<Texture2D>(c.ToPath());
-        classI.GetNode<Label>("文本").Text = c.ToName();
+        Control classI = classScene.Instantiate<MinimumHFlowContainer>();
+        classI.GetNode<TextureRect>("底板/图标").Texture = ResourceLoader.Load<Texture2D>(c.ToPath());
+        classI.GetNode<Label>("底板/文本").Text = c.ToName();
         GetNode<HFlowContainer>("%卡牌列表").AddChild(classI);
         return classI;
     }

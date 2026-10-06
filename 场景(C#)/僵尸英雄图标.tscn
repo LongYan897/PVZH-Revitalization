@@ -4,19 +4,27 @@
 
 [node name="英雄图标" type="Control" unique_id=1728515481]
 physics_interpolation_mode = 0
-custom_minimum_size = Vector2(140, 140)
+custom_minimum_size = Vector2(224, 224)
 layout_mode = 3
 anchors_preset = 0
-offset_left = -70.0
-offset_top = -70.0
-offset_right = 70.0
-offset_bottom = 70.0
+offset_left = -112.0
+offset_top = -112.0
+offset_right = 112.0
+offset_bottom = 112.0
 
 [node name="图标按钮" type="TextureRect" parent="." unique_id=1007256372]
 layout_mode = 1
-offset_left = 6.0
-offset_top = 6.0
-offset_right = 148.0
-offset_bottom = 148.0
-scale = Vector2(0.901, 0.901)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.0
+offset_top = -71.0
+offset_right = 71.0
+offset_bottom = 71.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.27, 1.27)
+pivot_offset = Vector2(71, 71)
 texture = ExtResource("1_vrsby")

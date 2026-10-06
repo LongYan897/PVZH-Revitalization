@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://2476ufhs3tlj"]
 
 [ext_resource type="Texture2D" uid="uid://bmrkrr7e86k7a" path="res://素材/ui/界面ui/健壮.png" id="1_2ufvv"]
+[ext_resource type="Script" uid="uid://djw2uav0wcgkd" path="res://脚本(C#)/辅助类/MinimumHFlowContainer.cs" id="2_c3mtk"]
 
 [sub_resource type="Gradient" id="Gradient_c3mtk"]
 offsets = PackedFloat32Array(0.002, 0.994)
@@ -13,46 +14,58 @@ height = 40
 [sub_resource type="FontVariation" id="FontVariation_lxdyv"]
 variation_transform = Transform2D(1, 0.3, 0, 1, 0, 0)
 
-[node name="派系条" type="Control" unique_id=940418284]
-custom_minimum_size = Vector2(720, 40)
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = -1240.0
-grow_horizontal = 2
-grow_vertical = 2
+[sub_resource type="Theme" id="Theme_c3mtk"]
+HFlowContainer/constants/h_separation = 25
+
+[node name="派系条" type="HFlowContainer" unique_id=171895376]
+custom_minimum_size = Vector2(720, 0)
+offset_right = 720.0
+offset_bottom = 44.0
+scale = Vector2(0.625, 0.625)
 mouse_filter = 2
+script = ExtResource("2_c3mtk")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+
+[node name="占位符" type="Control" parent="." unique_id=528918769]
+custom_minimum_size = Vector2(1152, 16)
+layout_mode = 2
 
 [node name="底板" type="TextureRect" parent="." unique_id=1429923300]
-layout_mode = 0
-offset_right = 720.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(1152, 64)
+layout_mode = 2
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_2ufvv")
 
-[node name="文本" type="Label" parent="." unique_id=139183322]
+[node name="图标" type="TextureRect" parent="底板" unique_id=2133363514]
 layout_mode = 0
-offset_left = 50.0
-offset_right = 110.0
-offset_bottom = 42.0
+offset_left = 5.0
+offset_right = 118.0
+offset_bottom = 117.0
+scale = Vector2(0.547, 0.547)
+mouse_filter = 2
+texture = ExtResource("1_2ufvv")
+
+[node name="文本" type="Label" parent="底板" unique_id=139183322]
+layout_mode = 0
+offset_left = 61.82
+offset_right = 121.82
+offset_bottom = 41.875
+scale = Vector2(1.528, 1.528)
 theme_override_fonts/font = SubResource("FontVariation_lxdyv")
 theme_override_font_sizes/font_size = 30
 text = "健壮"
 
-[node name="图标" type="TextureRect" parent="." unique_id=2133363514]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 3.0
-offset_right = 123.0
-offset_bottom = 120.0
-scale = Vector2(0.3, 0.3)
-mouse_filter = 2
-texture = ExtResource("1_2ufvv")
+[node name="占位符3" type="Control" parent="." unique_id=106486525]
+custom_minimum_size = Vector2(1152, 8)
+layout_mode = 2
 
-[node name="排列" type="HFlowContainer" parent="." unique_id=1383357058]
-layout_mode = 0
-offset_top = 60.0
-offset_right = 1036.0
-offset_bottom = 253.0
-scale = Vector2(0.694, 0.694)
+[node name="排列" type="HFlowContainer" parent="." unique_id=2126167542]
+custom_minimum_size = Vector2(1152, 0)
+layout_mode = 2
+theme = SubResource("Theme_c3mtk")
+script = ExtResource("2_c3mtk")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+
+[node name="占位符2" type="Control" parent="." unique_id=1300091936]
+custom_minimum_size = Vector2(1152, 8)
+layout_mode = 2

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://fgp56ih0v7ds" path="res://脚本(C#)/场景/子场景/DeckSubMenuScene.cs" id="1_28go4"]
 [ext_resource type="Texture2D" uid="uid://0jenyxv2cpr4" path="res://素材/ui/界面ui/背景图1.png" id="2_6s3qr"]
 [ext_resource type="Texture2D" uid="uid://b6tb7lpggosod" path="res://素材/ui/界面ui/遮挡1.png" id="3_loyiy"]
+[ext_resource type="Script" uid="uid://djw2uav0wcgkd" path="res://脚本(C#)/辅助类/MinimumHFlowContainer.cs" id="3_yg71g"]
 [ext_resource type="Texture2D" uid="uid://i37rthq4vwic" path="res://素材/卡牌属性图片/白屏.png" id="4_5hsp2"]
 [ext_resource type="Script" uid="uid://bhqnh1uogwt06" path="res://脚本(C#)/辅助类/NButton.cs" id="6_mem38"]
 [ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="7_vq737"]
@@ -32,6 +33,9 @@ cache/0/32/0/underline_position = 0.0
 cache/0/32/0/underline_thickness = 0.0
 cache/0/32/0/scale = 1.0
 
+[sub_resource type="Theme" id="Theme_gm4s6"]
+HFlowContainer/constants/h_separation = 16
+
 [node name="卡组界面" type="Node2D" unique_id=1455373142]
 script = ExtResource("1_28go4")
 
@@ -48,20 +52,24 @@ layer = -2
 
 [node name="cardLibrary" type="Node2D" parent="Midd" unique_id=25129087]
 
-[node name="图鉴信息" type="ScrollContainer" parent="Midd" unique_id=1166029761]
+[node name="图鉴信息" type="ScrollContainer" parent="Midd" unique_id=842120749]
 unique_name_in_owner = true
 offset_top = 200.0
-offset_right = 720.0
-offset_bottom = 1280.0
+offset_right = 1152.0
+offset_bottom = 1928.0
+scale = Vector2(0.625, 0.625)
+horizontal_scroll_mode = 0
 
-[node name="容器" type="HFlowContainer" parent="Midd/图鉴信息" unique_id=1561317865]
+[node name="容器" type="HFlowContainer" parent="Midd/图鉴信息" unique_id=108506039]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(720, 0)
 layout_mode = 2
+script = ExtResource("3_yg71g")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 
 [node name="英雄标志" type="ColorRect" parent="Midd/图鉴信息/容器" unique_id=2028195356]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(720, 40)
+custom_minimum_size = Vector2(1152, 64)
 layout_mode = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.32156864)
@@ -70,19 +78,22 @@ color = Color(0, 0, 0, 0.32156864)
 layout_mode = 1
 offset_right = 720.0
 offset_bottom = 48.0
+scale = Vector2(1.6, 1.6)
 theme = SubResource("Theme_gvd7m")
 theme_override_fonts/font = SubResource("FontFile_gvd7m")
 theme_override_font_sizes/font_size = 32
 text = "英雄"
 
-[node name="标志栏" type="HFlowContainer" parent="Midd/图鉴信息/容器" unique_id=887816353]
+[node name="标志栏" type="HFlowContainer" parent="Midd/图鉴信息/容器" unique_id=1283492715]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(720, 0)
+custom_minimum_size = Vector2(1152, 0)
 layout_mode = 2
+script = ExtResource("3_yg71g")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 
 [node name="卡牌标志" type="ColorRect" parent="Midd/图鉴信息/容器" unique_id=760249681]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(720, 40)
+custom_minimum_size = Vector2(1152, 64)
 layout_mode = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.32156864)
@@ -91,20 +102,24 @@ color = Color(0, 0, 0, 0.32156864)
 layout_mode = 1
 offset_right = 720.0
 offset_bottom = 48.0
+scale = Vector2(1.6, 1.6)
 theme = SubResource("Theme_gvd7m")
 theme_override_fonts/font = SubResource("FontFile_gvd7m")
 theme_override_font_sizes/font_size = 32
 text = "卡牌"
 
 [node name="占位符" type="Control" parent="Midd/图鉴信息/容器" unique_id=204688436]
-custom_minimum_size = Vector2(720, 20)
+custom_minimum_size = Vector2(1152, 32)
 layout_mode = 2
 
-[node name="卡牌列表" type="HFlowContainer" parent="Midd/图鉴信息/容器" unique_id=567356080]
+[node name="卡牌列表" type="HFlowContainer" parent="Midd/图鉴信息/容器" unique_id=896944081]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(720, 0)
+custom_minimum_size = Vector2(1152, 0)
 layout_mode = 2
 mouse_filter = 2
+theme = SubResource("Theme_gm4s6")
+script = ExtResource("3_yg71g")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 
 [node name="Fore" type="CanvasLayer" parent="." unique_id=925622240]
 layer = 0
