@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bbx1ix6i3dmoe"]
+
+[ext_resource type="Texture2D" uid="uid://c51twmmfob485" path="res://场景/僵尸卡组/纸板机器船/PaperBoat.png" id="1_vs52j"]
+
+[node name="卡面" type="Control" unique_id=433164255]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1863847264]
+layout_mode = 0
+offset_left = -49.0
+offset_top = -80.0
+offset_right = 431.0
+offset_bottom = 400.0
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("1_vs52j")
+expand_mode = 1
+stretch_mode = 3

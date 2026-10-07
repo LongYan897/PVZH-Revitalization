@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dy7pegrhba8bu"]
 
+[ext_resource type="Script" uid="uid://bwhpvfkmcantx" path="res://脚本(C#)/场景/子场景/ActivitySubMenu.cs" id="1_6wrbx"]
 [ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="1_qrkul"]
 [ext_resource type="Texture2D" uid="uid://cophm26o1o4e" path="res://素材/ui/界面ui/Badge_Event.png" id="2_kdrji"]
 [ext_resource type="Texture2D" uid="uid://w7edbn6x42ea" path="res://素材/ui/界面ui/按钮4.png" id="3_kdrji"]
@@ -23,7 +24,7 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[node name="每日挑战" type="Control" unique_id=1298529303]
+[node name="每日挑战" type="Control" unique_id=687317841]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,6 +33,8 @@ offset_right = -720.0
 offset_bottom = -1280.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_6wrbx")
+metadata/_custom_type_script = "uid://bwhpvfkmcantx"
 
 [node name="Button" type="Button" parent="." unique_id=1590716165]
 layout_mode = 0

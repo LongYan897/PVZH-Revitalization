@@ -15,7 +15,7 @@ public abstract partial class SubMenuScene : Node2D
 {
     public sealed override async void _EnterTree()
     {
-        BackButton.JoinScene();
+        BackButton.JoinScene(HideReturnButton);
         await _Load();
         SceneManager.InvokeLoadEnd();
     }
@@ -23,5 +23,5 @@ public abstract partial class SubMenuScene : Node2D
     /// <summary>
     /// 是否隐藏返回按钮
     /// </summary>
-    public virtual bool HideReturnButton { get; }
+    public virtual bool HideReturnButton { get; } = false;
 }

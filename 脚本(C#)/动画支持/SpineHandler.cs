@@ -257,7 +257,6 @@ public partial class SpineHandler : Node2D
         using var dir = DirAccess.Open(dirPath);
         if (dir == null)
         {
-            GD.PushWarning($"[SpineHandler.Init] 无法打开目录: {dirPath}");
             return;
         }
 
@@ -276,14 +275,18 @@ public partial class SpineHandler : Node2D
                 else if (fileName.EndsWith(".tres"))
                 {
                     var res = ResourceLoader.Load(fullPath);
-                    if (res != null && res.ToString().Contains("SpineSkeletonDataResource"))
-                    {
-                        GD.Print($"[SpineHandler.Init] 已预加载: {fullPath}");
-                    }
                 }
             }
             fileName = dir.GetNext();
         }
         dir.ListDirEnd();
+    }
+    /// <summary>
+    /// 停止动画
+    /// </summary>
+    /// <param name="track"></param>
+    public void PauseAnimation(int track)
+    {
+        SpineSprite.Call("pause_animation", track);
     }
 }

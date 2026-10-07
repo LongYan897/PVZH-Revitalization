@@ -3,12 +3,14 @@ using Battle.Entity;
 using Card.Cmd;
 using Card.String;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
 using Variable;
 using Variable.Special;
 using static Godot.HttpRequest;
+using static Godot.OpenXRCompositionLayer;
 
 namespace Card;
 
@@ -17,14 +19,23 @@ namespace Card;
 /// </summary>
 public class FighterCardModel : CardModel
 {
+    private readonly List<FighterCardModel> additiveCards = new();
+    /// <summary>
+    /// 隐藏单位的数值,并销毁单位
+    /// </summary>
+    /// <param name="resistIcon">是否保留单位的最后一帧图像</param>
+    public void Invisible(bool resistIcon)
+    {
+        Fighter.GetNode(this);
+    }
     protected override CardModel LoadData(CardString cardString)
     {
         Atk = new(this, "Attack", cardString.Attack);
         BornWithAtk = Atk.Current > 0;
-        AtkType = new(this, "AttackType", cardString.AtkType);
+        AtkType = new(this, "AttackType", cardString.AtkType ?? new NormalAtkType());
         Hp = new(this, "Health", cardString.Health);
         MaxHp = new(this, "HealthMax", cardString.Health);
-        HpType = new(this, "HealthType", cardString.HpType);
+        HpType = new(this, "HealthType", cardString.HpType ?? new NormalHpType());
         CardTag = cardString.CardTag;
         StarType = cardString.StarType;
         _ = AddBuff(new HpBuff(), VariableReason.Self);
@@ -106,7 +117,6 @@ public class FighterCardModel : CardModel
 
         await FireTiming(Timing.OnAttack, atkStack);
         await CardCmd.TimingOnCards(this, Timing.OnAttack, atkStack);
-
         var finalTgs = atkStack.Targets.ToList();
         foreach (var itg in finalTgs)
         {
@@ -114,9 +124,7 @@ public class FighterCardModel : CardModel
 
             atkStack.FinalDamage = atkStack.BaseDamage;
 
-            await fighter.Model.FireTiming(Timing.ModifyCardDamage, atkStack);
-            await CardCmd.TimingOnCards(fighter.Model, Timing.ModifyCardDamage, atkStack);
-            await fighter.Model.FireTiming(Timing.WhenAttacked, atkStack);
+            await FireTiming(Timing.WhenAttacked, atkStack);
             await CardCmd.TimingOnCards(fighter.Model, Timing.WhenAttacked, atkStack);
 
             await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, atkStack, true, false);
@@ -151,6 +159,8 @@ public class FighterCardModel : CardModel
     bool immediateDeath = true)
     {
         int before = Hp.Current;
+        await FireTiming(Timing.ModifyCardDamage, amount);
+        await CardCmd.TimingOnCards(this, Timing.ModifyCardDamage, amount);
         await Hp.Lose(amount, reason);
         int actual = before - Hp.Current;
 
@@ -189,6 +199,9 @@ public class FighterCardModel : CardModel
     {
         await ApplyDamage(Hp.Current, reason, stack, false, immediateDeath);
     }
+    /// <summary>
+    /// 是否有初始血量
+    /// </summary>
     public bool BornWithAtk { get; private set; }
     /// <summary>
     /// 是否已死亡（Hp ≤ 0）
@@ -203,6 +216,14 @@ public class FighterCardModel : CardModel
     protected virtual bool CanTargetedBy(CardModel cardModel) { return true; }
 
     /// <summary>
+    /// 是否能作为其他卡牌的融合对象
+    /// </summary>
+    public virtual bool CanFusion(FighterCardModel cardModel) { return false; }
+    /// <summary>
+    /// 是否能把其他卡牌当作进化的对象
+    /// </summary>
+    public virtual bool CanEvolution(FighterCardModel cardModel) {  return false; }
+    /// <summary>
     /// 是否能被当作目标
     /// </summary>
     /// <param name="cardModel">要把这张卡当作目标的卡牌</param>
@@ -210,7 +231,13 @@ public class FighterCardModel : CardModel
     public bool CanbeTarget(CardModel cardModel)
     {
         bool hpbol = HpType.Current.ExtraFilter(cardModel);
-        return hpbol && CanTargetedBy(cardModel);
+        bool fusOrEvo = true;
+        if (cardModel is FighterCardModel fighter)
+        {
+            fusOrEvo = CanFusion(fighter) || fighter.CanEvolution(this);
+            fusOrEvo &= fighter.Camp == Camp;
+        }
+        return fusOrEvo && hpbol && CanTargetedBy(cardModel);
     }
 
     /// <summary>
@@ -229,10 +256,19 @@ public class FighterCardModel : CardModel
 
     protected virtual CardModel LoadCustomData(CardString cardString) { return this; }
 
+    private CardTag _tag;
     /// <summary>
     /// 卡牌标签(两栖，组队)
     /// </summary>
-    public CardTag CardTag { get; private set; }
+    public CardTag CardTag
+    {
+        get => _tag;
+        set
+        {
+            Fresh();
+            _tag = value;
+        }
+    }
     /// <summary>
     /// 攻击力
     /// </summary>
@@ -257,6 +293,11 @@ public class FighterCardModel : CardModel
     /// 等级类型(提示特殊能力)
     /// </summary>
     public StarType StarType { get; private set; }
+    public async Task GainHp(int amount, Variable.VariableReason reason)
+    {
+        await MaxHp.Gain(amount,reason);
+        await Hp.Gain(amount, reason);
+    }
     /// <summary>
     /// 恢复血量
     /// </summary>
@@ -294,8 +335,8 @@ public class FighterCardModel : CardModel
         get
         {
             if (CardTag.HasFlag(CardTag.Coop))
-                return TargetType.CoopGrids;
-            return TargetType.Grids;
+                return TargetType.CoopGrids | TargetType.Fighters;
+            return TargetType.Grids | TargetType.Fighters;
         }
     }
 
@@ -308,5 +349,29 @@ public class FighterCardModel : CardModel
             else if (road.LastTargetKind == RoadTargetKind.CoopGrid)
                 await CardCmd.FighterGenerate(this, road, Location.PlantFront);
         }
+        else if (target.CanBeFighter(out FighterCardModel fighter))
+        {
+            if (fighter.CanFusion(this))
+            {
+                await CardCmd.Fuse(this, fighter);
+            }
+            if (CanEvolution(fighter))
+            {
+                await CardCmd.Evolve(this, fighter);
+            }
+
+            await CardCmd.FighterGenerate(this, fighter.Road, fighter.Location);
+
+            return;
+        }
     }
+    /// <summary>
+    /// 融合逻辑。
+    /// </summary>
+    public virtual Task Fuse(FighterCardModel fighter) => Task.CompletedTask;
+
+    /// <summary>
+    /// 进化逻辑。
+    /// </summary>
+    public virtual Task Evolve(FighterCardModel fighter) => Task.CompletedTask;
 }

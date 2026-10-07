@@ -25,7 +25,9 @@ public class HailACopter : CardModel
         await PlayInstantAnimation("intro", target);
         if (target.CanBeRoad(out Road road))
         {
-             await CardCmd.FighterGenerate(Load<CopterCommando>() as FighterCardModel, road, Location.Zombie);
+            var card = Load<CopterCommando>() as FighterCardModel;
+            card.ExDescription = "由召唤直升机召唤";
+             await CardCmd.FighterGenerate(card, road, Location.Zombie);
         }
     }
 }

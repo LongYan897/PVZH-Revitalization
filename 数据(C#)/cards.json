@@ -122,5 +122,22 @@
   "StartBattle.Label": [ "运动员", "派对" ],
   "StartBattle.Tag": [],
   "StartBattle.Pack": "高级",
-  "StartBattle.Flavor": "敲开它，里面全是僵尸。没人知道为什么僵尸会藏在皮纳塔里，但大家都假装这是正常的。"
+  "StartBattle.Flavor": "敲开它，里面全是僵尸。没人知道为什么僵尸会藏在皮纳塔里，但大家都假装这是正常的。",
+
+  "CardboardBoat.Title": "纸板机器船",
+  "CardboardBoat.Des": "_融合_：获得=Health={+1}和_两栖_。",
+  "CardboardBoat.Cost": 1,
+  "CardboardBoat.Camp": "僵尸",
+  "CardboardBoat.Type": "单位",
+  "CardboardBoat.Rarity": "令牌",
+  "CardboardBoat.Category": "有脑",
+  "CardboardBoat.Icon": "res://场景(C#)/卡面/paperBoat.tscn",
+  "CardboardBoat.Animation": "res://素材(C#)/卡牌/召唤直升机/召唤直升机锦囊动画.tres",
+  "CardboardBoat.Label": [ "科学家" ],
+  "CardboardBoat.Tag": ["两栖"],
+  "CardboardBoat.Hp": 2,
+  "CardboardBoat.HpType": "普通",
+  "CardboardBoat.Atk": 0,
+  "CardboardBoat.AtkType": "普通",
+  "CardboardBoat.Flavor": "僵尸们每次上船都抓紧扶手——甲板上的水，比他们的脑子还多。"
 }

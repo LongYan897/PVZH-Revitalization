@@ -40,3 +40,9 @@ func get_animation_duration(anim_name:String) -> float:
 	if anim == null:
 		return 0.0
 	return anim.get_duration()
+
+func pause_animation(track:int) -> void:
+	var state = get_animation_state()
+	var entry = state.get_current(track)
+	if entry:
+		entry.set_time_scale(0.0)

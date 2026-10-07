@@ -10,6 +10,7 @@ using Card.Pea;
 using Controller.WavPlay;
 using Godot;
 using Pack;
+using Scene;
 using Spine;
 using Target;
 
@@ -31,7 +32,7 @@ public partial class Main : Node
     public static Node DesLayer { get; private set; }
     public static Node AudioContainer { get; private set; }
     public static Node SceneContainer { get; private set; }
-    public static Node2D Load { get; private set; }
+    public static Loading Load { get; private set; }
     public override async void _Ready()
     {
         //初始化各各组件
@@ -52,7 +53,7 @@ public partial class Main : Node
         FighterFrontDown = FighterContainer.GetNode<Node>("FrontDown");
         DesLayer = GetNode<CanvasLayer>("Des");
         AudioContainer = GetNode<Node2D>("Audios");
-        Load = GetNode<Node2D>("%Load");
+        Load = GetNode<Loading>("%Load");
         //
         WavPlayer.SetBgMusic<MainMenuWav>();
         TextureBag.SetCurrent<DiscoBag>();

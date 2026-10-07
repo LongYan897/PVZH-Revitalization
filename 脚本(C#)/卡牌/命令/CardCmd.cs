@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
+using Variable;
 
 namespace Card.Cmd;
 
@@ -44,13 +45,13 @@ public static class CardCmd
     /// <param name="before">变量修改前的值</param>
     /// <param name="after">变量修改后的值</param>
     /// <returns></returns>
-    public static async Task ChangedCard<T>(CardModel cardModel, string key, T before, T after)
+    public static async Task ChangedCard<T>(CardModel cardModel, string key, T before, T after,VariableReason variableReason)
     {
         cardModel.Fresh();
         await cardModel.Changed<T>(key, before, after);
         foreach (CardModel card in CardInstances.ToList())
         {
-            await card.FireTiming(Timing.OnVariableChanged, key, before, after);
+            await card.FireTiming(Timing.OnVariableChanged, key, before, after,variableReason);
         }
     }
     /// <summary>
@@ -211,14 +212,10 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task FighterGenerate(FighterCardModel fighter, Road road, Location location)
     {
-        var fight = Fighter.Generate(fighter, road, location);
-        await fighter.FireTiming(Timing.OnFighterEnter, road, fighter);
-        await TimingOnCards(fighter, Timing.OnFighterEnter, road, fighter);
+        await Fighter.Generate(fighter, road, location);
         await fighter.IntroPlayed();
         await fighter.AnimationWhenPlayed(road);
         await fighter.FireTiming(Timing.AfterPlay, NodeRoad.GetNode(road));
-        await fighter.FireTiming(Timing.AfterRoadChanged, road);
-        await TimingOnCards(fighter, Timing.AfterRoadChanged, road);
     }
     /// <summary>
     /// 搜寻有没有可以作为Target的对象
@@ -256,4 +253,28 @@ public static class CardCmd
         => AnyFighter(f => f != null
             && f.Camp == Camp.Plant
             && (predicate == null || predicate(f)));
+    /// <summary>
+    /// 将融合卡牌和目标卡牌融合
+    /// </summary>
+    /// <param name="fusioned">被融合的卡牌</param>
+    /// <param name="fusioner">要融合目标的卡牌</param>
+    /// <returns></returns>
+    public static async Task Fuse(FighterCardModel fusioned,FighterCardModel fusioner)
+    {
+        await fusioner.Fuse(fusioned);
+        await fusioner.FireTiming(Timing.WhenFuse,fusioned,fusioner);
+        await TimingOnCards(fusioner,Timing.WhenFuse, fusioned,fusioner);
+    }
+    /// <summary>
+    /// 进化卡牌到一个卡牌上
+    /// </summary>
+    /// <param name="evolved">被进化的卡牌</param>
+    /// <param name="evolver">要进化的卡牌</param>
+    /// <returns></returns>
+    public static async Task Evolve(FighterCardModel evolver, FighterCardModel evolved)
+    {
+        await evolver.Evolve(evolved);
+        await evolver.FireTiming(Timing.WhenFuse, evolved, evolver);
+        await TimingOnCards(evolver, Timing.WhenFuse, evolved,evolver);
+    }
 }

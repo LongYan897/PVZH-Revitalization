@@ -42,6 +42,11 @@ public partial class NodeCard : Control
     {
         foreach (var inst in instances.ToList())
         {
+            if (!GodotObject.IsInstanceValid(inst.Key))
+            {
+                instances.Remove(inst.Key);
+                continue;
+            }
             instances.Remove(inst.Key);
             inst.Key.QueueFree();
         }

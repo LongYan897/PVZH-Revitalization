@@ -1,4 +1,5 @@
 using Godot;
+using Spine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,27 @@ public partial class Loading : Node2D
 {
     private int potAmount = 0;
     private double potDelta;
+    private SpineHandler _spine;
+    public override void _Ready()
+    {
+        _spine = GetNode<SpineHandler>("动画");
+        _spine.LoadSkeletonData("res://数据资源/杂项/加载动画.tres");
+    }
+    public void LoadIn()
+    {
+        Visible = true;
+        Random random = new();
+        _spine.SetAnimation(0,random.Next(0,2) switch
+        {
+            0 => "loading",
+            1 => "loading_behind",
+            _ => null
+        },false);
+    }
+    public void LoadOut()
+    {
+        Visible = false;
+    }
     public override void _Process(double delta)
     {
         var str = "";
@@ -29,12 +51,8 @@ public partial class Loading : Node2D
         }
         else
             potDelta += delta;
+
         GetNode<Label>("Label").Text = $"加载中{str}";
         GetNode<Label>("Label").MouseFilter = Control.MouseFilterEnum.Ignore;
-        GetNode<TextureRect>("TextureRect").MouseFilter = Visible switch
-        {
-            false => Control.MouseFilterEnum.Ignore,
-            true => Control.MouseFilterEnum.Stop
-        };
     }
 }

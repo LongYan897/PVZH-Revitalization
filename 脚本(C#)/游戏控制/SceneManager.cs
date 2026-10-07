@@ -27,7 +27,7 @@ public static class SceneManager
     }
     private static async Task Load()
     {
-        Main.Load.Visible = true;
+        Main.Load.LoadIn();
         Tween tween = Main.Load.CreateTween();
         tween.TweenProperty(Main.Load,"modulate",new Color(1,1,1,1),0.2f);
         await Main.Load.ToSignal(tween, Tween.SignalName.Finished);
@@ -37,7 +37,7 @@ public static class SceneManager
         Tween tween = Main.Load.CreateTween();
         tween.TweenProperty(Main.Load, "modulate", new Color(1, 1, 1, 0), 0.2f);
         await Main.Load.ToSignal(tween, Tween.SignalName.Finished);
-        Main.Load.Visible = false;
+        Main.Load.LoadOut();
     }
     private static Task Clear()
     {
@@ -55,7 +55,7 @@ public static class SceneManager
         var parent =
             Main.SceneContainer;
         _LoadTask = new TaskCompletionSource<bool>();
-        var scene = subMenu.Instantiate(); ;
+        var scene = subMenu.Instantiate();
         if (Menus.Count == 0)
         {
             Menus.Add(subMenu, null);
@@ -84,10 +84,9 @@ public static class SceneManager
         Menus.Remove(last.Key);
         if (last.Value == null)
         {
-            await Clear();
-            var parent =
-                Main.SceneContainer;
             await Load();
+            await Clear();
+            var parent = Main.SceneContainer;
             last.Key.Destory();
             await LoadEnd();
         }

@@ -60,6 +60,16 @@ public class CustomBuff : Buff
 public enum Timing
 {
     /// <summary>
+    /// 当卡牌进化时
+    /// 参数：[0] FighterCardModel 被进化的卡牌 [1] FighterCardModel 进化的卡牌
+    /// </summary>
+    WhenEvolve,
+    /// <summary>
+    /// 当卡牌进化时
+    /// 参数：[0] FighterCardModel 被融合的卡牌 [1] FighterCardModel 融合的卡牌
+    /// </summary>
+    WhenFuse,
+    /// <summary>
     /// 效果/类型被赋予卡牌时
     /// 参数：[0] VariableReason 赋予原因
     /// </summary>
@@ -211,7 +221,7 @@ public enum Timing
 
     /// <summary>
     /// 修改受到的伤害
-    /// 参数：[0] AtkStack 攻击上下文
+    /// 参数：[0] DamageAmount 伤害数值
     /// </summary>
     ModifyCardDamage,
 
@@ -245,7 +255,7 @@ public enum Timing
 
     /// <summary>
     /// 当卡牌变量被修改时
-    /// 参数：[0] string key，[1] object valueAfter，[2] object valueBefore
+    /// 参数：[0] string key，[1] object valueAfter，[2] object valueBefore [3] VariableReason 原因
     /// </summary>
     OnVariableChanged,
     /// <summary>

@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://5k3rijwy1coi"
+path="res://.godot/imported/skeleton.atlas-785537f6d399c5463f396e9fdb0dec34.spatlas"
+
+[deps]
+
+source_file="res://场景/加载花朵/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-785537f6d399c5463f396e9fdb0dec34.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

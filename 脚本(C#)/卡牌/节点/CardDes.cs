@@ -423,8 +423,10 @@ public partial class CardDes : Control
             cost.Text = $"{Model.Cost.Current}";
             GetNode<Sprite2D>("%花费数值").Texture = Model.CampCostIcon;
             GetNode<Label>("%名字").Text = Model.Title;
-            GetNode<Label>("%额外标签").Text = Model.ExDescription ?? "";
-            await SetDescription(Model.Description);
+            var exLabel = GetNode<RichTextLabel>("%额外标签");
+            exLabel.BbcodeEnabled = true;
+            await AppendWithIcons(exLabel, Model.ExDescription ?? "", convertLinks: true);
+            await SetDescription(Model.GetDescription());
             GetNode<RichTextLabel>("%故事标签").Text = Model.Flavor;
             if (Model.Cost.HasChanged)
             {
@@ -432,6 +434,10 @@ public partial class CardDes : Control
                     cost.Modulate = _colorBox.ColorB;
                 else
                     cost.Modulate = _colorBox.ColorC;
+            }
+            foreach (var node in GetNode<SubViewport>("%裁剪").GetChildren())
+            {
+                node.QueueFree();
             }
             if (Model.AnimationScenePath != null)
             {

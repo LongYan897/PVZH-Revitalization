@@ -11,11 +11,12 @@ namespace Scene;
 [GlobalClass]
 public partial class BackButton : TextureButton
 {
-    public static BackButton JoinScene()
+    public static BackButton JoinScene(bool hideMe)
     {
         var btn = Main.SceneContainer.GetNode<BackButton>("%返回按钮");
         btn.GlobalPosition = new Vector2(-112f, 1168.0f);
-        btn.JoinIn();
+        if (!hideMe)
+            btn.JoinIn();
         return btn;
     }
     private void JoinIn()

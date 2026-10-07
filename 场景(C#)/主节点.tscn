@@ -4,10 +4,8 @@
 [ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="2_d5m1c"]
 [ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="2_n74wj"]
 [ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="3_n74wj"]
-[ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="4_8ffxo"]
-[ext_resource type="Texture2D" uid="uid://cophm26o1o4e" path="res://素材/ui/界面ui/Badge_Event.png" id="6_7aet4"]
-[ext_resource type="Texture2D" uid="uid://w7edbn6x42ea" path="res://素材/ui/界面ui/按钮4.png" id="9_mvnmw"]
 [ext_resource type="PackedScene" uid="uid://b5x4veawhq8g4" path="res://场景(C#)/主界面按钮/僵尸任务.tscn" id="14_2lx20"]
+[ext_resource type="PackedScene" uid="uid://dy7pegrhba8bu" path="res://场景(C#)/主界面按钮/每日挑战.tscn" id="15_1cjfr"]
 [ext_resource type="PackedScene" uid="uid://b82k587le8ukv" path="res://场景(C#)/主界面按钮/对战.tscn" id="18_1pb50"]
 [ext_resource type="PackedScene" uid="uid://d4jtuyxkgf5da" path="res://场景(C#)/主界面按钮/植物任务.tscn" id="19_quj4d"]
 [ext_resource type="PackedScene" uid="uid://c0yfhr8tvx5fh" path="res://场景(C#)/加载.tscn" id="21_8ffxo"]
@@ -29,25 +27,6 @@ shader_parameter/texture_scaling = Vector2(1, 1)
 shader_parameter/texture_rotation = 0.0
 shader_parameter/tint_color = Color(0.13725491, 0.53333336, 0.6745098, 1)
 
-[sub_resource type="FontVariation" id="FontVariation_s3dxf"]
-base_font = ExtResource("4_8ffxo")
-variation_opentype = {
-2003265652: 500
-}
-variation_embolden = 0.1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_47gga"]
-bg_color = Color(0, 0, 0, 0.5568628)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.6431373)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
 [node name="MainController" type="Node" unique_id=2010804404]
 script = ExtResource("1_u0aj0")
 metadata/_custom_type_script = "uid://ccaq7lefsnojt"
@@ -68,65 +47,6 @@ Color = Color(0.13725491, 0.53333336, 0.6745098, 1)
 metadata/_custom_type_script = "uid://c4d6enygyoawb"
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
-
-[node name="今日挑战" type="TextureButton" parent="Scene/ButtomScene" unique_id=630912637]
-self_modulate = Color(0.99, 0.4488, 0.19799998, 1)
-offset_left = 155.0
-offset_top = 520.0
-offset_right = 566.0003
-offset_bottom = 616.0
-scale = Vector2(1.25, 1.25)
-pivot_offset_ratio = Vector2(0.5, 0.5)
-texture_normal = ExtResource("9_mvnmw")
-
-[node name="今日挑战" type="Label" parent="Scene/ButtomScene/今日挑战" unique_id=1528685314]
-self_modulate = Color(0.8819366, 0.8819366, 0.88193655, 1)
-layout_mode = 0
-offset_top = -23.425
-offset_right = 410.0
-offset_bottom = 71.152756
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 3
-theme_override_constants/shadow_outline_size = 1
-theme_override_fonts/font = SubResource("FontVariation_s3dxf")
-theme_override_font_sizes/font_size = 22
-text = "今日挑战!"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="提前获得" type="Label" parent="Scene/ButtomScene/今日挑战" unique_id=713950106]
-layout_mode = 0
-offset_top = 8.48
-offset_right = 410.0
-offset_bottom = 103.057755
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 3
-theme_override_constants/shadow_outline_size = 3
-theme_override_fonts/font = SubResource("FontVariation_s3dxf")
-theme_override_font_sizes/font_size = 32
-text = "提前获得"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="提示框" type="Panel" parent="Scene/ButtomScene/今日挑战" unique_id=1112567715]
-layout_mode = 0
-offset_left = 334.7
-offset_top = 15.199979
-offset_right = 391.50003
-offset_bottom = 80.79999
-pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/panel = SubResource("StyleBoxFlat_47gga")
-
-[node name="左边奖励图片" type="Sprite2D" parent="Scene/ButtomScene/今日挑战" unique_id=1164454666]
-position = Vector2(61.10002, 48.000004)
-scale = Vector2(0.4, 0.4)
-texture = ExtResource("6_7aet4")
 
 [node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
 offset_left = 360.0
@@ -186,6 +106,15 @@ offset_left = 476.0
 offset_top = 240.0
 offset_right = -244.0
 offset_bottom = -1040.0
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="每日挑战" parent="Scene/ButtomScene" unique_id=687317841 instance=ExtResource("15_1cjfr")]
+offset_left = 360.0
+offset_top = 569.0
+offset_right = -360.0
+offset_bottom = -711.0
+scale = Vector2(1.25, 1.25)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 

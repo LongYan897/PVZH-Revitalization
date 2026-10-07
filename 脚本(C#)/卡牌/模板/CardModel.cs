@@ -143,6 +143,37 @@ public class CardModel
             Fighter.GetNode(fighter)?.CardTryFresh(this);
         CardDes.instance?.CardTryFresh(this);
     }
+    /// <summary>
+    /// 获取卡牌处理后的描述
+    /// </summary>
+    public string GetDescription()
+    {
+        string v = "";
+        if (this is FighterCardModel fighter)
+        {
+            if (fighter.CardTag.HasFlag(CardTag.Amphibious))
+            {
+                v += "_两栖_";
+            }
+            if (fighter.AtkType.Current.ExLabel != null)
+            {
+                v += fighter.AtkType.Current.ExLabel;
+            }
+            if (fighter.HpType.Current.ExLabel != null)
+            {
+                v += fighter.HpType.Current.ExLabel;
+            }
+            if (fighter.CardTag.HasFlag(CardTag.Coop))
+            {
+                v += "_组队_";
+            }
+            if (!string.IsNullOrEmpty(v))
+            {
+                v += "\n";
+            }
+        }
+        return v + Description;
+    }
     public async Task DestroyMe()
     {
         await Destroy();
@@ -218,7 +249,17 @@ public class CardModel
         card.ParseDescriptionVariables(cardString.Description);
         card.Icon = GD.Load<PackedScene>(cardString.IconPath);
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
+        _ = card.AddBuff(new LabelBuff(),VariableReason.None);
         return (T)card.LoadData(cardString);
+    }
+    private class LabelBuff : Buff
+    {
+        public override bool IsTransferable => false;
+        public override Timing[] Timings => [Timing.OnVariableChanged];
+        public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
+        {
+            
+        }
     }
     private async Task Destroy()
     {
@@ -440,6 +481,14 @@ public class CardModel
         {
             if (buff.Timings.Contains(timing))
                 await buff.OnTiming(timing, this,parameters);
+        }
+        if (this is FighterCardModel fighter)
+        {
+            if (fighter.HpType.Current.Buff != null)
+                await fighter.HpType.Current.Buff.OnTiming(timing, this, parameters);
+
+            if (fighter.AtkType.Current.Buff != null)
+                await fighter.AtkType.Current.Buff.OnTiming(timing, this, parameters);
         }
     }
 

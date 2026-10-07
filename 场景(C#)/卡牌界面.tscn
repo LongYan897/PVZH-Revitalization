@@ -22,6 +22,9 @@ base_font = ExtResource("6_icp5t")
 [sub_resource type="FontVariation" id="FontVariation_voqjy"]
 base_font = ExtResource("6_icp5t")
 
+[sub_resource type="FontVariation" id="FontVariation_ts65j"]
+base_font = ExtResource("6_icp5t")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_setff"]
 shader = ExtResource("10_setff")
 shader_parameter/circle_center = Vector2(0.5, 0.5)
@@ -171,22 +174,25 @@ text = "XX"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="额外标签" type="Label" parent="." unique_id=949679412]
+[node name="额外标签" type="RichTextLabel" parent="." unique_id=437723030]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = -263.0
 offset_top = 64.0
 offset_right = 262.0
 offset_bottom = 134.0
-theme_override_colors/font_color = Color(0.51, 0.68149996, 1, 1)
-theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
-theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
+theme_override_colors/default_color = Color(0.50980395, 0.68235296, 1, 1)
+theme_override_colors/font_outline_color = Color(0.11372549, 0.11372549, 0.11372549, 1)
+theme_override_colors/font_shadow_color = Color(0.15294118, 0.15294118, 0.15294118, 1)
+theme_override_constants/shadow_outline_size = 2
 theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 6
-theme_override_fonts/font = SubResource("FontVariation_voqjy")
-theme_override_font_sizes/font_size = 24
+theme_override_fonts/normal_font = SubResource("FontVariation_ts65j")
+theme_override_font_sizes/normal_font_size = 24
 text = "由变形器变形而来"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 

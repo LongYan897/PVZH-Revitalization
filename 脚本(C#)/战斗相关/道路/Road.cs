@@ -123,7 +123,9 @@ public class Road
     public async Task AddFighter(CardModel cardModel,Fighter fighter)
     {
         await cardModel.FireTiming(Timing.OnFighterEnter, this, fighter.Model);
+        await CardCmd.TimingOnCards(cardModel, Timing.OnFighterEnter, this, fighter);
         fighters.Add(fighter);
+        await cardModel.FireTiming(Timing.AfterRoadChanged, this);
         await CardCmd.TimingOnCards(cardModel,Timing.AfterRoadChanged,this);
     }
     /// <summary>

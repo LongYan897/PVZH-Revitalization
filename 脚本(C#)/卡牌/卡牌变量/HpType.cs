@@ -26,9 +26,13 @@ public class HpType
     /// </summary>
     public virtual string IconSkelPath { get; }
     /// <summary>
+    /// 生命额外标签(显示在卡牌的描述上,支持所有CardString描述的语法)
+    /// </summary>
+    public virtual string ExLabel { get; } = null;
+    /// <summary>
     /// 血量类型给予时的Buff
     /// </summary>
-    public Buff Buff { get; init; }
+    public Buff Buff { get; init; } = null;
     /// <summary>
     /// 附加到战斗卡牌时用于增加过滤条件
     /// 比如锦囊免疫等效果
