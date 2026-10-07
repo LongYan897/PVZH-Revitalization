@@ -24,9 +24,9 @@ public class FighterCardModel : CardModel
     /// 隐藏单位的数值,并销毁单位
     /// </summary>
     /// <param name="resistIcon">是否保留单位的最后一帧图像</param>
-    public void Invisible(bool resistIcon)
+    public void Overlay(FighterCardModel fighter,bool resistIcon)
     {
-        Fighter.GetNode(this);
+        Fighter.GetNode(this).Overlay(fighter,resistIcon);
     }
     protected override CardModel LoadData(CardString cardString)
     {
@@ -214,15 +214,6 @@ public class FighterCardModel : CardModel
     /// <param name="cardModel">要把这张卡当作目标的卡牌</param>
     /// <returns></returns>
     protected virtual bool CanTargetedBy(CardModel cardModel) { return true; }
-
-    /// <summary>
-    /// 是否能作为其他卡牌的融合对象
-    /// </summary>
-    public virtual bool CanFusion(FighterCardModel cardModel) { return false; }
-    /// <summary>
-    /// 是否能把其他卡牌当作进化的对象
-    /// </summary>
-    public virtual bool CanEvolution(FighterCardModel cardModel) {  return false; }
     /// <summary>
     /// 是否能被当作目标
     /// </summary>
@@ -232,7 +223,7 @@ public class FighterCardModel : CardModel
     {
         bool hpbol = HpType.Current.ExtraFilter(cardModel);
         bool fusOrEvo = true;
-        if (cardModel is FighterCardModel fighter)
+        if (cardModel is FighterCardModel fighter && (IsFusion || fighter.IsEvolution))
         {
             fusOrEvo = CanFusion(fighter) || fighter.CanEvolution(this);
             fusOrEvo &= fighter.Camp == Camp;
@@ -351,6 +342,7 @@ public class FighterCardModel : CardModel
         }
         else if (target.CanBeFighter(out FighterCardModel fighter))
         {
+
             if (fighter.CanFusion(this))
             {
                 await CardCmd.Fuse(this, fighter);
@@ -362,6 +354,14 @@ public class FighterCardModel : CardModel
 
             await CardCmd.FighterGenerate(this, fighter.Road, fighter.Location);
 
+            if (fighter.CanFusion(this))
+            {
+                Overlay(fighter,true);
+            }
+            if (CanEvolution(fighter))
+            {
+                Overlay(fighter, false);
+            }
             return;
         }
     }
@@ -374,4 +374,21 @@ public class FighterCardModel : CardModel
     /// 进化逻辑。
     /// </summary>
     public virtual Task Evolve(FighterCardModel fighter) => Task.CompletedTask;
+
+    /// <summary>
+    /// 是否能作为其他卡牌的融合对象
+    /// </summary>
+    protected virtual bool CanFusion(FighterCardModel cardModel) { return false; }
+    /// <summary>
+    /// 是否能把其他卡牌当作进化的对象
+    /// </summary>
+    protected virtual bool CanEvolution(FighterCardModel cardModel) { return false; }
+    /// <summary>
+    /// 是否是含融合效果的卡牌
+    /// </summary>
+    public virtual bool IsFusion { get; } = false;
+    /// <summary>
+    /// 是否是含进化效果的卡牌
+    /// </summary>
+    public virtual bool IsEvolution { get; set; } = false;
 }

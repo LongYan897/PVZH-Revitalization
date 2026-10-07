@@ -9,7 +9,8 @@ namespace Card.Scientist;
 
 public class CardboardBoat : FighterCardModel
 {
-    public override bool CanFusion(FighterCardModel cardModel)
+    public override bool IsFusion => true;
+    protected override bool CanFusion(FighterCardModel cardModel)
     {
         return true;
     }

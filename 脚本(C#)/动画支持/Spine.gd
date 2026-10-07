@@ -46,3 +46,10 @@ func pause_animation(track:int) -> void:
 	var entry = state.get_current(track)
 	if entry:
 		entry.set_time_scale(0.0)
+
+func pause_all_tracks() -> void:
+	var state = get_animation_state()
+	for i in state.get_num_tracks():
+		var entry = state.get_track(i)
+		if entry:
+			entry.set_time_scale(0.0)

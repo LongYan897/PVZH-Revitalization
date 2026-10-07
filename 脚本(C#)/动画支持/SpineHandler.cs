@@ -289,4 +289,12 @@ public partial class SpineHandler : Node2D
     {
         SpineSprite.Call("pause_animation", track);
     }
+    /// <summary>
+    /// 停止动画
+    /// </summary>
+    /// <param name="track"></param>
+    public void PauseAnimation()
+    {
+        SpineSprite.Call("pause_all_tracks");
+    }
 }

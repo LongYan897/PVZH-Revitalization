@@ -59,7 +59,11 @@ public partial class Fighter : Control, ITarget, IAttackable
                 Camp.Zombie => t.Camp == Camp.Plant,
                 _ => false
             };
-            if (!t.FriendTarget)
+            bool isFusionHost = t is FighterCardModel && Model is FighterCardModel fm && fm.IsFusion;
+            bool isEvolver = t is FighterCardModel tf && tf.IsEvolution;
+            bool fusOrEvoQuery = isFusionHost || isEvolver;
+
+            if (!t.FriendTarget && !fusOrEvoQuery)
                 b = b && camp;
             return b;
         };
@@ -305,6 +309,8 @@ public partial class Fighter : Control, ITarget, IAttackable
         fighter.Road = road;
         TargetRegistry.Register(fighter);
         await road.AddFighter(model,fighter);
+        fighter.Visible = true;
+        fighter.ToVisible();
         fighter.Fresh();
         model.Road = road;
         model.Location = index;
@@ -478,9 +484,114 @@ public partial class Fighter : Control, ITarget, IAttackable
     }
 
     private bool isFirstPlace = false;
+    private bool isInvisible = false;
+    private List<Fighter> fighters = new();
+    public void Invisible(bool resistIcon)
+    {
+        if (isInvisible) return;
+        isInvisible = true;
+        foreach (var node in GetChildren())
+        {
+            if (node is Control control)
+            {
+                control.Visible = false;
+                control.MouseFilter = MouseFilterEnum.Ignore;
+            }
+            if (node is Node2D n2)
+            {
+                n2.Visible = false;
+            }
+        }
 
+        KillOverlayTween();
+        if (resistIcon)
+        {
+            GetNode<Node2D>("%单位场景").Visible = true;
+            GetNode<Node2D>("%土坑").Visible = false;
+            GetNode<Node2D>("%特效").Visible = false;
+            GetNode<Node2D>("%特效2").Visible = false;
+            GetNode<SpineHandler>("%动画").Visible = true;
+            GetNode<SpineHandler>("%动画").PauseAnimation();
+        }
+        foreach (var f in fighters)
+        {
+            f.Invisible(true);
+        }
+    }
+    public void ToVisible()
+    {
+        if (!isInvisible) return;
+        isInvisible =false;
+        foreach (var node in GetChildren())
+        {
+            if (node is Control control)
+            {
+                control.Visible = true;
+                control.MouseFilter = MouseFilterEnum.Ignore;
+            }
+            if (node is Node2D n2)
+            {
+                n2.Visible = true;
+            }
+        }
+        GetNode<Control>("%碰撞").MouseFilter = MouseFilterEnum.Stop;
+    }
+    private Tween _overlayTween;
+    private Tween _overlayTween2;
+    private Tween _overlayTween3;
+    private Tween _overlayTween4;
+    private void KillOverlayTween()
+    {
+
+        if (_overlayTween != null && _overlayTween.IsValid())
+        {
+            _overlayTween.Kill();
+        }
+        if (_overlayTween2 != null && _overlayTween2.IsValid())
+        {
+            _overlayTween2.Kill();
+        }
+        if (_overlayTween3 != null && _overlayTween3.IsValid())
+        {
+            _overlayTween3.Kill();
+        }
+        if (_overlayTween4 != null && _overlayTween4.IsValid())
+        {
+            _overlayTween4.Kill();
+        }
+    }
+    public void Overlay(FighterCardModel fighter,bool resistIcon)
+    {
+        KillOverlayTween();
+        var f = GetNode(fighter);
+        f.Invisible(resistIcon);
+        fighters.Add(f);
+        var cfx = GetNode<Node2D>("%特效");
+        cfx.Visible = true;
+        Tween tween = CreateTween();
+        tween.TweenProperty(cfx,"scale",new Vector2(),0);
+        tween.TweenProperty(cfx, "scale", new Vector2(4f,4f), 0.2f).SetEase(Tween.EaseType.Out);
+        _overlayTween = CreateTween().BindNode(cfx).SetLoops(-1);
+        _overlayTween.TweenProperty(cfx, "scale", new Vector2(3.7f, 3.7f), 2f).SetEase(Tween.EaseType.In);
+        _overlayTween.TweenProperty(cfx, "scale", new Vector2(4.3f, 4.3f), 2f).SetEase(Tween.EaseType.Out);
+        _overlayTween2 = CreateTween().BindNode(cfx).SetLoops(-1);
+        _overlayTween2.TweenProperty(cfx, "rotation", -2*Math.PI, 16f).SetEase(Tween.EaseType.OutIn);
+        _overlayTween2.TweenProperty(cfx, "rotation", 0, 16f).SetEase(Tween.EaseType.OutIn);
+        var cfx2 = GetNode<Node2D>("%特效2");
+        cfx2.Visible = true;
+        Tween tween2 = CreateTween();
+        tween2.TweenProperty(cfx2, "scale", new Vector2(), 0);
+        tween2.TweenProperty(cfx2, "scale", new Vector2(3f, 3f), 0.2f).SetEase(Tween.EaseType.Out);
+        _overlayTween3 = CreateTween().BindNode(cfx2).SetLoops(-1);
+        _overlayTween3.TweenProperty(cfx2, "scale", new Vector2(3.3f, 3.3f), 2f).SetEase(Tween.EaseType.In);
+        _overlayTween3.TweenProperty(cfx2, "scale", new Vector2(2.7f, 2.7f), 2f).SetEase(Tween.EaseType.Out);
+        _overlayTween4 = CreateTween().BindNode(cfx2).SetLoops(-1);
+        _overlayTween4.TweenProperty(cfx2, "rotation", 0, 16f).SetEase(Tween.EaseType.OutIn);
+        _overlayTween4.TweenProperty(cfx2, "rotation", 2*Math.PI, 16f).SetEase(Tween.EaseType.OutIn);
+    }
     private void Fresh()
     {
+        if (isInvisible) return;
         if (Model == null) return;
 
         if (isFirstPlace)
@@ -682,6 +793,13 @@ public partial class Fighter : Control, ITarget, IAttackable
         GetNode<SpineHandler>("%土坑").ClearTracks();
         TargetRegistry.Unregister(this);
         Instances[this] = null;
+
+        foreach (var f in fighters.ToList())
+        {
+            fighters.Remove(f);
+            f.Clear();
+            f.Visible = false;
+        }
     }
 }
 
