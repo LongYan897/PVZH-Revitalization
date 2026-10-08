@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dopuc0tyuav36" path="res://素材/粒子特效/圆形渐变粒子.png" id="1_tquox"]
 [ext_resource type="Script" uid="uid://doml84h3u12nd" path="res://脚本(C#)/卡牌/节点/NodeCard.cs" id="1_yam0n"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="2_5lf5m"]
 [ext_resource type="Texture2D" uid="uid://b8cjw4esrxadc" path="res://素材/牌背、卡面/背景底版1.png" id="2_a5s0q"]
 [ext_resource type="Texture2D" uid="uid://c5aq4onpg077v" path="res://素材/牌背、卡面/SEEDPACKET_BACK.png" id="2_md00x"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_fsyp8"]
@@ -11,6 +12,13 @@
 [ext_resource type="Texture2D" uid="uid://84nyu8lu0ied" path="res://素材/牌背、卡面/cardback_plants.png" id="12_5lf5m"]
 [ext_resource type="Texture2D" uid="uid://5tg3kror454m" path="res://素材(C#)/文本图片/inhnd_brains.png" id="12_ia5uq"]
 [ext_resource type="Texture2D" uid="uid://nvma3q7pcegf" path="res://素材/抽卡特效/refresh_card_spin.png" id="13_t66oa"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t66oa"]
+bg_color = Color(0, 0, 0, 0.41960785)
+corner_radius_top_right = 32
+
+[sub_resource type="FontVariation" id="FontVariation_2sttn"]
+base_font = ExtResource("2_5lf5m")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5lf5m"]
 bg_color = Color(0.9, 0.9, 0.9, 1)
@@ -89,7 +97,29 @@ metadata/_edit_horizontal_guides_ = [-83.0]
 
 [node name="非战斗" type="Node2D" parent="." unique_id=6007071]
 unique_name_in_owner = true
+
+[node name="卡牌数量" type="Panel" parent="非战斗" unique_id=1907090524]
+unique_name_in_owner = true
 visible = false
+z_index = 15
+offset_left = 6.0
+offset_top = 103.0
+offset_right = 86.0
+offset_bottom = 183.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_t66oa")
+
+[node name="数量" type="Label" parent="非战斗/卡牌数量" unique_id=1708795389]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 3.0
+offset_top = -5.0
+offset_right = 75.0
+offset_bottom = 85.0
+theme_override_fonts/font = SubResource("FontVariation_2sttn")
+theme_override_font_sizes/font_size = 56
+text = "x1"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="信息背景" type="Panel" parent="非战斗" unique_id=1871479733]
 unique_name_in_owner = true

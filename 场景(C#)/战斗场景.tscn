@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dhvt0s7ggnskd" path="res://素材/地图/迪斯科/BGDisco_bldg_right.png" id="6_y1gsq"]
 [ext_resource type="PackedScene" uid="uid://b63bhak348l4m" path="res://场景(C#)/道路层.tscn" id="7_21f3a"]
 [ext_resource type="Texture2D" uid="uid://ckxhau2bavsol" path="res://素材/地图/迪斯科/迪斯科底部.png" id="7_pqs4j"]
+[ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="9_p8b7g"]
 
 [node name="战斗场景" type="Node2D" unique_id=1988450632]
 script = ExtResource("1_ma3su")
@@ -24,26 +25,49 @@ position = Vector2(360, 301)
 texture = ExtResource("3_41p5g")
 
 [node name="主机" type="Sprite2D" parent="." unique_id=1554391998]
-z_index = -8
+z_index = 6
 position = Vector2(360, 850)
 texture = ExtResource("4_f3g53")
 
 [node name="左边" type="Sprite2D" parent="." unique_id=1919804875]
-z_index = -8
+z_index = 6
 position = Vector2(80, 535)
 texture = ExtResource("5_cu1cr")
 
 [node name="右边" type="Sprite2D" parent="." unique_id=80064574]
-z_index = -8
+z_index = 6
 position = Vector2(630, 541)
 texture = ExtResource("6_y1gsq")
 
 [node name="底部" type="Sprite2D" parent="." unique_id=1587575397]
-z_index = 10
+z_index = 12
 position = Vector2(360, 1038)
 texture = ExtResource("7_pqs4j")
 
 [node name="道路层" parent="." unique_id=1692843012 instance=ExtResource("7_21f3a")]
+z_index = 2
 position = Vector2(0, -39)
+
+[node name="阶段" type="Node2D" parent="." unique_id=1016573463]
+unique_name_in_owner = true
+z_index = 24
+position = Vector2(580, 865)
+scale = Vector2(0.9, 0.9)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="动画" parent="阶段" unique_id=922182681 instance=ExtResource("9_p8b7g")]
+unique_name_in_owner = true
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Button" type="Button" parent="阶段" unique_id=421639317]
+unique_name_in_owner = true
+z_index = 24
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+flat = true
 
 [editable path="道路层"]

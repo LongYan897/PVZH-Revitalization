@@ -39,6 +39,42 @@ viewport_path = NodePath("单位容器/裁剪")
 base_font = ExtResource("11_fad38")
 variation_transform = Transform2D(1, 0.4, 0, 1, 0, 0)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fad38"]
+bg_color = Color(0.21839999, 0.32928002, 0.42, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_top = 6.0
+expand_margin_right = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_setff"]
+bg_color = Color(0, 0, 0, 0.8509804)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+expand_margin_left = 6.0
+expand_margin_top = 6.0
+expand_margin_right = 6.0
+expand_margin_bottom = 6.0
+
+[sub_resource type="FontVariation" id="FontVariation_setff"]
+base_font = ExtResource("8_m1m2k")
+
 [node name="卡牌界面" type="Control" unique_id=888145101]
 layout_mode = 3
 anchors_preset = 8
@@ -399,3 +435,36 @@ text = "什么都没有
 使用[img=36]res://素材(C#)/文本图片/inhnd_brains.png[/img]而非"
 fit_content = true
 horizontal_alignment = 1
+
+[node name="卡牌数量容器" type="Node2D" parent="." unique_id=275295506]
+unique_name_in_owner = true
+visible = false
+
+[node name="卡牌数量背景" type="Panel" parent="卡牌数量容器" unique_id=459530704]
+unique_name_in_owner = true
+offset_left = 178.0
+offset_top = 159.0
+offset_right = 257.0
+offset_bottom = 238.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_fad38")
+
+[node name="卡牌数量" type="Panel" parent="卡牌数量容器" unique_id=157267683]
+unique_name_in_owner = true
+offset_left = 181.0
+offset_top = 162.0
+offset_right = 254.0
+offset_bottom = 235.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_setff")
+
+[node name="数量" type="Label" parent="卡牌数量容器/卡牌数量" unique_id=495582248]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 75.0
+offset_bottom = 75.0
+theme_override_fonts/font = SubResource("FontVariation_setff")
+theme_override_font_sizes/font_size = 48
+text = "x4"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -192,8 +192,8 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted = CreateTween().BindNode(line).SetLoops(-1);
         line.Modulate = _colortgBox.Default;
         line.Visible = true;
-        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(1.02f, 1.02f), 0.7f);
-        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(0.98f, 0.98f), 0.7f);
+        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(1.01f, 1.01f), 0.7f);
+        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(0.99f, 0.99f), 0.7f);
     }
     private void CallGridTargeted()
     {
