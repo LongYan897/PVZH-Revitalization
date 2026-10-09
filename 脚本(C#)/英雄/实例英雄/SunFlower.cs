@@ -9,4 +9,5 @@ namespace Hero;
 
 public partial class SunFlower : HeroModel
 {
+    public SunFlower() : base("") { }
 }

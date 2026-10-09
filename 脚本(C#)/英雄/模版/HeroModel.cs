@@ -12,9 +12,30 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Hero.Model;
-public partial class HeroModel : Control
+public partial class HeroModel
 {
+    protected HeroModel(string animPath) => AnimPath = animPath;
+    /// <summary>
+    /// 通过卡牌实例创建英雄实例
+    /// </summary>
+    /// <param name="animPath">动画路径</param>
+    /// <param name="superPower">超能力卡牌实例</param>
+    protected HeroModel(string animPath, List<CardModel> superPower)
+    {
+        AnimPath = animPath;
+        SuperPower = superPower;
+    }
+    /// <summary>
+    /// 通过超能力卡牌类列表直接创建实例
+    /// </summary>
+    /// <param name="animPath">动画路径</param>
+    /// <param name="superPower">超能力卡牌的类</param>
+    protected HeroModel(string animPath, List<Type> superPower)
+    {
+
+    }
     public List<CardModel> SuperPower { get; private set; }
+    public string AnimPath;
     /// <summary>
     /// 通过派系和阵营查找所有相关英雄的类
     /// </summary>
@@ -34,13 +55,5 @@ public partial class HeroModel : Control
             }
         }
         return heroModels;
-    }
-    protected async Task PlayAnimation(string animName,bool loop = false)
-    {
-        var node = GetNode<SpineHandler>("%动画");
-        if (node != null)
-        {
-            node.SetAnimation(0,animName,loop);
-        }
     }
 }

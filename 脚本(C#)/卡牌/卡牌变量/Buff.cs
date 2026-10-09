@@ -269,4 +269,46 @@ public enum Timing
     /// 参数：[0] Road 该线，[1] FighterCardModel 离场的单位
     /// </summary>
     OnFighterExit,
+    /// <summary>
+    /// 英雄变量改变时
+    /// 参数：[0] Value 更改的数值, 
+    /// [1] VariableReason 更改的原因 
+    /// [2] CardModel 造成影响的卡牌 
+    /// [3] HeroModel 英雄对象
+    /// [4] VariableType 英雄变量类型 
+    /// [5] ImpactType 影响的好坏
+    /// </summary>
+    OnHeroChanged,
+    /// <summary>
+    /// 英雄变量即将改变时
+    /// 参数：[0] Value 更改的数值, 
+    /// [1] VariableReason 更改的原因 
+    /// [2] CardModel 造成影响的卡牌 
+    /// [3] HeroModel 英雄对象
+    /// [4] VariableType 英雄变量类型 
+    /// [5] ImpactType 影响的好坏
+    /// </summary>
+    BeforeHeroChanged,
+    /// <summary>
+    /// 英雄变量改变后
+    /// 参数：[0] Value 更改的数值, 
+    /// [1] VariableReason 更改的原因 
+    /// [2] CardModel 造成影响的卡牌 
+    /// [3] HeroModel 英雄对象
+    /// [4] VariableType 英雄变量类型 
+    /// [5] ImpactType 影响的好坏
+    /// </summary>
+    AfterHeroChanged,
+    /// <summary>
+    /// 英雄变量改变时
+    /// 参数：
+    /// [0] VariableReason 更改的原因 
+    /// [1] CardModel 造成影响的卡牌 
+    /// [2] HeroModel 英雄对象
+    /// [3] VariableType 英雄变量类型 
+    /// [4] ImpactType 影响的好坏
+    /// [5] HeroVariable 预计的在调用OnHeroChanged时的变量
+    /// </summary>
+    ModifyHeroChanged
+
 }

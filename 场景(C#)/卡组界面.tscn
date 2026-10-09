@@ -125,13 +125,12 @@ metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 layer = 0
 
 [node name="顶部遮挡" type="Sprite2D" parent="Fore" unique_id=392940115]
-z_index = 30
+z_index = 1
 position = Vector2(361.5, 150)
 scale = Vector2(5.389706, 1.46875)
 texture = ExtResource("3_loyiy")
 
 [node name="顶部遮挡1" type="Sprite2D" parent="Fore" unique_id=944711103]
-z_index = 29
 position = Vector2(359.75, 67.875)
 scale = Vector2(0.35961914, 0.07043456)
 texture = ExtResource("4_5hsp2")
@@ -151,7 +150,7 @@ offset_bottom = -363.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.32, 0.32)
-pivot_offset = Vector2(122, 122)
+pivot_offset = Vector2(127.5, 122.5)
 texture_normal = ExtResource("7_vq737")
 script = ExtResource("6_mem38")
 metadata/_custom_type_script = "uid://bhqnh1uogwt06"
@@ -169,7 +168,7 @@ offset_top = 27.0
 offset_right = 272.00003
 offset_bottom = 277.0
 scale = Vector2(0.32, 0.32)
-pivot_offset = Vector2(122, 122)
+pivot_offset = Vector2(127.5, 122.5)
 texture_normal = ExtResource("7_vq737")
 script = ExtResource("6_mem38")
 metadata/_custom_type_script = "uid://bhqnh1uogwt06"
