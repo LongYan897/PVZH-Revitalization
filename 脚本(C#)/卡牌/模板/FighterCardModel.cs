@@ -313,12 +313,15 @@ public class FighterCardModel : CardModel
     public async Task GainHp(int amount, Variable.VariableReason reason)
     {
         Variable<bool> stop = new("Stop",false);
-        await CardCmd.TimingOnCards(null,Timing.TryStopHeal,)
+        await CardCmd.TimingOnCards(null, Timing.TryStopGainMaxHp, stop,this);
         if (stop.Current) return;
         Variable<int> maxHp = new("MaxHp",amount);
         Variable<int> hp = new("Hp", amount);
         await CardCmd.TimingOnCards(null,Timing.ModifyGainMaxHp,maxHp,this);
         await MaxHp.Gain(maxHp.Current,reason);
+        Variable<bool> stop2 = new("Stop2", false);
+        await CardCmd.TimingOnCards(null, Timing.TryStopHeal, stop2, this);
+        if (stop2.Current) return;
         await CardCmd.TimingOnCards(null, Timing.ModifyHeal, hp, this);
         await Hp.Gain(hp.Current, reason);
     }
@@ -331,7 +334,7 @@ public class FighterCardModel : CardModel
     public async Task Heal(int amount, Variable.VariableReason reason)
     {
         Variable<bool> stop = new("Stop", false);
-
+        await CardCmd.TimingOnCards(null, Timing.TryStopHeal, stop, this);
         if (stop.Current) return;
         int cap = MaxHp.Current;
         if (Hp.Current + amount > cap)

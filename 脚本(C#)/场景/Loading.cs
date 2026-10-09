@@ -19,22 +19,22 @@ public partial class Loading : Node2D
         _spine = GetNode<SpineHandler>("动画");
         _spine.LoadSkeletonData("res://数据资源/杂项/加载动画.tres");
     }
-    public void LoadIn()
+    public async Task LoadIn()
     {
         Visible = true;
         Random random = new();
-        _spine.SetAnimation(0,random.Next(0,2) switch
+        await _spine.SetAnimationTask(0, random.Next(0, 2) switch
         {
             0 => "loading",
             1 => "loading_behind",
             _ => null
-        },false);
+        }, false);
     }
     public void LoadOut()
     {
         Visible = false;
     }
-    public override void _Process(double delta)
+    public override async void _Process(double delta)
     {
         var str = "";
         for (int i = 0; i < potAmount; i++)

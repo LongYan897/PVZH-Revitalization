@@ -70,4 +70,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 flat = true
 
+[node name="Node2D" type="Node2D" parent="." unique_id=869147453]
+
 [editable path="道路层"]

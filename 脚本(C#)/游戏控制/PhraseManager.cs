@@ -107,7 +107,7 @@ public static class PhraseManager
         {
             Phrase.Plant => "plantMovePlantTurn",
             Phrase.Trick => "plantMovePlanTurn",
-            Phrase.Fight => "zombieMoveAttackTurn",
+            Phrase.Fight => "plantMoveAttackTurn",
             Phrase.Zombie => "plantBackCardTurn"
         });
         await CardCmd.TimingOnCards(null, Timing.BeforePhraseStart, Phrase);

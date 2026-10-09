@@ -57,7 +57,6 @@ expand_mode = 1
 
 [node name="环境高亮" type="Sprite2D" parent="." unique_id=381365032]
 unique_name_in_owner = true
-visible = false
 modulate = Color(0.46666667, 0.81960785, 0.54901963, 1)
 z_index = 12
 position = Vector2(0, -36.499992)

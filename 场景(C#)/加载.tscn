@@ -9,6 +9,7 @@ script = ExtResource("1_el382")
 metadata/_custom_type_script = "uid://4c4i8ptdqmhi"
 
 [node name="动画" parent="." unique_id=922182681 instance=ExtResource("2_el382")]
+z_index = 25
 position = Vector2(594, 1039)
 scale = Vector2(0.6, 0.6)
 
