@@ -58,7 +58,7 @@ expand_mode = 1
 [node name="环境高亮" type="Sprite2D" parent="." unique_id=381365032]
 unique_name_in_owner = true
 modulate = Color(0.46666667, 0.81960785, 0.54901963, 1)
-z_index = 12
+z_index = 24
 position = Vector2(0, -36.499992)
 scale = Vector2(0.33, 0.35394323)
 texture = ExtResource("3_x76yt")
