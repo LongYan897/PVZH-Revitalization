@@ -9,18 +9,19 @@ script = ExtResource("1_el382")
 metadata/_custom_type_script = "uid://4c4i8ptdqmhi"
 
 [node name="动画" parent="." unique_id=922182681 instance=ExtResource("2_el382")]
-position = Vector2(416, 917)
-scale = Vector2(0.8, 0.8)
+z_index = 25
+position = Vector2(594, 1039)
+scale = Vector2(0.6, 0.6)
 
 [node name="背景" type="Polygon2D" parent="." unique_id=1300482017]
 color = Color(0, 0, 0, 1)
 polygon = PackedVector2Array(-376, -257, -385, 1490, 1152, 1496, 1145, -252)
 
 [node name="Label" type="Label" parent="." unique_id=1361170369]
-offset_left = 302.0
-offset_top = 1176.0
-offset_right = 576.0
-offset_bottom = 1287.0
+offset_left = 480.0
+offset_top = 1215.0
+offset_right = 754.0
+offset_bottom = 1326.0
 theme_override_fonts/font = ExtResource("2_uagl4")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 56
 text = "加载中..."

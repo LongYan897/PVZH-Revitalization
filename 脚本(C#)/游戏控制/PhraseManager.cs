@@ -1,8 +1,12 @@
 using Battle;
+using Card;
+using Card.Cmd;
 using Godot;
 using Logger;
+using Spine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Phrases;
 
@@ -82,5 +86,69 @@ public static class PhraseManager
             return null;
         }
         return Roads.First(r => r.Index == Index);
+    }
+    /// <summary>
+    /// 下一个阶段
+    /// </summary>
+    /// <returns></returns>
+    public static async Task NextPhrase()
+    {
+        await CardCmd.TimingOnCards(null, Timing.BeforePhraseEnd, Phrase);
+        await CardCmd.TimingOnCards(null, Timing.AfterPhraseEnd, Phrase);
+        if (((int)Phrase) >= 4)
+        {
+            Phrase = (Phrase)1;
+        }
+        else
+        {
+            Phrase += 1;
+        }
+        await spine.SetAnimationTask(0, Phrase switch
+        {
+            Phrase.Plant => "plantMovePlantTurn",
+            Phrase.Trick => "plantMovePlanTurn",
+            Phrase.Fight => "plantMoveAttackTurn",
+            Phrase.Zombie => "plantBackCardTurn"
+        });
+        await CardCmd.TimingOnCards(null, Timing.BeforePhraseStart, Phrase);
+        if (Phrase == Phrase.Fight)
+        {
+            await LinesBattle();
+        }
+        await CardCmd.TimingOnCards(null, Timing.AfterPhraseStart, Phrase);
+        if (Phrase == Phrase.Fight)
+        {
+            await NextPhrase();
+        }
+    }
+    private static async void PressedNextPhrase(Button button)
+    {
+        button.MouseFilter = Control.MouseFilterEnum.Ignore;
+        if (Phrase == Phrase.Fight)
+            return;
+        await NextPhrase();
+        button.MouseFilter = Control.MouseFilterEnum.Stop;
+    }
+    /// <summary>
+    /// 绑定阶段动画
+    /// </summary>
+    /// <param name="spineHandler"></param>
+    public static void SetUp(Button button,SpineHandler spineHandler)
+    {
+        spine = spineHandler;
+        spine.SetAnimation(0,"zombieStartZombieTurn",false);
+        button.Pressed += () => PressedNextPhrase(button);
+    }
+    private static SpineHandler spine;
+    /// <summary>
+    /// 开始战斗
+    /// </summary>
+    /// <returns></returns>
+    private static async Task LinesBattle()
+    {
+        foreach (var r in Roads)
+        {
+            await r.Start();
+        }
     }
 }

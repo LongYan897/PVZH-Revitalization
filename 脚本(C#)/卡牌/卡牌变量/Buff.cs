@@ -176,13 +176,33 @@ public enum Timing
     /// 参数：[0] Road 该线
     /// </summary>
     AfterRoadChanged,
+    /// <summary>
+    /// 在阶段开始后
+    /// 参数：[0] Phrase 开始的阶段
+    /// </summary>
+    AfterPhraseStart,
+    /// <summary>
+    /// 在阶段结束后
+    /// 参数：[0] Phrase 结束的阶段
+    /// </summary>
+    AfterPhraseEnd,
 
     /// <summary>
     /// 攻击宣告前
     /// 参数：[0] AtkStack 攻击上下文
     /// </summary>
     BeforeAttack,
+    /// <summary>
+    /// 在阶段开始前
+    /// 参数：[0] Phrase 开始的阶段
+    /// </summary>
+    BeforePhraseStart,
 
+    /// <summary>
+    /// 在阶段结束前
+    /// 参数：[0] Phrase 结束的阶段
+    /// </summary>
+    BeforePhraseEnd,
     /// <summary>
     /// 攻击时
     /// 参数：[0] AtkStack 攻击上下文
@@ -196,10 +216,22 @@ public enum Timing
     ModifyTarget,
 
     /// <summary>
-    /// 计算伤害时
+    /// 修改伤害
     /// 参数：[0] AtkStack 攻击上下文
     /// </summary>
     ModifyDamage,
+
+    /// <summary>
+    /// 修改治疗量
+    /// 参数：[0] Variable<int> 治疗量 [1] FighterCardModel/HeroModel 获得治疗的单位
+    /// </summary>
+    ModifyHeal,
+
+    /// <summary>
+    /// 修改获得最大血上限
+    /// 参数：[0] Variable<int> 获得最大血上限的量 [1] FighterCardModel/HeroModel 获得最大血上限的单位
+    /// </summary>
+    ModifyGainMaxHp,
 
     /// <summary>
     /// 攻击结算后
@@ -221,7 +253,7 @@ public enum Timing
 
     /// <summary>
     /// 修改受到的伤害
-    /// 参数：[0] DamageAmount 伤害数值
+    /// 参数：[0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     ModifyCardDamage,
 
@@ -233,23 +265,23 @@ public enum Timing
 
     /// <summary>
     /// 受到伤害后
-    /// 参数：[0] DamageAmount 受到的伤害
+    /// 参数：[0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     OnDamaged,
 
     /// <summary>
     /// 被治疗后
-    /// 参数：[0] int 治疗量
+    /// 参数：[0] int 治疗量 [1] FighterCardModel/HeroModel 获得治疗的单位
     /// </summary>
     OnHealed,
 
     /// <summary>
     /// 死亡时
-    /// 参数：[0] DamageAmount 致死伤害（可能为 null）
+    /// 参数：[0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     OnDeath,
     /// <summary>
-    /// 被战斗击杀时
+    /// 被战斗击杀时 [0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     OnKilled,
 
@@ -311,4 +343,21 @@ public enum Timing
     /// </summary>
     ModifyHeroChanged
 
+    /// <summary>
+    /// 尝试阻止单位攻击
+    /// 参数：[0] Variable<bool> 是否阻止本次攻击 [1] FighterCardModel 要攻击的单位
+    /// </summary>
+    TryStopAttack,
+
+    /// <summary>
+    /// 尝试阻止单位恢复生命
+    /// 参数：[0] Variable<bool> 是否阻止本次治疗 [1] FighterCardModel/HeroModel 要治疗的单位
+    /// </summary>
+    TryStopHeal,
+
+    /// <summary>
+    /// 尝试阻止单位获得最大血上限
+    /// 参数：[0] Variable<bool> 是否阻止本次获得最大血上限 [1] FighterCardModel/HeroModel 要获得最大血上限的单位
+    /// </summary>
+    TryStopGainMaxHp,
 }

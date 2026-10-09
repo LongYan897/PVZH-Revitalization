@@ -95,7 +95,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         if (parent == GetParent()) return;
         else
         {
-            Reparent(parent);
+            CallDeferred("reparent",parent);
         }
     }
     /// <summary>

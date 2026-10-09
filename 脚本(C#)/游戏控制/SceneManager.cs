@@ -27,10 +27,24 @@ public static class SceneManager
     }
     private static async Task Load()
     {
-        Main.Load.LoadIn();
+        Main.Load.Modulate = new(1, 1, 1, 0);
         Tween tween = Main.Load.CreateTween();
         tween.TweenProperty(Main.Load,"modulate",new Color(1,1,1,1),0.2f);
-        await Main.Load.ToSignal(tween, Tween.SignalName.Finished);
+        await Task.WhenAll(
+            Main.Load.ToSignal(tween, Tween.SignalName.Finished).ToTask(),
+            Main.Load.LoadIn());
+    }
+    private static Task ToTask(this SignalAwaiter a)
+    {
+        var tcs = new TaskCompletionSource();
+        _ = Await();
+        return tcs.Task;
+
+        async Task Await()
+        {
+            await a;
+            tcs.SetResult();
+        }
     }
     private static async Task LoadEnd()
     {
@@ -56,10 +70,11 @@ public static class SceneManager
             Main.SceneContainer;
         _LoadTask = new TaskCompletionSource<bool>();
         var scene = subMenu.Instantiate();
+        scene.Visible = false;
+        await Load();
         if (Menus.Count == 0)
         {
             Menus.Add(subMenu, null);
-            scene.Visible = false;
             parent.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
         }
         else
@@ -67,10 +82,8 @@ public static class SceneManager
             var last = Menus.Last().Key;
             Menus[subMenu] = last;
             last.Destory();
-            scene.Visible = false;
             parent.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
         }
-        await Load();
         await LoadTask;
         scene.Visible = true;
         await LoadEnd();

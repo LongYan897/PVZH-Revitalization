@@ -22,6 +22,7 @@ public partial class NodeRoad : Control, ITarget
     [Export]
     public int Index { get; private set; }
     private static readonly Dictionary<NodeRoad, Road> Instances = new();
+
     public override void _ExitTree()
     {
         TargetRegistry.Unregister(this);
@@ -192,8 +193,8 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted = CreateTween().BindNode(line).SetLoops(-1);
         line.Modulate = _colortgBox.Default;
         line.Visible = true;
-        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(1.02f, 1.02f), 0.7f);
-        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.378f) * new Vector2(0.98f, 0.98f), 0.7f);
+        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.354f) * new Vector2(1.01f, 1.01f), 0.7f);
+        _tweenTargeted.TweenProperty(line, "scale", new Vector2(0.33f, 0.354f) * new Vector2(0.99f, 0.99f), 0.7f);
     }
     private void CallGridTargeted()
     {
@@ -293,7 +294,7 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted = CreateTween().BindNode(hl);
             _tweenTargeted2 = CreateTween().BindNode(hl);
             hl.Visible = true;
-            _tweenTargeted.TweenProperty(hl, "scale", new Vector2(0.33f, 0.378f), 0.2f);
+            _tweenTargeted.TweenProperty(hl, "scale", new Vector2(0.33f, 0.354f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             Model.LastTargetKind = RoadTargetKind.Line;
         }
@@ -436,7 +437,7 @@ public partial class NodeRoad : Control, ITarget
         ar2.Visible = false;
 
         if (ctx.Line)
-            await ReturnPulse("%环境高亮", new Vector2(0.33f, 0.378f));
+            await ReturnPulse("%环境高亮", new Vector2(0.33f, 0.354f));
         if (ctx.Grid)
             await ReturnPulse("%单位高亮", Vector2.One);
         if (ctx.CoopGrid)
@@ -465,8 +466,8 @@ public partial class NodeRoad : Control, ITarget
         if (!Calling) return;
 
         _tweenTargeted = CreateTween().BindNode(node).SetLoops(-1);
-        _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(1.02f, 1.02f), 0.7f);
-        _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(0.98f, 0.98f), 0.7f);
+        _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(1.01f, 1.01f), 0.7f);
+        _tweenTargeted.TweenProperty(node, "scale", baseScale * new Vector2(0.99f, 0.99f), 0.7f);
 
         Model.LastTargetKind = RoadTargetKind.None;
     }

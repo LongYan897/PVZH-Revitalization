@@ -342,6 +342,13 @@ public partial class NodeCard : Control
 
         CardDes.DisplayDescription(Model);
     }
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event is not InputEventMouseButton mb) return; 
+        if (_openedCard != null && _openedCard != this && IsInstanceValid(_openedCard))
+            _openedCard.CloseNonBattle();
+    }
+    
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;
