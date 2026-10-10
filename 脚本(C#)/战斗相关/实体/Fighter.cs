@@ -486,7 +486,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     private bool isFirstPlace = false;
     private bool isInvisible = false;
     private List<Fighter> fighters = new();
-    public void Invisible(bool resistIcon)
+    public void Invisible(Texture2D resistIcon)
     {
         if (isInvisible) return;
         isInvisible = true;
@@ -503,20 +503,23 @@ public partial class Fighter : Control, ITarget, IAttackable
             }
         }
 
-        KillOverlayTween();
-        if (resistIcon)
+        if (resistIcon != null)
         {
             GetNode<Node2D>("%单位场景").Visible = true;
-            GetNode<Node2D>("%土坑").Visible = false;
-            GetNode<Node2D>("%特效").Visible = false;
-            GetNode<Node2D>("%特效2").Visible = false;
-            GetNode<SpineHandler>("%动画").Visible = true;
-            GetNode<SpineHandler>("%动画").PauseAnimation();
+            GetNode<Sprite2D>("%特效").Visible = true;
+            GetNode<Sprite2D>("%特效").Texture = resistIcon;
+            GetNode<SpineHandler>("%动画").Visible = false;
+            GetNode<SpineHandler>("%土坑").Visible = false;
         }
         foreach (var f in fighters)
         {
-            f.Invisible(true);
+            f.Invisible(null);
         }
+    }
+    public void GroupWith(FighterCardModel fighter)
+    {
+        var f = GetNode(fighter);
+        fighters.Add(f);
     }
     public void ToVisible()
     {
@@ -531,63 +534,17 @@ public partial class Fighter : Control, ITarget, IAttackable
             }
             if (node is Node2D n2)
             {
+                if (node.Name == "%特效")
+                { n2.Visible = false; }
                 n2.Visible = true;
             }
         }
         GetNode<Control>("%碰撞").MouseFilter = MouseFilterEnum.Stop;
     }
-    private Tween _overlayTween;
-    private Tween _overlayTween2;
-    private Tween _overlayTween3;
-    private Tween _overlayTween4;
-    private void KillOverlayTween()
+    public static void Overlay(FighterCardModel fighter,Texture2D resistIcon)
     {
-
-        if (_overlayTween != null && _overlayTween.IsValid())
-        {
-            _overlayTween.Kill();
-        }
-        if (_overlayTween2 != null && _overlayTween2.IsValid())
-        {
-            _overlayTween2.Kill();
-        }
-        if (_overlayTween3 != null && _overlayTween3.IsValid())
-        {
-            _overlayTween3.Kill();
-        }
-        if (_overlayTween4 != null && _overlayTween4.IsValid())
-        {
-            _overlayTween4.Kill();
-        }
-    }
-    public void Overlay(FighterCardModel fighter,bool resistIcon)
-    {
-        KillOverlayTween();
         var f = GetNode(fighter);
         f.Invisible(resistIcon);
-        fighters.Add(f);
-        var cfx = GetNode<Node2D>("%特效");
-        cfx.Visible = true;
-        Tween tween = CreateTween();
-        tween.TweenProperty(cfx,"scale",new Vector2(),0);
-        tween.TweenProperty(cfx, "scale", new Vector2(4f,4f), 0.2f).SetEase(Tween.EaseType.Out);
-        _overlayTween = CreateTween().BindNode(cfx).SetLoops(-1);
-        _overlayTween.TweenProperty(cfx, "scale", new Vector2(3.7f, 3.7f), 2f).SetEase(Tween.EaseType.In);
-        _overlayTween.TweenProperty(cfx, "scale", new Vector2(4.3f, 4.3f), 2f).SetEase(Tween.EaseType.Out);
-        _overlayTween2 = CreateTween().BindNode(cfx).SetLoops(-1);
-        _overlayTween2.TweenProperty(cfx, "rotation", -2*Math.PI, 16f).SetEase(Tween.EaseType.OutIn);
-        _overlayTween2.TweenProperty(cfx, "rotation", 0, 16f).SetEase(Tween.EaseType.OutIn);
-        var cfx2 = GetNode<Node2D>("%特效2");
-        cfx2.Visible = true;
-        Tween tween2 = CreateTween();
-        tween2.TweenProperty(cfx2, "scale", new Vector2(), 0);
-        tween2.TweenProperty(cfx2, "scale", new Vector2(3f, 3f), 0.2f).SetEase(Tween.EaseType.Out);
-        _overlayTween3 = CreateTween().BindNode(cfx2).SetLoops(-1);
-        _overlayTween3.TweenProperty(cfx2, "scale", new Vector2(3.3f, 3.3f), 2f).SetEase(Tween.EaseType.In);
-        _overlayTween3.TweenProperty(cfx2, "scale", new Vector2(2.7f, 2.7f), 2f).SetEase(Tween.EaseType.Out);
-        _overlayTween4 = CreateTween().BindNode(cfx2).SetLoops(-1);
-        _overlayTween4.TweenProperty(cfx2, "rotation", 0, 16f).SetEase(Tween.EaseType.OutIn);
-        _overlayTween4.TweenProperty(cfx2, "rotation", 2*Math.PI, 16f).SetEase(Tween.EaseType.OutIn);
     }
     private void Fresh()
     {

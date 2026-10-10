@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cp33ms6knt1nk" path="res://脚本(C#)/战斗相关/实体/Fighter.cs" id="1_qosmd"]
 [ext_resource type="Texture2D" uid="uid://doru1f3me30oj" path="res://素材(C#)/其他/shadow.png" id="2_bev64"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="2_w5bvm"]
-[ext_resource type="Texture2D" uid="uid://dqb4uyoym3x8i" path="res://素材(C#)/其他/evolution_upgrade.png" id="3_owwe4"]
+[ext_resource type="Texture2D" uid="uid://x8f7qurmqtqx" path="res://场景/僵尸卡组/纸板机器船/CardBoardFusion.png" id="3_owwe4"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="3_qosmd"]
 [ext_resource type="Texture2D" uid="uid://brf5p27vt3t6o" path="res://素材/对象高亮框/单位1.png" id="8_bev64"]
 
@@ -40,13 +40,6 @@ unique_name_in_owner = true
 position = Vector2(0, -80)
 
 [node name="特效" type="Sprite2D" parent="单位场景" unique_id=525388621]
-unique_name_in_owner = true
-visible = false
-position = Vector2(0, -240)
-scale = Vector2(4, 4)
-texture = ExtResource("3_owwe4")
-
-[node name="特效2" type="Sprite2D" parent="单位场景" unique_id=483773486]
 unique_name_in_owner = true
 visible = false
 position = Vector2(0, -240)

@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://b63bhak348l4m" path="res://场景(C#)/道路层.tscn" id="7_21f3a"]
 [ext_resource type="Texture2D" uid="uid://ckxhau2bavsol" path="res://素材/地图/迪斯科/迪斯科底部.png" id="7_pqs4j"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="9_p8b7g"]
+[ext_resource type="PackedScene" uid="uid://cdxmokqpcghjn" path="res://场景(C#)/英雄血量.tscn" id="10_4cdlk"]
+[ext_resource type="Texture2D" uid="uid://drug7js2jfb4v" path="res://素材(C#)/文本图片/inhnd_sun_gb.png" id="11_tkg4x"]
 
 [node name="战斗场景" type="Node2D" unique_id=1988450632]
 script = ExtResource("1_ma3su")
@@ -50,7 +52,7 @@ position = Vector2(0, -39)
 
 [node name="阶段" type="Node2D" parent="." unique_id=1016573463]
 unique_name_in_owner = true
-z_index = 24
+z_index = 100
 position = Vector2(580, 865)
 scale = Vector2(0.9, 0.9)
 metadata/_edit_lock_ = true
@@ -70,6 +72,34 @@ offset_right = 40.0
 offset_bottom = 40.0
 flat = true
 
-[node name="Node2D" type="Node2D" parent="." unique_id=869147453]
+[node name="英雄血量" parent="." unique_id=1804947190 instance=ExtResource("10_4cdlk")]
+unique_name_in_owner = true
+z_index = 100
+position = Vector2(207, 865)
+scale = Vector2(0.6, 0.6)
+
+[node name="费用" type="Node2D" parent="." unique_id=2119942898]
+z_index = 100
+position = Vector2(88, 863)
+
+[node name="费用图片" type="Sprite2D" parent="费用" unique_id=1895173434]
+unique_name_in_owner = true
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("11_tkg4x")
+
+[node name="费用2" type="Node2D" parent="." unique_id=207810551]
+z_index = 100
+position = Vector2(641, 125)
+
+[node name="费用图片2" type="Sprite2D" parent="费用2" unique_id=446115146]
+unique_name_in_owner = true
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("11_tkg4x")
+
+[node name="英雄血量2" parent="." unique_id=1517580426 instance=ExtResource("10_4cdlk")]
+unique_name_in_owner = true
+z_index = 100
+position = Vector2(524, 128)
+scale = Vector2(0.6, 0.6)
 
 [editable path="道路层"]

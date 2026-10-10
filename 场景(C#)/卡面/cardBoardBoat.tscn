@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cb6srnenex77h"]
+
+[ext_resource type="Texture2D" uid="uid://bnu15xd14b4rd" path="res://场景/僵尸卡组/纸板机器船/CardBoardIcon.png" id="1_vs52j"]
+
+[node name="卡面" type="Control" unique_id=1202417735]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=525992038]
+layout_mode = 0
+offset_left = -66.0
+offset_top = -109.0
+offset_right = 414.0
+offset_bottom = 371.0
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("1_vs52j")
+expand_mode = 1
+stretch_mode = 3

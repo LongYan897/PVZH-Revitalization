@@ -273,7 +273,6 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task Evolve(FighterCardModel evolver, FighterCardModel evolved)
     {
-        evolver.Overlay(evolved, false);
         await evolver.Evolve(evolved);
         await evolver.FireTiming(Timing.WhenFuse, evolved, evolver);
         await TimingOnCards(evolver, Timing.WhenFuse, evolved,evolver);

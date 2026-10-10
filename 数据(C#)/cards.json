@@ -131,7 +131,7 @@
   "CardboardBoat.Type": "单位",
   "CardboardBoat.Rarity": "令牌",
   "CardboardBoat.Category": "有脑",
-  "CardboardBoat.Icon": "res://场景(C#)/卡面/paperBoat.tscn",
+  "CardboardBoat.Icon": "res://场景(C#)/卡面/cardBoardBoat.tscn",
   "CardboardBoat.Animation": "res://素材(C#)/卡牌/召唤直升机/召唤直升机锦囊动画.tres",
   "CardboardBoat.Label": [ "科学家" ],
   "CardboardBoat.Tag": ["两栖"],

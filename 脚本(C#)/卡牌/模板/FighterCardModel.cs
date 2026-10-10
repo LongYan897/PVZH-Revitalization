@@ -2,6 +2,7 @@ using Battle;
 using Battle.Entity;
 using Card.Cmd;
 using Card.String;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,17 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 隐藏单位的数值,并销毁单位
     /// </summary>
-    /// <param name="resistIcon">是否保留单位的最后一帧图像</param>
-    public void Overlay(FighterCardModel fighter,bool resistIcon)
+    /// <param name="Icon">融合的特殊图像</param>
+    public static void Overlay(FighterCardModel fighter,Texture2D Icon)
     {
-        Fighter.GetNode(this).Overlay(fighter,resistIcon);
+        Fighter.Overlay(fighter,Icon);
+    }
+    /// <summary>
+    /// 把一个单位归类到自己的子类
+    /// </summary>
+    public void AddGroup(FighterCardModel fighter)
+    {
+        Fighter.GetNode(this).GroupWith(fighter);
     }
     protected override CardModel LoadData(CardString cardString)
     {
@@ -245,7 +253,7 @@ public class FighterCardModel : CardModel
         bool fusOrEvo = true;
         if (cardModel is FighterCardModel fighter && (IsFusion || fighter.IsEvolution))
         {
-            fusOrEvo = CanFusion(fighter) || fighter.CanEvolution(this);
+            fusOrEvo = CanFusion(fighter,out var _) || fighter.CanEvolution(this);
             fusOrEvo &= fighter.Camp == Camp;
         }
         return fusOrEvo && hpbol && CanTargetedBy(cardModel);
@@ -383,23 +391,18 @@ public class FighterCardModel : CardModel
         }
         else if (target.CanBeFighter(out FighterCardModel fighter))
         {
-            if (fighter.CanFusion(this))
+            if (fighter.CanFusion(this,out var icon))
             {
                 await CardCmd.Fuse(this, fighter);
+                Overlay(fighter, icon);
             }
             if (CanEvolution(fighter))
             {
                 await CardCmd.Evolve(this, fighter);
+                Overlay(fighter, null);
             }
             await CardCmd.FighterGenerate(this, fighter.Road, fighter.Location);
-            if (fighter.CanFusion(this))
-            {
-                Overlay(fighter,true);
-            }
-            if (CanEvolution(fighter))
-            {
-                Overlay(fighter, false);
-            }
+            AddGroup(fighter);
             return;
         }
     }
@@ -416,7 +419,7 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 是否能作为其他卡牌的融合对象
     /// </summary>
-    protected virtual bool CanFusion(FighterCardModel cardModel) { return false; }
+    protected virtual bool CanFusion(FighterCardModel cardModel,out Texture2D fuseIcon) { fuseIcon = null; return false; }
     /// <summary>
     /// 是否能把其他卡牌当作进化的对象
     /// </summary>

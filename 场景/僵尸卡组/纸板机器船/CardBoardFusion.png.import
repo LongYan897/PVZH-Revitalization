@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c51twmmfob485"
-path="res://.godot/imported/PaperBoat.png-bbdd979cedc3d4d0309c227a2c5a0070.ctex"
+uid="uid://x8f7qurmqtqx"
+path="res://.godot/imported/CardBoardFusion.png-138da1921fabdec1e3d383cc198542e0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://场景/僵尸卡组/纸板机器船/PaperBoat.png"
-dest_files=["res://.godot/imported/PaperBoat.png-bbdd979cedc3d4d0309c227a2c5a0070.ctex"]
+source_file="res://场景/僵尸卡组/纸板机器船/CardBoardFusion.png"
+dest_files=["res://.godot/imported/CardBoardFusion.png-138da1921fabdec1e3d383cc198542e0.ctex"]
 
 [params]
 

@@ -24,8 +24,8 @@ public partial class BattleSubMenuScene : SubMenuScene
         PhraseManager.BuildUp(GetNode<Node2D>("道路层"));
         GetNode<SpineHandler>("%动画").LoadSkeletonData("res://素材/ui/轮盘动画/轮盘动画.tres");
         PhraseManager.SetUp(GetNode<Button>("%Button"),GetNode<SpineHandler>("%动画"));
-        NodeCard.DisplayCard(CardModel.Load<HailACopter>(),new(360,850));
-        NodeCard.DisplayCard(CardModel.Load<Peashooter>(), new(120, 850));
+        NodeCard.DisplayCard(CardModel.Load<CardboardBoat>(),new(360,850));
+        NodeCard.DisplayCard(CardModel.Load<BackupDancer>(), new(120, 850));
         NodeCard.DisplayCard(CardModel.Load<SunFlower>(), new(240, 850));
         return Task.CompletedTask;
     }

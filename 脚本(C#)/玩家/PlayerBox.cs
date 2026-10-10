@@ -1,5 +1,6 @@
 
 using Card;
+using Hero.Model;
 using Logger;
 using Phrases;
 using System.Collections.Generic;
@@ -56,6 +57,10 @@ public class PlayerBox
             return [.. _handCards.Select(v => v.Current)];
         }
     }
+    /// <summary>
+    /// 操纵的英雄
+    /// </summary>
+    public HeroModel Hero { get; private set; }
     /// <summary>
     /// 往战斗中加入卡牌
     /// </summary>

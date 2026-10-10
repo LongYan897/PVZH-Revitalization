@@ -1,0 +1,107 @@
+[gd_scene format=3 uid="uid://cdxmokqpcghjn"]
+
+[ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="1_0mxsn"]
+[ext_resource type="Texture2D" uid="uid://cc6gqwgfvq35r" path="res://素材/卡牌属性图片/heart.png" id="2_txl8x"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="3_c28si"]
+[ext_resource type="Texture2D" uid="uid://q08joomsn0ny" path="res://素材/ui/护盾/shieldframe.png" id="4_fs5i2"]
+[ext_resource type="Texture2D" uid="uid://1bbe6aa8bmlh" path="res://素材/ui/护盾/shield_back.png" id="5_h240s"]
+[ext_resource type="Texture2D" uid="uid://ck1u6uimcycib" path="res://素材/ui/护盾/pip_glow.png" id="6_1gc00"]
+
+[sub_resource type="FontVariation" id="FontVariation_avblh"]
+base_font = ExtResource("3_c28si")
+
+[node name="英雄血量" type="Node2D" unique_id=1804947190]
+
+[node name="护盾" parent="." unique_id=922182681 instance=ExtResource("1_0mxsn")]
+unique_name_in_owner = true
+show_behind_parent = true
+position = Vector2(0, -75)
+scale = Vector2(0.28, 0.28)
+
+[node name="生命值" type="Sprite2D" parent="." unique_id=648562472]
+position = Vector2(0.5, 0)
+texture = ExtResource("2_txl8x")
+
+[node name="数值" type="Label" parent="生命值" unique_id=1151772994]
+unique_name_in_owner = true
+offset_left = -30.500006
+offset_top = -46.666664
+offset_right = 23.499994
+offset_bottom = 102.333336
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_fonts/font = SubResource("FontVariation_avblh")
+theme_override_font_sizes/font_size = 70
+text = "20
+"
+
+[node name="护盾图片" type="TextureRect" parent="." unique_id=1906692125]
+unique_name_in_owner = true
+z_index = 35
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -131.66664
+offset_right = 112.0
+offset_bottom = 116.249985
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.8, 0.8)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = ExtResource("4_fs5i2")
+expand_mode = 1
+
+[node name="护盾轮廓" type="TextureRect" parent="." unique_id=1608859072]
+unique_name_in_owner = true
+z_index = -5
+offset_left = -95.0
+offset_top = -105.208336
+offset_right = 95.0
+offset_bottom = 96.87504
+scale = Vector2(0.8, 0.8)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+texture = ExtResource("5_h240s")
+expand_mode = 1
+
+[node name="护盾值" type="Sprite2D" parent="." unique_id=1639144887]
+unique_name_in_owner = true
+position = Vector2(-55, 130)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("6_1gc00")
+
+[node name="护盾轮廓" type="Sprite2D" parent="护盾值" unique_id=942787953]
+modulate = Color(0.52, 0.52, 0.52, 1)
+z_index = -1
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_fs5i2")
+
+[node name="护盾值2" type="Sprite2D" parent="." unique_id=649534707]
+unique_name_in_owner = true
+position = Vector2(55, 130)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("6_1gc00")
+
+[node name="护盾轮廓" type="Sprite2D" parent="护盾值2" unique_id=168427488]
+modulate = Color(0.52, 0.52, 0.52, 1)
+z_index = -1
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_fs5i2")
+
+[node name="护盾值3" type="Sprite2D" parent="." unique_id=1391594327]
+unique_name_in_owner = true
+position = Vector2(0, 130)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("6_1gc00")
+
+[node name="护盾轮廓" type="Sprite2D" parent="护盾值3" unique_id=1448705532]
+modulate = Color(0.52, 0.52, 0.52, 1)
+z_index = -1
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_fs5i2")
