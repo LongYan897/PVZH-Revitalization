@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="PVZH by 龙彦"
-run/main_scene="uid://dpkt1ueqhr37q"
+run/main_scene="uid://bveho05qklxli"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 boot_splash/show_image=false
 config/icon="uid://cbfvp0frn80qp"

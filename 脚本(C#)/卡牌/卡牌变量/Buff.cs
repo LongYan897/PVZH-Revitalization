@@ -341,7 +341,7 @@ public enum Timing
     /// [4] ImpactType 影响的好坏
     /// [5] HeroVariable 预计的在调用OnHeroChanged时的变量
     /// </summary>
-    ModifyHeroChanged
+    ModifyHeroChanged,
 
     /// <summary>
     /// 尝试阻止单位攻击
