@@ -1,7 +1,6 @@
 {
-  "playerAsset": {
-    "CardCounts": {
-      "Peashooter": 2
-    }
+  "CardCounts": {
+    "Peashooter": 3,
+    "SunFlower": 2
   }
 }

@@ -1,24 +1,28 @@
 using Godot;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Frenemypillar.Script.Save;
+namespace FileExtension;
 
 /// <summary>
-/// 演示读取、修改并写回 playerAsset.json。
-/// 在 Godot 项目运行时手动调用 ModifyPlayerAssetJson。
+/// 读取并修改Json文件
 /// </summary>
 public partial class FileJson
 {
 	private const string _defaultSavePath = "res://数据(C#)/playerAsset.json";
     public string SavePath { get; private set; } = _defaultSavePath;
 	private JsonObject _root { get; set; }
+	private JsonObject _current { get; set; }
+	private Stack<JsonObject> _parents = new();
+	private string _currentPath { get; set; }
     /// <summary>
     /// 打开文件并读取 JSON 内容到内存中，若文件不存在则创建一个空的 JsonObject。
     /// </summary>
     /// <param name="path">godot中的文件目录，带后缀</param>
-    public void Open(string path)
+    public FileJson Open(string path)
 	{
 		SavePath = string.IsNullOrWhiteSpace(path) ? _defaultSavePath : path;
 		string filePath = ProjectSettings.GlobalizePath(SavePath);
@@ -28,7 +32,12 @@ public partial class FileJson
 			? new JsonObject()
 			: JsonNode.Parse(json)?.AsObject() ?? new JsonObject();
 		_root = root;
-	}
+
+		_current = root;
+		_parents.Clear();
+		_currentPath = "";
+		return this;
+    }
     /// <summary>
     /// 检查对象是否在Json中存在，不存在创造一个
     /// </summary>
@@ -36,14 +45,62 @@ public partial class FileJson
     /// <returns></returns>
     public bool GetOrCreateObject(string variable)
 	{
-		if (_root == null) return false;
-		if (_root[variable] is not JsonObject playerAsset)
+		if (_current == null) return false;
+		if (_current[variable] is not JsonObject playerAsset)
 		{
             playerAsset = new JsonObject();
-			_root[variable] = playerAsset;
+            _current[variable] = playerAsset;
         }
 		return true;
 	}
+	/// <summary>
+	/// 从本层级中打开下一个对象
+	/// </summary>
+	/// <param name="key">键的名称</param>
+	/// <returns></returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	public FileJson OpenObject(string key)
+	{
+		if (_current == null) 
+			throw new InvalidOperationException("未打开文件");
+        if (string.IsNullOrWhiteSpace(key))
+            throw new ArgumentException("参数不能为空",nameof(key));
+        JsonObject child = _current[key] as JsonObject ?? new JsonObject();
+		_current[key] = child;
+		_parents.Push(_current);
+		_current = child;
+		_currentPath = string.IsNullOrEmpty(_currentPath) ? key : $"{_currentPath}/{key}";
+		return this;
+	}
+	/// <summary>
+	/// 跳转到文件根目录
+	/// </summary>
+	/// <returns></returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	public FileJson BackRootObject()
+	{
+		if (_root == null) throw new InvalidOperationException("文件未打开");
+		_current = _root;
+		_parents.Clear();
+		_currentPath = string.Empty;
+		return this;
+	}
+	/// <summary>
+	/// 返回上一级文件目录
+	/// </summary>
+	/// <returns></returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	public FileJson BackParentObject()
+	{
+        if (_root == null) throw new InvalidOperationException("文件未打开");
+        if (_currentPath == string.Empty) throw new InvalidOperationException("已在文件根目录");
+		_current = _parents.Pop();
+		int slashIndex = _currentPath.LastIndexOf("/");
+		_currentPath = slashIndex >= 0
+			? _currentPath[..slashIndex]
+			: string.Empty;
+		return this;
+    }
 	/// <summary>
 	/// 获取变量的数值
 	/// </summary>
@@ -53,8 +110,8 @@ public partial class FileJson
 	/// <returns></returns>
 	public T GetVariable<T>(string variable,T defaultVal = default)
 	{
-		if (_root == null) return defaultVal;
-		if (!_root.TryGetPropertyValue(variable, out var valueNode))return defaultVal;
+		if (_current == null) return defaultVal;
+		if (!_current.TryGetPropertyValue(variable, out var valueNode))return defaultVal;
 		if (valueNode is JsonValue value && value.TryGetValue<T>(out var result))
 			return result;
 		return defaultVal;
@@ -68,8 +125,8 @@ public partial class FileJson
     /// <returns></returns>
     public bool SetVariable<T>(string variable, T value)
 	{
-		if (_root == null) return false;
-		_root[variable] = JsonValue.Create(value);
+		if (_current == null) return false;
+		_current[variable] = JsonSerializer.SerializeToNode(value);
 		return true;
     }
 	/// <summary>
@@ -78,9 +135,15 @@ public partial class FileJson
 	/// <returns></returns>
 	public bool Close()
 	{
-        Save();
-		_root = null;
-		return true;
+        if (Save())
+		{
+            _root = null;
+            _current = null;
+            _currentPath = string.Empty;
+            _parents.Clear();
+            return true;
+        }
+		return false;
     }
     /// <summary>
     /// 保存文件，不清空引用，适合高频使用。
