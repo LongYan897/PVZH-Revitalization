@@ -12,7 +12,7 @@ public static class CardPackExtensions
 {
     /// <summary>
     /// 从卡包中随机抽取指定数量的卡，使用给定的种子保证可复现。
-    /// 标记不可重复的组抽取不重复，若整个组不可重复，概率会修正。
+    /// 数量已达标记上限的卡不会抽到，若整个组到上限，概率会修正。
     /// </summary>
     public static List<CardModel> Draw(this CardPack pack, int count, int seed)
     {
