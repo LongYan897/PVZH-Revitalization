@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 namespace Card.Pack;
 public partial class GachaCardPack : CardPack
 {
-    private readonly List<CardModel> _cards = new List<CardModel>();
-    public override IReadOnlyList<CardModel> Cards => _cards;
-    
-
+	private readonly List<CardPackEntry> _cards = new();
+	public override IReadOnlyList<CardPackEntry> Cards => _cards;
 }

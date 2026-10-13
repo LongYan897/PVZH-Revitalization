@@ -1,3 +1,4 @@
+using Card.Pack;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,19 @@ namespace FileExtension
 			FileJson fj = new();
 			fj.Open("res://数据(C#)/playerAsset.json")
 				.OpenObject("CardCounts");
-			fj.SetVariable<int>("Peashooter", 3);
-			fj.SetVariable<int>("SunFlower", 2);
-			GD.Print(fj.GetVariable<int>("Peashooter"));
+			Dictionary<string, int> cardCounts = fj.GetEntries<int>();
+			cardCounts["Peashooter"] += 1;
+			cardCounts["SunFlower"] += 1;
+
+			fj.SetEntries(cardCounts);
+			foreach (var entry in cardCounts)
+			{
+				GD.Print($"{entry.Key}: {entry.Value}");
+			}
 			fj.Save();
+			CardPackExtensions cardPack = new(0);
+			cardPack.DrawCard("pack1", 10);
+
 		}
 	}
 }

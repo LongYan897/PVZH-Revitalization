@@ -3,14 +3,20 @@
     "group": [
       {
         "Name": "group1",
-        "Cards": [ "Peashooter", "SunFlower","BackupDancer"],
-        "MaxCount": 4,
+        "Cards": [
+          "Peashooter",
+          "SunFlower",
+          "BackupDancer"
+        ],
+        "MaxCount": 0,
         "BaseRate": 0.70,
         "BonusRate": 0
       },
       {
         "Name": "group2",
-        "Cards": [ "召唤直升机" ],
+        "Cards": [
+          "HailACopter"
+        ],
         "MaxCount": 4,
         "BaseRate": 0.30,
         "BonusRate": 1

@@ -14,5 +14,5 @@ public abstract class CardPack
     /// <summary>
     /// 卡包包含的卡牌
     /// </summary>
-    public abstract IReadOnlyList<CardModel> Cards { get; }
+    public abstract IReadOnlyList<CardPackEntry> Cards { get; }
 }
