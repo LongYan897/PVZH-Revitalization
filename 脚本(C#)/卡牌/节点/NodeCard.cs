@@ -462,7 +462,7 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
-        TargetRegistry.CallTargeted(Model, Model.TargetType);
+        TargetRegistry.CallTargeted(Model, Model.TargetType,false);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
     {
@@ -483,6 +483,7 @@ public partial class NodeCard : Control
     private void OnCardClick()
     {
         ChoiceCard = this;
+        ResetAllZIndex();
         BringToFront();
 
         if (CardViewMode == CardView.Battle)
@@ -495,6 +496,17 @@ public partial class NodeCard : Control
             _openedCard.CloseNonBattle();
 
         ToggleNonBattle();
+    }
+    /// <summary>
+    /// 把所有卡牌的 ZIndex 重置为 0
+    /// </summary>
+    private static void ResetAllZIndex()
+    {
+        foreach (var node in instances.Keys.ToList())
+        {
+            if (!GodotObject.IsInstanceValid(node)) continue;
+            node.ZIndex = 0;
+        }
     }
     /// <summary>
     /// 关闭信息背景
@@ -712,7 +724,7 @@ public partial class NodeCard : Control
             var col = (ITarget)(GodotObject)area.GetMeta("Target");
             if (col == null) continue;
             if (!col.Calling) continue;
-            if (!col.CanBeTarget(Model, Model.TargetFilter)) continue;
+            if (!col.CanBeTarget(Model, Model.TargetFilter,false)) continue;
 
             Vector2 areaPos = area is Node2D n2d
                 ? n2d.GlobalPosition

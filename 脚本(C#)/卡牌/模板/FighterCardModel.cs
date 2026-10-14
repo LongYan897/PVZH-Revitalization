@@ -3,6 +3,9 @@ using Battle.Entity;
 using Card.Cmd;
 using Card.String;
 using Godot;
+using Hero;
+using Logger;
+using Play;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +39,11 @@ public class FighterCardModel : CardModel
     {
         Fighter.GetNode(this).GroupWith(fighter);
     }
+    /// <summary>
+    /// 检测该单位是否在场上
+    /// </summary>
+    public bool IsPlaced => Fighter.GetNode(this) != null;
+    protected Vector2 GlobalPosition => Fighter.GetNode(this).GlobalPosition;
     protected override CardModel LoadData(CardString cardString)
     {
         Atk = new(this, "Attack", cardString.Attack);
@@ -91,11 +99,11 @@ public class FighterCardModel : CardModel
     /// 额外攻击一次
     /// </summary>
     /// <returns></returns>
-    public async Task Battle() => await Battle(CreateOwnedStack());
+    public async Task Battle(bool kill = true) => await Battle(CreateOwnedStack(),kill);
     /// <summary>
     /// 开始战斗
     /// </summary>
-    public async Task Battle(AtkStack atkStack)
+    public async Task Battle(AtkStack atkStack,bool kill = false)
     {
         if (Atk.Current <= 0) return;
         Variable<bool> stop = new("Stop", false);
@@ -129,7 +137,7 @@ public class FighterCardModel : CardModel
                     return f.Model.Camp == Camp.Zombie;
             }
             );
-        if (target == null) return;
+        target ??= PlayerManager.GetPlayer(Camp switch { Camp.Zombie => Camp.Plant , Camp.Plant => Camp.Zombie, _ => 0}).Status.AtkMe();
         atkStack.Targeting(target);
 
         await FireTiming(Timing.ModifyTarget, atkStack);
@@ -158,11 +166,34 @@ public class FighterCardModel : CardModel
                 await FireTiming(Timing.ApplyTarget, atkStack);
                 await CardCmd.TimingOnCards(this, Timing.ApplyTarget, atkStack);
             }
+            else if (itg is HeroInstance hero)
+            {
+                atkStack.FinalDamage = atkStack.BaseDamage;
+
+                await CardCmd.TimingOnCards(null,Timing.WhenAttacked, atkStack);
+
+                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter,this, atkStack);
+
+                await CardCmd.TimingOnCards(null, Timing.AfterAttacked, atkStack);
+
+                await FireTiming(Timing.ApplyTarget, atkStack);
+                await CardCmd.TimingOnCards(this, Timing.ApplyTarget, atkStack);
+            }
         }
 
         await FireTiming(Timing.AfterAttack, atkStack);
         await CardCmd.TimingOnCards(this, Timing.AfterAttack, atkStack);
-
+        if (kill)
+        {
+            foreach (var itg in finalTgs)
+            {
+                if (itg is Fighter fighter)
+                {
+                    if (fighter.Model.IsDie)
+                        await fighter.Model.Kill(VariableReason.Fighter);
+                }
+            } 
+        }
         if (atkStack.ExtraAttacks > 0)
         {
             atkStack.ExtraAttacks -= 1;
@@ -247,7 +278,7 @@ public class FighterCardModel : CardModel
     /// </summary>
     /// <param name="cardModel">要把这张卡当作目标的卡牌</param>
     /// <returns></returns>
-    public bool CanbeTarget(CardModel cardModel)
+    public bool CanbeTarget(CardModel cardModel,bool fromBuff)
     {
         bool hpbol = HpType.Current.ExtraFilter(cardModel);
         bool fusOrEvo = true;
@@ -255,6 +286,10 @@ public class FighterCardModel : CardModel
         {
             fusOrEvo = CanFusion(fighter,out var _) || fighter.CanEvolution(this);
             fusOrEvo &= fighter.Camp == Camp;
+        }
+        else if (cardModel is FighterCardModel fighter2)
+        {
+            fusOrEvo = false || fromBuff;
         }
         return fusOrEvo && hpbol && CanTargetedBy(cardModel);
     }
@@ -374,9 +409,18 @@ public class FighterCardModel : CardModel
     {
         get
         {
-            if (CardTag.HasFlag(CardTag.Coop))
-                return TargetType.CoopGrids | TargetType.Fighters;
-            return TargetType.Grids | TargetType.Fighters;
+            if (CardCmd.IsAnyOneCanEvolved(this))
+            {
+                if (CardTag.HasFlag(CardTag.Coop))
+                    return TargetType.CoopGrids | TargetType.Fighters;
+                return TargetType.Grids | TargetType.Fighters;
+            }
+            else
+            {
+                if (CardTag.HasFlag(CardTag.Coop))
+                    return TargetType.CoopGrids;
+                return TargetType.Grids;
+            }
         }
     }
 
@@ -384,6 +428,11 @@ public class FighterCardModel : CardModel
     {
         if (target.CanBeRoad(out Road road))
         {
+            if (Camp == Camp.Zombie)
+            {
+                await CardCmd.FighterGenerate(this, road, Location.Zombie);
+                return;
+            }
             if (road.LastTargetKind == RoadTargetKind.Grid)
                 await CardCmd.FighterGenerate(this, road, Location.Plant);
             else if (road.LastTargetKind == RoadTargetKind.CoopGrid)
@@ -419,11 +468,11 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 是否能作为其他卡牌的融合对象
     /// </summary>
-    protected virtual bool CanFusion(FighterCardModel cardModel,out Texture2D fuseIcon) { fuseIcon = null; return false; }
+    public virtual bool CanFusion(FighterCardModel cardModel,out Texture2D fuseIcon) { fuseIcon = null; return false; }
     /// <summary>
     /// 是否能把其他卡牌当作进化的对象
     /// </summary>
-    protected virtual bool CanEvolution(FighterCardModel cardModel) { return false; }
+    public virtual bool CanEvolution(FighterCardModel cardModel) { return false; }
     /// <summary>
     /// 是否是含融合效果的卡牌
     /// </summary>

@@ -1,7 +1,11 @@
 [gd_scene format=3 uid="uid://3il4g84cx6rr"]
 
 [ext_resource type="Script" uid="uid://c8ingx5uuhi1o" path="res://脚本(C#)/英雄/节点/HeroInstance.cs" id="1_xrtiu"]
-[ext_resource type="Script" uid="uid://dgww10u3pg76i" path="res://脚本(C#)/动画支持/SpineHandler.cs" id="2_2tma1"]
+[ext_resource type="Texture2D" uid="uid://brf5p27vt3t6o" path="res://素材/对象高亮框/单位1.png" id="2_g8x1o"]
+[ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="3_2tma1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nqrbo"]
+size = Vector2(640, 640)
 
 [node name="英雄单位" type="Control" unique_id=192710804]
 layout_mode = 3
@@ -13,6 +17,40 @@ grow_vertical = 2
 script = ExtResource("1_xrtiu")
 metadata/_custom_type_script = "uid://c8ingx5uuhi1o"
 
-[node name="动画" type="Node2D" parent="." unique_id=844010172]
-script = ExtResource("2_2tma1")
-metadata/_custom_type_script = "uid://dgww10u3pg76i"
+[node name="碰撞" type="Button" parent="." unique_id=1314180780]
+unique_name_in_owner = true
+z_index = 999
+custom_minimum_size = Vector2(640, 640)
+layout_mode = 0
+offset_left = -320.0
+offset_top = -540.0
+offset_right = 320.0
+offset_bottom = 100.0
+flat = true
+
+[node name="ExSprite" type="Node2D" parent="." unique_id=900614265]
+unique_name_in_owner = true
+visible = false
+modulate = Color(0.43, 0.9430001, 1, 1)
+z_index = 48
+position = Vector2(0, -220)
+scale = Vector2(2.4, 2.4)
+
+[node name="高亮" type="Sprite2D" parent="ExSprite" unique_id=1534023533]
+unique_name_in_owner = true
+z_index = 7
+scale = Vector2(2, 2)
+texture = ExtResource("2_g8x1o")
+
+[node name="碰撞箱" type="Area2D" parent="." unique_id=1967258271]
+unique_name_in_owner = true
+position = Vector2(0, -220)
+
+[node name="体积" type="CollisionShape2D" parent="碰撞箱" unique_id=134985071]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_nqrbo")
+
+[node name="动画" parent="." unique_id=922182681 instance=ExtResource("3_2tma1")]
+unique_name_in_owner = true
+
+[editable path="动画"]

@@ -53,3 +53,6 @@ func pause_all_tracks() -> void:
 		var entry = state.get_track(i)
 		if entry:
 			entry.set_time_scale(0.0)
+
+func has_animation(Name:String) -> bool:
+	return get_skeleton().get_data().find_animation(Name) != null

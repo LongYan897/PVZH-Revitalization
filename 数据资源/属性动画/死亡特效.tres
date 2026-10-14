@@ -3,6 +3,11 @@
 [ext_resource type="SpineAtlasResource" uid="uid://dheof5x6yrlt3" path="res://素材/ui/死亡特效/死亡动画.atlas" id="1_7br0r"]
 [ext_resource type="SpineSkeletonFileResource" uid="uid://vrdbatunwfyx" path="res://素材/ui/死亡特效/死亡动画.skel" id="2_crq8r"]
 
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_7br0r"]
+from = "intro"
+to = "intro"
+
 [resource]
 atlas_res = ExtResource("1_7br0r")
 skeleton_file_res = ExtResource("2_crq8r")
+animation_mixes = [SubResource("SpineAnimationMix_7br0r")]

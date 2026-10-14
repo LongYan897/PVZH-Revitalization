@@ -66,6 +66,10 @@ public class HeroString
     /// </summary>
     public float DesOffset { get; private set; }
     /// <summary>
+    /// 超能力
+    /// </summary>
+    public IEnumerable<CardModel> SuperPower { get; private set; } 
+    /// <summary>
     /// 从heroes.json中获得数据
     /// </summary>
     /// <param name="heroTitle">英雄类名，例如 Penelopea</param>
@@ -168,6 +172,10 @@ public class HeroString
         if (GetData(heroTitle, "DesOffset").VariantType != Variant.Type.Nil)
         {
             heroString.DesOffset = GetData(heroTitle, "DesOffset").AsSingle();
+        }
+        if (GetData(heroTitle, "SuperPower").VariantType != Variant.Type.Nil)
+        {
+            heroString.SuperPower = GetData(heroTitle, "SuperPower").AsStringArray().Select(s=>CardModel.GetTemplate(s));
         }
         return heroString;
     }

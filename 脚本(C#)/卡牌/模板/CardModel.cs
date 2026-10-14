@@ -73,7 +73,8 @@ public class CardModel
     /// <returns></returns>
     public bool CanPlay()
     {
-        return (Fighter.CanTargetedBy(this) || NodeRoad.CanTargetedBy(this) ) && !CardCmd.IsCardPlaying && !Road.IsBattling;
+        var p = PlayerManager.GetPlayer(Camp);
+        return (Fighter.CanTargetedBy(this,false) || NodeRoad.CanTargetedBy(this) ) && !Road.IsBattling && !CardCmd.StopCardPlay && (p == null || (p != null && (p.Status.Hero.Cost == null || ( p.Status.Hero.Cost != null && p.Status.Hero.Cost.Current >= Cost.Current))));
     }
     /// <summary>
     /// 按照名称获取卡牌模板
@@ -249,17 +250,7 @@ public class CardModel
         card.ParseDescriptionVariables(cardString.Description);
         card.Icon = GD.Load<PackedScene>(cardString.IconPath);
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
-        _ = card.AddBuff(new LabelBuff(),VariableReason.None);
         return (T)card.LoadData(cardString);
-    }
-    private class LabelBuff : Buff
-    {
-        public override bool IsTransferable => false;
-        public override Timing[] Timings => [Timing.OnVariableChanged];
-        public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
-        {
-            
-        }
     }
     private async Task Destroy()
     {
@@ -370,6 +361,15 @@ public class CardModel
     /// <returns></returns>
     public virtual Task Play(ITarget target) { return Task.CompletedTask; }
     /// <summary>
+    /// 卡牌打出时的效果
+    /// </summary>
+    /// <param name="target">游戏传入的卡牌目标</param>
+    /// <returns></returns>
+    public async Task OnPlayWrap(ITarget target)
+    {
+        await Task.WhenAll(Play(target), CardCmd.ChangeCost(null, -Cost.Current, this));
+    }
+    /// <summary>
     /// 克隆之后的逻辑
     /// </summary>
     /// <param name="card"></param>
@@ -479,16 +479,20 @@ public class CardModel
     {
         foreach (var buff in BuffList.ToList())
         {
+            if (this is FighterCardModel fighterCard && !fighterCard.IsPlaced && buff.OnlyPlaced) continue;
             if (buff.Timings.Contains(timing))
                 await buff.OnTiming(timing, this,parameters);
         }
-        if (this is FighterCardModel fighter)
+        if (this is FighterCardModel fighter && fighter.IsPlaced)
         {
             if (fighter.HpType.Current.Buff != null)
+            {
                 await fighter.HpType.Current.Buff.OnTiming(timing, this, parameters);
-
+            }
             if (fighter.AtkType.Current.Buff != null)
+            {
                 await fighter.AtkType.Current.Buff.OnTiming(timing, this, parameters);
+            }
         }
     }
 

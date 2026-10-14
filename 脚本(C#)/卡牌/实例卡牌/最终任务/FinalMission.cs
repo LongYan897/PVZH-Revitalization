@@ -24,7 +24,7 @@ public class FinalMission : CardModel
     {
         if (target.CanBeFighter(out var zomb) && zomb.Camp == Camp.Zombie)
         {
-            FighterCardModel plant = await CardCmd.PlayerChoiceFighter(null, this, (itg) => itg.Camp == Camp.Plant);
+            FighterCardModel plant = await CardCmd.PlayerChoiceFighter(null, this, true,(itg) => itg.Camp == Camp.Plant);
             
             await PlayInstantAnimation("intro", target);
 

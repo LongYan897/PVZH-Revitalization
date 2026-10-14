@@ -3,6 +3,7 @@ using Card;
 using Card.Cmd;
 using Godot;
 using Logger;
+using Play;
 using Spine;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,14 +56,25 @@ public static class PhraseManager
         new Road() {Index = 5,Type = RoadType.Water},
     ];
     /// <summary>
+    /// 当前的回合数
+    /// </summary>
+    private static int _turn;
+    /// <summary>
+    /// 当前的回合序号
+    /// </summary>
+    public static int Turn => _turn;
+    /// <summary>
     /// 构建战斗的道路
     /// </summary>
-    public static void BuildUp(Node node)
+    public static void BuildUp(Node node,Camp camp)
     {
+        _turn = 1;
+        var bol = camp == Camp.Zombie;
         foreach (var nRoad in node.GetChildren().OfType<NodeRoad>())
         {
             foreach (var road in Roads)
             {
+                road.IsUp = bol;
                 if (road.Index == nRoad.Index + 1)
                     nRoad.Bind(road);
             }
@@ -91,10 +103,15 @@ public static class PhraseManager
     /// 下一个阶段
     /// </summary>
     /// <returns></returns>
-    public static async Task NextPhrase()
+    public static async Task NextPhrase(bool isAuto = false)
     {
+        if (!IsInBattle) return;
+        CardCmd.PushStop();
+        var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
+        var entr = plantSide ? "plant" : "zombie";
         await CardCmd.TimingOnCards(null, Timing.BeforePhraseEnd, Phrase);
         await CardCmd.TimingOnCards(null, Timing.AfterPhraseEnd, Phrase);
+        bool isBattle = Phrase == Phrase.Fight;
         if (((int)Phrase) >= 4)
         {
             Phrase = (Phrase)1;
@@ -103,13 +120,26 @@ public static class PhraseManager
         {
             Phrase += 1;
         }
-        await spine.SetAnimationTask(0, Phrase switch
+        await spine.SetAnimationTask(0, isBattle ? $"{entr}BackCardTurn" : Phrase switch
         {
-            Phrase.Plant => "plantMovePlantTurn",
-            Phrase.Trick => "plantMovePlanTurn",
-            Phrase.Fight => "plantMoveAttackTurn",
-            Phrase.Zombie => "plantBackCardTurn"
+            Phrase.Plant => $"{entr}MovePlantTurn",
+            Phrase.Trick => $"{entr}MoveTrickTurn",
+            Phrase.Fight => $"{entr}MoveAttackTurn",
+            Phrase.Zombie => $"{entr}StartZombieTurn",
+            _ => ""
         });
+        if (Phrase == Phrase.Zombie && isAuto)
+        {
+            await Task.WhenAll(
+            PlayerManager.HostPlayer.Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null),
+            (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant)).Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null)
+            );
+        }
+        if (isBattle)
+        {
+            if (!plantSide)
+                await spine.SetAnimationTask(0, $"zombieStartZombieTurn");
+        }
         await CardCmd.TimingOnCards(null, Timing.BeforePhraseStart, Phrase);
         if (Phrase == Phrase.Fight)
         {
@@ -118,8 +148,42 @@ public static class PhraseManager
         await CardCmd.TimingOnCards(null, Timing.AfterPhraseStart, Phrase);
         if (Phrase == Phrase.Fight)
         {
-            await NextPhrase();
+            await Task.WhenAll(
+                (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant)).Status.Hero.Cost.Reset(null),
+                PlayerManager.HostPlayer.Status.Hero.Cost.Reset(null)
+                );
+            _turn++;
+            await NextPhrase(true);
         }
+        turnFirst = true;
+        CardCmd.PopStop();
+    }
+    private static bool turnFirst = true;
+    /// <summary>
+    /// 手牌没有卡牌可以打出时
+    /// </summary>
+    /// <returns></returns>
+    public static async Task HintCostNotEnough()
+    {
+        if (!IsInBattle) return;
+        if (!turnFirst) return;
+        CardCmd.PushStop();
+        turnFirst = false;
+        var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
+        var loop = plantSide ? Phrase switch
+        {
+            Phrase.Plant => "plantTurnProcessing",
+            _ => ""
+        } : Phrase switch
+        {
+            Phrase.Trick => "trickTurnProcessing",
+            Phrase.Zombie => "zombieTurnProcessing",
+            _ => ""
+        };
+
+        if (spine.HasAnimation(loop))
+            await spine.SetAnimationTask(0, loop, true);
+        CardCmd.PopStop();
     }
     private static async void PressedNextPhrase(Button button)
     {
@@ -133,11 +197,23 @@ public static class PhraseManager
     /// 绑定阶段动画
     /// </summary>
     /// <param name="spineHandler"></param>
-    public static void SetUp(Button button,SpineHandler spineHandler)
+    public static async void SetUp(Button button,SpineHandler spineHandler)
     {
+        var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
+        var entr = plantSide ? "plant" : "zombie";
         spine = spineHandler;
-        spine.SetAnimation(0,"zombieStartZombieTurn",false);
+        spine.SetAnimation(0,$"{entr}StartZombieTurn",false);
+        Phrase = Phrase.Zombie;
         button.Pressed += () => PressedNextPhrase(button);
+        IsInBattle = true;
+        var p1 = PlayerManager.GetPlayer(Camp.Plant);
+        var p2 = PlayerManager.GetPlayer(Camp.Zombie);
+        p1.Status.Hero.SetUp();
+        p2.Status.Hero.SetUp();
+        await Task.WhenAll(
+        PlayerManager.HostPlayer.Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null),
+        (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant)).Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null)
+        );
     }
     private static SpineHandler spine;
     /// <summary>

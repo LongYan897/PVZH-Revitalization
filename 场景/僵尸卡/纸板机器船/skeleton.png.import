@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bygdg1ep7eyll"
-path="res://.godot/imported/回合按钮.png-e25db6cd00d680e992985321d33ee8a5.ctex"
+uid="uid://bs2vrqp3tqnqp"
+path="res://.godot/imported/skeleton.png-fa2172b31cceb16343ad93beb03d0683.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://素材/ui/轮盘动画/回合按钮.png"
-dest_files=["res://.godot/imported/回合按钮.png-e25db6cd00d680e992985321d33ee8a5.ctex"]
+source_file="res://场景/僵尸卡/纸板机器船/skeleton.png"
+dest_files=["res://.godot/imported/skeleton.png-fa2172b31cceb16343ad93beb03d0683.ctex"]
 
 [params]
 

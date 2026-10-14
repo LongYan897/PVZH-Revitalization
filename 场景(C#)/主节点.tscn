@@ -121,6 +121,7 @@ metadata/_edit_group_ = true
 [node name="UponScene" type="CanvasLayer" parent="Scene" unique_id=552437376]
 unique_name_in_owner = true
 layer = 0
+follow_viewport_enabled = true
 
 [node name="Button" type="CanvasLayer" parent="Scene" unique_id=948884562]
 layer = 80
@@ -130,18 +131,24 @@ unique_name_in_owner = true
 offset_left = -112.0
 offset_right = -720.0
 
+[node name="Hero2" type="CanvasLayer" parent="." unique_id=1735385839]
+layer = 15
+follow_viewport_enabled = true
+
 [node name="Fighters" type="CanvasLayer" parent="." unique_id=627124979]
-layer = 25
+layer = 0
 
 [node name="Up" type="CanvasLayer" parent="Fighters" unique_id=1827987908]
+layer = 25
 
 [node name="FrontUp" type="CanvasLayer" parent="Fighters" unique_id=211827059]
-layer = 2
+layer = 27
 
 [node name="FrontDown" type="CanvasLayer" parent="Fighters" unique_id=789388824]
+layer = 25
 
 [node name="Down" type="CanvasLayer" parent="Fighters" unique_id=1944813616]
-layer = 2
+layer = 27
 
 [node name="Animators" type="CanvasLayer" parent="." unique_id=1250929900]
 layer = 100
@@ -149,8 +156,13 @@ layer = 100
 [node name="Des" type="CanvasLayer" parent="." unique_id=1151842865]
 layer = 1000
 
+[node name="Hero" type="CanvasLayer" parent="." unique_id=1536272334]
+layer = 40
+follow_viewport_enabled = true
+
 [node name="Cards" type="CanvasLayer" parent="." unique_id=1406632363]
 layer = 50
+follow_viewport_enabled = true
 
 [node name="Audios" type="Node2D" parent="." unique_id=95414566]
 metadata/_edit_lock_ = true
@@ -178,3 +190,8 @@ layer = 1020
 [node name="Load" parent="Load" unique_id=2051238835 instance=ExtResource("21_8ffxo")]
 unique_name_in_owner = true
 visible = false
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1316371348]
+offset = Vector2(360, 640)
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true

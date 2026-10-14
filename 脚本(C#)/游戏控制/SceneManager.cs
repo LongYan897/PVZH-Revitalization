@@ -17,7 +17,8 @@ public static class SceneManager
     /// 当前打开的子目录
     /// </summary>
     private static readonly Dictionary<SubMenu, SubMenu> Menus = new();
-
+    private static readonly List<SubMenu> AllMenus = new();
+    public static void Register(SubMenu menu) => AllMenus.Add(menu);
     private static TaskCompletionSource<bool> _LoadTask;
     public static Task LoadTask => _LoadTask?.Task ?? Task.CompletedTask;
     public static void InvokeLoadEnd()
@@ -34,7 +35,21 @@ public static class SceneManager
             Main.Load.ToSignal(tween, Tween.SignalName.Finished).ToTask(),
             Main.Load.LoadIn());
     }
-    private static Task ToTask(this SignalAwaiter a)
+    private static void UnableSubmenu()
+    {
+        foreach (var subMenu in AllMenus)
+        {
+            subMenu.Function(false);
+        }
+    }
+    private static void EnableSubmenu()
+    {
+        foreach (var subMenu in AllMenus)
+        {
+            subMenu.Function(true);
+        }
+    }
+    public static Task ToTask(this SignalAwaiter a)
     {
         var tcs = new TaskCompletionSource();
         _ = Await();
@@ -65,6 +80,7 @@ public static class SceneManager
     public static async void JumpToSub(SubMenu subMenu)
     {
         if (subMenu == null) return;
+        UnableSubmenu();
         await Clear();
         var parent =
             Main.SceneContainer;
@@ -102,6 +118,7 @@ public static class SceneManager
             var parent = Main.SceneContainer;
             last.Key.Destory();
             await LoadEnd();
+            EnableSubmenu();
         }
         else
         {

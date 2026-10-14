@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Card;
 using Hero.Model;
 
 namespace Hero;
 
-public partial class SunFlower : HeroModel
+public class SolarFlare : HeroModel
 {
-    public SunFlower() : base("") { }
 }

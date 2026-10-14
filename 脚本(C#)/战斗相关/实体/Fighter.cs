@@ -2,7 +2,9 @@ using Card;
 using Card.Cmd;
 using Controller;
 using Godot;
+using Hero;
 using Pack;
+using Play;
 using Spine;
 using System;
 using System.Collections.Generic;
@@ -19,10 +21,10 @@ namespace Battle.Entity;
 /// </summary>
 public partial class Fighter : Control, ITarget, IAttackable
 {
-    public static bool CanTargetedBy(CardModel card)
+    public static bool CanTargetedBy(CardModel card, bool fromBuff)
     {
         if (card.TargetType.HasFlag(TargetType.Fighters))
-            return TargetRegistry.AnyCanBeTarget(card, card.TargetType, card.TargetFilter);
+            return TargetRegistry.AnyCanBeTarget(card, card.TargetType, fromBuff, card.TargetFilter);
         else
             return false;
     }
@@ -31,9 +33,9 @@ public partial class Fighter : Control, ITarget, IAttackable
     /// </summary>
     /// <param name="filter">筛选器</param>
     /// <returns></returns>
-    public static bool HasFighter(Func<Fighter, bool> filter) => Instances.Keys.Any(filter);
+    public static bool HasFighter(Func<Fighter, bool> filter) => Instances.Any(filter);
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/战斗单位.tscn");
-    private static readonly Dictionary<Fighter, FighterCardModel> Instances = new();
+    private static readonly List<Fighter> Instances = new();
     private const int maxInstance = 20;
 
     public FighterCardModel Model { get; private set; }
@@ -44,13 +46,13 @@ public partial class Fighter : Control, ITarget, IAttackable
     public bool Plant1 => Model.Camp == Camp.Plant && index == Location.PlantFront;
     public bool Plant2 => Model.Camp == Camp.Plant && index == Location.Plant;
 
-    public Func<CardModel, Func<ITarget, bool>, bool> CanBeTarget =>
-        (t, f) =>
+    public Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget =>
+        (t, f, from) =>
         {
             bool? a;
             a = f?.Invoke(this);
             bool b;
-            b = Model.CanbeTarget(t);
+            b = Model.CanbeTarget(t, from);
             if (a != null)
                 b = (bool)a && b;
             bool camp = Model.Camp switch
@@ -95,7 +97,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         if (parent == GetParent()) return;
         else
         {
-            CallDeferred("reparent",parent);
+            CallDeferred("reparent", parent);
         }
     }
     /// <summary>
@@ -105,7 +107,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     {
         _isOpen = false;
         var fighterCard = Model;
-        await Road.RemoveFighter(fighterCard,this);
+        await Road.RemoveFighter(fighterCard, this);
 
         GetNode<SpineHandler>("%伤害动画").SetAnimation(0, "die", false);
         GetNode<SpineHandler>("%血量动画").SetAnimation(0, "die", false);
@@ -145,7 +147,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     public async Task Hurt(int amount)
     {
         KillHurtTween();
-
+        List<string> k1s = ["hurt", "hit", "damaged"];
         GetNode<Node2D>("%额外动画").Modulate = new Color(1, 1, 1, 1);
         GetNode<Node2D>("%额外动画").Position = new Vector2();
         Tween tween = CreateTween();
@@ -154,10 +156,10 @@ public partial class Fighter : Control, ITarget, IAttackable
         GetNode<Node2D>("%额外动画").Visible = true;
 
         var animSpine = GetNode<SpineHandler>("%动画");
-        float hurtDuration = animSpine.GetAnimationDuration("hurt");
+        float hurtDuration = animSpine.GetFirstAvailableDuration([.. k1s]);
         _dmgSpine.SetAnimation(0, "hurt", false);
         _hpSpine.SetAnimation(0, "hurt", false);
-        GetNode<SpineHandler>("%动画").SetAnimation(0, "hurt", false);
+        GetNode<SpineHandler>("%动画").SetFirstAvailableAnimation(0, false, [.. k1s]);
         await FollowOffset(hurtDuration);
         GetNode<Node2D>("%额外动画").Position = new Vector2();
         GetNode<Node2D>("%额外动画").Visible = false;
@@ -188,7 +190,7 @@ public partial class Fighter : Control, ITarget, IAttackable
 
     public TargetType TargetType => TargetType.Fighters;
 
-    private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default,default);
+    private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
 
     public void OnCallTargeted(TargetType targetType)
     {
@@ -210,10 +212,12 @@ public partial class Fighter : Control, ITarget, IAttackable
     {
         var spine = GetNode<SpineHandler>("%动画");
         spine.ZIndex += 999;
+        List<string> k1s = ["attack_up", "attack"];
+        List<string> k2s = ["attack_down", "attack1"];
         var key = Road.IsUp
-            ? (Model.Camp == Camp.Zombie ? "attack" : "attack1")
-            : (Model.Camp == Camp.Zombie ? "attack1" : "attack");
-
+            ? (Model.Camp == Camp.Zombie ? k1s : k2s)
+            : (Model.Camp == Camp.Zombie ? k2s : k1s);
+        spine.ClearTracks();
         var eventWait = spine.WaitForAnimEvent("attack");
 
         var animTask = PlayAnimation(key, true);
@@ -227,13 +231,28 @@ public partial class Fighter : Control, ITarget, IAttackable
 
             foreach (var attackable in target)
             {
-                if (attackable is not Fighter fighter) continue;
-                Vector2 targetPos = fighter.GlobalPosition;
+                if (attackable is Fighter fighter)
+                {
+                    Vector2 targetPos = fighter.GlobalPosition;
 
-                if (GD.Load(Model.AmmoPath) is Texture2D texture)
-                    ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
-                else
-                    AnimaActor.PlayInstantAnimation(Model.AmmoPath, targetPos, "");
+                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                        ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
+                    else if (spine.HasAnimation("attackEffect"))
+                        AnimaActor.PlayInstantAnimation(Model.AnimationPath, targetPos, "attackEffect");
+                    else
+                        AnimaActor.PlayInstantAnimation(Model.AmmoPath, targetPos, "");
+                }
+                else if (attackable is HeroInstance hero)
+                {
+                    Vector2 targetPos = NodeRoad.GetNode(Road).GetHeroLocation(PlayerManager.GetFromHero(hero.Hero));
+
+                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                        ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
+                    else if (spine.HasAnimation("attackEffect"))
+                        AnimaActor.PlayInstantAnimation(Model.AnimationPath, targetPos, "attackEffect");
+                    else
+                        AnimaActor.PlayInstantAnimation(Model.AmmoPath, targetPos, "");
+                }
             }
         }
 
@@ -268,9 +287,10 @@ public partial class Fighter : Control, ITarget, IAttackable
     }
     public static async Task<Fighter> Generate(FighterCardModel model, Road road, Location index, Node parent = null)
     {
-        parent ??= road.IsUp switch {
+        parent ??= road.IsUp switch
+        {
             false => index switch
-            { 
+            {
                 Location.Plant => Main.FighterDown,
                 Location.PlantFront => Main.FighterFrontDown,
                 Location.Zombie => Main.FighterUp,
@@ -283,23 +303,22 @@ public partial class Fighter : Control, ITarget, IAttackable
                 Location.Zombie => Main.FighterDown,
                 _ => Main.FighterFrontDown
             }
-            };
+        };
 
         Fighter fighter;
         if (Instances.Count < maxInstance)
         {
             fighter = Scene.Instantiate<Fighter>();
             parent.AddChild(fighter);
-            Instances.Add(fighter, model);
+            Instances.Add(fighter);
         }
         else
         {
-            fighter = Instances.First(p => p.Key.Model == null).Key;
+            fighter = Instances.First(f => f.Model == null);
             if (fighter.GetParent() != parent)
             {
                 fighter.Reparent(parent, true);
             }
-            Instances[fighter] = model;
         }
 
         fighter.Position = NodeRoad.GetNode(road).GetFighterLocation(index);
@@ -308,7 +327,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         fighter.isFirstPlace = true;
         fighter.Road = road;
         TargetRegistry.Register(fighter);
-        await road.AddFighter(model,fighter);
+        await road.AddFighter(model, fighter);
         fighter.Visible = true;
         fighter.ToVisible();
         fighter.Fresh();
@@ -352,7 +371,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     public async Task<FighterCardModel> ReturnCard()
     {
         var fighterCard = Model;
-        await Road.RemoveFighter(fighterCard,this);
+        await Road.RemoveFighter(fighterCard, this);
 
         if (fighterCard != null)
         {
@@ -365,6 +384,12 @@ public partial class Fighter : Control, ITarget, IAttackable
         return fighterCard;
     }
 
+    public async Task PlayAnimation(List<string> name, bool returnToIdle, int track = 0)
+    {
+        await GetNode<SpineHandler>("%动画").SetFirstAvailableAnimationTask(track, false, [.. name]);
+        if (returnToIdle)
+            GetNode<SpineHandler>("%动画").SetAnimation(track, "idle", true);
+    }
     public async Task PlayAnimation(string name, bool returnToIdle, int track = 0)
     {
         await GetNode<SpineHandler>("%动画").SetAnimationTask(track, name, false);
@@ -374,11 +399,11 @@ public partial class Fighter : Control, ITarget, IAttackable
 
     public static Fighter GetNode(FighterCardModel fighterCard)
     {
-        return Instances.FirstOrDefault(p => p.Value == fighterCard).Key;
+        return Instances.FirstOrDefault(f => f.Model == fighterCard);
     }
 
     private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
-    private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"),default,default,default);
+    private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     public bool Calling { get; private set; }
 
     private void CallTargeted()
@@ -412,8 +437,9 @@ public partial class Fighter : Control, ITarget, IAttackable
         _hpSpine = GetNode<SpineHandler>("%血量动画");
         _dmgLabel = GetNode<Label>("%伤害数值");
         _hpLabel = GetNode<Label>("%血量数值");
+        _scale = GetNode<SpineHandler>("%动画").Scale;
     }
-
+    private Vector2 _scale;
     private bool _isOpen = false;
 
     private void OnHitButtonGuiInput(InputEvent @event)
@@ -524,7 +550,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     public void ToVisible()
     {
         if (!isInvisible) return;
-        isInvisible =false;
+        isInvisible = false;
         foreach (var node in GetChildren())
         {
             if (node is Control control)
@@ -541,7 +567,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         }
         GetNode<Control>("%碰撞").MouseFilter = MouseFilterEnum.Stop;
     }
-    public static void Overlay(FighterCardModel fighter,Texture2D resistIcon)
+    public static void Overlay(FighterCardModel fighter, Texture2D resistIcon)
     {
         var f = GetNode(fighter);
         f.Invisible(resistIcon);
@@ -560,7 +586,9 @@ public partial class Fighter : Control, ITarget, IAttackable
                 var scene = GD.Load<PackedScene>(Model.AnimationScenePath).Instantiate<Node2D>();
                 var col1 = scene.GetNode<Node2D>("Battle").Position;
                 var col2 = scene.GetNode<Node2D>("Battle2").Position;
+                var cols1 = scene.GetNode<Node2D>("Battle").Scale;
                 GetNode<SpineHandler>("%动画").Position = (col1 - col2) + GetNode<SpineHandler>("%土坑").Position;
+                GetNode<SpineHandler>("%动画").Scale = _scale * cols1;
                 if (scene.GetChildren().Any(c => c.Name.ToString().Contains("Saved")))
                 {
                     GetNode<Control>("%单位场景").AddChild(scene);
@@ -587,6 +615,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             else
             {
                 GetNode<SpineHandler>("%动画").Position = new(0f, -58.0f);
+                GetNode<SpineHandler>("%动画").Scale = _scale * new Vector2(1, 1);
             }
             GetNode<SpineHandler>("%土坑").Visible = Model.Camp switch
             {
@@ -749,7 +778,6 @@ public partial class Fighter : Control, ITarget, IAttackable
         sprite.ClearTracks();
         GetNode<SpineHandler>("%土坑").ClearTracks();
         TargetRegistry.Unregister(this);
-        Instances[this] = null;
 
         foreach (var f in fighters.ToList())
         {

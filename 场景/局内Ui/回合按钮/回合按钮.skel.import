@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://go5ja7pbph6e"
+path="res://.godot/imported/回合按钮.skel-c08a09651853e89f5a68e4a08f05a8a3.spskel"
+
+[deps]
+
+source_file="res://场景/局内Ui/回合按钮/回合按钮.skel"
+dest_files=["res://.godot/imported/回合按钮.skel-c08a09651853e89f5a68e4a08f05a8a3.spskel"]
+
+[params]
+

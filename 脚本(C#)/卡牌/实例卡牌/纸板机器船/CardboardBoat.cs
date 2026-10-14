@@ -11,7 +11,7 @@ namespace Card.Scientist;
 public class CardboardBoat : FighterCardModel
 {
     public override bool IsFusion => true;
-    protected override bool CanFusion(FighterCardModel cardModel,out Texture2D fuseIcon)
+    public override bool CanFusion(FighterCardModel cardModel,out Texture2D fuseIcon)
     {
         fuseIcon = GD.Load<Texture2D>("res://场景/僵尸卡组/纸板机器船/CardBoardFusion.png");
         return true;

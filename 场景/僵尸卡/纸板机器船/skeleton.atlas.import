@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dpifjv48uajya"
+path="res://.godot/imported/skeleton.atlas-c93705f4dbebfcbc7e9beb02a6b64fe0.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/纸板机器船/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-c93705f4dbebfcbc7e9beb02a6b64fe0.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

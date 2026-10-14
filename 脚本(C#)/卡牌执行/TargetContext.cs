@@ -13,7 +13,6 @@ public readonly struct TargetContext
     public static TargetContext Line1 => new() { Line = true };
     public static TargetContext Grid1 => new() { Grid = true };
     public static TargetContext Coop1 => new() { CoopGrid = true };
-
     public static TargetContext From(TargetType type, FighterCardModel card = null)
     {
         return new TargetContext

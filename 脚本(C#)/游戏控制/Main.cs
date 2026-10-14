@@ -9,7 +9,9 @@ using Card.Imp;
 using Card.Pea;
 using Controller.WavPlay;
 using Godot;
+using Hero;
 using Pack;
+using Play;
 using Scene;
 using Spine;
 using Target;
@@ -25,7 +27,9 @@ public partial class Main : Node
 	public static Node Animator { get; private set; }
 	public static Node CardContainer { get; private set; }
 	public static Node FighterContainer { get; private set; }
-	public static Node FighterUp {  get; private set; }
+    public static Node HeroContainer { get; private set; }
+    public static Node GuestHeroContainer { get; private set; }
+    public static Node FighterUp {  get; private set; }
 	public static Node FighterDown { get; private set; }
 	public static Node FighterFrontUp { get; private set; }
 	public static Node FighterFrontDown { get; private set; }
@@ -46,7 +50,9 @@ public partial class Main : Node
 		Animator = GetNode<CanvasLayer>("Animators");
 		CardContainer = GetNode<CanvasLayer>("Cards");
 		FighterContainer = GetNode<CanvasLayer>("Fighters");
-		SceneContainer = GetNode<CanvasLayer>("Scene");
+        HeroContainer = GetNode<CanvasLayer>("Hero");
+        GuestHeroContainer = GetNode<CanvasLayer>("Hero2");
+        SceneContainer = GetNode<CanvasLayer>("Scene");
 		FighterUp = FighterContainer.GetNode<Node>("Up");
 		FighterFrontUp = FighterContainer.GetNode<Node>("FrontUp");
 		FighterDown = FighterContainer.GetNode<Node>("Down");
@@ -54,9 +60,15 @@ public partial class Main : Node
 		DesLayer = GetNode<CanvasLayer>("Des");
 		AudioContainer = GetNode<Node2D>("Audios");
 		Load = GetNode<Loading>("%Load");
-		//
+		//设置游戏初始的设置
 		WavPlayer.SetBgMusic<MainMenuWav>();
 		TextureBag.SetCurrent<DiscoBag>();
+		var p1 = new Player("MME");
+        var p2 = new Player("Ai");
+        p1.SetHero<SuperZombie>();
+		p2.SetHero<Penelopea>();
+        PlayerManager.Hosting(p1);
+		PlayerManager.FillPlayer(PlayerManager.HostPlayer,p2);
 	}
 
 	public void Clear()

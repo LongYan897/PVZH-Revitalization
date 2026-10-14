@@ -43,7 +43,7 @@ public class Road
     /// <summary>
     /// 该道路是否是朝向植物的
     /// </summary>
-    public bool IsUp { get; init; }
+    public bool IsUp { get; set; }
     /// <summary>
     /// 决定该道路的类型(高地/平地/水路)
     /// </summary>

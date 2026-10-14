@@ -14,7 +14,7 @@ public interface ITarget
     bool Calling { get; }
 
     /// <summary>卡牌能否选中本目标</summary>
-    Func<CardModel, Func<ITarget, bool>, bool> CanBeTarget { get; }
+    Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget { get; }
 
     /// <summary>开始高亮（等待玩家选择）</summary>
     void OnCallTargeted(TargetType type);

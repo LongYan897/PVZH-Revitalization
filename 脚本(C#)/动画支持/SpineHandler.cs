@@ -19,7 +19,7 @@ public partial class SpineHandler : Node2D
 		{
 			if (_spineSprite == null)
 			{
-				_spineSprite = GetNode<Node>("Spine");
+				_spineSprite = GetNode<Node>("SpineNode");
 				ConnectAnimationEvent();
 			}
 			return _spineSprite;
@@ -297,4 +297,93 @@ public partial class SpineHandler : Node2D
 	{
 		SpineSprite.Call("pause_all_tracks");
 	}
+    /// <summary>
+    /// 判断是否存在指定名称的动画
+    /// </summary>
+    public bool HasAnimation(string animName)
+    {
+        if (SpineSprite == null) return false;
+        return SpineSprite.Call("has_animation", animName).AsBool();
+    }
+    /// <summary>
+    /// 播放候选列表里第一个存在的动画
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="loop">是否循环</param>
+    /// <param name="animNames">候选动画名，按优先级排列</param>
+    /// <returns>实际播放的动画名，都没找到返回 null</returns>
+    public string SetFirstAvailableAnimation(int track, bool loop, params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+            {
+                SetAnimation(track, name, loop);
+                return name;
+            }
+        }
+        return null;
+    }
+    /// <summary>
+    /// 播放候选列表里第一个存在的动画并等待播放完毕
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="loop">是否循环</param>
+    /// <param name="animNames">候选动画名，按优先级排列</param>
+    /// <returns>实际播放的动画名，都没找到返回 null</returns>
+    public async Task<string> SetFirstAvailableAnimationTask(int track, bool loop, params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+            {
+                await SetAnimationTask(track, name, loop);
+                return name;
+            }
+        }
+        return null;
+    }
+    /// <summary>
+    /// 播放候选列表里第一个存在的动画并等待事件
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="loop">是否循环</param>
+    /// <param name="animNames">候选动画名，按优先级排列</param>
+    /// <returns>实际播放的动画名，都没找到返回 0</returns>
+    public async Task<float> SetFirstAvailableAndWaitEvent(
+    int track,
+    string eventName,
+    bool loop,
+    params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+            {
+                return await SetAnimationAndWaitEvent(track, name, eventName, loop);
+            }
+        }
+        return -1f;
+    }
+    /// <summary>
+    /// 返回候选列表里第一个存在的动画名，都不存在返回 null
+    /// </summary>
+    public string GetFirstAvailableAnimation(params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+                return name;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 返回候选列表里第一个存在的动画的时长，都不存在返回 0
+    /// </summary>
+    public float GetFirstAvailableDuration(params string[] animNames)
+    {
+        var name = GetFirstAvailableAnimation(animNames);
+        return name == null ? 0f : GetAnimationDuration(name);
+    }
 }

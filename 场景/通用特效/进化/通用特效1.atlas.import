@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://b2c2njumh275a"
+path="res://.godot/imported/通用特效1.atlas-df068a3399e451d19de30cf7cfcfa45a.spatlas"
+
+[deps]
+
+source_file="res://场景/通用特效/进化/通用特效1.atlas"
+dest_files=["res://.godot/imported/通用特效1.atlas-df068a3399e451d19de30cf7cfcfa45a.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

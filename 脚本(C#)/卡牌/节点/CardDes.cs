@@ -218,18 +218,65 @@ public partial class CardDes : Control
     private static readonly Regex LabelRegex =
         new Regex(@"\$([^$]+)\$", RegexOptions.Compiled);
 
+    private static readonly Regex ArgBeforeRegex =
+        new Regex(@"_([&#])([^&#_]+)\1([^_]+)_", RegexOptions.Compiled);
+
+    private static readonly Regex ArgAfterRegex =
+        new Regex(@"_([^&#_]+)([&#])([^&#_]+)\2_", RegexOptions.Compiled);
+
     private static string ConvertLabels(string text) =>
         LabelRegex.Replace(text,
             mm => $"[color=#b3ff30][u]{mm.Groups[1].Value}[/u][/color]");
 
-    private static string ConvertLinks(string text) =>
-        LinkRegex.Replace(text,
+    private static string ConvertLinks(string text)
+    {
+        text = ArgBeforeRegex.Replace(text, mm =>
+        {
+            char sep = mm.Groups[1].Value[0];
+            string arg = mm.Groups[2].Value;
+            string word = mm.Groups[3].Value;
+
+            string meta = $"{word}|{arg}|{sep}|before";
+            return $"[color=#44ffff][url={meta}]{arg}{word}[/url][/color]";
+        });
+
+        text = ArgAfterRegex.Replace(text, mm =>
+        {
+            string word = mm.Groups[1].Value;
+            char sep = mm.Groups[2].Value[0];
+            string arg = mm.Groups[3].Value;
+
+            string meta = $"{word}|{arg}|{sep}|after";
+            return $"[color=#44ffff][url={meta}]{word}{arg}[/url][/color]";
+        });
+
+        text = LinkRegex.Replace(text,
             mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
 
+        return text;
+    }
+    private static readonly Regex PlaceholderRegex =
+    new Regex(@"\{([#&/]+):([nx])\}", RegexOptions.Compiled);
+
+    private static string ReplacePlaceholders(string rawDesc, string arg, char sep)
+    {
+        if (arg == null) return rawDesc;
+
+        string nameInsert = sep == '#' ? $"${arg}$" : arg;
+        string numInsert = arg;
+
+        return PlaceholderRegex.Replace(rawDesc, m =>
+        {
+            string allowed = m.Groups[1].Value;
+            string kind = m.Groups[2].Value;
+
+            if (!allowed.Contains(sep)) return m.Value;
+
+            return kind == "x" ? numInsert : nameInsert;
+        });
+    }
     /// <summary>
     /// 解析语法并写入。
-    /// convertLinks = true：_XXX_ 变为 URL（一般卡牌主描述用）
-    /// convertLinks = false：_XXX_ 保留（一般弹出面板用）
     /// </summary>
     public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks)
     {
@@ -304,9 +351,25 @@ public partial class CardDes : Control
         _isEnd = true;
         GetViewport().SetInputAsHandled();
     }
-    private void OnKeywordClicked(Variant meta)
+    private void OnKeywordClicked(Variant metaVariant)
     {
-        string key = meta.AsString();
+        string raw = metaVariant.AsString();
+
+        string key = raw;
+        string arg = null;
+        char sep = '\0';
+
+        int bar = raw.IndexOf('|');
+        if (bar >= 0)
+        {
+            key = raw.Substring(0, bar);
+            var rest = raw.Substring(bar + 1).Split('|');
+            if (rest.Length >= 2)
+            {
+                arg = rest[0];
+                sep = rest[1].Length > 0 ? rest[1][0] : '\0';
+            }
+        }
 
         if (CardModel.HasTemplate(key))
         {
@@ -319,7 +382,7 @@ public partial class CardDes : Control
             return;
         }
 
-        if (TryGetKeywordDescription(key, out string desc))
+        if (TryGetKeywordDescription(Model,key, arg, sep, out string desc))
         {
             GetViewport().SetInputAsHandled();
             _keywordClicked = true;
@@ -372,7 +435,8 @@ public partial class CardDes : Control
             return _urlCache;
         }
     }
-    public static bool TryGetKeywordDescription(CardModel model, string key, out string desc)
+    public static bool TryGetKeywordDescription(
+        CardModel model, string key, string arg, char sep, out string desc)
     {
         desc = null;
         if (string.IsNullOrEmpty(key)) return false;
@@ -381,21 +445,23 @@ public partial class CardDes : Control
         {
             var flags = BindingFlags.Public | BindingFlags.NonPublic
                       | BindingFlags.Static | BindingFlags.Instance | BindingFlags.IgnoreCase;
-
             var prop = model.GetType().GetProperty(key, flags);
-            if (TryGetFromProp(prop, model, out desc))
+            if (TryGetFromProp(prop, model, out string rawDesc))
+            {
+                desc = ReplacePlaceholders(rawDesc, arg, sep);
                 return true;
+            }
         }
 
         var cache = GetURLCache();
-        if (cache.TryGetValue(key, out var staticProp))
-            return TryGetFromProp(staticProp, null, out desc);
+        if (cache.TryGetValue(key, out var staticProp) &&
+            TryGetFromProp(staticProp, null, out string staticDesc))
+        {
+            desc = ReplacePlaceholders(staticDesc, arg, sep);
+            return true;
+        }
 
         return false;
-    }
-    public bool TryGetKeywordDescription(string key, out string desc)
-    {
-        return TryGetKeywordDescription(Model,key, out desc);
     }
     private static bool TryGetFromProp(
     System.Reflection.PropertyInfo prop, object instance, out string desc)
@@ -444,7 +510,9 @@ public partial class CardDes : Control
                 var scene = GD.Load<PackedScene>(Model.AnimationScenePath).Instantiate<Node2D>();
                 var col1 = scene.GetNode<Node2D>("Collection").Position;
                 var col2 = scene.GetNode<Node2D>("Collection2").Position;
+                var cols1 = scene.GetNode<Node2D>("Collection").Scale;
                 GetNode<SpineHandler>("%动画").Position = (col1-col2)+ GetNode<SpineHandler>("%土坑").Position;
+                GetNode<SpineHandler>("%动画").Scale = cols1;
                 if (scene.GetChildren().Any(c=>c.Name.ToString().Contains("Saved")))
                 {
                     GetNode<SubViewport>("%裁剪").AddChild(scene);
@@ -466,6 +534,7 @@ public partial class CardDes : Control
             else
             {
                 GetNode<SpineHandler>("%动画").Position = new(5f, 140.0f);
+                GetNode<SpineHandler>("%动画").Scale = new(1, 1);
             }
             if (Model is FighterCardModel fighterCard)
             {
@@ -509,7 +578,6 @@ public partial class CardDes : Control
                     _ => false
                 };
                 GetNode<SpineHandler>("%土坑").LoadSkeletonData("res://数据资源/僵尸动画/土坑动画.tres");
-                Visible = true;
                 if (Model.Camp == Camp.Zombie)
                 {
                     GetNode<SpineHandler>("%土坑").Visible = true;
@@ -671,6 +739,8 @@ public partial class CardDes : Control
             sprite.SetAnimation(0, "intro", false);
             if (!Model.CardType.HasFlag(CardType.Trick))
                 sprite.AddAnimation(0, "idle", true);
+
+            Visible = true;
         }
     }
     private Tween _tweenAtk;

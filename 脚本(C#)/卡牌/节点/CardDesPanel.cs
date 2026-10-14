@@ -51,9 +51,25 @@ public partial class CardDesPanel : Panel
         Close();
     }
 
-    private void OnKeywordClicked(Variant meta)
+    private void OnKeywordClicked(Variant metaVariant)
     {
-        string key = meta.AsString();
+        string raw = metaVariant.AsString();
+
+        string key = raw;
+        string arg = null;
+        char sep = '\0';
+
+        int bar = raw.IndexOf('|');
+        if (bar >= 0)
+        {
+            key = raw.Substring(0, bar);
+            var rest = raw.Substring(bar + 1).Split('|');
+            if (rest.Length >= 2)
+            {
+                arg = rest[0];
+                sep = rest[1].Length > 0 ? rest[1][0] : '\0';
+            }
+        }
 
         if (CardModel.HasTemplate(key))
         {
@@ -64,12 +80,11 @@ public partial class CardDesPanel : Panel
             return;
         }
 
-        if (CardDes.TryGetKeywordDescription(null, key, out string desc))
+        if (CardDes.TryGetKeywordDescription(null, key, arg, sep, out string desc))
         {
             GetViewport().SetInputAsHandled();
 
             var globalPos = _rtl.GlobalPosition + _rtl.GetLocalMousePosition();
-
             ShowAt(desc, globalPos);
         }
     }
