@@ -7,8 +7,8 @@ namespace Card.Pack;
 /// </summary>
 public abstract class CardPack
 {
-    /// <summary>
-    /// 卡包包含的卡牌
-    /// </summary>
-    public abstract IReadOnlyList<CardPackEntry> Cards { get; }
+	/// <summary>
+	/// 卡包包含的卡牌
+	/// </summary>
+	public abstract IReadOnlyList<CardModel> Cards { get; }
 }
