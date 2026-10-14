@@ -37,7 +37,7 @@ public static class TargetExtension
     public static bool IsRoad(this ITarget target, Func<Road, bool> filter)
         => target is NodeRoad road && filter(road.Model);
 
-    public static bool CanBeFighter(this ITarget target,out FighterCardModel fighterCard)
+    public static bool CanBeFighter(this ITarget target, out FighterCardModel fighterCard)
     {
         if (target is Fighter fighter)
         {

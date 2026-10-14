@@ -1,7 +1,5 @@
 using Battle;
 using Battle.Entity;
-using Controller;
-using Godot;
 using Play;
 using System;
 using System.Collections.Generic;
@@ -140,7 +138,7 @@ public static class CardCmd
         }
         foreach (Fighter fighter in TargetRegistry.All.OfType<Fighter>())
         {
-            if (fighter.Model != cardModel && ! CardInstances.Contains(fighter.Model))
+            if (fighter.Model != cardModel && !CardInstances.Contains(fighter.Model))
                 await fighter.Model.FireTiming(timing, paramters);
         }
     }

@@ -3,7 +3,6 @@ using Battle.Texture;
 using Card;
 using Card.Cmd;
 using Godot;
-using Logger;
 using Pack;
 using Play;
 using System;
@@ -51,7 +50,7 @@ public partial class NodeRoad : Control, ITarget
         GetNode<Node2D>("%环境高亮").Position = model.Type switch
         {
             RoadType.Height => new Vector2(0, -36.5f),
-            _ => new(0,-24.5f)
+            _ => new(0, -24.5f)
         };
         GetNode<Node2D>("%环境高亮").Scale = _iColli1Scale;
         GetNode<Sprite2D>("%图标").Texture = TextureBag.LoadCurrent().ForRoad(Model.Type, Model.Index % 2 == 0);
@@ -74,7 +73,7 @@ public partial class NodeRoad : Control, ITarget
     private Vector2 _iColli1Scale;
     public static bool CanTargetedBy(CardModel card)
     {
-        return TargetRegistry.AnyCanBeTarget(card, card.TargetType,false, card.TargetFilter);
+        return TargetRegistry.AnyCanBeTarget(card, card.TargetType, false, card.TargetFilter);
     }
     /// <summary>
     /// 绑定的道路数据
@@ -84,8 +83,8 @@ public partial class NodeRoad : Control, ITarget
     /// 最近一次被选中的类型
     /// </summary>
     public RoadTargetKind LastTargetKind => Model.LastTargetKind;
-    public Func<CardModel, Func<ITarget, bool>,bool, bool> CanBeTarget =>
-    (t, f,from) =>
+    public Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget =>
+    (t, f, from) =>
     {
         bool? a;
         a = f?.Invoke(this);
@@ -154,7 +153,7 @@ public partial class NodeRoad : Control, ITarget
     {
         bool line = NeedLine(targetType);
         bool g1 = NeedG1(targetType);
-        bool g2 = (NeedG2(targetType) || (NeedG1(targetType) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant && p.Model.CardTag.HasFlag(CardTag.Coop)))) && Model.GetFighters().Any(p=>p.Model.Camp == Camp.Plant);
+        bool g2 = (NeedG2(targetType) || (NeedG1(targetType) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant && p.Model.CardTag.HasFlag(CardTag.Coop)))) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant);
 
         if (!line && !g1) return;
 
@@ -277,7 +276,7 @@ public partial class NodeRoad : Control, ITarget
         ar1.Visible = false;
         ar2.Visible = false;
 
-        if (Model.GetFighters().Count(f=> f.Model.Camp == Camp.Plant) == 1)
+        if (Model.GetFighters().Count(f => f.Model.Camp == Camp.Plant) == 1)
         {
             if (P1roadTargetKine != Location.Zombie)
             {
@@ -331,7 +330,7 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
             _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
             _tweenTargeted3.TweenProperty(h2, "modulate", _colortgBox.Default, 0.2f);
-            if (Model.GetFighters().Count(p=>p.Model.Camp == Camp.Plant) == 1)
+            if (Model.GetFighters().Count(p => p.Model.Camp == Camp.Plant) == 1)
             {
                 var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
                 P1roadTargetKine = f.Model.Location;
@@ -372,8 +371,8 @@ public partial class NodeRoad : Control, ITarget
             TargetedGridArrow(ctx.FighterCard, true);
         }
     }
-    private Location P2roadTargetKine {  get; set; }
-    private Location P1roadTargetKine {  get; set; }
+    private Location P2roadTargetKine { get; set; }
+    private Location P1roadTargetKine { get; set; }
     private void TargetedGridArrow(FighterCardModel fighterCard, bool isCoop)
     {
         var bat = GetNode<TextureRect>("%Battle");

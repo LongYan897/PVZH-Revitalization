@@ -1,6 +1,6 @@
 using System;
 
-namespace Frenemypillar.Script.Attributes;
+namespace Save;
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = true)]
 public sealed class RunSavedAttribute : Attribute

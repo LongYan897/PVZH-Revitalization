@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace Card;
 
@@ -39,8 +38,9 @@ public static class ClassExtension
 
     public static string ToName(this Class c)
     {
-        return c switch {
-            Class.Beastly =>"野兽",
+        return c switch
+        {
+            Class.Beastly => "野兽",
             Class.Brainy => "有脑",
             Class.Crazy => "疯狂",
             Class.Guardian => "守卫",

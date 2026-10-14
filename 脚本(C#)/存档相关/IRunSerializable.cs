@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Frenemypillar.Script.RunSet;
+namespace Save;
 
 public interface IRunSerializable
-{    
+{
     /// <summary>
     /// 存储成文档的键
     /// </summary>

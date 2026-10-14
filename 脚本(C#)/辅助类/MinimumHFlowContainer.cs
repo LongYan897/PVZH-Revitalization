@@ -1,9 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pack;
 
@@ -17,6 +12,6 @@ public partial class MinimumHFlowContainer : HFlowContainer
     private void SizeChanged()
     {
         GD.Print(Size.Y);
-        CustomMinimumSize = new Vector2(CustomMinimumSize.X,_GetMinimumSize().Y);
+        CustomMinimumSize = new Vector2(CustomMinimumSize.X, _GetMinimumSize().Y);
     }
 }

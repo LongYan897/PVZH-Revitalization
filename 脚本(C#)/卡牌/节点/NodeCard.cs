@@ -1,5 +1,3 @@
-using Battle;
-using Battle.Entity;
 using Card.Cmd;
 using Controller;
 using Godot;
@@ -7,7 +5,6 @@ using Logger;
 using Pack;
 using Spine;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
@@ -344,11 +341,11 @@ public partial class NodeCard : Control
     }
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is not InputEventMouseButton mb) return; 
+        if (@event is not InputEventMouseButton mb) return;
         if (_openedCard != null && _openedCard != this && IsInstanceValid(_openedCard))
             _openedCard.CloseNonBattle();
     }
-    
+
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;
@@ -462,7 +459,7 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
-        TargetRegistry.CallTargeted(Model, Model.TargetType,false);
+        TargetRegistry.CallTargeted(Model, Model.TargetType, false);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
     {
@@ -724,7 +721,7 @@ public partial class NodeCard : Control
             var col = (ITarget)(GodotObject)area.GetMeta("Target");
             if (col == null) continue;
             if (!col.Calling) continue;
-            if (!col.CanBeTarget(Model, Model.TargetFilter,false)) continue;
+            if (!col.CanBeTarget(Model, Model.TargetFilter, false)) continue;
 
             Vector2 areaPos = area is Node2D n2d
                 ? n2d.GlobalPosition

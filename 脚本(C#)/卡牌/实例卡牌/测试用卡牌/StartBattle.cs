@@ -1,8 +1,4 @@
 using Battle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Target;
 
@@ -21,7 +17,7 @@ public class StartBattle : CardModel
         {
             if (road.LastTargetKind == RoadTargetKind.Line)
             {
-                await PlayInstantAnimation("bloom",target);
+                await PlayInstantAnimation("bloom", target);
                 await road.Model.Start();
             }
         }

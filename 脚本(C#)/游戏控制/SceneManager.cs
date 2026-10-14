@@ -1,10 +1,8 @@
 using Card;
 using Godot;
 using Scene;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Controller;
@@ -30,7 +28,7 @@ public static class SceneManager
     {
         Main.Load.Modulate = new(1, 1, 1, 0);
         Tween tween = Main.Load.CreateTween();
-        tween.TweenProperty(Main.Load,"modulate",new Color(1,1,1,1),0.2f);
+        tween.TweenProperty(Main.Load, "modulate", new Color(1, 1, 1, 1), 0.2f);
         await Task.WhenAll(
             Main.Load.ToSignal(tween, Tween.SignalName.Finished).ToTask(),
             Main.Load.LoadIn());

@@ -1,12 +1,4 @@
-using Frenemypillar.Script.RunSet.RunSerializableSet.BasicSet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Frenemypillar.Script.RunSet.RunPropSet.BasicSet;
-
+namespace Save;
 
 public class StringProps(string name, string data) : RunProps<StringProp>
 {

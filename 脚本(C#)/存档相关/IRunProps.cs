@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Frenemypillar.Script.RunSet;
+namespace Save;
 
 /// <summary>
 /// 本局Run持久属性

@@ -30,7 +30,7 @@ public class Player
     /// 为玩家设置英雄
     /// </summary>
     /// <typeparam name="T">英雄类</typeparam>
-    public void SetHero<T>() where T : HeroModel,new()
+    public void SetHero<T>() where T : HeroModel, new()
     {
         var hero = HeroModel.Load<T>();
         Status.SetHero(hero);

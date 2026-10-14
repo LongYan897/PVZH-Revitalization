@@ -1,8 +1,6 @@
 using Card.Cmd;
-using Godot;
 using Phrases;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card;

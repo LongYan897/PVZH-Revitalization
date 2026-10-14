@@ -4,9 +4,6 @@ using Hero.String;
 using Spine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hero;
 /// <summary>
@@ -78,7 +75,7 @@ public partial class HeroDes : Control
     }
     public override void _Input(InputEvent @event)
     {
-        if(@event is InputEventScreenTouch touch)
+        if (@event is InputEventScreenTouch touch)
         {
             if (!touch.Pressed) return;
             if (!_isEnd)
@@ -97,8 +94,8 @@ public partial class HeroDes : Control
     }
     public void Display()
     {
-        GetNode<Control>("%单位容器").Scale = HeroString.GetData(_heroName,"DesScale").AsSingle()*new Vector2(1,1);
-        GetNode<Control>("%单位容器").Position = HeroString.GetData(_heroName, "DesOffset").AsSingle() * new Vector2(0, 1) + new Vector2(0,-335);
+        GetNode<Control>("%单位容器").Scale = HeroString.GetData(_heroName, "DesScale").AsSingle() * new Vector2(1, 1);
+        GetNode<Control>("%单位容器").Position = HeroString.GetData(_heroName, "DesOffset").AsSingle() * new Vector2(0, 1) + new Vector2(0, -335);
         Open();
         Fresh();
     }
@@ -114,5 +111,5 @@ public partial class HeroDes : Control
         GetNode<Sprite2D>("%单位框").Modulate = category[1].ToColor();
         GetNode<Sprite2D>("%单位框2").Modulate = category[0].ToColor();
     }
-    
+
 }

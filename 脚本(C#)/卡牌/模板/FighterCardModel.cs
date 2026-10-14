@@ -4,17 +4,12 @@ using Card.Cmd;
 using Card.String;
 using Godot;
 using Hero;
-using Logger;
 using Play;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
 using Variable;
-using Variable.Special;
-using static Godot.HttpRequest;
-using static Godot.OpenXRCompositionLayer;
 
 namespace Card;
 
@@ -28,9 +23,9 @@ public class FighterCardModel : CardModel
     /// 隐藏单位的数值,并销毁单位
     /// </summary>
     /// <param name="Icon">融合的特殊图像</param>
-    public static void Overlay(FighterCardModel fighter,Texture2D Icon)
+    public static void Overlay(FighterCardModel fighter, Texture2D Icon)
     {
-        Fighter.Overlay(fighter,Icon);
+        Fighter.Overlay(fighter, Icon);
     }
     /// <summary>
     /// 把一个单位归类到自己的子类
@@ -99,16 +94,16 @@ public class FighterCardModel : CardModel
     /// 额外攻击一次
     /// </summary>
     /// <returns></returns>
-    public async Task Battle(bool kill = true) => await Battle(CreateOwnedStack(),kill);
+    public async Task Battle(bool kill = true) => await Battle(CreateOwnedStack(), kill);
     /// <summary>
     /// 开始战斗
     /// </summary>
-    public async Task Battle(AtkStack atkStack,bool kill = false)
+    public async Task Battle(AtkStack atkStack, bool kill = false)
     {
         if (Atk.Current <= 0) return;
         Variable<bool> stop = new("Stop", false);
-        await FireTiming(Timing.TryStopAttack, stop,this);
-        await CardCmd.TimingOnCards(this,Timing.TryStopAttack, stop, this);
+        await FireTiming(Timing.TryStopAttack, stop, this);
+        await CardCmd.TimingOnCards(this, Timing.TryStopAttack, stop, this);
         if (stop.Current)
         {
             await FireTiming(Timing.AfterAttack, atkStack);
@@ -137,7 +132,7 @@ public class FighterCardModel : CardModel
                     return f.Model.Camp == Camp.Zombie;
             }
             );
-        target ??= PlayerManager.GetPlayer(Camp switch { Camp.Zombie => Camp.Plant , Camp.Plant => Camp.Zombie, _ => 0}).Status.AtkMe();
+        target ??= PlayerManager.GetPlayer(Camp switch { Camp.Zombie => Camp.Plant, Camp.Plant => Camp.Zombie, _ => 0 }).Status.AtkMe();
         atkStack.Targeting(target);
 
         await FireTiming(Timing.ModifyTarget, atkStack);
@@ -170,9 +165,9 @@ public class FighterCardModel : CardModel
             {
                 atkStack.FinalDamage = atkStack.BaseDamage;
 
-                await CardCmd.TimingOnCards(null,Timing.WhenAttacked, atkStack);
+                await CardCmd.TimingOnCards(null, Timing.WhenAttacked, atkStack);
 
-                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter,this, atkStack);
+                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, this, atkStack);
 
                 await CardCmd.TimingOnCards(null, Timing.AfterAttacked, atkStack);
 
@@ -192,7 +187,7 @@ public class FighterCardModel : CardModel
                     if (fighter.Model.IsDie)
                         await fighter.Model.Kill(VariableReason.Fighter);
                 }
-            } 
+            }
         }
         if (atkStack.ExtraAttacks > 0)
         {
@@ -214,13 +209,13 @@ public class FighterCardModel : CardModel
     bool playHurtAnim = true,
     bool immediateDeath = true)
     {
-        stack ??= new(null, [Targeted()], null , amount);
+        stack ??= new(null, [Targeted()], null, amount);
         int before = Hp.Current;
         await FireTiming(Timing.ModifyCardDamage, stack);
         await CardCmd.TimingOnCards(this, Timing.ModifyCardDamage, stack);
         await Hp.Lose(stack.FinalDamage, reason);
         await FireTiming(Timing.OnDamaged, stack);
-        await CardCmd.TimingOnCards(this,Timing.OnDamaged, stack);
+        await CardCmd.TimingOnCards(this, Timing.OnDamaged, stack);
         int actual = before - Hp.Current;
 
         if (playHurtAnim && actual > 0)
@@ -278,13 +273,13 @@ public class FighterCardModel : CardModel
     /// </summary>
     /// <param name="cardModel">要把这张卡当作目标的卡牌</param>
     /// <returns></returns>
-    public bool CanbeTarget(CardModel cardModel,bool fromBuff)
+    public bool CanbeTarget(CardModel cardModel, bool fromBuff)
     {
         bool hpbol = HpType.Current.ExtraFilter(cardModel);
         bool fusOrEvo = true;
         if (cardModel is FighterCardModel fighter && (IsFusion || fighter.IsEvolution))
         {
-            fusOrEvo = CanFusion(fighter,out var _) || fighter.CanEvolution(this);
+            fusOrEvo = CanFusion(fighter, out var _) || fighter.CanEvolution(this);
             fusOrEvo &= fighter.Camp == Camp;
         }
         else if (cardModel is FighterCardModel fighter2)
@@ -355,13 +350,13 @@ public class FighterCardModel : CardModel
     /// <returns></returns>
     public async Task GainHp(int amount, Variable.VariableReason reason)
     {
-        Variable<bool> stop = new("Stop",false);
-        await CardCmd.TimingOnCards(null, Timing.TryStopGainMaxHp, stop,this);
+        Variable<bool> stop = new("Stop", false);
+        await CardCmd.TimingOnCards(null, Timing.TryStopGainMaxHp, stop, this);
         if (stop.Current) return;
-        Variable<int> maxHp = new("MaxHp",amount);
+        Variable<int> maxHp = new("MaxHp", amount);
         Variable<int> hp = new("Hp", amount);
-        await CardCmd.TimingOnCards(null,Timing.ModifyGainMaxHp,maxHp,this);
-        await MaxHp.Gain(maxHp.Current,reason);
+        await CardCmd.TimingOnCards(null, Timing.ModifyGainMaxHp, maxHp, this);
+        await MaxHp.Gain(maxHp.Current, reason);
         Variable<bool> stop2 = new("Stop2", false);
         await CardCmd.TimingOnCards(null, Timing.TryStopHeal, stop2, this);
         if (stop2.Current) return;
@@ -384,10 +379,10 @@ public class FighterCardModel : CardModel
             amount = cap - Hp.Current;
         if (amount <= 0) return;
         Variable<int> hp = new("Hp", amount);
-        await CardCmd.TimingOnCards(null, Timing.ModifyHeal, hp,this);
+        await CardCmd.TimingOnCards(null, Timing.ModifyHeal, hp, this);
         await Hp.Gain(hp.Current, reason);
-        await FireTiming(Timing.OnHealed, hp.Current,this);
-        await CardCmd.TimingOnCards(this, Timing.OnHealed, hp.Current,this);
+        await FireTiming(Timing.OnHealed, hp.Current, this);
+        await CardCmd.TimingOnCards(this, Timing.OnHealed, hp.Current, this);
     }
 
     public virtual Task AnimationWhenPlayed(Road road) { return Task.CompletedTask; }
@@ -440,7 +435,7 @@ public class FighterCardModel : CardModel
         }
         else if (target.CanBeFighter(out FighterCardModel fighter))
         {
-            if (fighter.CanFusion(this,out var icon))
+            if (fighter.CanFusion(this, out var icon))
             {
                 await CardCmd.Fuse(this, fighter);
                 Overlay(fighter, icon);
@@ -468,7 +463,7 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 是否能作为其他卡牌的融合对象
     /// </summary>
-    public virtual bool CanFusion(FighterCardModel cardModel,out Texture2D fuseIcon) { fuseIcon = null; return false; }
+    public virtual bool CanFusion(FighterCardModel cardModel, out Texture2D fuseIcon) { fuseIcon = null; return false; }
     /// <summary>
     /// 是否能把其他卡牌当作进化的对象
     /// </summary>

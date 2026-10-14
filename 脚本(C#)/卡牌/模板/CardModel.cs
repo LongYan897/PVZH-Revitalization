@@ -6,15 +6,12 @@ using Controller;
 using Godot;
 using Logger;
 using Pack;
-using Phrases;
 using Play;
 using Spine;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Target;
@@ -74,7 +71,7 @@ public class CardModel
     public bool CanPlay()
     {
         var p = PlayerManager.GetPlayer(Camp);
-        return (Fighter.CanTargetedBy(this,false) || NodeRoad.CanTargetedBy(this) ) && !Road.IsBattling && !CardCmd.StopCardPlay && (p == null || (p != null && (p.Status.Hero.Cost == null || ( p.Status.Hero.Cost != null && p.Status.Hero.Cost.Current >= Cost.Current))));
+        return (Fighter.CanTargetedBy(this, false) || NodeRoad.CanTargetedBy(this)) && !Road.IsBattling && !CardCmd.StopCardPlay && (p == null || (p != null && (p.Status.Hero.Cost == null || (p.Status.Hero.Cost != null && p.Status.Hero.Cost.Current >= Cost.Current))));
     }
     /// <summary>
     /// 按照名称获取卡牌模板
@@ -198,7 +195,7 @@ public class CardModel
             };
         }
     }
-    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0,string eventName = null)
+    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0, string eventName = null)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -207,11 +204,11 @@ public class CardModel
         node.AddChild(sp);
         sp.LoadSkeletonData(AnimationPath);
         if (eventName != null)
-            await sp.SetAnimationAndFreeOnEvent(track, animName, eventName,false);
+            await sp.SetAnimationAndFreeOnEvent(track, animName, eventName, false);
         else
             await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
     }
-    protected async Task PlayLoopAnimation(string animName, ITarget target,int track = 0)
+    protected async Task PlayLoopAnimation(string animName, ITarget target, int track = 0)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -312,7 +309,7 @@ public class CardModel
     /// <summary>
     /// 卡牌的动画场景路径
     /// </summary>
-    public string AnimationScenePath {  get; private set; }
+    public string AnimationScenePath { get; private set; }
     /// <summary>
     /// 卡牌的稀有度
     /// </summary>
@@ -481,7 +478,7 @@ public class CardModel
         {
             if (this is FighterCardModel fighterCard && !fighterCard.IsPlaced && buff.OnlyPlaced) continue;
             if (buff.Timings.Contains(timing))
-                await buff.OnTiming(timing, this,parameters);
+                await buff.OnTiming(timing, this, parameters);
         }
         if (this is FighterCardModel fighter && fighter.IsPlaced)
         {
@@ -504,8 +501,8 @@ public class CardModel
         foreach (var buff in BuffList.ToList())
         {
             if (!buff.IsTransferable) continue;
-            await RemoveBuff(buff,VariableReason.Self);
-            await newCard.AddBuff(buff,VariableReason.Self);
+            await RemoveBuff(buff, VariableReason.Self);
+            await newCard.AddBuff(buff, VariableReason.Self);
         }
     }
 

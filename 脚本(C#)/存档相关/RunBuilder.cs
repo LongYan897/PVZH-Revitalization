@@ -1,9 +1,8 @@
-using Frenemypillar.Script.RunSet.RunPropSet.BasicSet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Frenemypillar.Script.RunSet;
+namespace Save;
 
 public class PropsBuilder
 {

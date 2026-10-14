@@ -1,12 +1,6 @@
-using Frenemypillar.Script.RunSet.RunPropSet.BasicSet;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Frenemypillar.Script.RunSet.RunSerializableSet.BasicSet;
+namespace Save;
 
 public class ListSerializable(string key, List<IRunSaveProp> data) : RunSerializable<ListProp>
 {

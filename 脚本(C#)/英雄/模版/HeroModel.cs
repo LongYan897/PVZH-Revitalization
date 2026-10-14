@@ -1,19 +1,13 @@
 using Battle;
-using Battle.Entity;
 using Card;
 using Card.Cmd;
-using Controller;
-using Godot;
 using Hero.String;
 using Play;
 using Scene;
-using Spine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using Variable;
 
@@ -34,7 +28,7 @@ public abstract class HeroModel
     /// <summary>
     /// 阵营
     /// </summary>
-    public Camp Camp {  get; private set; }
+    public Camp Camp { get; private set; }
     /// <summary>
     /// 当前血量
     /// </summary>
@@ -54,19 +48,19 @@ public abstract class HeroModel
     /// <summary>
     /// 英雄数据
     /// </summary>
-    public HeroString Data {  get; private set; }
+    public HeroString Data { get; private set; }
     /// <summary>
     /// 英雄变量被改变
     /// </summary>
     /// <returns></returns>
-    public async Task Changed(string sign,int before,int after,int delta,VariableReason reason,CardModel cardModel,params object[] objects)
+    public async Task Changed(string sign, int before, int after, int delta, VariableReason reason, CardModel cardModel, params object[] objects)
     {
         if (reason == VariableReason.None) return;
         if (sign == "MaxHealth")
         {
             if (Health.Current > after)
             {
-                await Health.Set(after,VariableReason.None,null);
+                await Health.Set(after, VariableReason.None, null);
             }
         }
         else if (sign == "Cost")
@@ -81,9 +75,9 @@ public abstract class HeroModel
     }
     private async void PlayAnimation(string name, bool returnToIdle, int track = 0)
     {
-        await HeroInstance.GetNode(this).PlayAnimation(name,returnToIdle,track);
+        await HeroInstance.GetNode(this).PlayAnimation(name, returnToIdle, track);
     }
-    private async Task PlayAnimationTask(string name,bool returnToIdle, int track = 0)
+    private async Task PlayAnimationTask(string name, bool returnToIdle, int track = 0)
     {
         await HeroInstance.GetNode(this).PlayAnimation(name, returnToIdle, track);
     }
@@ -104,10 +98,10 @@ public abstract class HeroModel
     AtkStack stack = null)
     {
         Random random = new();
-        int shield = random.Next(1,4);
+        int shield = random.Next(1, 4);
         Variable<bool> stop = new("HeroDamaged", false);
         stack ??= new(null, [Targeted()], null, amount);
-        await CardCmd.TimingOnCards(null, Timing.TryStopHeroTakeDamage, stop,this);
+        await CardCmd.TimingOnCards(null, Timing.TryStopHeroTakeDamage, stop, this);
         PlayAnimation("hit", true);
         await BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield, cardModel);
         if (shield + Shield.Current >= 8)
@@ -123,7 +117,7 @@ public abstract class HeroModel
 
         if (Health.Current <= 0)
         {
-            
+
         }
     }
     /// <summary>
@@ -131,11 +125,11 @@ public abstract class HeroModel
     /// </summary>
     /// <typeparam name="T">英雄类</typeparam>
     /// <returns></returns>
-    public static HeroModel Load<T>() where T : HeroModel,new()
+    public static HeroModel Load<T>() where T : HeroModel, new()
     {
         return Load<T>(HeroString.Loading(typeof(T).Name));
     }
-    private static T Load<T>(HeroString heroString) where T : HeroModel,new()
+    private static T Load<T>(HeroString heroString) where T : HeroModel, new()
     {
         T model = new T
         {
@@ -163,11 +157,11 @@ public abstract class HeroModel
     /// <param name="camp"></param>
     /// <param name="category"></param>
     /// <returns></returns>
-    public static List<Type> SeekHeroModel(string camp = null,string category = null) 
+    public static List<Type> SeekHeroModel(string camp = null, string category = null)
     {
         List<Type> heroModels = new List<Type>();
         List<Type> types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(HeroModel))).ToList();
-        foreach(Type type in types)
+        foreach (Type type in types)
         {
             string name = type.Name;
             if (camp == null || HeroString.GetData(name, "Camp").AsString() == camp && (category == null || HeroString.GetData(name, "Category").AsStringArray().Contains(category)))

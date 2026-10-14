@@ -1,11 +1,7 @@
-using Godot.Collections;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Frenemypillar.Script.RunSet;
+namespace Save;
 
 public abstract class RunSerializable<T> : IRunSerializable where T : IRunSaveProp
 {
@@ -38,7 +34,7 @@ public abstract class RunSerializable<T> : IRunSerializable where T : IRunSavePr
                 childFrags.Add(childSnap.ToJsonPair());
             }
             string body = string.Join(",", childFrags);
-            return onlyValue ? $"{{{body}}}" : $"\"{ Key}\":{{{body}}}";
+            return onlyValue ? $"{{{body}}}" : $"\"{Key}\":{{{body}}}";
         }
         else if (SnapshotData is ListProp listProp)
         {
@@ -54,8 +50,8 @@ public abstract class RunSerializable<T> : IRunSerializable where T : IRunSavePr
         else if (SnapshotData is StringProp stringProp)
         {
             string esc = stringProp.ValueProp.EscapeJson();
-            string val = $"\"{ esc}\"";
-            return onlyValue ? val : $"\"{ Key}\":{val}";
+            string val = $"\"{esc}\"";
+            return onlyValue ? val : $"\"{Key}\":{val}";
         }
         else if (SnapshotData is LongProp longProp)
         {
@@ -65,7 +61,7 @@ public abstract class RunSerializable<T> : IRunSerializable where T : IRunSavePr
             uint low = (uint)u;
             string body = $"\"$LongHalfUp\":{high},\"$LongHalfDown\":{low}";
             string objText = $"{{{body}}}";
-            return onlyValue ? objText : $"\"{ Key}\":{objText}";
+            return onlyValue ? objText : $"\"{Key}\":{objText}";
         }
         else
         {

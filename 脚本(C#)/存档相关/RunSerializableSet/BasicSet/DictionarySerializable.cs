@@ -1,11 +1,6 @@
-using Frenemypillar.Script.RunSet.RunPropSet.BasicSet;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Frenemypillar.Script.RunSet.RunSerializableSet.BasicSet;
+namespace Save;
 
 public class DictionarySerializable(string key, List<(string key, IRunSaveProp saveProp)> data) : RunSerializable<DictionaryProp>
 {

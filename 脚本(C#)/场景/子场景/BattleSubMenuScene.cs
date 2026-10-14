@@ -1,21 +1,11 @@
 using Card;
 using Card.Cmd;
-using Card.Dance;
-using Card.Flower;
-using Card.Imp;
-using Card.Pea;
-using Card.Scientist;
 using Controller;
 using Godot;
 using Hero;
 using Phrases;
 using Play;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Scene;
@@ -53,14 +43,14 @@ public partial class BattleSubMenuScene : SubMenuScene
             Camp.Zombie => "res://素材(C#)/文本图片/inhnd_brains.png",
             Camp.Plant => "res://素材(C#)/文本图片/inhnd_sun_gb.png",
             _ => ""
-        }); 
+        });
         instance.GetNode<TextureRect>("%费用特效").Texture = GD.Load<Texture2D>(PlayerManager.HostPlayer.Status.Hero.Camp switch
         {
             Camp.Zombie => "res://素材(C#)/文本图片/inhnd_brains.png",
             Camp.Plant => "res://素材(C#)/文本图片/inhnd_sun_gb.png",
             _ => ""
         });
-        await HeroInstance.Create(PlayerManager.HostPlayer.Status.Hero,instance.GetNode<Marker2D>("%主玩家").GlobalPosition,false);
+        await HeroInstance.Create(PlayerManager.HostPlayer.Status.Hero, instance.GetNode<Marker2D>("%主玩家").GlobalPosition, false);
         instance.GetNode<HeroHealth>("%英雄血量").ExchangeColor(PlayerManager.HostPlayer.Status.Hero.Camp);
         var pE = PlayerManager.HostPlayer.Status.Hero.Camp switch
         {
@@ -82,24 +72,24 @@ public partial class BattleSubMenuScene : SubMenuScene
             Camp.Plant => "res://素材(C#)/文本图片/inhnd_sun_gb.png",
             _ => ""
         });
-        await HeroInstance.Create(pE.Status.Hero, instance.GetNode<Marker2D>("%副玩家").GlobalPosition,true);
+        await HeroInstance.Create(pE.Status.Hero, instance.GetNode<Marker2D>("%副玩家").GlobalPosition, true);
         instance.GetNode<HeroHealth>("%英雄血量2").ExchangeColor(pE.Status.Hero.Camp);
     }
-    public static async Task PlayHurt(Player player, int amount, int shieldAmount,CardModel cardModel)
+    public static async Task PlayHurt(Player player, int amount, int shieldAmount, CardModel cardModel)
     {
         CardCmd.PushStop();
         if (player == PlayerManager.HostPlayer)
         {
-            await instance.GetNode<HeroHealth>("%英雄血量").Hurt(player.Status.Hero,amount,shieldAmount,cardModel,instance.GetNode<SpineHandler>("%护盾"));
+            await instance.GetNode<HeroHealth>("%英雄血量").Hurt(player.Status.Hero, amount, shieldAmount, cardModel, instance.GetNode<SpineHandler>("%护盾"));
         }
         else
         {
-            await instance.GetNode<HeroHealth>("%英雄血量2").Hurt(player.Status.Hero,amount,shieldAmount,cardModel, instance.GetNode<SpineHandler>("%护盾2"));
+            await instance.GetNode<HeroHealth>("%英雄血量2").Hurt(player.Status.Hero, amount, shieldAmount, cardModel, instance.GetNode<SpineHandler>("%护盾2"));
         }
         CardCmd.PopStop();
     }
     private static bool _firstPlay = true;
-    public static async Task PlayCostGain(Player player,int amount)
+    public static async Task PlayCostGain(Player player, int amount)
     {
         if (_firstPlay)
         {
@@ -123,7 +113,7 @@ public partial class BattleSubMenuScene : SubMenuScene
             glNode2 = instance.GetNode<TextureRect>("%阳光发光3");
             costLabel2 = instance.GetNode<Label>("%数值3");
             costLabel = instance.GetNode<Label>("%数值");
-            posIn = new Vector2(-360,-380.0f);
+            posIn = new Vector2(-360, -380.0f);
             posStart = new Vector2(68.0f, -380.0f);
             posDiff = new Vector2(-30, 0);
         }
@@ -147,23 +137,23 @@ public partial class BattleSubMenuScene : SubMenuScene
         twNode.Position = posIn;
         twNode.Scale = new(0.6f, 0.6f);
         tween.TweenProperty(twNode, "position", posStart, 0.4f / 2).SetEase(Tween.EaseType.Out);
-        tween.TweenProperty(twNode, "position", posStart + new Vector2(player == PlayerManager.HostPlayer ? -20 : 20, 0), 0.6f /2).SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(twNode, "position", posStart + new Vector2(player == PlayerManager.HostPlayer ? -20 : 20, 0), 0.6f / 2).SetEase(Tween.EaseType.Out);
         Tween tween2 = instance.CreateTween();
-        tween2.TweenProperty(twNode, "scale", new Vector2(1,0.6f), 0.2f/2).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        tween2.TweenProperty(twNode, "scale", new Vector2(0.4f, 0.6f) * 1.05f, 0.6f/2).SetTrans(Tween.TransitionType.Quad);
-        tween2.TweenProperty(twNode, "scale", new Vector2(0.6f, 0.6f), 0.1f/2).SetTrans(Tween.TransitionType.Quad);
-        tween.TweenProperty(twNode, "position",tgNode.Position + posDiff,0.4f);
-        await Task.WhenAll(instance.ToSignal(tween, Tween.SignalName.Finished).ToTask(),instance.ToSignal(tween2,Tween.SignalName.Finished).ToTask());
+        tween2.TweenProperty(twNode, "scale", new Vector2(1, 0.6f), 0.2f / 2).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        tween2.TweenProperty(twNode, "scale", new Vector2(0.4f, 0.6f) * 1.05f, 0.6f / 2).SetTrans(Tween.TransitionType.Quad);
+        tween2.TweenProperty(twNode, "scale", new Vector2(0.6f, 0.6f), 0.1f / 2).SetTrans(Tween.TransitionType.Quad);
+        tween.TweenProperty(twNode, "position", tgNode.Position + posDiff, 0.4f);
+        await Task.WhenAll(instance.ToSignal(tween, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween2, Tween.SignalName.Finished).ToTask());
         twNode.Visible = false;
         glNode.Visible = true;
         tween = instance.CreateTween();
-        tween.TweenProperty(tgNode,"scale", new Vector2(0.8f,0.8f),0.1f).SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(tgNode, "scale", new Vector2(0.8f, 0.8f), 0.1f).SetEase(Tween.EaseType.Out);
         tween.TweenProperty(tgNode, "scale", new Vector2(0.6f, 0.6f), 0.1f).SetEase(Tween.EaseType.Out);
         glNode.Visible = player.Status.Hero.Camp == Camp.Plant;
         glNode.Modulate = new Color(1, 1, 1, 0);
         Tween tween1 = instance.CreateTween();
-        tween1.TweenProperty(tgNode, "modulate", new Color(1,1,1,1),0.2f);
-        await Task.WhenAll(instance.ToSignal(tween, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween1,Tween.SignalName.Finished).ToTask());
+        tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 1), 0.2f);
+        await Task.WhenAll(instance.ToSignal(tween, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween1, Tween.SignalName.Finished).ToTask());
         var cost = costLabel.Text.ToInt() + amount;
         costLabel.Text = $"{cost}";
         CardCmd.PopStop();
@@ -172,7 +162,7 @@ public partial class BattleSubMenuScene : SubMenuScene
         glNode.Visible = false;
         glNode2.Visible = false;
     }
-    public static async Task PlayCostLose(Player player,int amount)
+    public static async Task PlayCostLose(Player player, int amount)
     {
         if (_firstPlay)
         {
@@ -206,15 +196,15 @@ public partial class BattleSubMenuScene : SubMenuScene
         twNode.Position = tgNode.Position + posDiff;
         twNode.Scale = new();
         Tween tween1 = instance.CreateTween();
-        tween1.TweenProperty(tgNode, "modulate",new Color(1,1,1,0.1f),0.3f);
+        tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 0.1f), 0.3f);
         tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 1), 0.1f);
         Tween tween2 = instance.CreateTween();
         twNode.Modulate = new Color(1, 1, 1, 1);
         tween2.TweenProperty(twNode, "scale", new Vector2(0.5f, 0.5f), 0.1f);
         Tween tweenModu = instance.CreateTween();
         tweenModu.TweenProperty(twNode, "modulate", new Color(1, 1, 1, 0), 0.4f);
-        tween2.TweenProperty(twNode, "position", tgNode.Position + posDiff + new Vector2(0,-120f), 0.3f).SetEase(Tween.EaseType.Out);
-        await Task.WhenAll( instance.ToSignal(tween2, Tween.SignalName.Finished).ToTask() , instance.ToSignal(tweenModu,Tween.SignalName.Finished).ToTask(),instance.ToSignal(tween, Tween.SignalName.Finished).ToTask());
+        tween2.TweenProperty(twNode, "position", tgNode.Position + posDiff + new Vector2(0, -120f), 0.3f).SetEase(Tween.EaseType.Out);
+        await Task.WhenAll(instance.ToSignal(tween2, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tweenModu, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween, Tween.SignalName.Finished).ToTask());
         twNode.Visible = false;
         twNode.Modulate = new Color(1, 1, 1, 1);
         if (amount > 1)

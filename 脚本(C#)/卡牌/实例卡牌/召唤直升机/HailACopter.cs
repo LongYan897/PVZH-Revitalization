@@ -3,10 +3,6 @@ using Battle.Entity;
 using Card.Cmd;
 using Controller;
 using Controller.WavPlay;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Target;
 
@@ -27,7 +23,7 @@ public class HailACopter : CardModel
         {
             var card = Load<CopterCommando>() as FighterCardModel;
             card.ExDescription = "由召唤直升机召唤";
-             await CardCmd.FighterGenerate(card, road, Location.Zombie);
+            await CardCmd.FighterGenerate(card, road, Location.Zombie);
         }
     }
 }

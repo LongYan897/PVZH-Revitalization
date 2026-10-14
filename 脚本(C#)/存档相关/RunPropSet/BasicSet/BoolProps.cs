@@ -1,13 +1,6 @@
-using Frenemypillar.Script.RunSet.RunSerializableSet.BasicSet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace Save;
 
-namespace Frenemypillar.Script.RunSet.RunPropSet.BasicSet;
-
-public class BoolProps(string name,bool data) : RunProps<BoolProp>
+public class BoolProps(string name, bool data) : RunProps<BoolProp>
 {
     public override string Name => name;
 

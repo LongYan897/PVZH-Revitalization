@@ -1,9 +1,5 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Battle.Texture;
 
@@ -12,14 +8,14 @@ namespace Battle.Texture;
 /// </summary>
 public abstract class TextureBag
 {
-    protected abstract Dictionary<string,Texture2D> Textures { get; }
+    protected abstract Dictionary<string, Texture2D> Textures { get; }
     /// <summary>
     /// 获取道路纹理
     /// </summary>
     /// <param name="type">道路类型</param>
     /// <param name="index">是否有变种</param>
     /// <returns>道路纹理</returns>
-    public Texture2D ForRoad(RoadType type,bool index = false)
+    public Texture2D ForRoad(RoadType type, bool index = false)
     {
         return type switch
         {
@@ -29,7 +25,7 @@ public abstract class TextureBag
             {
                 true => Textures["Ground1"],
                 false => Textures["Ground2"]
-                },
+            },
             _ => null
         };
     }
@@ -63,7 +59,7 @@ public abstract class TextureBag
     /// 设置纹理包
     /// </summary>
     /// <typeparam name="T">纹理包</typeparam>
-    public static void SetCurrent<T>() where T : TextureBag,new()
+    public static void SetCurrent<T>() where T : TextureBag, new()
     {
         Bag = Load<T>();
     }

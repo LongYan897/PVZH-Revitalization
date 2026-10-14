@@ -1,8 +1,8 @@
-using Frenemypillar.Script.RunSet.RunPropSet.BasicSet;
 
-namespace Frenemypillar.Script.RunSet.RunSerializableSet.BasicSet;
 
-public class IntSerializable(string key,int data) : RunSerializable<IntProp>
+namespace Save;
+
+public class IntSerializable(string key, int data) : RunSerializable<IntProp>
 {
     public override string Key => key;
 

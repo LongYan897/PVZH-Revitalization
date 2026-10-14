@@ -1,17 +1,13 @@
-using Battle;
-using Battle.Entity;
 using Controller;
 using Godot;
 using Pack;
 using Spine;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static Godot.OpenXRCompositionLayer;
 
 namespace Card;
 
@@ -25,7 +21,7 @@ namespace Card;
 /// 这个就代表了 _Lethal_ 这个标签点开后显示 "攻击到的单位立即死亡"<br/>
 /// static的属性也可以这样注册<br/>
 /// </summary>
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false,Inherited = false)]
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
 public class URLAttribute : Attribute
 {
 
@@ -45,7 +41,7 @@ public partial class CardDes : Control
     /// <param name="parent"></param>
     /// <param name="card"></param>
     /// <returns></returns>
-    public static void DisplayDescription(CardModel card,Node parent)
+    public static void DisplayDescription(CardModel card, Node parent)
     {
         if (instance == null)
         {
@@ -382,7 +378,7 @@ public partial class CardDes : Control
             return;
         }
 
-        if (TryGetKeywordDescription(Model,key, arg, sep, out string desc))
+        if (TryGetKeywordDescription(Model, key, arg, sep, out string desc))
         {
             GetViewport().SetInputAsHandled();
             _keywordClicked = true;
@@ -511,9 +507,9 @@ public partial class CardDes : Control
                 var col1 = scene.GetNode<Node2D>("Collection").Position;
                 var col2 = scene.GetNode<Node2D>("Collection2").Position;
                 var cols1 = scene.GetNode<Node2D>("Collection").Scale;
-                GetNode<SpineHandler>("%动画").Position = (col1-col2)+ GetNode<SpineHandler>("%土坑").Position;
+                GetNode<SpineHandler>("%动画").Position = (col1 - col2) + GetNode<SpineHandler>("%土坑").Position;
                 GetNode<SpineHandler>("%动画").Scale = cols1;
-                if (scene.GetChildren().Any(c=>c.Name.ToString().Contains("Saved")))
+                if (scene.GetChildren().Any(c => c.Name.ToString().Contains("Saved")))
                 {
                     GetNode<SubViewport>("%裁剪").AddChild(scene);
                     scene.Position = GetNode<Marker2D>("%中心位置").Position - col1;

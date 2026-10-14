@@ -66,7 +66,7 @@ public static class PhraseManager
     /// <summary>
     /// 构建战斗的道路
     /// </summary>
-    public static void BuildUp(Node node,Camp camp)
+    public static void BuildUp(Node node, Camp camp)
     {
         _turn = 1;
         var bol = camp == Camp.Zombie;
@@ -197,12 +197,12 @@ public static class PhraseManager
     /// 绑定阶段动画
     /// </summary>
     /// <param name="spineHandler"></param>
-    public static async void SetUp(Button button,SpineHandler spineHandler)
+    public static async void SetUp(Button button, SpineHandler spineHandler)
     {
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
         var entr = plantSide ? "plant" : "zombie";
         spine = spineHandler;
-        spine.SetAnimation(0,$"{entr}StartZombieTurn",false);
+        spine.SetAnimation(0, $"{entr}StartZombieTurn", false);
         Phrase = Phrase.Zombie;
         button.Pressed += () => PressedNextPhrase(button);
         IsInBattle = true;

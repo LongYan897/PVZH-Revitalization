@@ -1,6 +1,4 @@
 using Card;
-using Card.Cmd;
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,20 +24,20 @@ public static class TargetRegistry
 
     public static IEnumerable<ITarget> All => _targets;
 
-    public static bool AnyCanBeTarget(CardModel card, TargetType type,bool fromBuff, Func<ITarget, bool> filter = null)
+    public static bool AnyCanBeTarget(CardModel card, TargetType type, bool fromBuff, Func<ITarget, bool> filter = null)
     {
         if (card == null) return false;
         foreach (var t in _targets)
         {
             if ((t.TargetType & type) == 0) continue;
-            if (t.CanBeTarget(card, filter,fromBuff)) return true;
+            if (t.CanBeTarget(card, filter, fromBuff)) return true;
         }
         return false;
     }
 
     public static void CallTargeted(CardModel card, TargetType type, bool fromBuff)
     {
-        CallTargeted(card, type,fromBuff, card.TargetFilter);
+        CallTargeted(card, type, fromBuff, card.TargetFilter);
     }
 
     public static void CallTargeted(CardModel card, TargetType type, bool fromBuff, Func<ITarget, bool> filter)
@@ -50,7 +48,7 @@ public static class TargetRegistry
         foreach (var t in _targets.ToList())
         {
             if ((t.TargetType & type) == 0) continue;
-            if (!t.CanBeTarget(card, filter,fromBuff)) continue;
+            if (!t.CanBeTarget(card, filter, fromBuff)) continue;
             t.OnCallTargeted(type);
         }
     }

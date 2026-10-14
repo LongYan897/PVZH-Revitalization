@@ -1,14 +1,13 @@
-using Frenemypillar.Script.Save;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Frenemypillar.Script.RunSet;
+namespace Save;
 
 public class RunHistory
 {
     private RunHistory() { }
 
-    private ConcurrentDictionary<string, IRunProps> _runtimeProps = new ();
+    private ConcurrentDictionary<string, IRunProps> _runtimeProps = new();
 
     public static RunHistory Current;
 

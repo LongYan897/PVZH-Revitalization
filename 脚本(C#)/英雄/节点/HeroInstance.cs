@@ -1,5 +1,4 @@
 using Battle;
-using Battle.Entity;
 using Card;
 using Card.Cmd;
 using Controller;
@@ -10,10 +9,8 @@ using Spine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Target;
-using Variable;
 
 namespace Hero;
 
