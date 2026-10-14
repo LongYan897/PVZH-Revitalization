@@ -27,8 +27,11 @@ namespace FileExtension
 			}
 			fj.Save();
 			CardPackExtensions cardPack = new(0);
-			cardPack.DrawCard("pack1", 10);
-
+			var cards = cardPack.DrawCard("pack1", 100);
+			foreach(var card in cards)
+			{
+				GD.Print($"cardName:{card.Card.PadRight(15)}\tCount:{card.Count}");
+			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using FileExtension;
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,15 @@ public partial class CardPackExtensions
 	public int seed { get; private set; }
 	private string _path { get; } = "res://数据(C#)/cardPack.json";
 	private FileJson _file { get; set; } = new();
-	private Random _random { get; set; } = new();
-	public CardPackExtensions(int seed)  => this.seed = seed;
-	public List<CardPackEntry> DrawCard(string packName, int Count)
+	private Random _random { get; set; }
+	public CardPackExtensions(int seed)
 	{
-		List<CardPackEntry> res = new();
+		this.seed = seed;
+		_random = new(seed);
+	}
+	public List<(string Card,int Count)> DrawCard(string packName, int Count,bool save = false)
+	{
+		List<(string Card, int Count)> res = new();
 		FileJson file = new();
 		FileJson playerAssetFile = new();
 
@@ -67,18 +72,19 @@ public partial class CardPackExtensions
 				: baseRate));
 		}
 		//基础概率归一化处理
-		double sumRate = 0;
-		foreach (var i in BasePackRates)
-		{
-			sumRate += i.Rate;
-		}
-		for (int index = 0;index < BasePackRates.Count; index++)
-		{
-			var item = BasePackRates[index];
-			item.Rate = item.Rate / sumRate;
-			BasePackRates[index] = item;
-		}
-        //List<(string Name,double Rate)>Normalize(ref )
+		Normalize(BasePackRates);
+
+		//double sumRate = 0;
+		//foreach (var i in BasePackRates)
+		//{
+		//	sumRate += i.Rate;
+		//}
+		//for (int index = 0;index < BasePackRates.Count; index++)
+		//{
+		//	var item = BasePackRates[index];
+		//	item.Rate = item.Rate / sumRate;
+		//	BasePackRates[index] = item;
+		//}
         //计算每组抽取的数量
         List<(string Name,int Count)> drawCounts = new();
 		foreach (var i in BasePackRates)
@@ -104,13 +110,74 @@ public partial class CardPackExtensions
 					if (packRemains[index].Count == 0)
 					{
 						BasePackRates[index] = (groupName, 0);
-
+						Normalize(BasePackRates);
                     }
 					break;
 				}
 			}
 		}
+		//开始处理每个组抽到的具体卡牌
+		var groupIndex = -1;
+		foreach(var group in packs)
+		{
+			groupIndex++;
+            List<(string Name, int Count)> drawcards = new();
+			List<(int Index, int Count)> cardsCount = new();
+			//初始化列表
+			int index = -1;
+			var maxCount = group["MaxCount"].GetValue<int>();
+			foreach(var card in group["Cards"] as JsonArray)
+			{
+				index++;
+				string cardName = card?.GetValue<string>();
+                drawcards.Add((cardName, 0));
+				int remainCount = maxCount == 0
+					? -1
+					: Math.Max(maxCount - playerAsset.GetVariable<int>(cardName, 0), 0);
+                cardsCount.Add((index, remainCount));
+            }
+			int drawNum = drawCounts[groupIndex].Count;
+			for(int i = 0; i < drawNum; i++)
+			{
+				int ri = _random.Next(cardsCount.Count);
+                int cardIndex = cardsCount[ri].Index;
+				string cardName = drawcards[cardIndex].Name;
+				drawcards[cardIndex] = (cardName, drawcards[cardIndex].Count + 1);
+				if (cardsCount[ri].Count == -1) continue;
+				cardsCount[ri] = (cardsCount[ri].Index, cardsCount[ri].Count - 1);
+				if(cardsCount[ri].Count == 0) cardsCount.RemoveAt(ri);
+            }
+			//调试信息
+			foreach(var i in drawcards)
+			{
+				//GD.Print($"CardName:{i.Name.PadRight(15)}\t Count:{i.Count}");
+			}
+            //修改实际卡牌数量
+            System.Collections.Generic.Dictionary<string, int> fileCardsCount= playerAsset.GetEntries<int>();
+            foreach (var i in drawcards)
+			{
+                if (i.Count == 0) continue;
+                string cardName = i.Name;
+				int count = 0;
+				fileCardsCount.TryGetValue(cardName, out count);
+				fileCardsCount[cardName] = count + i.Count;
+				//返回结果
+				int resultIndex = res.FindIndex(item => item.Card == cardName);
+				if (resultIndex >= 0)
+				{
+					var item = res[resultIndex];
+					res[resultIndex] = (item.Card, item.Count + i.Count);
+				}
+				else
+				{
+					res.Add((cardName, i.Count));
+				}
+            }
+			playerAsset.SetEntries(fileCardsCount);
+			if (save) playerAsset.Save();
+        }
 
+		//打印调试信息
 		foreach (var i in packRemains)
 		{
 			GD.Print(i.Name + "可抽取数量:" + i.Count);
@@ -123,8 +190,28 @@ public partial class CardPackExtensions
 		{
 			GD.Print($"{i.Name}抽取数量: {i.Count}");
 		}
-		file.SetVariable("group", packs);
-		file.Save();
+		//file.SetVariable("group", packs);
+		//file.Save();
 		return res;
+	}
+	/// <summary>
+	/// 将固定元组类型里的概率自动归一化处理
+	/// </summary>
+	/// <param name="list"></param>
+	/// <returns></returns>
+	/// <exception cref="InvalidOperationException"></exception>
+	private static List<(string Name,double Rate)>Normalize( List<(string Name, double Rate)> list)
+	{
+		double sumRate = 0;
+		foreach(var i in list)
+		{
+			sumRate += i.Rate;
+		}
+		if (sumRate <= 0) throw new InvalidOperationException("概率为0");
+        for (int i = 0;i< list.Count; i++)
+		{
+			list[i] = (list[i].Name, list[i].Rate / sumRate);
+		}
+		return list;
 	}
 }
