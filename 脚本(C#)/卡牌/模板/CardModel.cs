@@ -311,6 +311,10 @@ public class CardModel
     /// </summary>
     public string AnimationScenePath { get; private set; }
     /// <summary>
+    /// 卡牌的序列号(用于解析为实例卡牌)
+    /// </summary>
+    public uint Id {  get; private set; }
+    /// <summary>
     /// 卡牌的稀有度
     /// </summary>
     public Rarity Rarity { get; private set; }

@@ -79,10 +79,10 @@ metadata/_edit_group_ = true
 [node name="Button" type="Button" parent="阶段" unique_id=421639317]
 unique_name_in_owner = true
 z_index = 24
-offset_left = -40.0
+offset_left = -64.44446
 offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 63.333374
+offset_bottom = 87.77777
 flat = true
 
 [node name="费用容器" type="CanvasLayer" parent="." unique_id=521051514]
@@ -361,5 +361,6 @@ position = Vector2(524, 128)
 scale = Vector2(0.6, 0.6)
 
 [editable path="道路层"]
+[editable path="阶段/动画"]
 [editable path="护盾"]
 [editable path="护盾2"]

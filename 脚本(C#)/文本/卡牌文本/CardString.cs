@@ -26,6 +26,7 @@ namespace Card.String;
 ///     特别描述 : 使用 "Flavor" 当作Json的键<br/>
 ///     骨骼 : 使用 "Animation" 当作Json的键<br/>
 ///     骨骼场景 : 使用 "Scene" 当作Json的键 需要tscn的场景 该场景内部使用相对位置确定动画位置<br/>
+///     序列化代码 : 使用 "Id" 当作Json的键<br/>
 ///     <br/>
 ///     ***<br/>
 ///     Marker2D *Collection(Marker2D) 代表图鉴中动画位置 Collection2(SpineSprite)是土坑位置 Marker2D *Battle(Marker2D)  代表战斗中动画位置 Battle2(SpineSprite)是土坑位置 <br/>
@@ -96,6 +97,10 @@ public class CardString
     /// 卡面路径
     /// </summary>
     public string IconPath { get; private set; }
+    /// <summary>
+    /// 卡牌的序列化代码
+    /// </summary>
+    public uint Id {  get; private set; }
     /// <summary>
     /// 血量
     /// </summary>
