@@ -15,11 +15,6 @@ namespace FileExtension
 			cardCounts["Peashooter"] += 1;
 			cardCounts["SunFlower"] += 1;
 
-			fj.SetEntries(cardCounts);
-			foreach (var entry in cardCounts)
-			{
-				GD.Print($"{entry.Key}: {entry.Value}");
-			}
 			fj.Save();
 			CardPackExtensions cardPack = new(0);
 			var cards = cardPack.DrawCard("pack1", 100);

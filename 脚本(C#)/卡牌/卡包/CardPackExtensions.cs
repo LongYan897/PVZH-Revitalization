@@ -22,7 +22,6 @@ public partial class CardPackExtensions
 		if (seed == -1)
 		{
 			_random = new();
-
 		}
 		_random = new(seed);
 	}
@@ -75,18 +74,6 @@ public partial class CardPackExtensions
 		}
 		//基础概率归一化处理
 		Normalize(BasePackRates);
-
-		//double sumRate = 0;
-		//foreach (var i in BasePackRates)
-		//{
-		//	sumRate += i.Rate;
-		//}
-		//for (int index = 0;index < BasePackRates.Count; index++)
-		//{
-		//	var item = BasePackRates[index];
-		//	item.Rate = item.Rate / sumRate;
-		//	BasePackRates[index] = item;
-		//}
 		//计算每组抽取的数量
 		List<(string Name, int Count)> drawCounts = new();
 		foreach (var i in BasePackRates)
