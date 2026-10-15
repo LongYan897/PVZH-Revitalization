@@ -15,7 +15,7 @@ func set_skin(skin_name:String) -> void:
 func get_bone_world_pos(bone_name:String) -> Vector2:
 	return get_global_bone_transform(bone_name).origin
 
-func _on_animation_event(sprite, anim_state, track_entry, evt):
+func _on_animation_event(_sprite, _anim_state, track_entry, evt):
 	var anim = track_entry.get_animation()
 	var duration = anim.get_duration()
 	var track_time = track_entry.get_track_time()
@@ -32,5 +32,27 @@ func clear_track(track:int):
 func clear_tracks():
 	get_animation_state().clear_tracks()
 
-func set_attachment(id:String,name:String):
-	get_skeleton().set_attachment(id,name)
+func set_attachment(id:String,_name:String):
+	get_skeleton().set_attachment(id,_name)
+
+func get_animation_duration(anim_name:String) -> float:
+	var anim = get_skeleton().get_data().find_animation(anim_name)
+	if anim == null:
+		return 0.0
+	return anim.get_duration()
+
+func pause_animation(track:int) -> void:
+	var state = get_animation_state()
+	var entry = state.get_current(track)
+	if entry:
+		entry.set_time_scale(0.0)
+
+func pause_all_tracks() -> void:
+	var state = get_animation_state()
+	for i in state.get_num_tracks():
+		var entry = state.get_track(i)
+		if entry:
+			entry.set_time_scale(0.0)
+
+func has_animation(Name:String) -> bool:
+	return get_skeleton().get_data().find_animation(Name) != null

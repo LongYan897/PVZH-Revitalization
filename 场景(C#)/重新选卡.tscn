@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://cqnmj7yrerbhj"]
+
+[ext_resource type="Texture2D" uid="uid://c32okqv0o4o0m" path="res://素材/抽卡特效/refreshbutton.png" id="2_wp0en"]
+
+[node name="重新选卡" type="Node2D" unique_id=2139683625]
+
+[node name="C1" type="Marker2D" parent="." unique_id=550313016]
+position = Vector2(95, 377)
+
+[node name="C2" type="Marker2D" parent="." unique_id=990066365]
+position = Vector2(369, 377)
+
+[node name="C3" type="Marker2D" parent="." unique_id=1372955440]
+position = Vector2(95, 578)
+
+[node name="C4" type="Marker2D" parent="." unique_id=1420867697]
+position = Vector2(369, 578)
+
+[node name="刷新卡牌" type="TextureRect" parent="." unique_id=409406780]
+offset_left = 198.0
+offset_top = 541.0
+offset_right = 444.0
+offset_bottom = 795.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_wp0en")
+
+[node name="刷新卡牌2" type="TextureRect" parent="." unique_id=1660004938]
+offset_left = 472.8
+offset_top = 541.0
+offset_right = 718.8
+offset_bottom = 795.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_wp0en")
+
+[node name="刷新卡牌3" type="TextureRect" parent="." unique_id=714018046]
+offset_left = 198.0
+offset_top = 741.0
+offset_right = 444.0
+offset_bottom = 995.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_wp0en")
+
+[node name="刷新卡牌4" type="TextureRect" parent="." unique_id=121093812]
+offset_left = 472.8
+offset_top = 741.0
+offset_right = 718.8
+offset_bottom = 995.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_wp0en")

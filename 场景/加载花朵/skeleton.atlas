@@ -1,0 +1,21 @@
+skeleton.png
+size:1114,1006
+filter:Linear,Linear
+pma:true
+LoadFlower
+bounds:1004,895,108,109
+offsets:2,1,111,111
+LoadPetal
+bounds:1004,537,90,90
+light
+bounds:2,504,500,1000
+rotate:90
+plantsymbol #126479
+bounds:1004,765,102,128
+starBg
+bounds:2,2,500,500
+starframe
+bounds:504,2,500,500
+zombiesymbol #126478
+bounds:1004,629,134,96
+rotate:90

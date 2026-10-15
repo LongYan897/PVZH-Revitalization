@@ -1,0 +1,26 @@
+{
+  "pack1": {
+    "group": [
+      {
+        "Name": "group1",
+        "Cards": [
+          "Peashooter",
+          "SunFlower",
+          "BackupDancer"
+        ],
+        "MaxCount": 0,
+        "BaseRate": 0.70,
+        "BonusRate": 0
+      },
+      {
+        "Name": "group2",
+        "Cards": [
+          "HailACopter"
+        ],
+        "MaxCount": 4,
+        "BaseRate": 0.30,
+        "BonusRate": 1
+      }
+    ]
+  }
+}

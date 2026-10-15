@@ -28,7 +28,7 @@ public class AtkStack
     /// 重新选中目标
     /// </summary>
     /// <param name="targets"></param>
-    public void Targeting(params  IAttackable[] targets)
+    public void Targeting(params IAttackable[] targets)
     {
         Targets = [.. targets];
     }
@@ -36,7 +36,7 @@ public class AtkStack
     /// 增加目标
     /// </summary>
     /// <param name="targets"></param>
-    public void AddTarget(params  IAttackable[] targets)
+    public void AddTarget(params IAttackable[] targets)
     {
         Targets.AddRange(targets);
     }

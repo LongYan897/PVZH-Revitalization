@@ -2,10 +2,7 @@ using Battle;
 using Battle.Entity;
 using Card.Cmd;
 using Controller;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Controller.WavPlay;
 using System.Threading.Tasks;
 using Target;
 
@@ -16,15 +13,17 @@ public class HailACopter : CardModel
     public override TargetType TargetType => TargetType.Lines;
     public override bool TargetFilter(ITarget target)
     {
-        return target is NodeRoad road && Fighter.CanGenerate(GetTemplate<CopterCommando>() as FighterCardModel, road.Model);
+        return target.CanBeRoad(out Road road) && Fighter.CanGenerate(GetTemplate<CopterCommando>() as FighterCardModel, road);
     }
     public override async Task Play(ITarget target)
     {
-        WavPlayer.Play("res://素材(C#)/卡牌/召唤直升机/intro_1.wav");
+        WavPlayer.Play<HailWav>();
         await PlayInstantAnimation("intro", target);
-        if (target is NodeRoad road)
+        if (target.CanBeRoad(out Road road))
         {
-             await CardCmd.FighterGenerate(Load<CopterCommando>() as FighterCardModel, road.Model, Location.Plant);
+            var card = Load<CopterCommando>() as FighterCardModel;
+            card.ExDescription = "由召唤直升机召唤";
+            await CardCmd.FighterGenerate(card, road, Location.Zombie);
         }
     }
 }

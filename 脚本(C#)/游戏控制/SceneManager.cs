@@ -1,56 +1,126 @@
+using Card;
 using Godot;
-using System;
+using Scene;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Controller;
-public static partial class SceneManager
+/// <summary>
+/// 控制场景切换的类
+/// </summary>
+public static class SceneManager
 {
-    private partial class FadeRect : CanvasLayer
+    /// <summary>
+    /// 当前打开的子目录
+    /// </summary>
+    private static readonly Dictionary<SubMenu, SubMenu> Menus = new();
+    private static readonly List<SubMenu> AllMenus = new();
+    public static void Register(SubMenu menu) => AllMenus.Add(menu);
+    private static TaskCompletionSource<bool> _LoadTask;
+    public static Task LoadTask => _LoadTask?.Task ?? Task.CompletedTask;
+    public static void InvokeLoadEnd()
     {
-        private ColorRect ColorRectangle;
-        private Color ToColor;
-        private float Time;
-        public FadeRect(Color fromColor,Color toColor,float time)
+        _LoadTask?.TrySetResult(true);
+        _LoadTask = null;
+    }
+    private static async Task Load()
+    {
+        Main.Load.Modulate = new(1, 1, 1, 0);
+        Tween tween = Main.Load.CreateTween();
+        tween.TweenProperty(Main.Load, "modulate", new Color(1, 1, 1, 1), 0.2f);
+        await Task.WhenAll(
+            Main.Load.ToSignal(tween, Tween.SignalName.Finished).ToTask(),
+            Main.Load.LoadIn());
+    }
+    private static void UnableSubmenu()
+    {
+        foreach (var subMenu in AllMenus)
         {
-            Layer = 99999;
-            ColorRectangle = new ColorRect();
-            ColorRectangle.Color = fromColor;
-            ColorRectangle.Size = new Vector2(720,1280);
-            AddChild(ColorRectangle);
-            ToColor = toColor;
-            Time = time;
-        }
-        public async Task Call(bool needQueueFree)
-        {
-            Tween tween = ColorRectangle.CreateTween();
-            tween.TweenProperty(ColorRectangle, "color", ToColor, Time);
-            await ToSignal(tween, "finished");
-            if (needQueueFree)
-            {
-                QueueFree();
-            }
+            subMenu.Function(false);
         }
     }
-    public static async Task ChangeScene(SceneTree tree,string scenePath)
+    private static void EnableSubmenu()
     {
-        var scene = Godot.ResourceLoader.Load<Godot.PackedScene>(scenePath);
-        if (scene != null)
+        foreach (var subMenu in AllMenus)
         {
-            FadeRect fadeRect = new FadeRect(new Color(Colors.Black,0), Colors.Black, 0.5f);
-            tree.Root.AddChild(fadeRect);
-            await fadeRect.Call(true);
-            tree.ChangeSceneToFile(scenePath);
-            fadeRect = new FadeRect(Colors.Black, new Color(Colors.Black,0), 0.5f);
-            tree.Root.AddChild(fadeRect);
-            await fadeRect.Call(true);
-            GD.Print($"Scene changed to: {scenePath}");
+            subMenu.Function(true);
+        }
+    }
+    public static Task ToTask(this SignalAwaiter a)
+    {
+        var tcs = new TaskCompletionSource();
+        _ = Await();
+        return tcs.Task;
+
+        async Task Await()
+        {
+            await a;
+            tcs.SetResult();
+        }
+    }
+    private static async Task LoadEnd()
+    {
+        Tween tween = Main.Load.CreateTween();
+        tween.TweenProperty(Main.Load, "modulate", new Color(1, 1, 1, 0), 0.2f);
+        await Main.Load.ToSignal(tween, Tween.SignalName.Finished);
+        Main.Load.LoadOut();
+    }
+    private static Task Clear()
+    {
+        NodeCard.Clear();
+        return Task.CompletedTask;
+    }
+    /// <summary>
+    /// 打开一个子目录
+    /// </summary>
+    /// <param name="subMenu">子目录</param>
+    public static async void JumpToSub(SubMenu subMenu)
+    {
+        if (subMenu == null) return;
+        UnableSubmenu();
+        await Clear();
+        var parent =
+            Main.SceneContainer;
+        _LoadTask = new TaskCompletionSource<bool>();
+        var scene = subMenu.Instantiate();
+        scene.Visible = false;
+        await Load();
+        if (Menus.Count == 0)
+        {
+            Menus.Add(subMenu, null);
+            parent.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
         }
         else
         {
-            Godot.GD.PrintErr($"Failed to load scene: {scenePath}");
+            var last = Menus.Last().Key;
+            Menus[subMenu] = last;
+            last.Destory();
+            parent.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
+        }
+        await LoadTask;
+        scene.Visible = true;
+        await LoadEnd();
+    }
+    /// <summary>
+    /// 关闭顶层子目录
+    /// </summary>
+    public static async void ReturnToSub()
+    {
+        var last = Menus.Last();
+        Menus.Remove(last.Key);
+        if (last.Value == null)
+        {
+            await Load();
+            await Clear();
+            var parent = Main.SceneContainer;
+            last.Key.Destory();
+            await LoadEnd();
+            EnableSubmenu();
+        }
+        else
+        {
+            JumpToSub(last.Value);
         }
     }
 }

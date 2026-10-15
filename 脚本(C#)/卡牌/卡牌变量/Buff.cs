@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card;
@@ -13,10 +10,17 @@ namespace Card;
 public abstract class Buff
 {
     /// <summary>
+    /// 能否被转移到其他卡牌上
+    /// </summary>
+    public virtual bool IsTransferable => true;
+    /// <summary>
+    /// 是否只有在卡牌以单位形式存在时才调用
+    /// </summary>
+    public bool OnlyPlaced { get; init; } = false;
+    /// <summary>
     /// 关心的时点
     /// </summary>
     public abstract Timing[] Timings { get; }
-
     /// <summary>
     /// 时点回调
     /// </summary>
@@ -27,10 +31,44 @@ public abstract class Buff
 }
 
 /// <summary>
+/// 可自定义时点的 Buff，供 Mod 使用
+/// </summary>
+public class CustomBuff : Buff
+{
+    private readonly Timing[] _timings;
+    private readonly Func<Timing, CardModel, object[], Task> _callback;
+
+    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback)
+    {
+        _timings = timings ?? Array.Empty<Timing>();
+        _callback = callback;
+    }
+
+    public override Timing[] Timings => _timings;
+
+    public override Task OnTiming(Timing timing, CardModel card, params object[] parameters)
+    {
+        if (_callback == null)
+            return Task.CompletedTask;
+        return _callback(timing, card, parameters);
+    }
+}
+
+/// <summary>
 /// 效果关心的时点
 /// </summary>
 public enum Timing
 {
+    /// <summary>
+    /// 当卡牌进化时
+    /// 参数：[0] FighterCardModel 被进化的卡牌 [1] FighterCardModel 进化的卡牌
+    /// </summary>
+    WhenEvolve,
+    /// <summary>
+    /// 当卡牌进化时
+    /// 参数：[0] FighterCardModel 被融合的卡牌 [1] FighterCardModel 融合的卡牌
+    /// </summary>
+    WhenFuse,
     /// <summary>
     /// 效果/类型被赋予卡牌时
     /// 参数：[0] VariableReason 赋予原因
@@ -138,13 +176,33 @@ public enum Timing
     /// 参数：[0] Road 该线
     /// </summary>
     AfterRoadChanged,
+    /// <summary>
+    /// 在阶段开始后
+    /// 参数：[0] Phrase 开始的阶段
+    /// </summary>
+    AfterPhraseStart,
+    /// <summary>
+    /// 在阶段结束后
+    /// 参数：[0] Phrase 结束的阶段
+    /// </summary>
+    AfterPhraseEnd,
 
     /// <summary>
     /// 攻击宣告前
     /// 参数：[0] AtkStack 攻击上下文
     /// </summary>
     BeforeAttack,
+    /// <summary>
+    /// 在阶段开始前
+    /// 参数：[0] Phrase 开始的阶段
+    /// </summary>
+    BeforePhraseStart,
 
+    /// <summary>
+    /// 在阶段结束前
+    /// 参数：[0] Phrase 结束的阶段
+    /// </summary>
+    BeforePhraseEnd,
     /// <summary>
     /// 攻击时
     /// 参数：[0] AtkStack 攻击上下文
@@ -158,10 +216,22 @@ public enum Timing
     ModifyTarget,
 
     /// <summary>
-    /// 计算伤害时
+    /// 修改伤害
     /// 参数：[0] AtkStack 攻击上下文
     /// </summary>
     ModifyDamage,
+
+    /// <summary>
+    /// 修改治疗量
+    /// 参数：[0] Variable<int> 治疗量 [1] FighterCardModel/HeroModel 获得治疗的单位
+    /// </summary>
+    ModifyHeal,
+
+    /// <summary>
+    /// 修改获得最大血上限
+    /// 参数：[0] Variable<int> 获得最大血上限的量 [1] FighterCardModel/HeroModel 获得最大血上限的单位
+    /// </summary>
+    ModifyGainMaxHp,
 
     /// <summary>
     /// 攻击结算后
@@ -183,7 +253,7 @@ public enum Timing
 
     /// <summary>
     /// 修改受到的伤害
-    /// 参数：[0] AtkStack 攻击上下文
+    /// 参数：[0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     ModifyCardDamage,
 
@@ -195,29 +265,29 @@ public enum Timing
 
     /// <summary>
     /// 受到伤害后
-    /// 参数：[0] DamageAmount 受到的伤害
+    /// 参数：[0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     OnDamaged,
 
     /// <summary>
     /// 被治疗后
-    /// 参数：[0] int 治疗量
+    /// 参数：[0] int 治疗量 [1] FighterCardModel/HeroModel 获得治疗的单位
     /// </summary>
     OnHealed,
 
     /// <summary>
     /// 死亡时
-    /// 参数：[0] DamageAmount 致死伤害（可能为 null）
+    /// 参数：[0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     OnDeath,
     /// <summary>
-    /// 被战斗击杀时
+    /// 被战斗击杀时 [0] AtkStack 伤害上下文(目标一般是自己)
     /// </summary>
     OnKilled,
 
     /// <summary>
     /// 当卡牌变量被修改时
-    /// 参数：[0] string key，[1] object valueAfter，[2] object valueBefore
+    /// 参数：[0] string key，[1] object valueAfter，[2] object valueBefore [3] VariableReason 原因
     /// </summary>
     OnVariableChanged,
     /// <summary>
@@ -231,4 +301,67 @@ public enum Timing
     /// 参数：[0] Road 该线，[1] FighterCardModel 离场的单位
     /// </summary>
     OnFighterExit,
+    /// <summary>
+    /// 英雄变量改变时
+    /// 参数：
+    /// [0] Sign 变量名称
+    /// [1] Value 更改的数值,
+    /// [2] VariableReason 更改的原因 
+    /// [3] CardModel 造成影响的卡牌 
+    /// [4] HeroModel 英雄对象
+    /// </summary>
+    OnHeroChanged,
+    /// <summary>
+    /// 英雄变量即将改变时
+    /// 参数：
+    /// [0] Sign 变量名称
+    /// [1] Value 更改的数值,
+    /// [2] VariableReason 更改的原因 
+    /// [3] CardModel 造成影响的卡牌 
+    /// [4] HeroModel 英雄对象
+    /// </summary>
+    BeforeHeroChanged,
+    /// <summary>
+    /// 英雄变量改变后
+    /// 参数：
+    /// [0] Sign 变量名称
+    /// [1] Value 更改的数值, 
+    /// [2] VariableReason 更改的原因 
+    /// [3] CardModel 造成影响的卡牌 
+    /// [4] HeroModel 英雄对象
+    /// </summary>
+    AfterHeroChanged,
+    /// <summary>
+    /// 英雄变量改变时
+    /// 参数：
+    /// [0] Sign 变量名称
+    /// [1] VariableReason 更改的原因 
+    /// [2] CardModel 造成影响的卡牌 
+    /// [3] HeroModel 英雄对象
+    /// [4] HeroVariable 变量
+    /// </summary>
+    ModifyHeroChanged,
+
+    /// <summary>
+    /// 尝试阻止单位攻击
+    /// 参数：[0] Variable<bool> 是否阻止本次攻击 [1] FighterCardModel 要攻击的单位
+    /// </summary>
+    TryStopAttack,
+
+    /// <summary>
+    /// 尝试阻止单位恢复生命
+    /// 参数：[0] Variable<bool> 是否阻止本次治疗 [1] FighterCardModel/HeroModel 要治疗的单位
+    /// </summary>
+    TryStopHeal,
+
+    /// <summary>
+    /// 尝试阻止单位获得最大血上限
+    /// 参数：[0] Variable<bool> 是否阻止本次获得最大血上限 [1] FighterCardModel/HeroModel 要获得最大血上限的单位
+    /// </summary>
+    TryStopGainMaxHp,
+    /// <summary>
+    /// 尝试阻止英雄受到伤害
+    /// 参数：[0] Variable<bool> 是否阻止本次受伤 [1] HeroModel 要受伤的英雄
+    /// </summary>
+    TryStopHeroTakeDamage,
 }

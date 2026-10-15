@@ -27,7 +27,7 @@ public static class SceneAnimaActor
         _animToDes = node.GetNode<CanvasLayer>("%SceneAnimAToD");
     }
 
-    public static Func<Control,Task> Position(Vector2 startAt, Vector2 endAt,float duration)
+    public static Func<Control, Task> Position(Vector2 startAt, Vector2 endAt, float duration)
     {
         return async (Control wrapper) =>
         {
@@ -37,6 +37,7 @@ public static class SceneAnimaActor
             await wrapper.ToSignal(tween, Tween.SignalName.Finished);
         };
     }
+
     /// <summary>
     /// 播放场景动画，播完自动释放
     /// </summary>

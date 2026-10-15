@@ -18,6 +18,7 @@ namespace Card;
 public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVariable
 {
     private CardModel card = cardModel;
+    public string Key => variable.Sign;
     private Variable<T> variable = new Variable<T>(sign, obj);
     public T Current => variable.Current;
     public bool HasChanged => variable.HasChanged;
@@ -31,7 +32,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
     {
         var val = variable.Current;
         int v = variable.Set(value, reason);
-        await CardCmd.ChangedCard(card, sign, val, value);
+        await CardCmd.ChangedCard(card, sign, val, value, reason);
         return v;
     }
     /// <summary>
@@ -45,7 +46,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
         var old = variable.Current;
         var value = history.Before;
         variable.Rewind(Index);
-        await CardCmd.ChangedCard(card, sign, old, value);
+        await CardCmd.ChangedCard(card, sign, old, value, VariableReason.Reset);
     }
     /// <summary>
     /// 回溯值(不清空历史)
@@ -59,7 +60,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
         var old = variable.Current;
         var value = history.Before;
         variable.RewindReasonable(Index, reason);
-        await CardCmd.ChangedCard(card, sign, old, value);
+        await CardCmd.ChangedCard(card, sign, old, value, reason);
     }
 
     /// <summary>
@@ -70,12 +71,13 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
     {
         var old = variable.Current;
         variable.Reset();
-        await CardCmd.ChangedCard(card, sign, old, variable.Current);
+        await CardCmd.ChangedCard(card, sign, old, variable.Current, VariableReason.Reset);
     }
 }
 
 public interface ICardVariable
 {
+    string Key { get; }
 }
 
 /// <summary>
@@ -85,9 +87,10 @@ public interface ICardVariable
 /// <param name="sign">监听的信号</param>
 /// <param name="baseValue">基础值</param>
 /// <param name="canNegative">是否可以为负数</param>
-public class CardIntVariable(CardModel cardModel, string sign, int baseValue,bool canNegative = false)
+public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bool canNegative = false) : ICardVariable
 {
     private CardModel card = cardModel;
+    public string Key => variable.Sign;
     private readonly IntVariable variable = new IntVariable(sign, baseValue);
     public int Current => variable.Current;
     public bool HasChanged => variable.Current != variable.Base;
@@ -101,13 +104,13 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
     {
         var old = variable.Current;
         variable.Gain(value, reason);
-        await CardCmd.ChangedCard(card, sign, old, variable.Current);
+        await CardCmd.ChangedCard(card, sign, old, variable.Current, reason);
 
         return async () =>
         {
             var o = variable.Current;
             variable.Lose(value, VariableReason.Reset);
-            await CardCmd.ChangedCard(card, sign, o, variable.Current);
+            await CardCmd.ChangedCard(card, sign, o, variable.Current, reason);
         };
     }
 
@@ -123,13 +126,13 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
             value = before;
 
         variable.Lose(value, reason);
-        await CardCmd.ChangedCard(card, sign, before, variable.Current);
+        await CardCmd.ChangedCard(card, sign, before, variable.Current, reason);
 
         return async () =>
         {
             var o = variable.Current;
             variable.Gain(value, VariableReason.Reset);
-            await CardCmd.ChangedCard(card, sign, o, variable.Current);
+            await CardCmd.ChangedCard(card, sign, o, variable.Current, reason);
         };
     }
     /// <summary>
@@ -142,7 +145,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
     {
         var val = variable.Current;
         int v = variable.Set(value, reason);
-        await CardCmd.ChangedCard(card, sign, val, value);
+        await CardCmd.ChangedCard(card, sign, val, value, reason);
         return v;
     }
 
@@ -157,7 +160,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
         var old = variable.Current;
         var value = history.Before;
         variable.Rewind(Index);
-        await CardCmd.ChangedCard(card, sign, old, value);
+        await CardCmd.ChangedCard(card, sign, old, value, VariableReason.Reset);
     }
 
     /// <summary>
@@ -172,7 +175,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
         var old = variable.Current;
         var value = history.Before;
         variable.RewindReasonable(Index, reason);
-        await CardCmd.ChangedCard(card, sign, old, value);
+        await CardCmd.ChangedCard(card, sign, old, value, reason);
     }
     /// <summary>
     /// 重置值
@@ -182,7 +185,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
     {
         var old = variable.Current;
         variable.Reset();
-        await CardCmd.ChangedCard(card, sign, old, variable.Current);
+        await CardCmd.ChangedCard(card, sign, old, variable.Current, VariableReason.Reset);
     }
     /// <summary>
     /// 是否是相较于Base的值减少
@@ -192,4 +195,22 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue,boo
     /// 是否是相较于Base的值增加
     /// </summary>
     public bool PositiveChanged => variable.PositiveChanged;
+}
+
+/// <summary>
+/// 从卡牌描述里解析出来的变量：=XXX={+N} / =XXX={-N}
+/// 数值永远存绝对值，方向单独存
+/// </summary>
+public class DescriptionVariable(string key, int absValue, bool isNegative) : ICardVariable
+{
+    /// <summary>XXX，例如 Strength、Health</summary>
+    public string Key { get; } = key;
+
+    /// <summary>绝对值，永远 >= 0</summary>
+    public int AbsValue { get; } = absValue;
+
+    /// <summary>true 表示描述里带 "-"，是负向；false 表示 "+" 或没有符号</summary>
+    public bool IsNegative { get; } = isNegative;
+
+    public override string ToString() => $"={Key}={{+/-{AbsValue}}}";
 }

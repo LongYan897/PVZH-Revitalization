@@ -1,9 +1,7 @@
-using Battle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Card;
 /// <summary>
@@ -24,6 +22,10 @@ public class AtkType
     /// 攻击力图标
     /// </summary>
     public virtual string IconSkelPath { get; }
+    /// <summary>
+    /// 攻击力额外标签(显示在卡牌的描述上,支持所有CardString描述的语法)
+    /// </summary>
+    public virtual string ExLabel { get; } = null;
     /// <summary>
     /// 攻击类型赋予的效果
     /// </summary>

@@ -2,8 +2,6 @@ using Godot;
 using Hero;
 using Hero.String;
 using Pack;
-using System;
-using System.Collections.Generic;
 
 [GlobalClass]
 public partial class HeroSprite : Control
@@ -20,9 +18,8 @@ public partial class HeroSprite : Control
     private void OnNButtonPressed()
     {
         HeroDes heroDes = HeroDes.Create(_heroName);
-        GetTree().CurrentScene.AddChild(heroDes);
-        heroDes.Position = new Vector2(360,640);
-        heroDes.ZIndex = 1000;
+        GetTree().Root.GetNode<CanvasLayer>("MainController/Des").AddChild(heroDes);
+        heroDes.Position = new Vector2(360, 640);
         heroDes.Display();
     }
 

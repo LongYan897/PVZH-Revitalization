@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dmq621bgtpbx6"
+path="res://.godot/imported/向日葵.atlas-09e73ea6a34197f61c774e7a709ea168.spatlas"
+
+[deps]
+
+source_file="res://场景/植物卡/向日葵植物/向日葵.atlas"
+dest_files=["res://.godot/imported/向日葵.atlas-09e73ea6a34197f61c774e7a709ea168.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

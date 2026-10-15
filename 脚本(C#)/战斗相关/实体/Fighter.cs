@@ -2,14 +2,15 @@ using Card;
 using Card.Cmd;
 using Controller;
 using Godot;
+using Hero;
 using Pack;
+using Play;
 using Spine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
-using static Godot.OpenXRCompositionLayer;
 
 namespace Battle.Entity;
 
@@ -19,31 +20,38 @@ namespace Battle.Entity;
 /// </summary>
 public partial class Fighter : Control, ITarget, IAttackable
 {
+    public static bool CanTargetedBy(CardModel card, bool fromBuff)
+    {
+        if (card.TargetType.HasFlag(TargetType.Fighters))
+            return TargetRegistry.AnyCanBeTarget(card, card.TargetType, fromBuff, card.TargetFilter);
+        else
+            return false;
+    }
     /// <summary>
     /// 检测是否有某种单位
     /// </summary>
     /// <param name="filter">筛选器</param>
     /// <returns></returns>
-    public static bool HasFighter(Func<Fighter, bool> filter) => Instances.Keys.Any(filter);
+    public static bool HasFighter(Func<Fighter, bool> filter) => Instances.Any(filter);
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/战斗单位.tscn");
-    private static readonly Dictionary<Fighter, FighterCardModel> Instances = new();
+    private static readonly List<Fighter> Instances = new();
     private const int maxInstance = 20;
 
     public FighterCardModel Model { get; private set; }
-    private Road Road;
+    public Road Road { get; private set; }
     private Location index;
 
     public bool Zombie => Model.Camp == Camp.Zombie;
     public bool Plant1 => Model.Camp == Camp.Plant && index == Location.PlantFront;
     public bool Plant2 => Model.Camp == Camp.Plant && index == Location.Plant;
 
-    public Func<CardModel, Func<ITarget, bool>, bool> CanBeTarget =>
-        (t, f) =>
+    public Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget =>
+        (t, f, from) =>
         {
             bool? a;
             a = f?.Invoke(this);
             bool b;
-            b = Model.CanbeTarget(t);
+            b = Model.CanbeTarget(t, from);
             if (a != null)
                 b = (bool)a && b;
             bool camp = Model.Camp switch
@@ -52,18 +60,53 @@ public partial class Fighter : Control, ITarget, IAttackable
                 Camp.Zombie => t.Camp == Camp.Plant,
                 _ => false
             };
-            if (!t.FriendTarget)
+            bool isFusionHost = t is FighterCardModel && Model is FighterCardModel fm && fm.IsFusion;
+            bool isEvolver = t is FighterCardModel tf && tf.IsEvolution;
+            bool fusOrEvoQuery = isFusionHost || isEvolver;
+
+            if (!t.FriendTarget && !fusOrEvoQuery)
                 b = b && camp;
             return b;
         };
-
+    /// <summary>
+    /// 改变显示层级
+    /// </summary>
+    /// <param name="location"></param>
+    public void SwitchLayer(Location location)
+    {
+        index = location;
+        if (GetParent().GetParent() != Main.FighterContainer) return;
+        var parent = Road.IsUp switch
+        {
+            false => location switch
+            {
+                Location.Plant => Main.FighterDown,
+                Location.PlantFront => Main.FighterFrontDown,
+                Location.Zombie => Main.FighterUp,
+                _ => Main.FighterFrontUp
+            },
+            true => location switch
+            {
+                Location.Plant => Main.FighterUp,
+                Location.PlantFront => Main.FighterFrontUp,
+                Location.Zombie => Main.FighterDown,
+                _ => Main.FighterFrontDown
+            }
+        };
+        if (parent == GetParent()) return;
+        else
+        {
+            CallDeferred("reparent", parent);
+        }
+    }
     /// <summary>
     /// 死亡表现
     /// </summary>
     public async Task Die()
     {
         _isOpen = false;
-        Road.RemoveFighter(this);
+        var fighterCard = Model;
+        await Road.RemoveFighter(fighterCard, this);
 
         GetNode<SpineHandler>("%伤害动画").SetAnimation(0, "die", false);
         GetNode<SpineHandler>("%血量动画").SetAnimation(0, "die", false);
@@ -103,31 +146,35 @@ public partial class Fighter : Control, ITarget, IAttackable
     public async Task Hurt(int amount)
     {
         KillHurtTween();
-
+        List<string> k1s = ["hurt", "hit", "damaged"];
         GetNode<Node2D>("%额外动画").Modulate = new Color(1, 1, 1, 1);
         GetNode<Node2D>("%额外动画").Position = new Vector2();
         Tween tween = CreateTween();
         tween.TweenProperty(GetNode<Node2D>("%额外动画"), "position", new Vector2(0, -300), 0.3f);
-        tween.TweenProperty(GetNode<Node2D>("%额外动画"), "modulate", new Color(1, 1, 1, 0), 0.3f);
         GetNode<Label>("%额外血量数值").Text = $"-{amount}";
         GetNode<Node2D>("%额外动画").Visible = true;
 
+        var animSpine = GetNode<SpineHandler>("%动画");
+        float hurtDuration = animSpine.GetFirstAvailableDuration([.. k1s]);
         _dmgSpine.SetAnimation(0, "hurt", false);
         _hpSpine.SetAnimation(0, "hurt", false);
-        GetNode<SpineHandler>("%动画").SetAnimation(0, "hurt", false);
-
-        await FollowOffset(1f);
+        GetNode<SpineHandler>("%动画").SetFirstAvailableAnimation(0, false, [.. k1s]);
+        await FollowOffset(hurtDuration);
+        GetNode<Node2D>("%额外动画").Position = new Vector2();
+        GetNode<Node2D>("%额外动画").Visible = false;
     }
 
-    private async Task FollowOffset(float time = 1f)
+    private async Task FollowOffset(float animDuration, float extraTime = 0.1f)
     {
         Vector2 worldOffset1 = _dmgSpine.GetBoneWorldPos("root");
         Vector2 worldOffset2 = _hpSpine.GetBoneWorldPos("root");
         Vector2 dmgLabelBase = _dmgLabel.Position;
         Vector2 hpLabelBase = _hpLabel.Position;
-        float nTime = 0f;
 
-        while (nTime <= time)
+        float nTime = 0f;
+        float total = animDuration + extraTime;
+
+        while (nTime <= total)
         {
             Vector2 offset1 = _dmgSpine.GetBoneWorldPos("root") - worldOffset1;
             Vector2 offset2 = _hpSpine.GetBoneWorldPos("root") - worldOffset2;
@@ -144,35 +191,17 @@ public partial class Fighter : Control, ITarget, IAttackable
 
     private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
 
-    public static void CallTargeted(CardModel cardModel, TargetType targetType)
-    {
-        CallTargeted(cardModel, targetType, cardModel.TargetFilter);
-    }
-
-    public static void CallTargeted(CardModel cardModel, TargetType targetType, Func<ITarget, bool> filter)
+    public void OnCallTargeted(TargetType targetType)
     {
         if (!targetType.HasFlag(TargetType.Fighters)) return;
-
-        var list = new List<Fighter>();
-        foreach (var fighter in Instances.Keys)
-        {
-            if (fighter.CanBeTarget(cardModel, filter))
-                list.Add(fighter);
-        }
-
-        foreach (var fighter in list)
-            fighter.CallTargeted();
+        CallTargeted();
     }
 
-    public static void DeleteTargeted(TargetType targetType)
+    public void OnDeleteTargeted(TargetType targetType)
     {
         if (targetType.HasFlag(TargetType.Fighters))
-        {
-            foreach (var fighter in Instances.Keys)
-                fighter.DeleteTargeted();
-        }
+            DeleteTargeted();
     }
-
     /// <summary>
     /// 播放攻击动画（表现层）
     /// </summary>
@@ -182,10 +211,12 @@ public partial class Fighter : Control, ITarget, IAttackable
     {
         var spine = GetNode<SpineHandler>("%动画");
         spine.ZIndex += 999;
+        List<string> k1s = ["attack_up", "attack"];
+        List<string> k2s = ["attack_down", "attack1"];
         var key = Road.IsUp
-            ? (Model.Camp == Camp.Zombie ? "attack" : "attack1")
-            : (Model.Camp == Camp.Zombie ? "attack1" : "attack");
-
+            ? (Model.Camp == Camp.Zombie ? k1s : k2s)
+            : (Model.Camp == Camp.Zombie ? k2s : k1s);
+        spine.ClearTracks();
         var eventWait = spine.WaitForAnimEvent("attack");
 
         var animTask = PlayAnimation(key, true);
@@ -199,13 +230,28 @@ public partial class Fighter : Control, ITarget, IAttackable
 
             foreach (var attackable in target)
             {
-                if (attackable is not Fighter fighter) continue;
-                Vector2 targetPos = fighter.GlobalPosition;
+                if (attackable is Fighter fighter)
+                {
+                    Vector2 targetPos = fighter.GlobalPosition;
 
-                if (GD.Load(Model.AmmoPath) is Texture2D texture)
-                    ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
-                else
-                    AnimaActor.PlayInstantAnimation(Model.AmmoPath, targetPos, "");
+                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                        ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
+                    else if (spine.HasAnimation("attackEffect"))
+                        AnimaActor.PlayInstantAnimation(Model.AnimationPath, targetPos, "attackEffect");
+                    else
+                        AnimaActor.PlayInstantAnimation(Model.AmmoPath, targetPos, "");
+                }
+                else if (attackable is HeroInstance hero)
+                {
+                    Vector2 targetPos = NodeRoad.GetNode(Road).GetHeroLocation(PlayerManager.GetFromHero(hero.Hero));
+
+                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                        ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
+                    else if (spine.HasAnimation("attackEffect"))
+                        AnimaActor.PlayInstantAnimation(Model.AnimationPath, targetPos, "attackEffect");
+                    else
+                        AnimaActor.PlayInstantAnimation(Model.AmmoPath, targetPos, "");
+                }
             }
         }
 
@@ -238,36 +284,55 @@ public partial class Fighter : Control, ITarget, IAttackable
     {
         await Model.FireTiming(Timing.AfterAttack, atkStack);
     }
-
-    public static Fighter Generate(FighterCardModel model, Road road, Location index)
+    public static async Task<Fighter> Generate(FighterCardModel model, Road road, Location index, Node parent = null)
     {
+        parent ??= road.IsUp switch
+        {
+            false => index switch
+            {
+                Location.Plant => Main.FighterDown,
+                Location.PlantFront => Main.FighterFrontDown,
+                Location.Zombie => Main.FighterUp,
+                _ => Main.FighterFrontUp
+            },
+            true => index switch
+            {
+                Location.Plant => Main.FighterUp,
+                Location.PlantFront => Main.FighterFrontUp,
+                Location.Zombie => Main.FighterDown,
+                _ => Main.FighterFrontDown
+            }
+        };
+
+        Fighter fighter;
         if (Instances.Count < maxInstance)
         {
-            var fighter = Scene.Instantiate<Fighter>();
-            fighter.Position = NodeRoad.GetNode(road).GetFighterLocation(index);
-            fighter.Model = model;
-            fighter.index = index;
-            Main.FighterContainer.AddChild(fighter);
-            fighter.isFirstPlace = true;
-            fighter.Road = road;
-            road.AddFighter(fighter);
-            fighter.Fresh();
-            Instances.Add(fighter, model);
-            return fighter;
+            fighter = Scene.Instantiate<Fighter>();
+            parent.AddChild(fighter);
+            Instances.Add(fighter);
         }
         else
         {
-            var fighter = Instances.First(p => p.Key.Model == null).Key;
-            fighter.Position = NodeRoad.GetNode(road).GetFighterLocation(index);
-            fighter.isFirstPlace = true;
-            fighter.Model = model;
-            fighter.index = index;
-            fighter.Road = road;
-            road.AddFighter(fighter);
-            fighter.Fresh();
-            Instances[fighter] = model;
-            return fighter;
+            fighter = Instances.First(f => f.Model == null);
+            if (fighter.GetParent() != parent)
+            {
+                fighter.Reparent(parent, true);
+            }
         }
+
+        fighter.Position = NodeRoad.GetNode(road).GetFighterLocation(index);
+        fighter.Model = model;
+        fighter.index = index;
+        fighter.isFirstPlace = true;
+        fighter.Road = road;
+        TargetRegistry.Register(fighter);
+        await road.AddFighter(model, fighter);
+        fighter.Visible = true;
+        fighter.ToVisible();
+        fighter.Fresh();
+        model.Road = road;
+        model.Location = index;
+        return fighter;
     }
 
     public static bool CanGenerate(FighterCardModel model, Road road)
@@ -292,7 +357,9 @@ public partial class Fighter : Control, ITarget, IAttackable
             }
             else
             {
-                if (roadFighters.Any(f => f.Model.Camp == Camp.Plant))
+                if (roadFighters.Any(f => f.Model.Camp == Camp.Plant && !f.Model.CardTag.HasFlag(CardTag.Coop)))
+                    return false;
+                else if (roadFighters.Count(f => f.Model.Camp == Camp.Plant) > 1)
                     return false;
                 return true;
             }
@@ -300,15 +367,28 @@ public partial class Fighter : Control, ITarget, IAttackable
         return false;
     }
 
-    public FighterCardModel ReturnCard()
+    public async Task<FighterCardModel> ReturnCard()
     {
         var fighterCard = Model;
-        Road.RemoveFighter(this);
+        await Road.RemoveFighter(fighterCard, this);
+
+        if (fighterCard != null)
+        {
+            fighterCard.Road = null;
+            fighterCard.Location = default;
+        }
+
         Clear();
         Model = null;
         return fighterCard;
     }
 
+    public async Task PlayAnimation(List<string> name, bool returnToIdle, int track = 0)
+    {
+        await GetNode<SpineHandler>("%动画").SetFirstAvailableAnimationTask(track, false, [.. name]);
+        if (returnToIdle)
+            GetNode<SpineHandler>("%动画").SetAnimation(track, "idle", true);
+    }
     public async Task PlayAnimation(string name, bool returnToIdle, int track = 0)
     {
         await GetNode<SpineHandler>("%动画").SetAnimationTask(track, name, false);
@@ -318,10 +398,11 @@ public partial class Fighter : Control, ITarget, IAttackable
 
     public static Fighter GetNode(FighterCardModel fighterCard)
     {
-        return Instances.FirstOrDefault(p => p.Value == fighterCard).Key;
+        return Instances.FirstOrDefault(f => f.Model == fighterCard);
     }
 
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new Color(0, 243, 0), new Color(243, 0, 0));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     public bool Calling { get; private set; }
 
     private void CallTargeted()
@@ -355,8 +436,9 @@ public partial class Fighter : Control, ITarget, IAttackable
         _hpSpine = GetNode<SpineHandler>("%血量动画");
         _dmgLabel = GetNode<Label>("%伤害数值");
         _hpLabel = GetNode<Label>("%血量数值");
+        _scale = GetNode<SpineHandler>("%动画").Scale;
     }
-
+    private Vector2 _scale;
     private bool _isOpen = false;
 
     private void OnHitButtonGuiInput(InputEvent @event)
@@ -378,7 +460,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             CardCmd.SelectTarget(this);
     }
 
-    public void Targeted()
+    public void OnTargeted(TargetContext ctx)
     {
         if (!Calling) return;
         KillTween();
@@ -390,7 +472,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         _tweenTargeted2.TweenProperty(sp, "modulate", _colortgBox.ColorA, 0.2f);
     }
 
-    public async void Distargeted()
+    public async void OnDistargeted(TargetContext ctx)
     {
         KillTween();
         var sp = GetNode<Node2D>("ExSprite");
@@ -399,6 +481,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1f, 1f), 0.2f);
         _tweenTargeted2.TweenProperty(sp, "modulate", _colortgBox.Default, 0.2f);
         await ToSignal(_tweenTargeted, Tween.SignalName.Finished);
+        if (!Calling) return;
         KillTween();
         _tweenTargeted = CreateTween().BindNode(sp).SetLoops(-1);
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 0.7f);
@@ -426,29 +509,127 @@ public partial class Fighter : Control, ITarget, IAttackable
     }
 
     private bool isFirstPlace = false;
+    private bool isInvisible = false;
+    private List<Fighter> fighters = new();
+    public void Invisible(Texture2D resistIcon)
+    {
+        if (isInvisible) return;
+        isInvisible = true;
+        foreach (var node in GetChildren())
+        {
+            if (node is Control control)
+            {
+                control.Visible = false;
+                control.MouseFilter = MouseFilterEnum.Ignore;
+            }
+            if (node is Node2D n2)
+            {
+                n2.Visible = false;
+            }
+        }
 
+        if (resistIcon != null)
+        {
+            GetNode<Node2D>("%单位场景").Visible = true;
+            GetNode<Sprite2D>("%特效").Visible = true;
+            GetNode<Sprite2D>("%特效").Texture = resistIcon;
+            GetNode<SpineHandler>("%动画").Visible = false;
+            GetNode<SpineHandler>("%土坑").Visible = false;
+        }
+        foreach (var f in fighters)
+        {
+            f.Invisible(null);
+        }
+    }
+    public void GroupWith(FighterCardModel fighter)
+    {
+        var f = GetNode(fighter);
+        fighters.Add(f);
+    }
+    public void ToVisible()
+    {
+        if (!isInvisible) return;
+        isInvisible = false;
+        foreach (var node in GetChildren())
+        {
+            if (node is Control control)
+            {
+                control.Visible = true;
+                control.MouseFilter = MouseFilterEnum.Ignore;
+            }
+            if (node is Node2D n2)
+            {
+                if (node.Name == "%特效")
+                { n2.Visible = false; }
+                n2.Visible = true;
+            }
+        }
+        GetNode<Control>("%碰撞").MouseFilter = MouseFilterEnum.Stop;
+    }
+    public static void Overlay(FighterCardModel fighter, Texture2D resistIcon)
+    {
+        var f = GetNode(fighter);
+        f.Invisible(resistIcon);
+    }
     private void Fresh()
     {
+        if (isInvisible) return;
         if (Model == null) return;
 
         if (isFirstPlace)
         {
             _isOpen = true;
             Scale = new(0.17f, 0.17f);
-            GetNode<SpineHandler>("土坑").Visible = Model.Camp switch
+            if (Model.AnimationScenePath != null)
+            {
+                var scene = GD.Load<PackedScene>(Model.AnimationScenePath).Instantiate<Node2D>();
+                var col1 = scene.GetNode<Node2D>("Battle").Position;
+                var col2 = scene.GetNode<Node2D>("Battle2").Position;
+                var cols1 = scene.GetNode<Node2D>("Battle").Scale;
+                GetNode<SpineHandler>("%动画").Position = (col1 - col2) + GetNode<SpineHandler>("%土坑").Position;
+                GetNode<SpineHandler>("%动画").Scale = _scale * cols1;
+                if (scene.GetChildren().Any(c => c.Name.ToString().Contains("Saved")))
+                {
+                    GetNode<Control>("%单位场景").AddChild(scene);
+                    scene.Position = GetNode<SpineHandler>("%土坑").Position;
+                    scene.ZIndex = GetNode<SpineHandler>("%土坑").ZIndex - 2;
+                    foreach (var child in scene.GetChildren())
+                    {
+                        if (!child.Name.ToString().Contains("Saved"))
+                        {
+                            child.QueueFree();
+                        }
+                        else if (child is Node2D n2)
+                        {
+                            n2.Position -= col2;
+                        }
+                        else if (child is Control control)
+                        {
+                            control.MouseFilter = MouseFilterEnum.Ignore;
+                            control.Position -= col2;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                GetNode<SpineHandler>("%动画").Position = new(0f, -58.0f);
+                GetNode<SpineHandler>("%动画").Scale = _scale * new Vector2(1, 1);
+            }
+            GetNode<SpineHandler>("%土坑").Visible = Model.Camp switch
             {
                 Camp.Plant => false,
                 Camp.Zombie => true,
                 _ => false
             };
             GetNode<SpineHandler>("%动画").LoadSkeletonData(Model.AnimationPath);
-            GetNode<SpineHandler>("土坑").LoadSkeletonData("res://数据资源/僵尸动画/土坑动画.tres");
+            GetNode<SpineHandler>("%土坑").LoadSkeletonData("res://数据资源/僵尸动画/土坑动画.tres");
             Visible = true;
             if (Zombie)
             {
-                GetNode<SpineHandler>("土坑").Visible = true;
-                GetNode<SpineHandler>("土坑").SetAnimation(0, "intro", false);
-                GetNode<SpineHandler>("土坑").SetAttachment("土坑", Road.Type switch
+                GetNode<SpineHandler>("%土坑").Visible = true;
+                GetNode<SpineHandler>("%土坑").SetAnimation(0, "intro", false);
+                GetNode<SpineHandler>("%土坑").SetAttachment("土坑", Road.Type switch
                 {
                     RoadType.Ground => "zombie_dirt_back",
                     RoadType.Height => "zombie_roof_back",
@@ -474,22 +655,27 @@ public partial class Fighter : Control, ITarget, IAttackable
             if (fighterCard.Hp.HasChanged)
             {
                 if (fighterCard.Hp.PositiveChanged)
-                    GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.ColorB);
+                    GetNode<Label>("%血量数值").SelfModulate = _colorBox.ColorB;
                 else
-                    GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
+                {
+                    if (fighterCard.MaxHp.Current == fighterCard.Hp.Current)
+                        GetNode<Label>("%血量数值").SelfModulate = _colorBox2.Default;
+                    else
+                        GetNode<Label>("%血量数值").SelfModulate = _colorBox.ColorC;
+                }
             }
             else
-                GetNode<Label>("%血量数值").AddThemeColorOverride("default_color", _colorBox.Default);
+                GetNode<Label>("%血量数值").SelfModulate = _colorBox.Default;
 
             if (fighterCard.Atk.HasChanged)
             {
                 if (fighterCard.Atk.PositiveChanged)
-                    GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.ColorB);
+                    GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorB;
                 else
-                    GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.ColorC);
+                    GetNode<Label>("%伤害数值").SelfModulate = _colorBox2.Default;
             }
             else
-                GetNode<Label>("%伤害数值").AddThemeColorOverride("default_color", _colorBox.Default);
+                GetNode<Label>("%伤害数值").SelfModulate = _colorBox.Default;
         }
     }
 
@@ -540,6 +726,16 @@ public partial class Fighter : Control, ITarget, IAttackable
         }
         else
         {
+            if (fighterCard.Atk.Current <= 0 && !fighterCard.BornWithAtk)
+            {
+                atkLabel.Visible = false;
+                atkSpine.Visible = false;
+            }
+            else
+            {
+                atkLabel.Visible = true;
+                atkSpine.Visible = true;
+            }
             atkLabel.Text = $"{fighterCard.Atk.Current}";
         }
     }
@@ -579,8 +775,15 @@ public partial class Fighter : Control, ITarget, IAttackable
     {
         var sprite = GetNode<SpineHandler>("%动画");
         sprite.ClearTracks();
-        GetNode<SpineHandler>("土坑").ClearTracks();
-        Instances[this] = null;
+        GetNode<SpineHandler>("%土坑").ClearTracks();
+        TargetRegistry.Unregister(this);
+
+        foreach (var f in fighters.ToList())
+        {
+            fighters.Remove(f);
+            f.Clear();
+            f.Visible = false;
+        }
     }
 }
 

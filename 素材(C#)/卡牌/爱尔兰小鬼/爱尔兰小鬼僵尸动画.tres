@@ -1,0 +1,15 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://b6iwia4l140ms"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://q2hnki7b1bt" path="res://场景/僵尸卡/爱尔兰小鬼僵尸/爱尔兰小鬼.atlas" id="1_njrq6"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://1l4odn63wavd" path="res://场景/僵尸卡/爱尔兰小鬼僵尸/爱尔兰小鬼.skel" id="2_bnn04"]
+
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_ktr12"]
+from = "intro"
+to = "idle"
+mix = 0.3
+
+[resource]
+atlas_res = ExtResource("1_njrq6")
+skeleton_file_res = ExtResource("2_bnn04")
+default_mix = 0.1
+animation_mixes = [SubResource("SpineAnimationMix_ktr12")]

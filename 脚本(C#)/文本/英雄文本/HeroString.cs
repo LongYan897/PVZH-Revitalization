@@ -1,12 +1,8 @@
 using Card;
-using Card.String;
 using Godot;
 using Godot.Collections;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hero.String;
 
@@ -65,6 +61,10 @@ public class HeroString
     /// 图鉴Y偏移量
     /// </summary>
     public float DesOffset { get; private set; }
+    /// <summary>
+    /// 超能力
+    /// </summary>
+    public IEnumerable<CardModel> SuperPower { get; private set; }
     /// <summary>
     /// 从heroes.json中获得数据
     /// </summary>
@@ -168,6 +168,10 @@ public class HeroString
         if (GetData(heroTitle, "DesOffset").VariantType != Variant.Type.Nil)
         {
             heroString.DesOffset = GetData(heroTitle, "DesOffset").AsSingle();
+        }
+        if (GetData(heroTitle, "SuperPower").VariantType != Variant.Type.Nil)
+        {
+            heroString.SuperPower = GetData(heroTitle, "SuperPower").AsStringArray().Select(s => CardModel.GetTemplate(s));
         }
         return heroString;
     }

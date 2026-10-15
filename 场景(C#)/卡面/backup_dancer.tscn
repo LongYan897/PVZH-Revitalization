@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c6r1o3cg5pfhd"]
+
+[ext_resource type="Texture2D" uid="uid://cletxuibu7oim" path="res://场景/僵尸卡组/跳舞僵尸/819287e9-e7de-468d-9268-7b54814f65e6 #96951.png" id="1_euc11"]
+
+[node name="卡面" type="Control" unique_id=1588686976]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1678352883]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 13.0
+offset_right = 207.0
+offset_bottom = 197.0
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("1_euc11")
+expand_mode = 1
+stretch_mode = 3

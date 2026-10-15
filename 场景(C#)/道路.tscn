@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dklertu5xn7l"]
 
 [ext_resource type="Script" uid="uid://d0fiwqlc5ur5k" path="res://脚本(C#)/战斗相关/道路/NodeRoad.cs" id="1_ewqbq"]
-[ext_resource type="Texture2D" uid="uid://mt3i5jc608yf" path="res://素材/地图/迪斯科/BGDisco_lane1.png" id="1_x76yt"]
+[ext_resource type="Texture2D" uid="uid://dpn15dwxsxpxm" path="res://素材/地图/迪斯科/BGDisco_high.png" id="2_ojbca"]
 [ext_resource type="Texture2D" uid="uid://cimvexb4n4idx" path="res://素材/ui/地图高亮/选择框3.png" id="3_x76yt"]
 [ext_resource type="Texture2D" uid="uid://d4ihrs2s4rf4q" path="res://素材/对象高亮框/单位.png" id="4_ewqbq"]
 [ext_resource type="Texture2D" uid="uid://weos2ou5dc6" path="res://素材(C#)/场地/coffee_lane_base.png" id="4_qclkx"]
@@ -41,7 +41,7 @@ shape = SubResource("RectangleShape2D_qclkx")
 
 [node name="图标" type="Sprite2D" parent="." unique_id=1560511930]
 unique_name_in_owner = true
-texture = ExtResource("1_x76yt")
+texture = ExtResource("2_ojbca")
 
 [node name="环境" type="TextureRect" parent="." unique_id=1090838795]
 unique_name_in_owner = true
@@ -57,14 +57,15 @@ expand_mode = 1
 
 [node name="环境高亮" type="Sprite2D" parent="." unique_id=381365032]
 unique_name_in_owner = true
-visible = false
 modulate = Color(0.46666667, 0.81960785, 0.54901963, 1)
-position = Vector2(0, -7.499998)
-scale = Vector2(0.33, 0.37791798)
+z_index = 24
+position = Vector2(0, -36.499992)
+scale = Vector2(0.33, 0.35394323)
 texture = ExtResource("3_x76yt")
 
 [node name="植物_僵尸1" type="Node2D" parent="." unique_id=545167542]
 unique_name_in_owner = true
+z_index = 10
 position = Vector2(-55, 123)
 
 [node name="单位高亮" type="TextureRect" parent="植物_僵尸1" unique_id=1842500548]
@@ -101,10 +102,11 @@ position = Vector2(55, 64)
 
 [node name="Pos" type="Marker2D" parent="." unique_id=2064773252]
 unique_name_in_owner = true
-position = Vector2(0, 98)
+position = Vector2(0, 119)
 
 [node name="植物_2" type="Node2D" parent="." unique_id=503027257]
 unique_name_in_owner = true
+z_index = 10
 position = Vector2(-55, -19)
 
 [node name="单位高亮2" type="TextureRect" parent="植物_2" unique_id=1021507255]
@@ -139,9 +141,11 @@ position = Vector2(55, 64)
 
 [node name="Arrow" type="TextureRect" parent="." unique_id=1026955378]
 unique_name_in_owner = true
+visible = false
+z_index = 40
 layout_mode = 0
 offset_left = -42.0
-offset_top = -112.0
+offset_top = -41.0
 offset_right = 42.0
 offset_bottom = 158.0
 pivot_offset_ratio = Vector2(0.5, 0.9)
@@ -151,11 +155,13 @@ expand_mode = 1
 
 [node name="ArrowDown" type="TextureRect" parent="." unique_id=990774744]
 unique_name_in_owner = true
+visible = false
+z_index = 40
 layout_mode = 0
 offset_left = -42.000004
-offset_top = -491.0071
+offset_top = -457.0
 offset_right = 41.999996
-offset_bottom = -207.49783
+offset_bottom = -243.21274
 rotation = 3.1415927
 pivot_offset_ratio = Vector2(0.5, 0.9)
 mouse_filter = 2
@@ -164,19 +170,29 @@ expand_mode = 1
 
 [node name="Battle" type="TextureRect" parent="." unique_id=1794512796]
 unique_name_in_owner = true
+visible = false
+z_index = 40
 layout_mode = 0
 offset_left = -64.0
-offset_top = -157.0
+offset_top = -130.0
 offset_right = 64.0
-offset_bottom = -29.0
+offset_bottom = -2.0
 scale = Vector2(0.6, 0.6)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("7_y6tdo")
 
 [node name="Pos1" type="Marker2D" parent="." unique_id=489996065]
 unique_name_in_owner = true
-position = Vector2(0, -234)
+position = Vector2(0, -219)
 
 [node name="Pos2" type="Marker2D" parent="." unique_id=1774024238]
 unique_name_in_owner = true
-position = Vector2(0, -136)
+position = Vector2(0, -118)
+
+[node name="Hero" type="Marker2D" parent="." unique_id=2103997853]
+unique_name_in_owner = true
+position = Vector2(0, 263)
+
+[node name="Hero2" type="Marker2D" parent="." unique_id=773338379]
+unique_name_in_owner = true
+position = Vector2(0, -321)

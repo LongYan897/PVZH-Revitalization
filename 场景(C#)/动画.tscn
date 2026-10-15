@@ -7,5 +7,5 @@
 script = ExtResource("1_8y1ha")
 metadata/_custom_type_script = "uid://dgww10u3pg76i"
 
-[node name="Spine" type="SpineSprite" parent="." unique_id=273388558]
+[node name="SpineNode" type="SpineSprite" parent="." unique_id=273388558]
 script = ExtResource("1_xai57")

@@ -1,3 +1,4 @@
+using Battle;
 using Battle.Entity;
 using Card.Cmd;
 using Card.String;
@@ -5,15 +6,13 @@ using Controller;
 using Godot;
 using Logger;
 using Pack;
-using Phrases;
 using Play;
 using Spine;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Target;
 using Variable;
@@ -25,10 +24,55 @@ namespace Card;
 /// </summary>
 public class CardModel
 {
-    public virtual Vector2 Size => new(1, 1);
-    public virtual Vector2 Position => new(0, 0);
     public Player Player { get; private set; }
     private static readonly Dictionary<string, CardModel> TemplateEntries = new();
+    /// <summary>
+    /// 获取卡牌已有的变量
+    /// </summary>
+    /// <param name="sign">变量名称</param>
+    /// <returns></returns>
+    public ICardVariable this[string sign]
+    {
+        get
+        {
+            foreach (var variable in _variables)
+            {
+                if (variable.Key == sign)
+                    return variable;
+            }
+            return null;
+        }
+    }
+    /// <summary>
+    /// 从描述中获取整数变量的值
+    /// </summary>
+    /// <param name="sign">变量名称</param>
+    /// <returns></returns>
+    public int GetSignInt(string sign)
+        => GetSignVariable(sign).AbsValue;
+    /// <summary>
+    /// 从描述中获取整数变量
+    /// </summary>
+    /// <param name="sign">变量名称</param>
+    /// <returns></returns>
+    public DescriptionVariable GetSignVariable(string sign)
+    {
+        foreach (var variable in _variables)
+        {
+            if (variable.Key == sign && variable is DescriptionVariable description)
+                return description;
+        }
+        return null;
+    }
+    /// <summary>
+    /// 检测卡牌是否能打出
+    /// </summary>
+    /// <returns></returns>
+    public bool CanPlay()
+    {
+        var p = PlayerManager.GetPlayer(Camp);
+        return (Fighter.CanTargetedBy(this, false) || NodeRoad.CanTargetedBy(this)) && !Road.IsBattling && !CardCmd.StopCardPlay && (p == null || (p != null && (p.Status.Hero.Cost == null || (p.Status.Hero.Cost != null && p.Status.Hero.Cost.Current >= Cost.Current))));
+    }
     /// <summary>
     /// 按照名称获取卡牌模板
     /// </summary>
@@ -86,6 +130,7 @@ public class CardModel
             }
         }
     }
+    public static List<CardModel> AllCards => TemplateEntries.Values.ToList();
     /// <summary>
     /// 刷新卡牌的节点
     /// </summary>
@@ -95,6 +140,37 @@ public class CardModel
         if (this is FighterCardModel fighter)
             Fighter.GetNode(fighter)?.CardTryFresh(this);
         CardDes.instance?.CardTryFresh(this);
+    }
+    /// <summary>
+    /// 获取卡牌处理后的描述
+    /// </summary>
+    public string GetDescription()
+    {
+        string v = "";
+        if (this is FighterCardModel fighter)
+        {
+            if (fighter.CardTag.HasFlag(CardTag.Amphibious))
+            {
+                v += "_两栖_";
+            }
+            if (fighter.AtkType.Current.ExLabel != null)
+            {
+                v += fighter.AtkType.Current.ExLabel;
+            }
+            if (fighter.HpType.Current.ExLabel != null)
+            {
+                v += fighter.HpType.Current.ExLabel;
+            }
+            if (fighter.CardTag.HasFlag(CardTag.Coop))
+            {
+                v += "_组队_";
+            }
+            if (!string.IsNullOrEmpty(v))
+            {
+                v += "\n";
+            }
+        }
+        return v + Description;
     }
     public async Task DestroyMe()
     {
@@ -119,7 +195,7 @@ public class CardModel
             };
         }
     }
-    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0)
+    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0, string eventName = null)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -127,9 +203,12 @@ public class CardModel
         sp.Scale = new(0.7f, 0.7f);
         node.AddChild(sp);
         sp.LoadSkeletonData(AnimationPath);
-        await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
+        if (eventName != null)
+            await sp.SetAnimationAndFreeOnEvent(track, animName, eventName, false);
+        else
+            await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
     }
-    protected async Task PlayLoopAnimation(string animName, ITarget target,int track = 0)
+    protected async Task PlayLoopAnimation(string animName, ITarget target, int track = 0)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -164,6 +243,8 @@ public class CardModel
         card.CardType = cardString.CardType;
         card.Pack = cardString.Pack;
         card.AnimationPath = cardString.AnimationPath;
+        card.AnimationScenePath = cardString.AnimationScenePath;
+        card.ParseDescriptionVariables(cardString.Description);
         card.Icon = GD.Load<PackedScene>(cardString.IconPath);
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
         return (T)card.LoadData(cardString);
@@ -196,10 +277,10 @@ public class CardModel
         return true;
     }
 
-    [IconText("ffffff")]
+    [IconText("000000")]
     public const string Sun = "res://素材(C#)/文本图片/inhnd_sun_gb.png";
 
-    [IconText("ffffff")]
+    [IconText("000000")]
     public const string Brain = "res://素材(C#)/文本图片/inhnd_brains.png";
     /// <summary>
     /// 卡牌的特殊标签
@@ -226,6 +307,10 @@ public class CardModel
     /// </summary>
     public string AnimationPath { get; private set; }
     /// <summary>
+    /// 卡牌的动画场景路径
+    /// </summary>
+    public string AnimationScenePath { get; private set; }
+    /// <summary>
     /// 卡牌的稀有度
     /// </summary>
     public Rarity Rarity { get; private set; }
@@ -241,7 +326,7 @@ public class CardModel
     /// <summary>
     /// 卡牌的状态（正面/反面）
     /// </summary>
-    public Status Status { get; set; } = Status.FaceDown;
+    public Status Status { get; set; } = Status.FaceUp;
     /// <summary>
     /// 卡牌的类别
     /// </summary>
@@ -273,6 +358,15 @@ public class CardModel
     /// <returns></returns>
     public virtual Task Play(ITarget target) { return Task.CompletedTask; }
     /// <summary>
+    /// 卡牌打出时的效果
+    /// </summary>
+    /// <param name="target">游戏传入的卡牌目标</param>
+    /// <returns></returns>
+    public async Task OnPlayWrap(ITarget target)
+    {
+        await Task.WhenAll(Play(target), CardCmd.ChangeCost(null, -Cost.Current, this));
+    }
+    /// <summary>
     /// 克隆之后的逻辑
     /// </summary>
     /// <param name="card"></param>
@@ -286,6 +380,31 @@ public class CardModel
         CardModel card = MemberwiseClone() as CardModel;
         card.AfterClone();
         return card;
+    }
+    private static readonly Regex DescriptionVarRegex =
+    new(@"=([^=]+)=\{([+-]?)(\d+)\}", RegexOptions.Compiled);
+
+    /// <summary>
+    /// 从描述文本里解析 =XXX={+N} / =XXX={-N} / =XXX={N}，
+    /// 把数值按绝对值 + 方向存入 _variables
+    /// </summary>
+    private void ParseDescriptionVariables(string description)
+    {
+        if (string.IsNullOrEmpty(description)) return;
+
+        foreach (Match m in DescriptionVarRegex.Matches(description))
+        {
+            string key = m.Groups[1].Value;
+            string sign = m.Groups[2].Value;
+            string numStr = m.Groups[3].Value;
+
+            if (!int.TryParse(numStr, out int absValue)) continue;
+            if (absValue < 0) absValue = -absValue;
+
+            bool isNegative = sign == "-";
+
+            _variables.Add(new DescriptionVariable(key, absValue, isNegative));
+        }
     }
     /// <summary>
     /// 子类重置卡牌数值的逻辑
@@ -357,8 +476,20 @@ public class CardModel
     {
         foreach (var buff in BuffList.ToList())
         {
+            if (this is FighterCardModel fighterCard && !fighterCard.IsPlaced && buff.OnlyPlaced) continue;
             if (buff.Timings.Contains(timing))
-                await buff.OnTiming(timing, this,parameters);
+                await buff.OnTiming(timing, this, parameters);
+        }
+        if (this is FighterCardModel fighter && fighter.IsPlaced)
+        {
+            if (fighter.HpType.Current.Buff != null)
+            {
+                await fighter.HpType.Current.Buff.OnTiming(timing, this, parameters);
+            }
+            if (fighter.AtkType.Current.Buff != null)
+            {
+                await fighter.AtkType.Current.Buff.OnTiming(timing, this, parameters);
+            }
         }
     }
 
@@ -369,9 +500,17 @@ public class CardModel
     {
         foreach (var buff in BuffList.ToList())
         {
-            await RemoveBuff(buff,VariableReason.Self);
-            await newCard.AddBuff(buff,VariableReason.Self);
+            if (!buff.IsTransferable) continue;
+            await RemoveBuff(buff, VariableReason.Self);
+            await newCard.AddBuff(buff, VariableReason.Self);
         }
     }
 
+}
+public static class CardModelExtensions
+{
+    public static bool HasLabel(this CardModel model, string label)
+        => model != null && model.Labels.Current.Contains(label);
+    public static bool IsClass(this CardModel model, Class @class)
+        => model != null && model.Class.HasFlag(@class);
 }

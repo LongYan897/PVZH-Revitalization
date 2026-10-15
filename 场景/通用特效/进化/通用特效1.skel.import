@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://dwjs133s0xhp6"
+path="res://.godot/imported/通用特效1.skel-841647c5fc05f196fd1b7f0312247d91.spskel"
+
+[deps]
+
+source_file="res://场景/通用特效/进化/通用特效1.skel"
+dest_files=["res://.godot/imported/通用特效1.skel-841647c5fc05f196fd1b7f0312247d91.spskel"]
+
+[params]
+

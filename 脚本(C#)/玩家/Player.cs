@@ -1,4 +1,5 @@
 using Card;
+using Hero.Model;
 using System.Collections.Generic;
 
 namespace Play;
@@ -8,7 +9,6 @@ namespace Play;
 /// 用于记录玩家状态和战斗状态
 /// 可以记录局内和局外的数据
 /// </summary>
-/// <param name="id"></param>
 public class Player
 {
     private Player() { }
@@ -17,13 +17,22 @@ public class Player
     /// 玩家的名称
     /// </summary>
     public string Id { get; private set; }
-    /// <summary>
-    /// 玩家获得的卡牌(这里面的卡牌均为克隆模板切勿修改)
-    /// </summary>
     private readonly List<CardModel> _cards = new List<CardModel>();
+    /// <summary>
+    /// 玩家在游戏中收集的卡牌(这里面的卡牌均为克隆模板切勿修改)
+    /// </summary>
     public IReadOnlyList<CardModel> Cards => _cards;
     /// <summary>
     /// 玩家的战斗状态
     /// </summary>
     public readonly PlayerBox Status = new();
+    /// <summary>
+    /// 为玩家设置英雄
+    /// </summary>
+    /// <typeparam name="T">英雄类</typeparam>
+    public void SetHero<T>() where T : HeroModel, new()
+    {
+        var hero = HeroModel.Load<T>();
+        Status.SetHero(hero);
+    }
 }

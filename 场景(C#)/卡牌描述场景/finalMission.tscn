@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://mahk8ysqsoma"]
+
+[ext_resource type="Texture2D" uid="uid://c4yunnsxr58kl" path="res://素材/ui/界面ui/smallinspectionframe.png" id="1_77oj3"]
+[ext_resource type="Texture2D" uid="uid://cov63gqkfb3l7" path="res://素材/ui/界面ui/frame_circle_grass.png" id="2_dhmj8"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://mavpbw56r5bl" path="res://数据资源/僵尸动画/土坑动画.tres" id="3_o4sl1"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cf0msnh6vk01o" path="res://数据资源/僵尸动画/最终任务锦囊.tres" id="4_77oj3"]
+[ext_resource type="Texture2D" uid="uid://cf535epebm3py" path="res://场景/僵尸卡/最终任务锦囊/cloud.png" id="4_o4sl1"]
+
+[sub_resource type="Curve" id="Curve_sky3k"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1e-05, 1), 0.0, 0.0, 0, 0, Vector2(0.049046323, 1), 0.0, 0.0, 0, 0, Vector2(0.7425068, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_6fhyq"]
+curve = SubResource("Curve_sky3k")
+
+[sub_resource type="Gradient" id="Gradient_eeuvd"]
+offsets = PackedFloat32Array(0, 0.98382354, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.15147059, 0.15147059, 0.15147059, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ftl2d"]
+gradient = SubResource("Gradient_eeuvd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_q5rc0"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 60.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 98, 0)
+scale_min = 0.59999996
+scale_max = 0.79999995
+color = Color(0.86, 0.86, 0.86, 1)
+color_ramp = SubResource("GradientTexture1D_ftl2d")
+alpha_curve = SubResource("CurveTexture_6fhyq")
+
+[node name="Mission" type="Node2D" unique_id=288799511]
+
+[node name="Ignore5" type="Sprite2D" parent="." unique_id=949480861]
+unique_name_in_owner = true
+z_index = -19
+position = Vector2(0, -280)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_77oj3")
+
+[node name="Ignore6" type="Sprite2D" parent="Ignore5" unique_id=397161122]
+unique_name_in_owner = true
+z_index = -8
+texture = ExtResource("2_dhmj8")
+
+[node name="Saved" type="GPUParticles2D" parent="." unique_id=1430165493]
+position = Vector2(0, -245)
+scale = Vector2(2, 2)
+amount = 100
+amount_ratio = 0.4679
+texture = ExtResource("4_o4sl1")
+visibility_rect = Rect2(-4000, -4000, 8000, 8000)
+process_material = SubResource("ParticleProcessMaterial_q5rc0")
+
+[node name="Collection" type="Marker2D" parent="." unique_id=1996817975]
+position = Vector2(0, -301)
+
+[node name="Collection2" type="SpineSprite" parent="." unique_id=13806803]
+skeleton_data_res = ExtResource("3_o4sl1")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(0, -192.5)
+scale = Vector2(0.64, 0.64)
+
+[node name="Ignore" type="SpineSprite" parent="." unique_id=475056851]
+skeleton_data_res = ExtResource("4_77oj3")
+preview_skin = "default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(0, -301)

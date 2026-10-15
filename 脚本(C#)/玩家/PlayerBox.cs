@@ -1,5 +1,8 @@
 
+using Battle;
 using Card;
+using Hero;
+using Hero.Model;
 using Logger;
 using Phrases;
 using System.Collections.Generic;
@@ -57,6 +60,11 @@ public class PlayerBox
         }
     }
     /// <summary>
+    /// 操纵的英雄
+    /// </summary>
+    public HeroModel Hero { get; private set; }
+    public IAttackable AtkMe() => HeroInstance.GetNode(Hero);
+    /// <summary>
     /// 往战斗中加入卡牌
     /// </summary>
     /// <param name="card">加入的卡牌</param>
@@ -91,4 +99,5 @@ public class PlayerBox
         if (_handCards.Any(v => v.Current == card)) return;
         _handCards.Add(new("Card", card));
     }
+    public void SetHero(HeroModel heroModel) => Hero = heroModel;
 }
