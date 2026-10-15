@@ -16,9 +16,14 @@ public partial class CardPackExtensions
 	private string _path { get; } = "res://数据(C#)/cardPack.json";
 	private FileJson _file { get; set; } = new();
 	private Random _random { get; set; }
-	public CardPackExtensions(int seed)
+	public CardPackExtensions(int seed = -1)
 	{
 		this.seed = seed;
+		if (seed == -1)
+		{
+			_random = new();
+
+		}
 		_random = new(seed);
 	}
 	public List<(string Card, int Count)> DrawCard(string packName, int Count, bool save = false)
