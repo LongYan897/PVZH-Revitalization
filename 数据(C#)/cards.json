@@ -14,6 +14,7 @@
   "Peashooter.HpType": "普通",
   "Peashooter.Icon": "res://场景(C#)/卡面/pea.tscn",
   "Peashooter.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
+  "Peashooter.Id": 0,
 
   "SunFlower.Title": "向日葵",
   "SunFlower.Des": "_回合开始_：在_本回合_获得=Sun={1}",
@@ -30,7 +31,8 @@
   "SunFlower.HpType": "普通",
   "SunFlower.Atk": 0,
   "SunFlower.AtkType": "普通",
-  "SunFlower.Flavor": "",
+  "SunFlower.Flavor": "不是吹牛，我可以说是这个系列的开山鼻祖啦。",
+  "SunFlower.Id": 1,
 
   "BackupDancer.Title": "伴舞僵尸",
   "BackupDancer.Des": "一只$跳舞$僵尸获得=Strength={+2}。",
@@ -48,6 +50,7 @@
   "BackupDancer.Atk": 1,
   "BackupDancer.AtkType": "普通",
   "BackupDancer.Flavor": "曾在Chewliard表演艺术学院苦练六年。",
+  "BackupDancer.Id": 2,
 
   "RollingStone.Title": "滚石",
   "RollingStone.Flavor": "给 “摇滚” 这个词赋予了新含义。",
@@ -62,6 +65,7 @@
   "RollingStone.HpType": "普通",
   "RollingStone.Icon": "res://场景(C#)/卡面/stone.tscn",
   "RollingStone.Animation": "res://素材(C#)/卡牌/滚石/滚石锦囊动画.tres",
+  "RollingStone.Id": 3,
 
   "HailACopter.Title": "召唤直升机",
   "HailACopter.Des": "_召唤_一只=Strength={6}/=Health={5}的_直升机敢死队小鬼_。",
@@ -75,6 +79,7 @@
   "HailACopter.Label": [ "科学家", "小鬼" ],
   "HailACopter.Pack": "高级",
   "HailACopter.Flavor": "患有严重恐水症，死活不肯在水上飞行。",
+  "HailACopter.Id": 4,
 
   "CopterCommando.Title": "直升机敢死队小鬼",
   "CopterCommando.Des": "",
@@ -94,6 +99,7 @@
   "CopterCommando.AtkType": "普通",
   "CopterCommando.Pack": "巨大",
   "CopterCommando.Flavor": "患有严重恐水症，死活不肯在水上飞行。",
+  "CopterCommando.Id": 5,
 
   "FinalMission.Title": "最终任务",
   "FinalMission.Des": "_消灭_一只僵尸。然后对一株植物造成=Health={-4}。",
@@ -108,7 +114,8 @@
   "FinalMission.Label": [ "科学家", "木桶" ],
   "FinalMission.Tag": [],
   "FinalMission.Pack": "银河",
-  "FinalMission.Flavor": "“往返票和单程票一个价。“",
+  "FinalMission.Flavor": "往返票和单程票一个价。",
+  "FinalMission.Id": 6,
 
   "StartBattle.Title": "皮纳塔总动员",
   "StartBattle.Des": "一条线_额外战斗_一次。",
@@ -123,6 +130,7 @@
   "StartBattle.Tag": [],
   "StartBattle.Pack": "高级",
   "StartBattle.Flavor": "敲开它，里面全是僵尸。没人知道为什么僵尸会藏在皮纳塔里，但大家都假装这是正常的。",
+  "StartBattle.Id": 7,
 
   "CardboardBoat.Title": "纸板机器船",
   "CardboardBoat.Des": "_&僵尸&融合_：获得=Health={+1}和_两栖_。",
@@ -140,5 +148,6 @@
   "CardboardBoat.HpType": "普通",
   "CardboardBoat.Atk": 0,
   "CardboardBoat.AtkType": "普通",
-  "CardboardBoat.Flavor": "僵尸们每次上船都抓紧扶手——甲板上的水，比他们的脑子还多。"
+  "CardboardBoat.Flavor": "僵尸们每次上船都抓紧扶手——甲板上的水，比他们的脑子还多。",
+  "CardboardBoat.Id": 8
 }

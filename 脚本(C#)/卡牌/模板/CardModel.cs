@@ -6,6 +6,7 @@ using Controller;
 using Godot;
 using Logger;
 using Pack;
+using Phrases;
 using Play;
 using Spine;
 using System;
@@ -71,7 +72,12 @@ public class CardModel
     public bool CanPlay()
     {
         var p = PlayerManager.GetPlayer(Camp);
-        return (Fighter.CanTargetedBy(this, false) || NodeRoad.CanTargetedBy(this)) && !Road.IsBattling && !CardCmd.StopCardPlay && (p == null || (p != null && (p.Status.Hero.Cost == null || (p.Status.Hero.Cost != null && p.Status.Hero.Cost.Current >= Cost.Current))));
+        var isTurnMe =
+            (PhraseManager.Phrase == Phrase.Plant && Camp == Camp.Plant)
+            || (PhraseManager.Phrase == Phrase.Zombie && Camp == Camp.Zombie && CardType.HasFlag(CardType.Fighter))
+            || (PhraseManager.Phrase == Phrase.Trick && Camp == Camp.Zombie && (CardType.HasFlag(CardType.Trick) || CardType.HasFlag(CardType.Environment)));
+
+        return isTurnMe && (Fighter.CanTargetedBy(this, false) || NodeRoad.CanTargetedBy(this)) && !Road.IsBattling && !CardCmd.StopCardPlay && (p == null || (p != null && (p.Status.Hero.Cost == null || (p.Status.Hero.Cost != null && p.Status.Hero.Cost.Current >= Cost.Current))));
     }
     /// <summary>
     /// 按照名称获取卡牌模板
@@ -81,6 +87,16 @@ public class CardModel
         if (TemplateEntries.TryGetValue(title, out var template))
             return template.Clone();
         return null;
+    }
+
+    /// <summary>
+    /// 从id获取卡牌
+    /// </summary>
+    /// <param name="id">卡牌的ID</param>
+    /// <returns></returns>
+    public static CardModel FromId(uint id)
+    {
+        return TemplateEntries.FirstOrDefault(t=>t.Value.Id == id).Value;
     }
 
     /// <summary>
@@ -246,6 +262,7 @@ public class CardModel
         card.AnimationScenePath = cardString.AnimationScenePath;
         card.ParseDescriptionVariables(cardString.Description);
         card.Icon = GD.Load<PackedScene>(cardString.IconPath);
+        card.Id = cardString.Id;
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
         return (T)card.LoadData(cardString);
     }

@@ -1,4 +1,5 @@
 using Card;
+using Card.Pack;
 using Hero.Model;
 using System.Collections.Generic;
 
@@ -27,12 +28,12 @@ public class Player
     /// </summary>
     public readonly PlayerBox Status = new();
     /// <summary>
-    /// 为玩家设置英雄
+    /// 准备一次战斗,创建一个战斗状态
     /// </summary>
     /// <typeparam name="T">英雄类</typeparam>
-    public void SetHero<T>() where T : HeroModel, new()
+    public static void PrefABox<T>(Player player,PresetPack deck) where T : HeroModel, new()
     {
         var hero = HeroModel.Load<T>();
-        Status.SetHero(hero);
+        player.Status.PrefABox(player,hero,deck);
     }
 }

@@ -22,11 +22,11 @@ public partial class BattleSubMenuScene : SubMenuScene
         GetNode<SpineHandler>("%动画").LoadSkeletonData("res://素材/ui/轮盘动画/轮盘动画.tres");
         PhraseManager.SetUp(GetNode<Button>("%Button"), GetNode<SpineHandler>("%动画"));
         await Prepare();
-        Refresh(PlayerManager.HostPlayer);
+        Refresh();
     }
-    private static async void Refresh(Player player)
+    private static async void Refresh()
     {
-
+        await DeckCmd.HintFresh();
     }
     private static async Task Prepare()
     {

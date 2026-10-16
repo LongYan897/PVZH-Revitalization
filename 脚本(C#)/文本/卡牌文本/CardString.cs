@@ -205,6 +205,14 @@ public class CardString
         {
             cardString.IconPath = GetData(cardTitle, "Icon").AsString();
         }
+        if (GetData(cardTitle, "Icon").VariantType != Variant.Type.Nil)
+        {
+            cardString.IconPath = GetData(cardTitle, "Icon").AsString();
+        }
+        if(GetData(cardTitle, "Id").VariantType != Variant.Type.Nil)
+        {
+            cardString.Id = GetData(cardTitle, "Id").AsUInt16();
+        }
         if (GetData(cardTitle, "Camp").VariantType != Variant.Type.Nil)
         {
             var camp = GetData(cardTitle, "Camp").AsString();

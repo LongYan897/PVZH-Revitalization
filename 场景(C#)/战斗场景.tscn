@@ -360,6 +360,11 @@ z_index = 100
 position = Vector2(524, 128)
 scale = Vector2(0.6, 0.6)
 
+[node name="卡牌组中心2" type="Marker2D" parent="." unique_id=671542422]
+position = Vector2(80, 140)
+
+[node name="卡牌组中心" type="Marker2D" parent="." unique_id=220082344]
+
 [editable path="道路层"]
 [editable path="阶段/动画"]
 [editable path="护盾"]
