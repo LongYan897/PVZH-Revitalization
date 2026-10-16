@@ -10,16 +10,16 @@
         ],
         "MaxCount": 0,
         "BaseRate": 0.70,
-        "BonusRate": 0
+        "UltimateRate": 0
       },
       {
         "Name": "group2",
         "Cards": [
           "HailACopter"
         ],
-        "MaxCount": 4,
+        "MaxCount": 0,
         "BaseRate": 0.30,
-        "BonusRate": 1
+        "UltimateRate": 1
       }
     ]
   }

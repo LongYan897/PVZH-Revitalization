@@ -1,5 +1,6 @@
 using FileExtension;
 using Godot;
+using Play;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
@@ -13,16 +14,21 @@ namespace Card.Pack;
 public partial class CardPackExtensions
 {
 	public int seed { get; private set; }
-	private string _path { get; } = "res://数据(C#)/cardPack.json";
-	private FileJson _file { get; set; } = new();
+	//private string _path { get; } = "res://数据(C#)/cardPack.json";
+	//private FileJson _file { get; set; } = new();
 	private Random _random { get; set; }
-	public CardPackExtensions(int seed)
+	public CardPackExtensions(int seed = -1)
 	{
 		this.seed = seed;
+		if (seed == -1)
+		{
+			_random = new();
+		}
 		_random = new(seed);
 	}
-	public List<(string Card, int Count)> DrawCard(string packName, int Count, bool save = false)
+	public List<(string Card, int Count)> DrawCard(string packName, int Count,PlayerAsset player = null, bool save = false)
 	{
+		player ??= new();
 		List<(string Card, int Count)> res = new();
 		FileJson file = new();
 		FileJson playerAssetFile = new();
@@ -40,7 +46,7 @@ public partial class CardPackExtensions
 			if (!i.ContainsKey("Cards")) throw new FormatException("文件没有Cards");
 			if (!i.ContainsKey("MaxCount")) throw new FormatException("文件没有MaxCount");
 			if (!i.ContainsKey("BaseRate")) throw new FormatException("文件没有BaseRate");
-			if (!i.ContainsKey("BonusRate")) throw new FormatException("文件没有BonusRate");
+			if (!i.ContainsKey("UltimateRate")) throw new FormatException("文件没有UltimateRate");
 
 			int remainCount = 0;
 			int maxCount = i["MaxCount"]?.GetValue<int>()
@@ -48,7 +54,7 @@ public partial class CardPackExtensions
 			bool hasMax = maxCount != 0;
 			if (i["Cards"] is JsonArray cards && hasMax)
 			{
-				foreach (JsonNode? card in cards)
+				foreach (JsonNode card in cards)
 				{
 					string cardName = card?.GetValue<string>();
 					remainCount += Math.Max(maxCount - playerAsset.GetVariable(cardName, 0), 0);
@@ -58,30 +64,28 @@ public partial class CardPackExtensions
 		}
 
 		//计算每个组的基础概率
-		List<(string Name, double Rate)> BasePackRates = new();
+		List<(string Name, double Rate,double UtRate)> BasePackRates = new();
 		for (int index = 0; index < packs.Count; index++)
 		{
 			var cardName = packRemains[index].Name;
 			double baseRate = packs[index]["BaseRate"].GetValue<double>();
+			double utRate = packs[index]["UltimateRate"].GetValue<double>();
 			BasePackRates.Add((cardName,
 				packRemains[index].Count == 0
 				? 0
-				: baseRate));
+				: baseRate,
+				packRemains[index].Count == 0
+				? 0
+				: utRate));
 		}
 		//基础概率归一化处理
 		Normalize(BasePackRates);
-
-		//double sumRate = 0;
-		//foreach (var i in BasePackRates)
-		//{
-		//	sumRate += i.Rate;
-		//}
-		//for (int index = 0;index < BasePackRates.Count; index++)
-		//{
-		//	var item = BasePackRates[index];
-		//	item.Rate = item.Rate / sumRate;
-		//	BasePackRates[index] = item;
-		//}
+		//初始化实际概率
+		List<double> RealRates = new();
+		foreach(var i in BasePackRates)
+		{
+			RealRates.Add(i.Rate * (1 - player.Lucky.Current) + i.UtRate * player.Lucky.Current);
+		}
 		//计算每组抽取的数量
 		List<(string Name, int Count)> drawCounts = new();
 		foreach (var i in BasePackRates)
@@ -96,18 +100,20 @@ public partial class CardPackExtensions
 			foreach (var packRate in BasePackRates)
 			{
 				index++;
-				cumulativeRate += packRate.Rate;
-				if (packRate.Rate == 0) continue;
+				cumulativeRate += RealRates[index];
+				if (RealRates[index] == 0) continue;
 				if (drawRate < cumulativeRate)
 				{
 					string groupName = drawCounts[index].Name;
 					drawCounts[index] = (groupName, drawCounts[index].Count + 1);
 					if (packRemains[index].Count == -1) break;
 					packRemains[index] = (groupName, packRemains[index].Count - 1);
+					//检测到组内可抽取的数量为0，重新归一化概率。
 					if (packRemains[index].Count == 0)
 					{
-						BasePackRates[index] = (groupName, 0);
+						BasePackRates[index] = (groupName, 0, 0);
 						Normalize(BasePackRates);
+						setRealRates(BasePackRates, RealRates, player);
 					}
 					break;
 				}
@@ -197,18 +203,38 @@ public partial class CardPackExtensions
 	/// <param name="list"></param>
 	/// <returns></returns>
 	/// <exception cref="InvalidOperationException"></exception>
-	private static List<(string Name, double Rate)> Normalize(List<(string Name, double Rate)> list)
+	private static List<(string Name, double Rate,double UtRate)> Normalize(List<(string Name, double Rate,double UtRate)> list)
 	{
 		double sumRate = 0;
+		double sumutRate = 0;
 		foreach (var i in list)
 		{
 			sumRate += i.Rate;
+			sumutRate += i.UtRate;
 		}
-		if (sumRate <= 0) throw new InvalidOperationException("概率为0");
+		if (sumRate <= 0 && sumutRate <= 0)
+			throw new InvalidOperationException("基础概率和幸运概率均为0，没有可抽取的组");
+
 		for (int i = 0; i < list.Count; i++)
 		{
-			list[i] = (list[i].Name, list[i].Rate / sumRate);
+			double rate = sumRate > 0
+				? list[i].Rate / sumRate
+				: list[i].UtRate / sumutRate;
+			double utRate = sumutRate > 0
+				? list[i].UtRate / sumutRate
+				: rate;
+			list[i] = (list[i].Name, rate, utRate);
 		}
 		return list;
+	}
+	private static List<double> setRealRates(List<(string Name, double Rate, double UtRate)> baseList, List<double> reallist, PlayerAsset player)
+	{
+		int index = -1;
+		foreach (var i in baseList)
+		{
+			index++;
+			reallist[index] = (i.Rate * (1 - player.Lucky.Current) + i.UtRate * player.Lucky.Current);
+		}
+		return reallist;
 	}
 }
