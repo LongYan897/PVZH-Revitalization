@@ -1,0 +1,16 @@
+加成特效.png
+size:484,247
+filter:Linear,Linear
+pma:true
+basic_glow_G
+bounds:250,5,240,232
+offsets:11,6,258,252
+rotate:90
+basic_glow_W
+bounds:250,5,240,232
+offsets:11,6,258,252
+rotate:90
+burst_glow_G
+bounds:2,2,243,246
+offsets:3,3,249,252
+rotate:90

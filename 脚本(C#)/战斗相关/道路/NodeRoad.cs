@@ -359,6 +359,7 @@ public partial class NodeRoad : Control, ITarget
             _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
             _tweenTargeted3.TweenProperty(h2, "modulate", _colortgBox.Default, 0.2f);
 
+            if (ctx.FighterCard.Camp == Camp.Plant)
             {
                 var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
                 P1roadTargetKine = f.Model.Location;

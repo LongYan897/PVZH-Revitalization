@@ -107,7 +107,7 @@ public partial class DeckSubMenuScene : SubMenuScene
         }
     }
 
-    private Task CreateCurrentCards()
+    private async Task CreateCurrentCards()
     {
 
         int count = 0;
@@ -128,10 +128,9 @@ public partial class DeckSubMenuScene : SubMenuScene
             {
                 CardModel cardClone = card;
                 cardClone.Status = Status.FaceUp;
-                NodeCard Ncard = NodeCard.DisplayCardAt(cardClone, Vector2.Zero, classSprite.GetNode<HFlowContainer>("排列"), CardView.Collection, 1);
+                NodeCard Ncard = await NodeCard.DisplayCardAt(cardClone, Vector2.Zero, classSprite.GetNode<HFlowContainer>("排列"), CardView.Collection, 1);
             }
         }
-        return Task.CompletedTask;
     }
 
     /// <summary>

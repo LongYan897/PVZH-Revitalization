@@ -31,9 +31,9 @@ public class Player
     /// 准备一次战斗,创建一个战斗状态
     /// </summary>
     /// <typeparam name="T">英雄类</typeparam>
-    public static void PrefABox<T>(Player player,PresetPack deck) where T : HeroModel, new()
+    public void PrefABox<T>(PresetPack deck) where T : HeroModel, new()
     {
         var hero = HeroModel.Load<T>();
-        player.Status.PrefABox(player,hero,deck);
+        Status.PrefABox(this,hero,deck);
     }
 }

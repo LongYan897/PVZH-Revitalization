@@ -1,6 +1,7 @@
 using Battle.Texture;
 using Card;
 using Card.Cmd;
+using Card.Pack;
 using Controller.WavPlay;
 using Godot;
 using Hero;
@@ -59,8 +60,8 @@ public partial class Main : Node
 		TextureBag.SetCurrent<DiscoBag>();
 		var p1 = new Player("MME");
 		var p2 = new Player("Ai");
-		p1.SetHero<SuperZombie>();
-		p2.SetHero<Penelopea>();
+		p1.PrefABox<SuperZombie>(new AllDancer());
+		p2.PrefABox<Penelopea>(new AllPea());
 		PlayerManager.Hosting(p1);
 		PlayerManager.FillPlayer(PlayerManager.HostPlayer, p2);
 	}

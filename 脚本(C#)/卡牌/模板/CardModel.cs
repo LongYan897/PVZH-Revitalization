@@ -269,6 +269,8 @@ public class CardModel
     private async Task Destroy()
     {
         CardCmd.Remove(this);
+        if (PhraseManager.IsInBattle)
+            PlayerManager.HostPlayer.Status.HandRemoveCard(this);
         await NodeCard.DestoryCard(this);
     }
     /// <summary>

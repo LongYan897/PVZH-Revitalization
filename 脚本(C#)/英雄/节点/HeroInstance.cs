@@ -26,6 +26,7 @@ public partial class HeroInstance : Control, ITarget, IAttackable
     {
         GetNode<Area2D>("碰撞箱").SetMeta("Target", this);
         GetNode<Area2D>("碰撞箱").SetMeta("TargetType", "Hero");
+        GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
         spineHandler = GetNode<SpineHandler>("动画");
         var hitBtn = GetNode<Button>("碰撞");
         hitBtn.GuiInput += OnHitButtonGuiInput;
@@ -84,6 +85,7 @@ public partial class HeroInstance : Control, ITarget, IAttackable
     {
         if (!type.HasFlag(TargetType.Hero)) return;
         CallTargeted();
+        GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
     }
     private void CallTargeted()
     {
@@ -98,8 +100,9 @@ public partial class HeroInstance : Control, ITarget, IAttackable
     }
     public void OnDeleteTargeted(TargetType type)
     {
-        if (type.HasFlag(TargetType.Hero))
-            DeleteTargeted();
+        if (!type.HasFlag(TargetType.Hero)) return;
+        DeleteTargeted();
+        GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
     }
     private void DeleteTargeted()
     {

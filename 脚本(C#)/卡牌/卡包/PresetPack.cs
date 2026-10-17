@@ -12,7 +12,7 @@ public class PresetPack : CardPack
     /// 卡组名称
     /// </summary>
     public virtual string PackName { get; set; }
-    protected List<CardModel> cards;
+    protected List<CardModel> cards = new();
     public override IReadOnlyList<CardModel> Cards => cards;
     public void AddCard(CardModel card)
     {

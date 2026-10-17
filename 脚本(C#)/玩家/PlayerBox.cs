@@ -1,7 +1,9 @@
 
 using Battle;
 using Card;
+using Card.Cmd;
 using Card.Pack;
+using Godot;
 using Hero;
 using Hero.Model;
 using Logger;
@@ -9,6 +11,7 @@ using Phrases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Variable;
 
 namespace Play;
@@ -24,6 +27,7 @@ public class PlayerBox
         Player = player;
         Hero = hero;
         _deckCards = cards;
+        _handCards = new();
     }
     /// <summary>
     /// 持有该状态的玩家
@@ -70,17 +74,101 @@ public class PlayerBox
     /// <summary>
     /// 未抽出的卡牌或者已经抽出的卡牌
     /// </summary>
-    public IEnumerable<CardModel> UnDrawedCards => DeckCards.Where(c => !HandCards.Contains(c));
+    public IEnumerable<CardModel> UnDrawedCards => DeckCards?.Where(c => HandCards != null && !HandCards.Contains(c)) ?? new List<CardModel>();
+    /// <summary>
+    /// 整理手牌
+    /// </summary>
+    public static void StuffCard()
+    {
+        var box = PlayerManager.HostPlayer.Status;
+        var cards = box.HandCards;
+        var row1 = new List<CardModel>();
+        var row2 = new List<CardModel>();
+
+        if (cards.Count <= 10)
+        {
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (i < 5) row1.Add(cards[i]);
+                else row2.Add(cards[i]);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < cards.Count; i++)
+            {
+                int order = i + 1;
+                if (order % 2 == 1) row1.Add(cards[i]);
+                else row2.Add(cards[i]);
+            }
+        }
+
+        _stuffCard(row1, 925.0f);
+        _stuffCard(row2, 925.0f + 193f * 0.56f);
+    }
+    private static void _stuffCard(List<CardModel> cards, float y)
+    {
+        const float cardW = 256f * 0.56f;
+        const float screenW = 720f;
+
+        int n = cards.Count;
+        if (n == 0) return;
+
+        float totalW = n * cardW;
+        float startX = (screenW - totalW) / 2f;
+
+        for (int i = 0; i < n; i++)
+        {
+            var node = NodeCard.GetNode(cards[i]);
+            var pos = new Vector2(startX + i * cardW, y) - new Vector2(256 * 0.28f,0f);
+            node.BindOrigin(pos);
+            node.BringToFront();
+        }
+    }
+    /// <summary>
+    /// 播放抽卡动画
+    /// </summary>
+    public async Task PlayCardAndDraw(int amount = 1)
+    {
+        CardCmd.PushStop();
+        var cards = DrawCard(amount);
+
+        const float cardW = 256f * 0.56f;
+        const float screenW = 720f;
+
+        int n = cards.Count;
+        if (n == 0) return;
+
+        float totalW = n * cardW;
+        float startX = (screenW - totalW) / 2f - 256f * 0.28f;
+        float baseY = Player == PlayerManager.HostPlayer ? 560.0f : 420.0f;
+
+        var tasks = new List<Task>();
+        for (int i = 0; i < n; i++)
+        {
+            var pos = new Vector2(startX + i * cardW, baseY);
+            tasks.Add(NodeCard.DrawACard(cards[i], pos));
+        }
+        await Task.WhenAll(tasks);
+        StuffCard();
+        CardCmd.PopStop();
+    }
     /// <summary>
     /// 抽出一张卡牌
     /// </summary>
     /// <returns></returns>
     public CardModel DrawCard()
     {
+        var unDrawed = UnDrawedCards.ToList();
+        if (unDrawed.Count == 0)
+        {
+            return null;
+        }
         Random random = new();
-        int index = random.Next(UnDrawedCards.Count());
-        var card = UnDrawedCards.ToList()[index];
+        int index = random.Next(unDrawed.Count);
+        var card = unDrawed[index];
         DeckRemoveCard(card);
+        HandAddCard(card);
         return card;
     }
     /// <summary>
@@ -104,6 +192,7 @@ public class PlayerBox
     public void InputCard(CardModel card)
     {
         DeckAddCard(card);
+        HandRemoveCard(card);
     }
     /// <summary>
     /// 把卡牌塞回卡组
