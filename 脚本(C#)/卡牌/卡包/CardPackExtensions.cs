@@ -24,7 +24,7 @@ public partial class CardPackExtensions
 		{
 			_random = new();
 		}
-		_random = new(seed);
+		else _random = new(seed);
 	}
 	public List<(string Card, int Count)> DrawCard(string packName, int Count,PlayerAsset player = null, bool save = false)
 	{
@@ -137,7 +137,10 @@ public partial class CardPackExtensions
 				int remainCount = maxCount == 0
 					? -1
 					: Math.Max(maxCount - playerAsset.GetVariable<int>(cardName, 0), 0);
-				cardsCount.Add((index, remainCount));
+				if (remainCount != 0)
+				{
+					cardsCount.Add((index, remainCount));
+				}
 			}
 			int drawNum = drawCounts[groupIndex].Count;
 			for (int i = 0; i < drawNum; i++)

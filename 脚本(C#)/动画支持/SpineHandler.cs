@@ -92,22 +92,22 @@ public partial class SpineHandler : Node2D
 		SpineSprite.Call("set_skin", skinName);
 	}
 
-    public Vector2 GetBoneWorldScale(string boneName)
-    {
-        return SpineSprite.Call("get_bone_world_scale", boneName).AsVector2();
-    }
+	public Vector2 GetBoneWorldScale(string boneName)
+	{
+		return SpineSprite.Call("get_bone_world_scale", boneName).AsVector2();
+	}
 
-    public Vector2 GetBoneScale(string boneName)
-    {
-        return SpineSprite.Call("get_bone_scale", boneName).AsVector2();
-    }
+	public Vector2 GetBoneScale(string boneName)
+	{
+		return SpineSprite.Call("get_bone_scale", boneName).AsVector2();
+	}
 
-    public Vector2 GetBoneLocalPos(string boneName)
-    {
-        return SpineSprite.Call("get_bone_local_pos", boneName).AsVector2();
-    }
+	public Vector2 GetBoneLocalPos(string boneName)
+	{
+		return SpineSprite.Call("get_bone_local_pos", boneName).AsVector2();
+	}
 
-    public Vector2 GetBoneWorldPos(string boneName)
+	public Vector2 GetBoneWorldPos(string boneName)
 	{
 		return SpineSprite.Call("get_bone_world_pos", boneName).AsVector2();
 	}
