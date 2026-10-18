@@ -1,17 +1,11 @@
 using Card;
-using Card.String;
-using Controller;
 using Godot;
 using Hero.Model;
-using Hero.String;
 using Pack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 
 namespace Scene;
@@ -61,13 +55,15 @@ public partial class DeckSubMenuScene : SubMenuScene
         Top2.Modulate = ThemeColors1[2];
         await InitializeInformation(Camp.Plant.ToName());
     }
-    private async void OnPlantPressed(){
+    private async void OnPlantPressed()
+    {
         BackGround.Modulate = ThemeColors1[0];
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
         await InitializeInformation(Camp.Plant.ToName());
     }
-    private async void OnZombiePressed(){
+    private async void OnZombiePressed()
+    {
         BackGround.Modulate = ThemeColors2[0];
         Top1.Modulate = ThemeColors2[1];
         Top2.Modulate = ThemeColors2[2];
@@ -111,14 +107,14 @@ public partial class DeckSubMenuScene : SubMenuScene
         }
     }
 
-    private Task CreateCurrentCards()
+    private async Task CreateCurrentCards()
     {
-        
+
         int count = 0;
         foreach (Class c in CurrentClassCards.Keys) count += CurrentClassCards[c].Count;
         Class currentClass;
         Control classSprite;
-        for (int n = 0;n < CurrentClassCards.Keys.Count;n++)
+        for (int n = 0; n < CurrentClassCards.Keys.Count; n++)
         {
             currentClass = CurrentClassCards.Keys.ToList()[n];
             classSprite = CreateClassSprite(currentClass);
@@ -132,24 +128,23 @@ public partial class DeckSubMenuScene : SubMenuScene
             {
                 CardModel cardClone = card;
                 cardClone.Status = Status.FaceUp;
-                NodeCard Ncard = NodeCard.DisplayCardAt(cardClone,Vector2.Zero,classSprite.GetNode<HFlowContainer>("排列"),CardView.Collection,1);
+                NodeCard Ncard = await NodeCard.DisplayCardAt(cardClone, Vector2.Zero, classSprite.GetNode<HFlowContainer>("排列"), CardView.Collection, 1);
             }
         }
-        return Task.CompletedTask;
     }
-    
+
     /// <summary>
     /// 初始化卡片，用于改变阵营
     /// </summary>
     /// <param name="camp">阵营</param>
-    private async Task InitializeInformation(string camp) 
+    private async Task InitializeInformation(string camp)
     {
         CreateSpirtes(camp);
         foreach (Control control in CurrentClasses) control.QueueFree();
         CurrentClasses = new List<Control>();
         CurrentClassCards = new Dictionary<Class, List<CardModel>>();
         List<Class> classes = sortClassFromCamp(camp);
-        SortCards(cm => cm.Camp.ToName() == camp && cm.Rarity != Rarity.Token,classes);
+        SortCards(cm => cm.Camp.ToName() == camp && cm.Rarity != Rarity.Token, classes);
         await CreateCurrentCards();
     }
     /// <summary>
@@ -195,7 +190,7 @@ public partial class DeckSubMenuScene : SubMenuScene
     /// 把CurrentClassesCards内容以predicate检索并按照class分类、cost排序
     /// </summary>
     /// <param name="predicate"></param>
-    private void SortCards(Func<CardModel,bool> predicate,List<Class> classes)
+    private void SortCards(Func<CardModel, bool> predicate, List<Class> classes)
     {
         Vector2I costRange = new Vector2I(0, -1);
         foreach (CardModel card in CardModel.AllCards.Where(predicate))

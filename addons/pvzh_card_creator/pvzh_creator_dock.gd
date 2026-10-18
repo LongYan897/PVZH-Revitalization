@@ -35,6 +35,7 @@ var atk_type_option: OptionButton
 var star_type_option: OptionButton
 var pack_edit: LineEdit
 var flavor_edit: TextEdit
+var id_edit: TextEdit
 
 var tag_teamup: CheckBox
 var tag_amphibious: CheckBox
@@ -194,6 +195,12 @@ func _ready() -> void:
 	flavor_edit.custom_minimum_size = Vector2(0, 40)
 	root.add_child(flavor_edit)
 
+	# ---------- 卡牌Id ----------
+	_add_label("卡牌Id")
+	id_edit = TextEdit.new()
+	id_edit.custom_minimum_size = Vector2(0, 40)
+	root.add_child(id_edit)
+	
 	# ---------- 其余 ----------
 	_add_label("稀有度")
 	rarity_option = OptionButton.new()
@@ -333,6 +340,8 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 		entry["\"%s.Pack\"" % clean] = pack_edit.text
 	entry["\"%s.Flavor\"" % clean] = flavor_edit.text
 
+	entry["\"%s.Id\"" % clean] = id_edit.text
+	
 	print("===== cards.json ：" + clean + " =====")
 	for k in entry.keys():
 		var v = entry[k]

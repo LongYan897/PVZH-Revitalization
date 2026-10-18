@@ -24,7 +24,7 @@ public static class CampExtension
         {
             Camp.Plant => "植物",
             Camp.Zombie => "僵尸",
-            _=> ""
+            _ => ""
         };
     }
 }

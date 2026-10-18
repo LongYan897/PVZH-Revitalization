@@ -3,6 +3,11 @@
 [ext_resource type="SpineAtlasResource" uid="uid://c11w0gbcjooid" path="res://素材/ui/土坑/土坑.atlas" id="1_kn6oh"]
 [ext_resource type="SpineSkeletonFileResource" uid="uid://c6cifj7j6lpx8" path="res://素材/ui/土坑/土坑.skel" id="2_8dqxa"]
 
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_kn6oh"]
+from = "clear"
+to = "clear"
+
 [resource]
 atlas_res = ExtResource("1_kn6oh")
 skeleton_file_res = ExtResource("2_8dqxa")
+animation_mixes = [SubResource("SpineAnimationMix_kn6oh")]

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dgn4vr28gf65i"]
+
+[ext_resource type="Script" uid="uid://b6mxqfkd8dfdx" path="res://脚本(C#)/存档相关/FileJsonTest1.cs" id="1_vnxw2"]
+
+[node name="测试1" type="Node2D" unique_id=2040928883]
+script = ExtResource("1_vnxw2")

@@ -40,7 +40,7 @@ HFlowContainer/constants/h_separation = 16
 script = ExtResource("1_28go4")
 
 [node name="Bg" type="CanvasLayer" parent="." unique_id=197420651]
-layer = -5
+layer = -50
 
 [node name="背景图" type="Sprite2D" parent="Bg" unique_id=402899454]
 position = Vector2(360, 640)
@@ -48,7 +48,7 @@ scale = Vector2(3.5, 5)
 texture = ExtResource("2_6s3qr")
 
 [node name="Midd" type="CanvasLayer" parent="." unique_id=1275829866]
-layer = -2
+layer = -10
 
 [node name="cardLibrary" type="Node2D" parent="Midd" unique_id=25129087]
 

@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Card.Pack;
 
@@ -11,8 +7,8 @@ namespace Card.Pack;
 /// </summary>
 public abstract class CardPack
 {
-    /// <summary>
-    /// 卡包包含的卡牌
-    /// </summary>
-    public abstract IReadOnlyList<CardModel> Cards { get; }
+	/// <summary>
+	/// 卡包包含的卡牌
+	/// </summary>
+	public abstract IReadOnlyList<CardModel> Cards { get; }
 }

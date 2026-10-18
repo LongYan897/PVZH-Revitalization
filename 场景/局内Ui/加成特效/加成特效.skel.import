@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://dfrvginxdmjxu"
+path="res://.godot/imported/加成特效.skel-dcaeaf75576f8a86ad6e0789fd607e1f.spskel"
+
+[deps]
+
+source_file="res://场景/局内Ui/加成特效/加成特效.skel"
+dest_files=["res://.godot/imported/加成特效.skel-dcaeaf75576f8a86ad6e0789fd607e1f.spskel"]
+
+[params]
+

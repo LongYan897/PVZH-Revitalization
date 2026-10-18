@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card;
@@ -17,10 +14,13 @@ public abstract class Buff
     /// </summary>
     public virtual bool IsTransferable => true;
     /// <summary>
+    /// 是否只有在卡牌以单位形式存在时才调用
+    /// </summary>
+    public bool OnlyPlaced { get; init; } = false;
+    /// <summary>
     /// 关心的时点
     /// </summary>
     public abstract Timing[] Timings { get; }
-
     /// <summary>
     /// 时点回调
     /// </summary>
@@ -303,45 +303,44 @@ public enum Timing
     OnFighterExit,
     /// <summary>
     /// 英雄变量改变时
-    /// 参数：[0] Value 更改的数值, 
-    /// [1] VariableReason 更改的原因 
-    /// [2] CardModel 造成影响的卡牌 
-    /// [3] HeroModel 英雄对象
-    /// [4] VariableType 英雄变量类型 
-    /// [5] ImpactType 影响的好坏
+    /// 参数：
+    /// [0] Sign 变量名称
+    /// [1] Value 更改的数值,
+    /// [2] VariableReason 更改的原因 
+    /// [3] CardModel 造成影响的卡牌 
+    /// [4] HeroModel 英雄对象
     /// </summary>
     OnHeroChanged,
     /// <summary>
     /// 英雄变量即将改变时
-    /// 参数：[0] Value 更改的数值, 
-    /// [1] VariableReason 更改的原因 
-    /// [2] CardModel 造成影响的卡牌 
-    /// [3] HeroModel 英雄对象
-    /// [4] VariableType 英雄变量类型 
-    /// [5] ImpactType 影响的好坏
+    /// 参数：
+    /// [0] Sign 变量名称
+    /// [1] Value 更改的数值,
+    /// [2] VariableReason 更改的原因 
+    /// [3] CardModel 造成影响的卡牌 
+    /// [4] HeroModel 英雄对象
     /// </summary>
     BeforeHeroChanged,
     /// <summary>
     /// 英雄变量改变后
-    /// 参数：[0] Value 更改的数值, 
-    /// [1] VariableReason 更改的原因 
-    /// [2] CardModel 造成影响的卡牌 
-    /// [3] HeroModel 英雄对象
-    /// [4] VariableType 英雄变量类型 
-    /// [5] ImpactType 影响的好坏
+    /// 参数：
+    /// [0] Sign 变量名称
+    /// [1] Value 更改的数值, 
+    /// [2] VariableReason 更改的原因 
+    /// [3] CardModel 造成影响的卡牌 
+    /// [4] HeroModel 英雄对象
     /// </summary>
     AfterHeroChanged,
     /// <summary>
     /// 英雄变量改变时
     /// 参数：
-    /// [0] VariableReason 更改的原因 
-    /// [1] CardModel 造成影响的卡牌 
-    /// [2] HeroModel 英雄对象
-    /// [3] VariableType 英雄变量类型 
-    /// [4] ImpactType 影响的好坏
-    /// [5] HeroVariable 预计的在调用OnHeroChanged时的变量
+    /// [0] Sign 变量名称
+    /// [1] VariableReason 更改的原因 
+    /// [2] CardModel 造成影响的卡牌 
+    /// [3] HeroModel 英雄对象
+    /// [4] HeroVariable 变量
     /// </summary>
-    ModifyHeroChanged
+    ModifyHeroChanged,
 
     /// <summary>
     /// 尝试阻止单位攻击
@@ -360,4 +359,9 @@ public enum Timing
     /// 参数：[0] Variable<bool> 是否阻止本次获得最大血上限 [1] FighterCardModel/HeroModel 要获得最大血上限的单位
     /// </summary>
     TryStopGainMaxHp,
+    /// <summary>
+    /// 尝试阻止英雄受到伤害
+    /// 参数：[0] Variable<bool> 是否阻止本次受伤 [1] HeroModel 要受伤的英雄
+    /// </summary>
+    TryStopHeroTakeDamage,
 }

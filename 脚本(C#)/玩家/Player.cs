@@ -1,4 +1,6 @@
 using Card;
+using Card.Pack;
+using Hero.Model;
 using System.Collections.Generic;
 
 namespace Play;
@@ -8,7 +10,6 @@ namespace Play;
 /// 用于记录玩家状态和战斗状态
 /// 可以记录局内和局外的数据
 /// </summary>
-/// <param name="id"></param>
 public class Player
 {
     private Player() { }
@@ -26,4 +27,13 @@ public class Player
     /// 玩家的战斗状态
     /// </summary>
     public readonly PlayerBox Status = new();
+    /// <summary>
+    /// 准备一次战斗,创建一个战斗状态
+    /// </summary>
+    /// <typeparam name="T">英雄类</typeparam>
+    public void PrefABox<T>(PresetPack deck) where T : HeroModel, new()
+    {
+        var hero = HeroModel.Load<T>();
+        Status.PrefABox(this,hero,deck);
+    }
 }

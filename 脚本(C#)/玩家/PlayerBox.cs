@@ -1,9 +1,17 @@
 
+using Battle;
 using Card;
+using Card.Cmd;
+using Card.Pack;
+using Godot;
+using Hero;
+using Hero.Model;
 using Logger;
 using Phrases;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Variable;
 
 namespace Play;
@@ -14,6 +22,13 @@ namespace Play;
 /// </summary>
 public class PlayerBox
 {
+    public void PrefABox(Player player,HeroModel hero,PresetPack cards)
+    {
+        Player = player;
+        Hero = hero;
+        _deckCards = cards;
+        _handCards = new();
+    }
     /// <summary>
     /// 持有该状态的玩家
     /// </summary>
@@ -21,7 +36,7 @@ public class PlayerBox
     /// <summary>
     /// 局内卡组内的卡牌
     /// </summary>
-    private readonly List<Variable<CardModel>> _deckCards = [];
+    private PresetPack _deckCards = new();
     /// <summary>
     /// 局内卡牌
     /// </summary>
@@ -34,13 +49,13 @@ public class PlayerBox
                 Log.Error("在非战斗场景尝试获取战斗卡组的卡牌");
                 return null;
             }
-            return [.. _deckCards.Select(v => v.Current)];
+            return _deckCards.Cards;
         }
     }
     /// <summary>
     /// 局内手牌的卡牌
     /// </summary>
-    private readonly List<Variable<CardModel>> _handCards = [];
+    private PresetPack _handCards = new();
     /// <summary>
     /// 局内手牌
     /// </summary>
@@ -53,25 +68,170 @@ public class PlayerBox
                 Log.Error("在非战斗场景尝试获取战斗卡组的卡牌");
                 return null;
             }
-            return [.. _handCards.Select(v => v.Current)];
+            return _handCards.Cards;
         }
     }
     /// <summary>
-    /// 往战斗中加入卡牌
+    /// 未抽出的卡牌或者已经抽出的卡牌
+    /// </summary>
+    public IEnumerable<CardModel> UnDrawedCards => DeckCards?.Where(c => HandCards != null && !HandCards.Contains(c)) ?? new List<CardModel>();
+    /// <summary>
+    /// 整理手牌
+    /// </summary>
+    public static void StuffCard()
+    {
+        var box = PlayerManager.HostPlayer.Status;
+        var cards = box.HandCards;
+        var row1 = new List<CardModel>();
+        var row2 = new List<CardModel>();
+
+        if (cards.Count <= 10)
+        {
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (i < 5) row1.Add(cards[i]);
+                else row2.Add(cards[i]);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < cards.Count; i++)
+            {
+                int order = i + 1;
+                if (order % 2 == 1) row1.Add(cards[i]);
+                else row2.Add(cards[i]);
+            }
+        }
+
+        _stuffCard(row1, 925.0f);
+        _stuffCard(row2, 925.0f + 193f * 0.56f);
+    }
+    private static void _stuffCard(List<CardModel> cards, float y)
+    {
+        const float cardW = 256f * 0.56f;
+        const float screenW = 720f;
+
+        int n = cards.Count;
+        if (n == 0) return;
+
+        float totalW = n * cardW;
+        float startX = (screenW - totalW) / 2f;
+
+        for (int i = 0; i < n; i++)
+        {
+            var node = NodeCard.GetNode(cards[i]);
+            var pos = new Vector2(startX + i * cardW, y) - new Vector2(256 * 0.28f,0f);
+            node.BindOrigin(pos);
+            node.BringToFront();
+        }
+    }
+    /// <summary>
+    /// 播放抽卡动画
+    /// </summary>
+    public async Task PlayCardAndDraw(int amount = 1)
+    {
+        CardCmd.PushStop();
+        var cards = DrawCard(amount);
+
+        const float cardW = 256f * 0.56f;
+        const float screenW = 720f;
+
+        int n = cards.Count;
+        if (n == 0) return;
+
+        float totalW = n * cardW;
+        float startX = (screenW - totalW) / 2f - 256f * 0.28f;
+        float baseY = Player == PlayerManager.HostPlayer ? 560.0f : 420.0f;
+
+        var tasks = new List<Task>();
+        for (int i = 0; i < n; i++)
+        {
+            var pos = new Vector2(startX + i * cardW, baseY);
+            tasks.Add(NodeCard.DrawACard(cards[i], pos));
+        }
+        await Task.WhenAll(tasks);
+        StuffCard();
+        CardCmd.PopStop();
+    }
+    /// <summary>
+    /// 抽出一张卡牌
+    /// </summary>
+    /// <returns></returns>
+    public CardModel DrawCard()
+    {
+        var unDrawed = UnDrawedCards.ToList();
+        if (unDrawed.Count == 0)
+        {
+            return null;
+        }
+        Random random = new();
+        int index = random.Next(unDrawed.Count);
+        var card = unDrawed[index];
+        DeckRemoveCard(card);
+        HandAddCard(card);
+        return card;
+    }
+    /// <summary>
+    /// 抽出卡牌
+    /// </summary>
+    /// <param name="amount">抽出的数量</param>
+    /// <returns></returns>
+    public List<CardModel> DrawCard(int amount)
+    {
+        var cards = new List<CardModel>();
+        for (int i = 0;i < amount;i++)
+        {
+            cards.Add(DrawCard());
+        }
+        return cards;
+    }
+    /// <summary>
+    /// 把卡牌塞回卡组
+    /// </summary>
+    /// <param name="card"></param>
+    public void InputCard(CardModel card)
+    {
+        DeckAddCard(card);
+        HandRemoveCard(card);
+    }
+    /// <summary>
+    /// 把卡牌塞回卡组
+    /// </summary>
+    /// <param name="card"></param>
+    public void InputCards(params CardModel[] cards)
+    {
+        foreach (var card in cards)
+            DeckAddCard(card);
+    }
+    /// <summary>
+    /// 把卡牌塞回卡组
+    /// </summary>
+    /// <param name="card"></param>
+    public void InputCards(params List<CardModel>[] cardses)
+    {
+        foreach (var cards in cardses)
+            InputCards(cards.ToArray());
+    }
+    /// <summary>
+    /// 操纵的英雄
+    /// </summary>
+    public HeroModel Hero { get; private set; }
+    public IAttackable AtkMe() => HeroInstance.GetNode(Hero);
+    /// <summary>
+    /// 往卡组中加入卡牌
     /// </summary>
     /// <param name="card">加入的卡牌</param>
     public void DeckAddCard(CardModel card)
     {
-        if (_deckCards.Any(v => v.Current == card)) return;
-        _deckCards.Add(new("Card", card));
+        _deckCards.AddCard(card);
     }
     /// <summary>
-    /// 从战斗中移除卡牌
+    /// 从卡组中移除卡牌
     /// </summary>
     /// <param name="card">移除的卡牌</param>
     public void DeckRemoveCard(CardModel card)
     {
-        _deckCards.RemoveAll(v => v.Current == card);
+        _deckCards.RemoveCard(card);
     }
     /// <summary>
     /// 往手牌中加入卡牌
@@ -79,8 +239,7 @@ public class PlayerBox
     /// <param name="card">加入的卡牌</param>
     public void HandAddCard(CardModel card)
     {
-        if (_handCards.Any(v => v.Current == card)) return;
-        _handCards.Add(new("Card", card));
+        _handCards.AddCard(card);
     }
     /// <summary>
     /// 从手牌中移除卡牌
@@ -88,7 +247,6 @@ public class PlayerBox
     /// <param name="card">移除的卡牌</param>
     public void HandRemoveCard(CardModel card)
     {
-        if (_handCards.Any(v => v.Current == card)) return;
-        _handCards.Add(new("Card", card));
+        _handCards.RemoveCard(card);
     }
 }

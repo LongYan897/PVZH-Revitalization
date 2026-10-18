@@ -9,37 +9,54 @@
 [ext_resource type="PackedScene" uid="uid://b63bhak348l4m" path="res://场景(C#)/道路层.tscn" id="7_21f3a"]
 [ext_resource type="Texture2D" uid="uid://ckxhau2bavsol" path="res://素材/地图/迪斯科/迪斯科底部.png" id="7_pqs4j"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="9_p8b7g"]
+[ext_resource type="PackedScene" uid="uid://cdxmokqpcghjn" path="res://场景(C#)/英雄血量.tscn" id="10_4cdlk"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cdhaasd1rs772" path="res://数据资源/杂项/费用动画.tres" id="10_k7al5"]
+[ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="11_f1tyx"]
+[ext_resource type="Texture2D" uid="uid://ds0t6j23ru4m4" path="res://素材/卡牌属性图片/UI_sun_glow.png" id="12_52n4m"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="12_clb5w"]
+[ext_resource type="Texture2D" uid="uid://0v2jwbq7klbe" path="res://素材/卡牌属性图片/inhnd_brains.png" id="13_f1tyx"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://38rw6wkfuuf6" path="res://素材/ui/护盾/动画/护盾动画.tres" id="14_vw8as"]
+[ext_resource type="PackedScene" uid="uid://cqnmj7yrerbhj" path="res://场景(C#)/重新选卡.tscn" id="16_4cdlk"]
+
+[sub_resource type="FontVariation" id="FontVariation_tkg4x"]
+base_font = ExtResource("12_clb5w")
 
 [node name="战斗场景" type="Node2D" unique_id=1988450632]
 script = ExtResource("1_ma3su")
 metadata/_custom_type_script = "uid://cyd56foe8cq4n"
 
 [node name="顶部" type="Sprite2D" parent="." unique_id=313599328]
+unique_name_in_owner = true
 z_index = -8
 position = Vector2(360, 155)
 texture = ExtResource("2_bggyq")
 
 [node name="客方" type="Sprite2D" parent="." unique_id=1531739339]
+unique_name_in_owner = true
 z_index = -2
-position = Vector2(360, 301)
+position = Vector2(340, 301)
 texture = ExtResource("3_41p5g")
 
 [node name="主机" type="Sprite2D" parent="." unique_id=1554391998]
+unique_name_in_owner = true
 z_index = 6
 position = Vector2(360, 850)
 texture = ExtResource("4_f3g53")
 
 [node name="左边" type="Sprite2D" parent="." unique_id=1919804875]
+unique_name_in_owner = true
 z_index = 6
 position = Vector2(80, 535)
 texture = ExtResource("5_cu1cr")
 
 [node name="右边" type="Sprite2D" parent="." unique_id=80064574]
+unique_name_in_owner = true
 z_index = 6
 position = Vector2(630, 541)
 texture = ExtResource("6_y1gsq")
 
 [node name="底部" type="Sprite2D" parent="." unique_id=1587575397]
+unique_name_in_owner = true
 z_index = 12
 position = Vector2(360, 1038)
 texture = ExtResource("7_pqs4j")
@@ -50,7 +67,7 @@ position = Vector2(0, -39)
 
 [node name="阶段" type="Node2D" parent="." unique_id=1016573463]
 unique_name_in_owner = true
-z_index = 24
+z_index = 100
 position = Vector2(580, 865)
 scale = Vector2(0.9, 0.9)
 metadata/_edit_lock_ = true
@@ -64,12 +81,335 @@ metadata/_edit_group_ = true
 [node name="Button" type="Button" parent="阶段" unique_id=421639317]
 unique_name_in_owner = true
 z_index = 24
-offset_left = -40.0
+offset_left = -64.44446
 offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 63.333374
+offset_bottom = 87.77777
 flat = true
 
-[node name="Node2D" type="Node2D" parent="." unique_id=869147453]
+[node name="费用容器" type="CanvasLayer" parent="." unique_id=521051514]
+layer = 42
+follow_viewport_enabled = true
+
+[node name="费用" type="Node2D" parent="费用容器" unique_id=2119942898]
+z_index = 160
+position = Vector2(88, 863)
+
+[node name="费用特效动画" parent="费用容器/费用" unique_id=634445961 instance=ExtResource("9_p8b7g")]
+unique_name_in_owner = true
+position = Vector2(166, -266)
+
+[node name="SpineNode" parent="费用容器/费用/费用特效动画" index="0" unique_id=273388558]
+skeleton_data_res = ExtResource("10_k7al5")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+
+[node name="数值3" type="Label" parent="费用容器/费用/费用特效动画" unique_id=143833756]
+unique_name_in_owner = true
+z_index = 30
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = -36.5
+offset_right = 9.0
+offset_bottom = 36.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_tkg4x")
+theme_override_font_sizes/font_size = 64
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="费用特效" type="TextureRect" parent="费用容器/费用" unique_id=1009323864]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -67.00002
+offset_right = 38.0
+offset_bottom = 60.999977
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(1, 0.5)
+stretch_mode = 3
+
+[node name="阳光发光3" type="TextureRect" parent="费用容器/费用/费用特效" unique_id=1369741216]
+unique_name_in_owner = true
+visible = false
+z_index = -1
+layout_mode = 0
+offset_left = -24.0
+offset_top = -24.000122
+offset_right = 156.0
+offset_bottom = 155.99988
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("12_52n4m")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="费用图片" type="TextureRect" parent="费用容器/费用" unique_id=2009723613]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -65.0
+offset_top = -67.0
+offset_right = 63.0
+offset_bottom = 61.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("11_f1tyx")
+stretch_mode = 3
+
+[node name="阳光发光" type="TextureRect" parent="费用容器/费用/费用图片" unique_id=355716276]
+unique_name_in_owner = true
+visible = false
+z_index = -1
+layout_mode = 0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 156.0
+offset_bottom = 156.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("12_52n4m")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="数值" type="Label" parent="费用容器/费用/费用图片" unique_id=714932284]
+unique_name_in_owner = true
+z_index = 30
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_tkg4x")
+theme_override_font_sizes/font_size = 64
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="费用2" type="Node2D" parent="费用容器" unique_id=207810551]
+z_index = 160
+position = Vector2(641, 125)
+
+[node name="费用特效动画2" parent="费用容器/费用2" unique_id=2132684599 instance=ExtResource("9_p8b7g")]
+unique_name_in_owner = true
+position = Vector2(-178, 295)
+
+[node name="SpineNode" parent="费用容器/费用2/费用特效动画2" index="0" unique_id=273388558]
+skeleton_data_res = ExtResource("10_k7al5")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+
+[node name="数值4" type="Label" parent="费用容器/费用2/费用特效动画2" unique_id=52364848]
+unique_name_in_owner = true
+z_index = 30
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = -36.5
+offset_right = 9.0
+offset_bottom = 36.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_tkg4x")
+theme_override_font_sizes/font_size = 64
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="费用特效2" type="TextureRect" parent="费用容器/费用2" unique_id=1261991883]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -67.0
+offset_right = 88.0
+offset_bottom = 61.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0, 0.5)
+stretch_mode = 3
+
+[node name="阳光发光4" type="TextureRect" parent="费用容器/费用2/费用特效2" unique_id=758643437]
+unique_name_in_owner = true
+visible = false
+z_index = -1
+layout_mode = 0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 156.0
+offset_bottom = 156.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("12_52n4m")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="费用图片2" type="TextureRect" parent="费用容器/费用2" unique_id=1169168947]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -65.0
+offset_top = -67.0
+offset_right = 63.0
+offset_bottom = 61.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("13_f1tyx")
+stretch_mode = 3
+
+[node name="阳光发光2" type="TextureRect" parent="费用容器/费用2/费用图片2" unique_id=2075158307]
+unique_name_in_owner = true
+visible = false
+z_index = -1
+layout_mode = 0
+offset_left = -24.000061
+offset_top = -24.0
+offset_right = 155.99994
+offset_bottom = 156.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("12_52n4m")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="数值2" type="Label" parent="费用容器/费用2/费用图片2" unique_id=1228519368]
+unique_name_in_owner = true
+z_index = 30
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_tkg4x")
+theme_override_font_sizes/font_size = 64
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="副玩家" type="Marker2D" parent="." unique_id=773997479]
+unique_name_in_owner = true
+position = Vector2(348, 230)
+
+[node name="主玩家" type="Marker2D" parent="." unique_id=2106473752]
+unique_name_in_owner = true
+position = Vector2(357, 874)
+
+[node name="护盾" parent="." unique_id=1138820925 instance=ExtResource("9_p8b7g")]
+unique_name_in_owner = true
+visible = false
+modulate = Color(0.9533334, 0.3, 1, 1)
+z_index = 25
+position = Vector2(360, 758)
+scale = Vector2(0.5, 0.5)
+
+[node name="护盾2" parent="." unique_id=2083661993 instance=ExtResource("9_p8b7g")]
+unique_name_in_owner = true
+visible = false
+modulate = Color(0.0333333, 1, 0, 1)
+z_index = 25
+position = Vector2(360, 234)
+scale = Vector2(0.5, 0.5)
+
+[node name="SpineNode" parent="护盾2" index="0" unique_id=273388558]
+skeleton_data_res = ExtResource("14_vw8as")
+preview_skin = "Default"
+preview_animation = "plantshield"
+preview_frame = false
+preview_time = 0.0
+
+[node name="护盾容器" type="CanvasLayer" parent="." unique_id=2071271051]
+layer = 43
+follow_viewport_enabled = true
+
+[node name="英雄血量" parent="护盾容器" unique_id=1804947190 instance=ExtResource("10_4cdlk")]
+unique_name_in_owner = true
+z_index = 100
+position = Vector2(207, 865)
+scale = Vector2(0.6, 0.6)
+
+[node name="英雄血量2" parent="护盾容器" unique_id=1517580426 instance=ExtResource("10_4cdlk")]
+unique_name_in_owner = true
+z_index = 100
+position = Vector2(524, 128)
+scale = Vector2(0.6, 0.6)
+
+[node name="卡牌组中心2" type="Marker2D" parent="." unique_id=671542422]
+unique_name_in_owner = true
+position = Vector2(80, 140)
+
+[node name="卡牌组中心" type="Marker2D" parent="." unique_id=220082344]
+unique_name_in_owner = true
+position = Vector2(80, 1025)
+
+[node name="重新选卡层" type="CanvasLayer" parent="." unique_id=1559340914]
+layer = 49
+follow_viewport_enabled = true
+
+[node name="重新选卡" parent="重新选卡层" unique_id=2139683625 instance=ExtResource("16_4cdlk")]
+unique_name_in_owner = true
+z_index = 175
+
+[node name="抽卡位置2" type="Marker2D" parent="." unique_id=361908283]
+unique_name_in_owner = true
+position = Vector2(360, 420)
+
+[node name="抽卡位置" type="Marker2D" parent="." unique_id=1158534064]
+unique_name_in_owner = true
+position = Vector2(360, 560)
 
 [editable path="道路层"]
+[editable path="阶段/动画"]
+[editable path="费用容器/费用/费用特效动画"]
+[editable path="费用容器/费用2/费用特效动画2"]
+[editable path="护盾"]
+[editable path="护盾2"]
+[editable path="重新选卡层/重新选卡"]

@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://cwkfj1qurptgb"
+path="res://.godot/imported/skeleton.skel-cfae93a9c66fa989f64947571412cde0.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/纸板机器船/skeleton.skel"
+dest_files=["res://.godot/imported/skeleton.skel-cfae93a9c66fa989f64947571412cde0.spskel"]
+
+[params]
+

@@ -11,10 +11,8 @@ using Play;
 using Spine;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Target;
@@ -73,7 +71,13 @@ public class CardModel
     /// <returns></returns>
     public bool CanPlay()
     {
-        return (Fighter.CanTargetedBy(this) || NodeRoad.CanTargetedBy(this) ) && !CardCmd.IsCardPlaying && !Road.IsBattling;
+        var p = PlayerManager.GetPlayer(Camp);
+        var isTurnMe =
+            (PhraseManager.Phrase == Phrase.Plant && Camp == Camp.Plant)
+            || (PhraseManager.Phrase == Phrase.Zombie && Camp == Camp.Zombie && CardType.HasFlag(CardType.Fighter))
+            || (PhraseManager.Phrase == Phrase.Trick && Camp == Camp.Zombie && (CardType.HasFlag(CardType.Trick) || CardType.HasFlag(CardType.Environment)));
+
+        return isTurnMe && (Fighter.CanTargetedBy(this, false) || NodeRoad.CanTargetedBy(this)) && !Road.IsBattling && !CardCmd.StopCardPlay && (p == null || (p != null && (p.Status.Hero.Cost == null || (p.Status.Hero.Cost != null && p.Status.Hero.Cost.Current >= Cost.Current))));
     }
     /// <summary>
     /// 按照名称获取卡牌模板
@@ -83,6 +87,16 @@ public class CardModel
         if (TemplateEntries.TryGetValue(title, out var template))
             return template.Clone();
         return null;
+    }
+
+    /// <summary>
+    /// 从id获取卡牌
+    /// </summary>
+    /// <param name="id">卡牌的ID</param>
+    /// <returns></returns>
+    public static CardModel FromId(uint id)
+    {
+        return TemplateEntries.FirstOrDefault(t=>t.Value.Id == id).Value;
     }
 
     /// <summary>
@@ -197,7 +211,7 @@ public class CardModel
             };
         }
     }
-    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0,string eventName = null)
+    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0, string eventName = null)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -206,11 +220,11 @@ public class CardModel
         node.AddChild(sp);
         sp.LoadSkeletonData(AnimationPath);
         if (eventName != null)
-            await sp.SetAnimationAndFreeOnEvent(track, animName, eventName,false);
+            await sp.SetAnimationAndFreeOnEvent(track, animName, eventName, false);
         else
             await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
     }
-    protected async Task PlayLoopAnimation(string animName, ITarget target,int track = 0)
+    protected async Task PlayLoopAnimation(string animName, ITarget target, int track = 0)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -248,22 +262,15 @@ public class CardModel
         card.AnimationScenePath = cardString.AnimationScenePath;
         card.ParseDescriptionVariables(cardString.Description);
         card.Icon = GD.Load<PackedScene>(cardString.IconPath);
+        card.Id = cardString.Id;
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
-        _ = card.AddBuff(new LabelBuff(),VariableReason.None);
         return (T)card.LoadData(cardString);
-    }
-    private class LabelBuff : Buff
-    {
-        public override bool IsTransferable => false;
-        public override Timing[] Timings => [Timing.OnVariableChanged];
-        public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
-        {
-            
-        }
     }
     private async Task Destroy()
     {
         CardCmd.Remove(this);
+        if (PhraseManager.IsInBattle)
+            PlayerManager.HostPlayer.Status.HandRemoveCard(this);
         await NodeCard.DestoryCard(this);
     }
     /// <summary>
@@ -321,7 +328,11 @@ public class CardModel
     /// <summary>
     /// 卡牌的动画场景路径
     /// </summary>
-    public string AnimationScenePath {  get; private set; }
+    public string AnimationScenePath { get; private set; }
+    /// <summary>
+    /// 卡牌的序列号(用于解析为实例卡牌)
+    /// </summary>
+    public uint Id {  get; private set; }
     /// <summary>
     /// 卡牌的稀有度
     /// </summary>
@@ -369,6 +380,15 @@ public class CardModel
     /// <param name="target">游戏传入的卡牌目标</param>
     /// <returns></returns>
     public virtual Task Play(ITarget target) { return Task.CompletedTask; }
+    /// <summary>
+    /// 卡牌打出时的效果
+    /// </summary>
+    /// <param name="target">游戏传入的卡牌目标</param>
+    /// <returns></returns>
+    public async Task OnPlayWrap(ITarget target)
+    {
+        await Task.WhenAll(Play(target), CardCmd.ChangeCost(null, -Cost.Current, this));
+    }
     /// <summary>
     /// 克隆之后的逻辑
     /// </summary>
@@ -479,16 +499,20 @@ public class CardModel
     {
         foreach (var buff in BuffList.ToList())
         {
+            if (this is FighterCardModel fighterCard && !fighterCard.IsPlaced && buff.OnlyPlaced) continue;
             if (buff.Timings.Contains(timing))
-                await buff.OnTiming(timing, this,parameters);
+                await buff.OnTiming(timing, this, parameters);
         }
-        if (this is FighterCardModel fighter)
+        if (this is FighterCardModel fighter && fighter.IsPlaced)
         {
             if (fighter.HpType.Current.Buff != null)
+            {
                 await fighter.HpType.Current.Buff.OnTiming(timing, this, parameters);
-
+            }
             if (fighter.AtkType.Current.Buff != null)
+            {
                 await fighter.AtkType.Current.Buff.OnTiming(timing, this, parameters);
+            }
         }
     }
 
@@ -500,8 +524,8 @@ public class CardModel
         foreach (var buff in BuffList.ToList())
         {
             if (!buff.IsTransferable) continue;
-            await RemoveBuff(buff,VariableReason.Self);
-            await newCard.AddBuff(buff,VariableReason.Self);
+            await RemoveBuff(buff, VariableReason.Self);
+            await newCard.AddBuff(buff, VariableReason.Self);
         }
     }
 

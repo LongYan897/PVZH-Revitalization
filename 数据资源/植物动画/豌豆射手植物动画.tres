@@ -4,15 +4,11 @@
 [ext_resource type="SpineSkeletonFileResource" uid="uid://fyejn43c3xr0" path="res://场景/植物卡/豌豆射手植物/豌豆射手.skel" id="2_dwqek"]
 
 [sub_resource type="SpineAnimationMix" id="SpineAnimationMix_rxgfc"]
-from = "attack"
-to = "attack"
-
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_dwqek"]
 from = "hurt"
 to = "attack"
 mix = 0.1
 
-[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_81ewe"]
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_dwqek"]
 from = "attack"
 to = "die"
 mix = 0.1
@@ -21,4 +17,4 @@ mix = 0.1
 atlas_res = ExtResource("1_rxgfc")
 skeleton_file_res = ExtResource("2_dwqek")
 default_mix = 0.5
-animation_mixes = [SubResource("SpineAnimationMix_rxgfc"), SubResource("SpineAnimationMix_dwqek"), SubResource("SpineAnimationMix_81ewe")]
+animation_mixes = [SubResource("SpineAnimationMix_rxgfc"), SubResource("SpineAnimationMix_dwqek")]

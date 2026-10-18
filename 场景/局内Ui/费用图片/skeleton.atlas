@@ -1,0 +1,10 @@
+skeleton.png
+size:231,132
+filter:Linear,Linear
+pma:true
+inhnd_brains
+bounds:126,2,128,103
+offsets:0,0,128,104
+rotate:90
+inhnd_sun_gb
+bounds:2,3,122,127

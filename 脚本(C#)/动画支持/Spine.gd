@@ -53,3 +53,24 @@ func pause_all_tracks() -> void:
 		var entry = state.get_track(i)
 		if entry:
 			entry.set_time_scale(0.0)
+
+func has_animation(Name:String) -> bool:
+	return get_skeleton().get_data().find_animation(Name) != null
+
+func get_bone_global_transform(bone_name: String) -> Transform2D:
+	return get_global_bone_transform(bone_name)
+
+func get_bone_world_scale(bone_name:String) -> Vector2:
+	return get_global_bone_transform(bone_name).get_scale()
+
+func get_bone_scale(bone_name:String) -> Vector2:
+	var bone = get_skeleton().find_bone(bone_name)
+	if bone == null:
+		return Vector2.ONE
+	return Vector2(bone.get_scale_x(), bone.get_scale_y())
+
+func get_bone_local_pos(bone_name:String) -> Vector2:
+	var bone = get_skeleton().find_bone(bone_name)
+	if bone == null:
+		return Vector2.ZERO
+	return Vector2(bone.get_x(), bone.get_y())

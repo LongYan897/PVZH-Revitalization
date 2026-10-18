@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://b27p12n211us0"
+path="res://.godot/imported/回合按钮.atlas-f92bd6430a523af6fc4900a9968d230b.spatlas"
+
+[deps]
+
+source_file="res://场景/局内Ui/回合按钮/回合按钮.atlas"
+dest_files=["res://.godot/imported/回合按钮.atlas-f92bd6430a523af6fc4900a9968d230b.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

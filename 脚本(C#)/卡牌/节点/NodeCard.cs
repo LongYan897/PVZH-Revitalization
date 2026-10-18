@@ -1,13 +1,11 @@
-using Battle;
-using Battle.Entity;
 using Card.Cmd;
 using Controller;
 using Godot;
 using Logger;
 using Pack;
+using Play;
 using Spine;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
@@ -64,7 +62,7 @@ public partial class NodeCard : Control
     /// <summary>
     /// 卡牌初始大小
     /// </summary>
-    private const float BaseScaleFactor = 0.5f;
+    private const float BaseScaleFactor = 0.56f;
     private Vector2 _baseScale;
 
     /// <summary>
@@ -75,13 +73,13 @@ public partial class NodeCard : Control
     /// <param name="parent">父节点，为 null 时使用 Main.CardContainer</param>
     /// <param name="drawAnimation">是否播放抽卡动画</param>
     /// <param name="scaleFactor">缩放系数，默认 BaseScaleFactor</param>
-    public static NodeCard CreateCard(
-        CardModel cardModel,
-        Vector2 position,
-        CardView cardView = CardView.Battle,
-        Node parent = null,
-        bool drawAnimation = false,
-        float scaleFactor = BaseScaleFactor)
+    public static async Task<NodeCard> CreateCard(
+    CardModel cardModel,
+    Vector2 position,
+    CardView cardView = CardView.Battle,
+    Node parent = null,
+    bool drawAnimation = false,
+    float scaleFactor = BaseScaleFactor)
     {
         parent ??= Main.CardContainer;
 
@@ -94,11 +92,12 @@ public partial class NodeCard : Control
             node.Scale = node._baseScale;
             node.CardViewMode = cardView;
             parent.AddChild(node);
+            instances.Add(node, cardModel);
+            node.BringToFront();
             if (drawAnimation)
-                node.DrawAnimation();
+                await node.DrawAnimation();
             else
                 node.Fresh();
-            instances.Add(node, cardModel);
             return node;
         }
         else
@@ -115,11 +114,13 @@ public partial class NodeCard : Control
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
             node.Scale = node._baseScale;
             node.CardViewMode = cardView;
+            instances[node] = cardModel;
+            node.BringToFront();
+            node.GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
             if (drawAnimation)
-                node.DrawAnimation();
+                await node.DrawAnimation();
             else
                 node.Fresh();
-            instances[node] = cardModel;
             return node;
         }
     }
@@ -134,7 +135,7 @@ public partial class NodeCard : Control
     /// <param name="cardView">预览模式</param>
     /// <param name="drawAnimation">是否播放抽卡动画</param>
     /// <param name="scaleFactor">缩放系数</param>
-    public static NodeCard CreateCardInGroup(
+    public static Task<NodeCard> CreateCardInGroup(
         CardModel cardModel,
         Vector2 position,
         CanvasLayer group,
@@ -156,7 +157,7 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
+    public static Task<NodeCard> DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
         => CreateCard(cardModel, position, cardView, parent, drawAnimation: false, scaleFactor: scaleFactor);
 
     /// <summary>
@@ -164,14 +165,14 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
+    public static Task<NodeCard> DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
         => CreateCard(cardModel, position, cardView, parent, drawAnimation: true, scaleFactor: scaleFactor);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
+    public static Task<NodeCard> DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
         => CreateCard(cardModel, position, cardView, null, drawAnimation: false, scaleFactor: scaleFactor);
 
     /// <summary>
@@ -179,7 +180,7 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
+    public static Task<NodeCard> DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
         => CreateCard(cardModel, position, cardView, null, drawAnimation: true, scaleFactor: scaleFactor);
 
     /// <summary>
@@ -191,7 +192,25 @@ public partial class NodeCard : Control
         var node = instances.FirstOrDefault(n => n.Value == card);
         await node.Key?.Close();
     }
+    /// <summary>
+    /// 设置卡牌层级，每个 index 对应 40 的 ZIndex。
+    /// 同一 index 只允许一张卡，已在该层的其它卡顺移到下一层。
+    /// </summary>
+    public void SetIndex(int index)
+    {
+        int target = index * 40;
 
+        foreach (var node in instances.Keys.ToList())
+        {
+            if (node == this) continue;
+            if (!GodotObject.IsInstanceValid(node)) continue;
+
+            if (node.ZIndex / 40 * 40 == target)
+                node.ZIndex = target + 40;
+        }
+
+        ZIndex = target;
+    }
     /// <summary>
     /// 获得当前卡牌对应的节点
     /// </summary>
@@ -203,32 +222,83 @@ public partial class NodeCard : Control
     }
 
     /// <summary>
-    /// 把这张卡提到它所在父节点下的最顶层
+    /// 绑定的初始位置
+    /// </summary>
+    private Vector2? _boundOriginPos;
+
+    /// <summary>
+    /// 绑定初始位置，拖动结束后会回到这里
+    /// </summary>
+    public void BindOrigin(Vector2 position)
+    {
+        _boundOriginPos = position;
+        _cardOriginPos = position;
+        ReturnToOrigin();
+    }
+
+    /// <summary>
+    /// 绑定当前坐标作为初始位置
+    /// </summary>
+    public void BindOrigin()
+    {
+        BindOrigin(Position);
+    }
+
+    /// <summary>
+    /// 把这张卡放到最高层。同一层级只允许一张卡，已在该层的其它卡顺移到下一层。
     /// </summary>
     public void BringToFront()
     {
-        var parent = GetParent();
-        if (parent == null) return;
-
-        var siblings = parent.GetChildren().OfType<NodeCard>().ToList();
-        if (siblings.Count == 0) return;
-
-        int maxZ = 0;
-        foreach (var s in siblings)
+        int maxLayer = -1;
+        foreach (var node in instances.Keys)
         {
-            if (s == this) continue;
-            if (s.ZIndex > maxZ) maxZ = s.ZIndex;
+            if (!GodotObject.IsInstanceValid(node)) continue;
+            int layer = node.ZIndex / 40;
+            if (layer > maxLayer) maxLayer = layer;
         }
 
-        ZIndex = maxZ + 20;
-    }
+        int target = (maxLayer + 1) * 40;
 
-    private async void DrawAnimation()
+        foreach (var node in instances.Keys.ToList())
+        {
+            if (node == this) continue;
+            if (!GodotObject.IsInstanceValid(node)) continue;
+
+            if (node.ZIndex / 40 * 40 == target)
+                node.ZIndex = target + 40;
+        }
+
+        ZIndex = target;
+    }
+    /// <summary>
+    /// 点亮该卡牌但是不会改变卡牌是否可打出状态
+    /// </summary>
+    public void SetToBright()
+    {
+        DarkenLight();
+    }
+    /// <summary>
+    /// 重抽一张卡牌
+    /// </summary>
+    /// <param name="cardModel">替换卡牌</param>
+    /// <param name="position">新的坐标(不输入默认不换坐标)</param>
+    public async Task RedrawCard(CardModel cardModel,Vector2 position = new())
+    {
+        CardCmd.PushStop();
+        Model = cardModel;
+        if (position != new Vector2())
+            Position = position;
+        await DrawAnimation();
+        DarkenLight();
+        instances[this] = cardModel;
+        CardCmd.PopStop();
+    }
+    private async Task DrawAnimation()
     {
         var drawFrame = GetNode<Sprite2D>("%特效");
         drawFrame.Visible = true;
+        Fresh();
         GetNode<Node2D>("正面卡牌").Visible = false;
-        GetNode<TextureRect>("牌背").Visible = false;
         drawFrame.Modulate = new Color(0, 0, 0, 0);
         drawFrame.Rotation = 0;
         drawFrame.Scale = new Vector2(2.8f, 2.8f);
@@ -265,7 +335,7 @@ public partial class NodeCard : Control
 
         await ToSignal(tween, Tween.SignalName.Finished);
         drawFrame.Visible = false;
-        Fresh();
+        GetNode<Node2D>("正面卡牌").Visible = true;
     }
 
     private bool _isDragging;
@@ -344,11 +414,11 @@ public partial class NodeCard : Control
     }
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is not InputEventMouseButton mb) return; 
+        if (@event is not InputEventMouseButton mb) return;
         if (_openedCard != null && _openedCard != this && IsInstanceValid(_openedCard))
             _openedCard.CloseNonBattle();
     }
-    
+
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;
@@ -363,7 +433,7 @@ public partial class NodeCard : Control
                     KillClickTween();
 
                     _mouseDownGlobal = GetGlobalMousePosition();
-                    _cardOriginPos = Position;
+                    _cardOriginPos = _boundOriginPos ?? Position;
                     _isDragging = false;
                     _clickAnimationPlayed = false;
 
@@ -451,6 +521,7 @@ public partial class NodeCard : Control
         GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
         GetNode<Node2D>("正面卡牌").Visible = false;
         GetNode<TextureRect>("牌背").Visible = false;
+        GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
         KillReturnTween();
         KillClickTween();
         _overlappingAreas.Clear();
@@ -462,7 +533,7 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
-        TargetRegistry.CallTargeted(Model, Model.TargetType);
+        TargetRegistry.CallTargeted(Model, Model.TargetType, false);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
     {
@@ -483,6 +554,7 @@ public partial class NodeCard : Control
     private void OnCardClick()
     {
         ChoiceCard = this;
+        ResetAllZIndex();
         BringToFront();
 
         if (CardViewMode == CardView.Battle)
@@ -495,6 +567,17 @@ public partial class NodeCard : Control
             _openedCard.CloseNonBattle();
 
         ToggleNonBattle();
+    }
+    /// <summary>
+    /// 把所有卡牌的 ZIndex 重置为 0
+    /// </summary>
+    private static void ResetAllZIndex()
+    {
+        foreach (var node in instances.Keys.ToList())
+        {
+            if (!GodotObject.IsInstanceValid(node)) continue;
+            node.ZIndex = 0;
+        }
     }
     /// <summary>
     /// 关闭信息背景
@@ -648,8 +731,11 @@ public partial class NodeCard : Control
             ReturnToOrigin();
         else
         {
+            PlayerManager.GetPlayer(Model.Camp).Status.HandRemoveCard(Model);
+            PlayerBox.StuffCard();
             await DiscallDragging();
             Visible = false;
+            GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
             await CardCmd.PlayedCard(Model, savedTarget);
             await Model.DestroyMe();
         }
@@ -661,7 +747,7 @@ public partial class NodeCard : Control
         _returnTween = CreateTween();
         _returnTween.SetEase(Tween.EaseType.Out);
         _returnTween.SetTrans(Tween.TransitionType.Quad);
-        _returnTween.TweenProperty(this, "position", _cardOriginPos, 0.2f);
+        _returnTween.TweenProperty(this, "position", _cardOriginPos, 1.2f);
     }
 
     private ITarget target;
@@ -672,6 +758,11 @@ public partial class NodeCard : Control
     private void AreaEntered(Area2D area)
     {
         if (CardViewMode != CardView.Battle) return;
+        if (Model == null)
+        {
+            Log.Error("NullCard");
+            return;
+        }
         if (!Model.CanPlay()) return;
 
         _overlappingAreas.Add(area);
@@ -712,7 +803,7 @@ public partial class NodeCard : Control
             var col = (ITarget)(GodotObject)area.GetMeta("Target");
             if (col == null) continue;
             if (!col.Calling) continue;
-            if (!col.CanBeTarget(Model, Model.TargetFilter)) continue;
+            if (!col.CanBeTarget(Model, Model.TargetFilter, false)) continue;
 
             Vector2 areaPos = area is Node2D n2d
                 ? n2d.GlobalPosition

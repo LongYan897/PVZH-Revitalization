@@ -188,3 +188,11 @@ position = Vector2(0, -219)
 [node name="Pos2" type="Marker2D" parent="." unique_id=1774024238]
 unique_name_in_owner = true
 position = Vector2(0, -118)
+
+[node name="Hero" type="Marker2D" parent="." unique_id=2103997853]
+unique_name_in_owner = true
+position = Vector2(0, 263)
+
+[node name="Hero2" type="Marker2D" parent="." unique_id=773338379]
+unique_name_in_owner = true
+position = Vector2(0, -321)

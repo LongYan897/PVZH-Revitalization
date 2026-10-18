@@ -1,10 +1,5 @@
 using Battle.Entity;
 using Card.Cmd;
-using Controller;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Target;
 
@@ -24,8 +19,8 @@ public class FinalMission : CardModel
     {
         if (target.CanBeFighter(out var zomb) && zomb.Camp == Camp.Zombie)
         {
-            FighterCardModel plant = await CardCmd.PlayerChoiceFighter(null, this, (itg) => itg.Camp == Camp.Plant);
-            
+            FighterCardModel plant = await CardCmd.PlayerChoiceFighter(null, this, true, (itg) => itg.Camp == Camp.Plant);
+
             await PlayInstantAnimation("intro", target);
 
             await zomb.Kill(Variable.VariableReason.Trick);
@@ -33,8 +28,8 @@ public class FinalMission : CardModel
             if (plant != null)
             {
                 await PlayInstantAnimation("hit", plant.Targeting());
-                
-                await plant.ApplyDamage(GetSignInt("Health"),Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
+
+                await plant.ApplyDamage(GetSignInt("Health"), Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
             }
         }
     }

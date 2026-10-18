@@ -32,7 +32,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
     {
         var val = variable.Current;
         int v = variable.Set(value, reason);
-        await CardCmd.ChangedCard(card, sign, val, value,reason);
+        await CardCmd.ChangedCard(card, sign, val, value, reason);
         return v;
     }
     /// <summary>
@@ -46,7 +46,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
         var old = variable.Current;
         var value = history.Before;
         variable.Rewind(Index);
-        await CardCmd.ChangedCard(card, sign, old, value,VariableReason.Reset);
+        await CardCmd.ChangedCard(card, sign, old, value, VariableReason.Reset);
     }
     /// <summary>
     /// 回溯值(不清空历史)
@@ -71,13 +71,13 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
     {
         var old = variable.Current;
         variable.Reset();
-        await CardCmd.ChangedCard(card, sign, old, variable.Current,VariableReason.Reset);
+        await CardCmd.ChangedCard(card, sign, old, variable.Current, VariableReason.Reset);
     }
 }
 
 public interface ICardVariable
 {
-    string Key {  get; }
+    string Key { get; }
 }
 
 /// <summary>
@@ -87,7 +87,7 @@ public interface ICardVariable
 /// <param name="sign">监听的信号</param>
 /// <param name="baseValue">基础值</param>
 /// <param name="canNegative">是否可以为负数</param>
-public class CardIntVariable(CardModel cardModel, string sign, int baseValue,bool canNegative = false) : ICardVariable
+public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bool canNegative = false) : ICardVariable
 {
     private CardModel card = cardModel;
     public string Key => variable.Sign;

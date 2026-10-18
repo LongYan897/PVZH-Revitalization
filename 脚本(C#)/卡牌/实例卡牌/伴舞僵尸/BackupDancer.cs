@@ -1,11 +1,6 @@
-using Battle.Entity;
 using Card.Cmd;
-using Godot;
-using Logger;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card.Dance;
@@ -14,7 +9,7 @@ public class BackupDancer : FighterCardModel
 {
     private class BackupDancerBuff(BackupDancer bind) : Buff
     {
-        public override Timing[] Timings => [Timing.OnFighterExit,Timing.AfterPlay];
+        public override Timing[] Timings => [Timing.OnFighterExit, Timing.AfterPlay];
         private BackupDancer model = bind;
         private FighterCardModel target;
         private Func<Task> redo;
@@ -28,9 +23,9 @@ public class BackupDancer : FighterCardModel
                     {
                         if (CardCmd.AnyZombie(z => z.HasLabel("跳舞")))
                         {
-                            FighterCardModel fighter = await CardCmd.PlayerChoiceZombie(null, card,(z)=>z.HasLabel("跳舞"));
+                            FighterCardModel fighter = await CardCmd.PlayerChoiceZombie(null, card, true, (z) => z.HasLabel("跳舞"));
                             target = fighter;
-                            redo = await fighter.Atk.Gain(model.GetSignInt("Strength"),Variable.VariableReason.Zombie | Variable.VariableReason.Self);
+                            redo = await fighter.Atk.Gain(model.GetSignInt("Strength"), Variable.VariableReason.Zombie | Variable.VariableReason.Self);
                         }
                     }
                 }

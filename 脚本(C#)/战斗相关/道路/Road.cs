@@ -43,7 +43,7 @@ public class Road
     /// <summary>
     /// 该道路是否是朝向植物的
     /// </summary>
-    public bool IsUp { get; init; }
+    public bool IsUp { get; set; }
     /// <summary>
     /// 决定该道路的类型(高地/平地/水路)
     /// </summary>
@@ -120,13 +120,13 @@ public class Road
     /// 添加战斗单位到该道路
     /// </summary>
     /// <param name="fighter">要添加的战斗单位</param>
-    public async Task AddFighter(CardModel cardModel,Fighter fighter)
+    public async Task AddFighter(CardModel cardModel, Fighter fighter)
     {
         await cardModel.FireTiming(Timing.OnFighterEnter, this, fighter.Model);
         await CardCmd.TimingOnCards(cardModel, Timing.OnFighterEnter, this, fighter);
         fighters.Add(fighter);
         await cardModel.FireTiming(Timing.AfterRoadChanged, this);
-        await CardCmd.TimingOnCards(cardModel,Timing.AfterRoadChanged,this);
+        await CardCmd.TimingOnCards(cardModel, Timing.AfterRoadChanged, this);
     }
     /// <summary>
     /// 移除战斗单位从该道路
