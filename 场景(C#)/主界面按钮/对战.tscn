@@ -24,6 +24,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_f1i2d")
 SubScene = "res://场景(C#)/战斗场景.tscn"
+ShowLoading = true
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="." unique_id=1394770203]
