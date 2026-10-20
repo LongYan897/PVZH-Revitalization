@@ -392,6 +392,6 @@ texture = ExtResource("12_5lf5m")
 [node name="特效" type="Sprite2D" parent="." unique_id=73500842]
 unique_name_in_owner = true
 visible = false
-position = Vector2(127, 96.5)
-scale = Vector2(2.8, 2.8)
+position = Vector2(128, 96.5)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("13_t66oa")

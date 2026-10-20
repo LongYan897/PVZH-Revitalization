@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4bn05jn1cfsn"
-path="res://.godot/imported/螺纹坚果.png-459f366e9ad2961cec2ed56ebea1075e.ctex"
+uid="uid://bhu421e2bmmp6"
+path="res://.godot/imported/Electric_ball_02.png-d87ac9ee0ccff3fcf5b2e71e93e995da.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://场景/植物卡/基础植物/螺纹坚果.png"
-dest_files=["res://.godot/imported/螺纹坚果.png-459f366e9ad2961cec2ed56ebea1075e.ctex"]
+source_file="res://素材(C#)/战斗胜利/Electric_ball_02.png"
+dest_files=["res://.godot/imported/Electric_ball_02.png-d87ac9ee0ccff3fcf5b2e71e93e995da.ctex"]
 
 [params]
 

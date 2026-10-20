@@ -4,6 +4,7 @@ using Card.Cmd;
 using Card.String;
 using Godot;
 using Hero;
+using Logger;
 using Play;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,10 @@ namespace Card;
 /// </summary>
 public class FighterCardModel : CardModel
 {
+    /// <summary>
+    /// 僵尸是否隐藏在墓碑之中
+    /// </summary>
+    public bool Hiding => Camp == Camp.Zombie && (Fighter.GetNode(this) ?? null) != null && Fighter.GetNode(this).IsHiding;
     private readonly List<FighterCardModel> additiveCards = new();
     /// <summary>
     /// 隐藏单位的数值,并销毁单位
@@ -39,6 +44,17 @@ public class FighterCardModel : CardModel
     /// </summary>
     public bool IsPlaced => Fighter.GetNode(this) != null;
     protected Vector2 GlobalPosition => Fighter.GetNode(this).GlobalPosition;
+    /// <summary>
+    /// 把这张卡牌弹回手牌
+    /// </summary>
+    /// <returns></returns>
+    public async Task Bounced()
+    {
+        if (IsPlaced)
+        {
+            await Fighter.GetNode(this).ReturnCard();
+        }
+    }
     protected override CardModel LoadData(CardString cardString)
     {
         Atk = new(this, "Attack", cardString.Attack);
@@ -76,6 +92,7 @@ public class FighterCardModel : CardModel
         }
     }
     public ITarget Targeting() => Fighter.GetNode(this);
+    public IAttackable Attacking() => Fighter.GetNode(this);
     /// <summary>
     /// 所处的道路
     /// </summary>
@@ -149,6 +166,7 @@ public class FighterCardModel : CardModel
         {
             if (itg is Fighter fighter)
             {
+                if (fighter.IsHiding) continue;
                 atkStack.FinalDamage = atkStack.BaseDamage;
 
                 await FireTiming(Timing.WhenAttacked, atkStack);
@@ -399,7 +417,23 @@ public class FighterCardModel : CardModel
     {
         await PlayFighterAnimationTask("intro");
     }
-
+    public override Task Changed<T>(string key, T valueAfter, T valueBefore)
+    {
+        if (IsPlaced)
+        {
+            if (key == "Attack" || key == "Health" || key == "MaxHealth")
+            {
+                if (valueAfter is int t && valueBefore is int tb)
+                {
+                    if (t - tb > 0)
+                    {
+                        Fighter.GetNode(this).Boost();
+                    }
+                }
+            }
+        }
+        return base.Changed(key, valueAfter, valueBefore);
+    }
     public sealed override TargetType TargetType
     {
         get

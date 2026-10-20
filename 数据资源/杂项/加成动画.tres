@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://4tbq8rts1qon"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://ex8fvbosm2oy" path="res://场景/局内Ui/加成特效/加成特效.atlas" id="1_05lwt"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://dfrvginxdmjxu" path="res://场景/局内Ui/加成特效/加成特效.skel" id="2_2h2kv"]
+
+[resource]
+atlas_res = ExtResource("1_05lwt")
+skeleton_file_res = ExtResource("2_2h2kv")

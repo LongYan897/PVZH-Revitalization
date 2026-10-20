@@ -1,5 +1,6 @@
 using Card;
 using Card.Pack;
+using Godot;
 using Hero.Model;
 using System.Collections.Generic;
 
@@ -12,7 +13,7 @@ namespace Play;
 /// </summary>
 public class Player
 {
-    private Player() { }
+    protected Player() { }
     public Player(string id) { Id = id; }
     /// <summary>
     /// 玩家的名称

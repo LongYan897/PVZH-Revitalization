@@ -196,3 +196,36 @@ position = Vector2(0, 263)
 [node name="Hero2" type="Marker2D" parent="." unique_id=773338379]
 unique_name_in_owner = true
 position = Vector2(0, -321)
+
+[node name="植物_3" type="Node2D" parent="." unique_id=624693695]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+position = Vector2(-55, -175)
+
+[node name="单位高亮4" type="TextureRect" parent="植物_3" unique_id=1220320731]
+unique_name_in_owner = true
+z_index = 7
+offset_right = 110.0
+offset_bottom = 96.0
+scale = Vector2(1.0000001, 1.0000001)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("4_ewqbq")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="植物_僵尸2" type="Node2D" parent="." unique_id=2071820117]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+position = Vector2(-55, -317)
+
+[node name="单位高亮3" type="TextureRect" parent="植物_僵尸2" unique_id=832598762]
+unique_name_in_owner = true
+z_index = 7
+offset_right = 110.0
+offset_bottom = 96.0
+scale = Vector2(1.0000001, 1.0000001)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("4_ewqbq")
+expand_mode = 1

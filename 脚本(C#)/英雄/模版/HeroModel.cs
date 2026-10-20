@@ -18,6 +18,10 @@ namespace Hero.Model;
 public abstract class HeroModel
 {
     /// <summary>
+    /// 是否已经死亡 
+    /// </summary>
+    public bool IsDie => Health.Current <= 0;
+    /// <summary>
     /// 超能力
     /// </summary>
     public IEnumerable<CardModel> SuperPower { get; private set; }

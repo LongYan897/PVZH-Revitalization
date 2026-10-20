@@ -1,6 +1,9 @@
+using Battle;
+using Battle.Entity;
 using Card.Cmd;
 using Controller;
 using Godot;
+using Hero;
 using Logger;
 using Pack;
 using Play;
@@ -103,7 +106,6 @@ public partial class NodeCard : Control
         else
         {
             var node = instances.First(p => p.Key.Model == null).Key;
-
             if (node.GetParent() != parent)
             {
                 node.Reparent(parent, true);
@@ -120,7 +122,11 @@ public partial class NodeCard : Control
             if (drawAnimation)
                 await node.DrawAnimation();
             else
+            {
+                var drawFrame = node.GetNode<Sprite2D>("%特效");
+                drawFrame.Visible = false;
                 node.Fresh();
+            }
             return node;
         }
     }
@@ -194,22 +200,67 @@ public partial class NodeCard : Control
     }
     /// <summary>
     /// 设置卡牌层级，每个 index 对应 40 的 ZIndex。
-    /// 同一 index 只允许一张卡，已在该层的其它卡顺移到下一层。
+    /// 同一父级下同一 index 只允许一张卡，已在该层的其它卡顺移到下一层。
     /// </summary>
     public void SetIndex(int index)
     {
-        int target = index * 40;
+        int target = -4000 + index * 40;
+        var myParent = GetParent();
 
+        NodeCard occupant = null;
         foreach (var node in instances.Keys.ToList())
         {
             if (node == this) continue;
             if (!GodotObject.IsInstanceValid(node)) continue;
+            if (node.GetParent() != myParent) continue;
 
-            if (node.ZIndex / 40 * 40 == target)
-                node.ZIndex = target + 40;
+            if (node.ZIndex == target)
+            {
+                occupant = node;
+                break;
+            }
         }
 
+        if (occupant == null)
+        {
+            ZIndex = target;
+            return;
+        }
+
+        occupant.SetIndex(index - 1);
         ZIndex = target;
+    }
+
+    /// <summary>
+    /// 把这张卡放到同父级下的最高层。
+    /// </summary>
+    public void BringToFront()
+    {
+        var myParent = GetParent();
+        int maxIndex = -1;
+
+        foreach (var node in instances.Keys)
+        {
+            if (!GodotObject.IsInstanceValid(node)) continue;
+            if (node.GetParent() != myParent) continue;
+
+            int index = (8000) / 40;
+            if (index > maxIndex) maxIndex = index;
+        }
+
+        SetIndex(maxIndex);
+    }
+
+    /// <summary>
+    /// 把所有卡牌的 ZIndex 重置为最底层
+    /// </summary>
+    private static void ResetAllZIndex()
+    {
+        foreach (var node in instances.Keys.ToList())
+        {
+            if (!GodotObject.IsInstanceValid(node)) continue;
+            node.ZIndex = -4000;
+        }
     }
     /// <summary>
     /// 获得当前卡牌对应的节点
@@ -229,46 +280,27 @@ public partial class NodeCard : Control
     /// <summary>
     /// 绑定初始位置，拖动结束后会回到这里
     /// </summary>
-    public void BindOrigin(Vector2 position)
+    public void BindOrigin(Vector2 position, float duration = 0.9f)
     {
         _boundOriginPos = position;
         _cardOriginPos = position;
-        ReturnToOrigin();
+        ReturnToOrigin(duration);
     }
-
+    /// <summary>
+    /// 绑定初始位置，拖动结束后会回到这里
+    /// </summary>
+    public async Task BindOriginTask(Vector2 position,float duration = 0.9f)
+    {
+        _boundOriginPos = position;
+        _cardOriginPos = position;
+        await ReturnToOriginTask(duration);
+    }
     /// <summary>
     /// 绑定当前坐标作为初始位置
     /// </summary>
     public void BindOrigin()
     {
         BindOrigin(Position);
-    }
-
-    /// <summary>
-    /// 把这张卡放到最高层。同一层级只允许一张卡，已在该层的其它卡顺移到下一层。
-    /// </summary>
-    public void BringToFront()
-    {
-        int maxLayer = -1;
-        foreach (var node in instances.Keys)
-        {
-            if (!GodotObject.IsInstanceValid(node)) continue;
-            int layer = node.ZIndex / 40;
-            if (layer > maxLayer) maxLayer = layer;
-        }
-
-        int target = (maxLayer + 1) * 40;
-
-        foreach (var node in instances.Keys.ToList())
-        {
-            if (node == this) continue;
-            if (!GodotObject.IsInstanceValid(node)) continue;
-
-            if (node.ZIndex / 40 * 40 == target)
-                node.ZIndex = target + 40;
-        }
-
-        ZIndex = target;
     }
     /// <summary>
     /// 点亮该卡牌但是不会改变卡牌是否可打出状态
@@ -298,10 +330,12 @@ public partial class NodeCard : Control
         var drawFrame = GetNode<Sprite2D>("%特效");
         drawFrame.Visible = true;
         Fresh();
+        DarkenLight();
         GetNode<Node2D>("正面卡牌").Visible = false;
+        GetNode<TextureRect>("%牌背").Visible = false;
         drawFrame.Modulate = new Color(0, 0, 0, 0);
         drawFrame.Rotation = 0;
-        drawFrame.Scale = new Vector2(2.8f, 2.8f);
+        drawFrame.Scale = new Vector2(1.5f, 1.5f);
 
         var tween = drawFrame.CreateTween();
         var tween1 = drawFrame.CreateTween();
@@ -333,9 +367,22 @@ public partial class NodeCard : Control
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.Out);
 
-        await ToSignal(tween, Tween.SignalName.Finished);
+        await ToSignal(GetTree().CreateTimer(0.15f),Timer.SignalName.Timeout);
         drawFrame.Visible = false;
         GetNode<Node2D>("正面卡牌").Visible = true;
+        GetNode<TextureRect>("牌背").Visible = true;
+        Fresh();
+        DarkenLight();
+        var cannonical = Scale;
+        Scale = new Vector2();
+        Tween tween3 = CreateTween();
+        tween3.TweenProperty(
+        this, "scale", cannonical, 0.15f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        tween3.TweenProperty(
+        this, "scale", cannonical * 1.2f, 0.05f);
+        tween3.TweenProperty(
+        this, "scale", cannonical * 1f, 0.05f);
+        await ToSignal(tween3,Tween.SignalName.Finished);
     }
 
     private bool _isDragging;
@@ -569,17 +616,6 @@ public partial class NodeCard : Control
         ToggleNonBattle();
     }
     /// <summary>
-    /// 把所有卡牌的 ZIndex 重置为 0
-    /// </summary>
-    private static void ResetAllZIndex()
-    {
-        foreach (var node in instances.Keys.ToList())
-        {
-            if (!GodotObject.IsInstanceValid(node)) continue;
-            node.ZIndex = 0;
-        }
-    }
-    /// <summary>
     /// 关闭信息背景
     /// </summary>
     public void CloseNonBattle()
@@ -726,7 +762,7 @@ public partial class NodeCard : Control
         var savedTarget = target;
         if (ChoiceCard == this) ChoiceCard = null;
         TargetRegistry.DeleteTargeted(Model.TargetType);
-        ClearTarget();
+        ClearTarget(true);
         if (savedTarget == null)
             ReturnToOrigin();
         else
@@ -741,15 +777,23 @@ public partial class NodeCard : Control
         }
     }
 
-    private void ReturnToOrigin()
+    private void ReturnToOrigin(float duration = 0.9f)
     {
         KillReturnTween();
         _returnTween = CreateTween();
         _returnTween.SetEase(Tween.EaseType.Out);
         _returnTween.SetTrans(Tween.TransitionType.Quad);
-        _returnTween.TweenProperty(this, "position", _cardOriginPos, 1.2f);
+        _returnTween.TweenProperty(this, "position", _cardOriginPos, duration);
     }
-
+    private async Task ReturnToOriginTask(float duration = 0.9f)
+    {
+        KillReturnTween();
+        _returnTween = CreateTween();
+        _returnTween.SetEase(Tween.EaseType.Out);
+        _returnTween.SetTrans(Tween.TransitionType.Quad);
+        _returnTween.TweenProperty(this, "position", _cardOriginPos, duration);
+        await ToSignal(_returnTween,Tween.SignalName.Finished);
+    }
     private ITarget target;
     private Area2D _currentTargetArea;
 
@@ -843,7 +887,7 @@ public partial class NodeCard : Control
         }
     }
 
-    private void ClearTarget()
+    private void ClearTarget(bool isPlayed = false)
     {
         if (target == null) return;
 
@@ -858,7 +902,8 @@ public partial class NodeCard : Control
                 "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
                 _ => default
             };
-            target.OnDistargeted(ctx);
+            if (!isPlayed)
+                target.OnDistargeted(ctx);
         }
 
         target = null;
@@ -1000,6 +1045,16 @@ public partial class NodeCard : Control
         {
             if (Model != null)
             {
+
+                GetNode<TextureRect>("%卡框").Visible = true;
+                GetNode<TextureRect>("%卡牌发光背景").Visible = true;
+                GetNode<TextureRect>("%卡牌底板").Visible = true;
+                GetNode<Node2D>("%费用容器").Visible = true;
+                GetNode<Node2D>("%攻击力容器").Visible = true;
+                GetNode<Node2D>("%生命值容器").Visible = true;
+                GetNode<Node2D>("%等级").Visible = true;
+                GetNode<Node2D>("正面卡牌").Visible = true;
+                GetNode<TextureRect>("牌背").Visible = false;
 
                 if (CardViewMode == CardView.Battle)
                 {
@@ -1168,7 +1223,14 @@ public partial class NodeCard : Control
                     }
                     else
                     {
-                        control = GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First();
+                        GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First().QueueFree();
+                        control = Model.Icon.Instantiate<Control>();
+                        control.MouseFilter = MouseFilterEnum.Ignore;
+                        GetNode<Node2D>("%卡面容器").AddChild(control);
+                        foreach (var cot in control.GetChildren().OfType<Control>())
+                        {
+                            cot.MouseFilter = MouseFilterEnum.Ignore;
+                        }
                     }
                     if (Model.CardType.HasFlag(CardType.Fighter))
                     {
@@ -1247,14 +1309,20 @@ public partial class NodeCard : Control
                 {
                     GetNode<Node2D>("正面卡牌").Visible = false;
                     GetNode<TextureRect>("牌背").Visible = true;
+
+                    GetNode<TextureRect>("%卡框").Visible = false;
+                    GetNode<TextureRect>("%卡牌发光背景").Visible = false;
+                    GetNode<TextureRect>("%卡牌底板").Visible = false;
+                    GetNode<Node2D>("%费用容器").Visible = false;
+                    GetNode<Node2D>("%攻击力容器").Visible = false;
+                    GetNode<Node2D>("%生命值容器").Visible = false;
+                    GetNode<Node2D>("%等级").Visible = false;
+                    GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
+
+                    DarkenLight();
+
                     GetNode<TextureRect>("牌背").Texture = Model.CardType switch
                     {
-                        CardType.None | CardType.Trick => Model.Camp switch
-                        {
-                            Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants_trick.png"),
-                            Camp.Zombie => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_zombies_trick.png"),
-                            _ => null
-                        },
                         _ => Model.Camp switch
                         {
                             Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants.png"),
@@ -1276,6 +1344,11 @@ public partial class NodeCard : Control
     public void JustFresh()
     {
         if (Model == null) return;
+        if (Model.Status == Status.FaceDown)
+        {
+            DarkenLight();
+            return;
+        }
         if (CardViewMode == CardView.Battle)
         {
             if (Model.CanPlay())
@@ -1300,5 +1373,134 @@ public partial class NodeCard : Control
             _nonBattleScaleTween.Kill();
         if (_colorTween != null && _colorTween.IsValid())
             _colorTween.Kill();
+    }
+    /// <summary>
+    /// 翻转卡牌
+    /// </summary>
+    public void Filp()
+    {
+        if (Model.Status == Status.FaceDown)
+        {
+            Model.Status = Status.FaceUp;
+            Fresh();
+        }
+        else if (Model.Status == Status.FaceUp)
+        {
+            Model.Status = Status.FaceDown;
+            Fresh();
+        }
+    }
+    //专门用于远程同步或者Ai的区域
+    /// <summary>
+    /// 对一个对象打出该卡牌
+    /// </summary>
+    /// <param name="target">打出的对象</param>
+    /// <returns></returns>
+    public async Task PlayMe(PlayContext ctx)
+    {
+        CardCmd.PushStop();
+        try
+        {
+            if (ctx.Target == null) return;
+
+            if (Model is FighterCardModel fighterCard && fighterCard.CardTag.HasFlag(CardTag.GraveStone))
+            {
+                Model.Status = Status.FaceDown;
+            }
+            else
+                Model.Status = Status.FaceUp;
+
+            Fresh();
+            DarkenLight();
+
+            Vector2 CardCenterOffset() => new Vector2(256f, 193f) * Scale + new Vector2(0, 60);
+
+            Vector2 ToCardPos(Vector2 targetGlobal)
+            {
+                var parent2D = GetParent() as Node2D;
+                Vector2 local = parent2D != null ? parent2D.ToLocal(targetGlobal) : targetGlobal;
+                return local - CardCenterOffset();
+            }
+            var fighterm = Model as FighterCardModel;
+            var ctx2 = ctx.RoadKind switch
+            {
+                RoadTargetKind.Line => new TargetContext { Line = true, FighterCard = fighterm },
+                RoadTargetKind.Grid => new TargetContext { Grid = true, FighterCard = fighterm },
+                RoadTargetKind.CoopGrid => new TargetContext { CoopGrid = true, FighterCard = fighterm },
+                _ => new TargetContext { FighterCard = fighterm }
+            };
+
+            var cannoncial = Scale;
+            Tween tween = CreateTween();
+            tween.TweenProperty(this, "scale", Scale * 1f, 0.5f);
+            tween.TweenProperty(this, "scale", Scale * 1.1f, 0.1f);
+            tween.TweenProperty(this, "scale", Scale * 1f, 0.1f);
+            tween.TweenProperty(this, "scale", Scale * 1f, 0.3f);
+            await BindOriginTask(ToCardPos(new(360f, 240f)), 0.6f);
+            ctx.Target.AutoTargeted(ctx2);
+            await ToSignal(GetTree().CreateTimer(0.5f), Timer.SignalName.Timeout);
+            if (ctx.Target is Fighter fighter)
+                await BindOriginTask(ToCardPos(fighter.GlobalPosition));
+            else if (ctx.Target is HeroInstance instance)
+                await BindOriginTask(ToCardPos(instance.GlobalPosition));
+            else if (ctx.Target is NodeRoad road)
+            {
+                road.CallTargetKind(ctx.RoadKind);
+
+                switch (road.LastTargetKind)
+                {
+                    case RoadTargetKind.Line:
+                        await BindOriginTask(ToCardPos(road.GlobalPosition));
+                        break;
+
+                    case RoadTargetKind.Grid:
+                        if (Model is FighterCardModel && Model.Camp.Plant())
+                            road.SwapForGrid();
+                        await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie))));
+                        break;
+
+                    case RoadTargetKind.CoopGrid:
+                        if (Model.Camp.Plant())
+                        {
+                            if (Model is FighterCardModel)
+                                road.SwapForCoopGrid();
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant)));
+                        }
+                        break;
+
+                    default:
+                        if (ctx.TargetType.HasFlag(TargetType.CoopGrids) && Model.Camp.Plant())
+                        {
+                            if (Model is FighterCardModel)
+                                road.SwapForCoopGrid();
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant)));
+                        }
+                        else if (ctx.TargetType.HasFlag(TargetType.Grids))
+                        {
+                            if (Model is FighterCardModel && Model.Camp.Plant())
+                                road.SwapForGrid();
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie))));
+                        }
+                        else
+                        {
+                            await BindOriginTask(ToCardPos(road.GlobalPosition));
+                        }
+                        break;
+                }
+            }
+
+            PlayerManager.GetPlayer(Model.Camp).Status.HandRemoveCard(Model);
+            PlayerBox.StuffCard();
+            await DiscallDragging();
+            Visible = false;
+            GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+            ctx.Target.AutoDistargeted(ctx2);
+            await CardCmd.PlayedCard(Model, ctx.Target);
+            await Model.DestroyMe();
+        }
+        finally
+        {
+            CardCmd.PopStop();
+        }
     }
 }

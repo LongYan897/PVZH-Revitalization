@@ -1,6 +1,7 @@
 using Battle;
 using Battle.Entity;
 using Card;
+using Godot;
 using System;
 
 namespace Target;
@@ -17,7 +18,7 @@ public interface ITarget
     Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget { get; }
 
     /// <summary>开始高亮（等待玩家选择）</summary>
-    void OnCallTargeted(TargetType type);
+    void OnCallTargeted(TargetType type,CardModel card);
 
     /// <summary>结束高亮</summary>
     void OnDeleteTargeted(TargetType type);
@@ -27,6 +28,11 @@ public interface ITarget
 
     /// <summary>鼠标离开时的恢复</summary>
     void OnDistargeted(TargetContext ctx);
+
+    /// <summary>被自动打出的卡牌选中后</summary>
+    void AutoTargeted(TargetContext ctx);
+    /// <summary>被自动打出的卡牌选中后</summary>
+    void AutoDistargeted(TargetContext ctx);
 }
 
 public static class TargetExtension

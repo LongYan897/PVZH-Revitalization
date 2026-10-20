@@ -89,14 +89,15 @@ public class Road
 
         await CardCmd.TimingOnCards(null, Timing.BeforeLaneEnd, this);
 
+        List<Task> tasks = new();
         foreach (var fighter in fighters.ToList())
         {
             if (fighter.Model.IsDie)
-                await fighter.Die();
+                tasks.Add(fighter.Die());
         }
+        await Task.WhenAll(tasks);
 
         await CardCmd.TimingOnCards(null, Timing.AfterLaneEnd, this);
-
 
         IsBattling = false;
     }

@@ -1,4 +1,6 @@
 using Card.Dance;
+using Card.Metier;
+using Card.Scientist;
 using Pack;
 using System;
 using System.Collections.Generic;
@@ -12,5 +14,5 @@ public class AllDancer : PresetPack
 {
     public override string PackName => "舞动";
     public override IReadOnlyList<CardModel> Cards => 
-        new List<CardModel>().RepeatLoad<BackupDancer>(40);
+        new List<CardModel>().RepeatLoad<Firefighter>(40);
 }

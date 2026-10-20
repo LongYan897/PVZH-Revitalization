@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c57j4ket8yrkg"]
+
+[ext_resource type="Texture2D" uid="uid://xnjktwi5iiwi" path="res://场景/僵尸卡组/消防员僵尸/消防员僵尸.png" id="1_nkufm"]
+
+[node name="卡面" type="Control" unique_id=668007293]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1818639313]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 11.0
+offset_right = 228.0
+offset_bottom = 195.0
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("1_nkufm")
+expand_mode = 1
+stretch_mode = 3

@@ -25,6 +25,9 @@ func _on_animation_event(_sprite, _anim_state, track_entry, evt):
 
 func _ready():
 	connect("animation_event", _on_animation_event)
+	
+func rebind_time_scale(multiple:float = 1.3):
+	get_animation_state().set_time_scale(multiple)
 
 func clear_track(track:int):
 	get_animation_state().clear_track(track)

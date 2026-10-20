@@ -65,7 +65,12 @@ public partial class SpineHandler : Node2D
 			return;
 		}
 		SpineSprite.Set("skeleton_data_res", data);
+		SetTimeScale();
+	}
 
+	public void SetTimeScale(float timeScale = 1.25f)
+	{
+		SpineSprite.Call("rebind_time_scale",timeScale);
 	}
 
 	/// <summary>

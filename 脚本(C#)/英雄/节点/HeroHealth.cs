@@ -41,16 +41,30 @@ public partial class HeroHealth : Node2D
             Camp.Zombie => $"z{i}",
             _ => null
         };
+        var origin = GetNode<Sprite2D>("生命值").Scale;
+        GetNode<Sprite2D>("生命值").Modulate = new Color(1,1,1,1);
+        Tween tween1 = CreateTween();
+        tween1.TweenProperty(
+        GetNode<Sprite2D>("生命值"), "modulate", new Color("ffb3b3"), 3 * 0.1f);
+        tween1.TweenProperty(
+        GetNode<Sprite2D>("生命值"), "modulate", new Color(1, 1, 1, 1), 3 * 0.1f);
+        Tween tween4 = CreateTween();
+        tween4.TweenProperty(
+        GetNode<Sprite2D>("生命值"), "scale", origin * 1.25f, 3 * 0.1f);
+        tween4.TweenProperty(
+        GetNode<Sprite2D>("生命值"), "scale", origin, 3 * 0.1f);
         if (hero.Shield.Current + i >= 8)
         {
             GetNode<SpineHandler>("%护盾").Visible = true;
             GetNode<SpineHandler>("%护盾").SetAttachment("护盾槽位", str);
             GetNode<SpineHandler>("%护盾").SetAnimation(0, "shieldIntro", false);
+            await ToSignal(GetTree().CreateTimer(0.45f), Timer.SignalName.Timeout);
             Tween tween3 = CreateTween();
             tween3.TweenMethod(Callable.From((float v) =>
             {
                 mat.SetShaderParameter("progress", v);
             }), GetRot(hero.Shield.Current), GetRot(hero.Shield.Current + i), i * 0.1f).SetTrans(Tween.TransitionType.Quad);
+            await ToSignal(tween3, Tween.SignalName.Finished);
             shield.Visible = true;
             shield.Modulate = hero.Camp switch
             {
@@ -69,7 +83,7 @@ public partial class HeroHealth : Node2D
                 Camp.Plant => "plantshield",
                 _ => null
             }
-            ), ToSignal(tween3, Tween.SignalName.Finished).ToTask(), ToSignal(tween2, Tween.SignalName.Finished).ToTask());
+            ), ToSignal(tween2, Tween.SignalName.Finished).ToTask());
             return;
         }
         var final = GetNode<Label>("%数值").Text.ToInt() - amount;
@@ -77,11 +91,13 @@ public partial class HeroHealth : Node2D
         GetNode<SpineHandler>("%护盾").Visible = true;
         GetNode<SpineHandler>("%护盾").SetAttachment("护盾槽位", str);
         GetNode<SpineHandler>("%护盾").SetAnimation(0, "shieldIntro", false);
+        await ToSignal(GetTree().CreateTimer(0.45f), Timer.SignalName.Timeout);
         Tween tween = CreateTween();
         tween.TweenMethod(Callable.From((float v) =>
         {
             mat.SetShaderParameter("progress", v);
         }), GetRot(hero.Shield.Current), GetRot(hero.Shield.Current + i), i * 0.1f).SetTrans(Tween.TransitionType.Quad);
+        await ToSignal(tween,Tween.SignalName.Finished);
     }
     private ShaderMaterial _shieldMat;
 
