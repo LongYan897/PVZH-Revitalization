@@ -29,3 +29,18 @@ public enum CardType
     /// </summary>
     Environment = 1 << 4,
 }
+
+public static class CardTypeExtension
+{
+    public static string ToName(this CardType cardType)
+    {
+        return cardType switch {
+            CardType.Environment => "环境",
+            CardType.Fighter => "单位",
+            CardType.Hero => "英雄",
+            CardType.None => "无",
+            CardType.Trick => "锦囊",
+            _=>""
+        };
+    }
+}

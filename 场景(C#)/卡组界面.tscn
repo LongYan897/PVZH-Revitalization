@@ -6,9 +6,14 @@
 [ext_resource type="Script" uid="uid://djw2uav0wcgkd" path="res://脚本(C#)/辅助类/MinimumHFlowContainer.cs" id="3_yg71g"]
 [ext_resource type="Texture2D" uid="uid://i37rthq4vwic" path="res://素材/卡牌属性图片/白屏.png" id="4_5hsp2"]
 [ext_resource type="Script" uid="uid://bhqnh1uogwt06" path="res://脚本(C#)/辅助类/NButton.cs" id="6_mem38"]
+[ext_resource type="Texture2D" uid="uid://2xwtk3grh52e" path="res://素材/ui/界面ui/img_deckwidget_selection_border2.png" id="7_6s3qr"]
 [ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="7_vq737"]
 [ext_resource type="Texture2D" uid="uid://bcrfkx13cuj2e" path="res://素材/ui/界面ui/plantsymbol.png" id="8_p80pg"]
 [ext_resource type="Texture2D" uid="uid://dr1bhytmibhrm" path="res://素材/ui/界面ui/zombiesymbol.png" id="9_5056d"]
+[ext_resource type="Texture2D" uid="uid://b8vvyueyk4rr2" path="res://素材/ui/界面ui/button_arrow.png" id="10_loyiy"]
+[ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="12_o1djq"]
+[ext_resource type="Texture2D" uid="uid://d4l7h6voxbdxg" path="res://素材/ui/界面ui/searchicon_inactive.png" id="13_mem38"]
+[ext_resource type="Texture2D" uid="uid://d1vdub5akb3n5" path="res://素材/ui/界面ui/searchicon_x.png" id="14_mem38"]
 
 [sub_resource type="Theme" id="Theme_gvd7m"]
 
@@ -36,6 +41,45 @@ cache/0/32/0/scale = 1.0
 [sub_resource type="Theme" id="Theme_gm4s6"]
 HFlowContainer/constants/h_separation = 16
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o1djq"]
+texture = ExtResource("12_o1djq")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i0xha"]
+texture = ExtResource("12_o1djq")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mem38"]
+texture = ExtResource("12_o1djq")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="Theme" id="Theme_nl4n4"]
+Button/styles/hover = SubResource("StyleBoxTexture_o1djq")
+Button/styles/normal = SubResource("StyleBoxTexture_i0xha")
+Button/styles/pressed = SubResource("StyleBoxTexture_mem38")
+
+[sub_resource type="Theme" id="Theme_r34ow"]
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.504)
+Label/constants/outline_size = 10
+Label/constants/shadow_offset_x = 10
+Label/constants/shadow_offset_y = 10
+Label/constants/shadow_outline_size = 20
+Label/font_sizes/font_size = 110
+
+[sub_resource type="Theme" id="Theme_8ibbi"]
+
+[sub_resource type="Theme" id="Theme_vq737"]
+
 [node name="卡组界面" type="Node2D" unique_id=1455373142]
 script = ExtResource("1_28go4")
 
@@ -54,9 +98,9 @@ layer = -10
 
 [node name="图鉴信息" type="ScrollContainer" parent="Midd" unique_id=842120749]
 unique_name_in_owner = true
-offset_top = 200.0
+offset_top = 210.0
 offset_right = 1152.0
-offset_bottom = 1928.0
+offset_bottom = 1938.0
 scale = Vector2(0.625, 0.625)
 horizontal_scroll_mode = 0
 
@@ -160,6 +204,29 @@ position = Vector2(128.7143, 117.28572)
 scale = Vector2(3, 3)
 texture = ExtResource("8_p80pg")
 
+[node name="高亮" type="TextureRect" parent="Fore/植物按钮" unique_id=104073374]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 62.0
+scale = Vector2(2.008, 1.935)
+texture = ExtResource("7_6s3qr")
+
+[node name="指针" type="TextureRect" parent="Fore/植物按钮/高亮" unique_id=150209581]
+z_index = -1
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -3.0
+offset_right = 42.0
+offset_bottom = 47.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("10_loyiy")
+
 [node name="僵尸按钮" type="TextureButton" parent="Fore" unique_id=464158968]
 self_modulate = Color(0.87058824, 0.42745098, 0.93333334, 1)
 z_index = 30
@@ -173,7 +240,176 @@ texture_normal = ExtResource("7_vq737")
 script = ExtResource("6_mem38")
 metadata/_custom_type_script = "uid://bhqnh1uogwt06"
 
+[node name="高亮" type="TextureRect" parent="Fore/僵尸按钮" unique_id=236817591]
+layout_mode = 1
+offset_right = 127.0
+offset_bottom = 123.0
+scale = Vector2(2.008, 1.935)
+texture = ExtResource("7_6s3qr")
+
+[node name="指针" type="TextureRect" parent="Fore/僵尸按钮/高亮" unique_id=1626746196]
+z_index = -1
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -3.0
+offset_right = 42.0
+offset_bottom = 47.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("10_loyiy")
+
 [node name="Sprite2D" type="Sprite2D" parent="Fore/僵尸按钮" unique_id=1140774817]
 position = Vector2(128.7143, 117.2857)
 scale = Vector2(3, 3)
 texture = ExtResource("9_5056d")
+
+[node name="搜索" type="TextureButton" parent="Fore" unique_id=1201302654]
+unique_name_in_owner = true
+self_modulate = Color(0, 1, 1, 1)
+z_index = 5
+offset_left = 370.0
+offset_top = 27.0
+offset_right = 625.0
+offset_bottom = 277.0
+scale = Vector2(0.32, 0.32)
+pivot_offset = Vector2(127.5, 125)
+texture_normal = ExtResource("12_o1djq")
+script = ExtResource("6_mem38")
+metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+
+[node name="取消框" type="Button" parent="Fore/搜索" unique_id=1369130780]
+self_modulate = Color(1, 0, 0, 1)
+z_index = -1
+layout_mode = 0
+offset_right = 255.0
+offset_bottom = 250.0
+pivot_offset = Vector2(127.5, 125)
+theme = SubResource("Theme_nl4n4")
+
+[node name="TextureRect" type="TextureRect" parent="Fore/搜索" unique_id=969782855]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -27.0
+offset_top = -27.0
+offset_right = 27.0
+offset_bottom = 27.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(3.2, 3.138)
+pivot_offset = Vector2(27, 27)
+texture = ExtResource("13_mem38")
+
+[node name="取消" type="TextureButton" parent="Fore/搜索" unique_id=1519966569]
+visible = false
+z_index = 1
+layout_mode = 0
+offset_right = 255.0
+offset_bottom = 250.0
+pivot_offset = Vector2(127.5, 125)
+script = ExtResource("6_mem38")
+metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+
+[node name="TextureRect" type="TextureRect" parent="Fore/搜索/取消" unique_id=1915921582]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -127.5
+offset_top = -125.0
+offset_right = 127.5
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.65, 0.65)
+pivot_offset = Vector2(127.5, 125)
+texture = ExtResource("14_mem38")
+
+[node name="牌组" type="TextureButton" parent="Fore" unique_id=1738577414]
+unique_name_in_owner = true
+z_index = 20
+offset_left = 370.0
+offset_top = 27.0
+offset_right = 890.0
+offset_bottom = 267.0
+scale = Vector2(0.32, 0.32)
+pivot_offset = Vector2(260, 125)
+mouse_force_pass_scroll_events = false
+script = ExtResource("6_mem38")
+metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+
+[node name="Button" type="Button" parent="Fore/牌组" unique_id=1016321351]
+self_modulate = Color(0.13725491, 1, 1, 1)
+layout_mode = 0
+offset_right = 520.0
+offset_bottom = 250.0
+mouse_filter = 2
+theme = SubResource("Theme_nl4n4")
+
+[node name="Label" type="Label" parent="Fore/牌组" unique_id=118150379]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_r34ow")
+text = "牌组"
+
+[node name="搜索框" type="ColorRect" parent="Fore" unique_id=484898784]
+unique_name_in_owner = true
+visible = false
+z_index = 100
+offset_right = 720.0
+offset_bottom = 1280.0
+color = Color(0, 0, 0, 0.52400005)
+
+[node name="Label" type="Label" parent="Fore/搜索框" unique_id=1229620803]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -440.0
+offset_right = 280.0
+offset_bottom = -325.3333
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_8ibbi")
+theme_override_font_sizes/font_size = 40
+text = "          在您的收藏中搜索。
+输入名字、属性、类型或能力。"
+
+[node name="LineEdit" type="LineEdit" parent="Fore/搜索框" unique_id=117522687]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -320.0
+offset_right = 230.0
+offset_bottom = -280.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_vq737")
+theme_override_font_sizes/font_size = 30

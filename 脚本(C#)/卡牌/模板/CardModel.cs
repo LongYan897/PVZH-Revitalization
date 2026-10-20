@@ -536,4 +536,23 @@ public static class CardModelExtensions
         => model != null && model.Labels.Current.Contains(label);
     public static bool IsClass(this CardModel model, Class @class)
         => model != null && model.Class.HasFlag(@class);
+    public static List<string> GetAllStrings(this CardModel model)
+    {
+        List<string> strings = new List<string>();
+        strings.Add(model.Rarity.ToName());
+        strings.Add(model.CardType.ToName());
+        strings.Add(model.Title);
+        strings.Add(model.Pack);
+        strings.Add(model.Camp.ToName());
+        strings.Add(model.Class.ToName());
+        strings.Add(model.Description);
+        strings.AddRange(model.Labels.Current);
+        strings.Add(model.Flavor);
+        strings.Add(model.CardType.ToName());
+        strings.Add(model.ExDescription);
+        strings.Add(model.Cost.Current.ToString());
+        List<string> result = new List<string>(strings);
+        foreach (string s in strings) if (string.IsNullOrEmpty(s)) { result.Remove(s); }
+        return result;
+    }
 }
