@@ -1,26 +1,35 @@
 {
   "pack1": {
-    "group": [
-      {
-        "Name": "group1",
-        "Cards": [
-          "Peashooter",
-          "SunFlower",
+	"group": [
+	  {
+		"Name": "group1",
+		"Cards": [
+		  "Peashooter",
+		  "SunFlower",
           "BackupDancer"
-        ],
-        "MaxCount": 0,
-        "BaseRate": 0.70,
-        "UltimateRate": 0
-      },
-      {
-        "Name": "group2",
-        "Cards": [
+		],
+		"MaxCount": 0,
+		"BaseRate": 0.70,
+		"UltimateRate": 0
+	  },
+	  {
+		"Name": "group2",
+		"Cards": [
           "HailACopter"
-        ],
-        "MaxCount": 0,
-        "BaseRate": 0.30,
-        "UltimateRate": 1
-      }
-    ]
+		],
+		"MaxCount": 0,
+		"BaseRate": 0.25,
+		"UltimateRate": 0.5
+	  },
+	  {
+		"Name": "group3",
+		"Cards": [
+          "FinalMission"
+		],
+		"MaxCount": 0,
+		"BaseRate": 0.05,
+		"UltimateRate": 0.5
+	  }
+	]
   }
 }
