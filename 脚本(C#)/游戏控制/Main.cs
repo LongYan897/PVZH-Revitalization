@@ -61,8 +61,8 @@ public partial class Main : Node
 		TextureBag.SetCurrent<DiscoBag>();
 		var p1 = new Player("MME");
 		var p2 = new AiPlayer("Ai");
-		p1.PrefABox<SuperZombie>(new AllDancer());
-		p2.PrefABox<Penelopea>(new AllPea());
+		p2.PrefABox<SuperZombie>(new AllDancer());
+		p1.PrefABox<Penelopea>(new AllPea());
 		PlayerManager.Hosting(p1);
 		PlayerManager.FillPlayer(PlayerManager.HostPlayer, p2);
 	}

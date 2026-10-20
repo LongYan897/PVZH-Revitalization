@@ -152,7 +152,7 @@
   "CardboardBoat.Id": 8,
 
   "Firefighter.Title": "消防员僵尸",
-  "Firefighter.Des": "_现身_：_弹射_一只僵尸。",
+  "Firefighter.Des": "_现身_：_弹射_另一只僵尸。",
   "Firefighter.Cost": 4,
   "Firefighter.Camp": "僵尸",
   "Firefighter.Type": "单位",
@@ -185,5 +185,23 @@
   "ButtonMushroom.Atk": 1,
   "ButtonMushroom.AtkType": "普通",
   "ButtonMushroom.Flavor": "大家总是对她说：“你真是个小可爱！”但她不光可爱，也很机灵幽默哦。",
-  "ButtonMushroom.Id": "10"
+  "ButtonMushroom.Id": "10",
+
+  "GrowMushroom.Title": "成长蘑菇",
+  "GrowMushroom.Des": "_打出_：另一株植物获得=Strength={+2}/=Health={+2}。",
+  "GrowMushroom.Cost": 3,
+  "GrowMushroom.Camp": "植物",
+  "GrowMushroom.Type": "单位",
+  "GrowMushroom.Rarity": "基础",
+  "GrowMushroom.Category": "猛长",
+  "GrowMushroom.Animation": "res://数据资源/植物动画/成长蘑菇动画.tres",
+  "GrowMushroom.Icon": "res://场景(C#)/卡面/growMushroom.tscn",
+  "GrowMushroom.Label": [ "蘑菇" ],
+  "GrowMushroom.Tag": [],
+  "GrowMushroom.Hp": 1,
+  "GrowMushroom.HpType": "普通",
+  "GrowMushroom.Atk": 2,
+  "GrowMushroom.AtkType": "普通",
+  "GrowMushroom.Flavor": "她总能让其他植物绽放出最美的一面。",
+  "GrowMushroom.Id": "11"
 }

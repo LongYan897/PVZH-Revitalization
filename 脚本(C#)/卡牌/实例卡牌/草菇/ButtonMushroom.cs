@@ -1,5 +1,6 @@
 using Battle;
 using Card.Cmd;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,12 @@ public class ButtonMushroom : FighterCardModel
                 if (!(parameters[0] as AtkStack).Targets.Contains(fighter.Attacking())) return;
                 if (CardCmd.AnyZombie())
                 {
-                    var target = await CardCmd.PlayerChoiceZombie(null,card,true);
-                    await target.Atk.Lose(card.GetSignInt("Strength"), Variable.VariableReason.Plant | Variable.VariableReason.Loss);
+                    var target = await CardCmd.PlayerChoiceZombie(null, card, true);
+                    if (target != null)
+                    {
+                        await fighter.Attack(target.Attacking());
+                        await target.Atk.Lose(card.GetSignInt("Strength"), Variable.VariableReason.Plant | Variable.VariableReason.Loss);
+                    }
                 }
             }
         }

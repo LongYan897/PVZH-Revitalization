@@ -14,5 +14,5 @@ public class AllPea : PresetPack
 {
     public override string PackName => "唯一爱豆";
     public override IReadOnlyList<CardModel> Cards => 
-        new List<CardModel>().RepeatLoad<ButtonMushroom>(40);
+        new List<CardModel>().RepeatLoad<ButtonMushroom>(20).RepeatLoad<GrowMushroom>(20);
 }

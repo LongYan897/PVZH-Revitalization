@@ -252,6 +252,7 @@ public class AiPlayer : Player
     {
         if (_tickRunning) return;
         _tickRunning = true;
+        PhraseManager.PushProcessing();
         try
         {
             if (!InitDone) Init();
@@ -327,8 +328,9 @@ public class AiPlayer : Player
         }
         finally
         {
-            try { await PhraseManager.NextPhrase(); } catch (Exception ex) { Log.Error(ex.Message + ex.StackTrace); }
             _tickRunning = false;
+            await PhraseManager.NextPhrase();
+            PhraseManager.PopProcessing();
         }
     }
 

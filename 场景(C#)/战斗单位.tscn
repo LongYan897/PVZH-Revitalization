@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="3_qosmd"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://4tbq8rts1qon" path="res://数据资源/杂项/加成动画.tres" id="5_qosmd"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://mavpbw56r5bl" path="res://数据资源/僵尸动画/土坑动画.tres" id="6_6cys6"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://o34qwhtuxjle" path="res://数据资源/植物动画/草菇动画.tres" id="7_ggbqp"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://2en3mjr35vpn" path="res://素材/墓碑/墓碑.tres" id="8_6cys6"]
 [ext_resource type="Texture2D" uid="uid://brf5p27vt3t6o" path="res://素材/对象高亮框/单位1.png" id="8_bev64"]
 [ext_resource type="Texture2D" uid="uid://dx0l8dt3mu4c2" path="res://素材/墓碑/gravestone_spy_icon.png" id="10_4gq2c"]
@@ -82,13 +81,6 @@ preview_time = 0.0
 unique_name_in_owner = true
 position = Vector2(0, -58)
 scale = Vector2(3.2, 3.2)
-
-[node name="SpineNode" parent="单位场景/动画" index="0" unique_id=273388558]
-skeleton_data_res = ExtResource("7_ggbqp")
-preview_skin = "Default"
-preview_animation = "-- Empty --"
-preview_frame = false
-preview_time = 0.0
 
 [node name="基础信息" type="Node2D" parent="." unique_id=80156814]
 unique_name_in_owner = true
@@ -198,9 +190,19 @@ unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_bev64")
 
 [node name="子弹" type="TextureRect" parent="." unique_id=702666749]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -270.0
+offset_right = -320.0
+offset_bottom = -270.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
 
 [node name="墓碑" parent="." unique_id=2054768292 instance=ExtResource("3_qosmd")]
 unique_name_in_owner = true

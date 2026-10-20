@@ -1,5 +1,6 @@
 using Battle;
 using Battle.Entity;
+using Logger;
 using Phrases;
 using Play;
 using System;
@@ -23,10 +24,18 @@ public static class CardCmd
     /// 是否禁止出牌
     /// </summary>
     public static bool StopCardPlay => _stopCount > 0;
+    private static object stopLock = new();
+    private static object stepLock = new();
     public static void PushStop()
     {
-        _stopCount++;
-        if (_stopCount == 1) JustFreshAllCards();
+        lock(stopLock)
+        {
+            _stopCount++;
+            if (_stopCount == 1)
+            {
+                JustFreshAllCards();
+            } 
+        }
     }
 
     /// <summary>
@@ -34,10 +43,13 @@ public static class CardCmd
     /// </summary>
     public static void PopStop()
     {
-        _stopCount = Math.Max(0, _stopCount - 1);
-        if (_stopCount == 0)
+        lock (stepLock)
         {
-            JustFreshAllCards();
+            _stopCount = Math.Max(0, _stopCount - 1);
+            if (_stopCount == 0)
+            {
+                JustFreshAllCards();
+            }
         }
     }
 
@@ -135,6 +147,7 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
     {
+        PhraseManager.PushProcessing();
         foreach (var card in CardInstances.ToList())
         {
             if (card != cardModel)
@@ -155,6 +168,7 @@ public static class CardCmd
             if (fighter.Model != cardModel && !CardInstances.Contains(fighter.Model))
                 await fighter.Model.FireTiming(timing, paramters);
         }
+        PhraseManager.PopProcessing();
     }
 
     private static int LocationPriority(Location location) => location switch

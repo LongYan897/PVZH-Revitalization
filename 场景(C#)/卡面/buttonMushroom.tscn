@@ -2,17 +2,17 @@
 
 [ext_resource type="Texture2D" uid="uid://dc62aw4jxxgbv" path="res://场景/植物卡组/草菇植物/Button Mushroom.png" id="1_61b6l"]
 
-[node name="卡面" type="Control" unique_id=351510113]
+[node name="卡面" type="Control" unique_id=1204493525]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
 
-[node name="卡牌图标" type="TextureRect" parent="." unique_id=176863793]
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=103071007]
 layout_mode = 0
-offset_left = 13.0
-offset_top = 14.0
-offset_right = 237.0
-offset_bottom = 198.0
+offset_left = 12.0
+offset_top = 16.0
+offset_right = 236.0
+offset_bottom = 200.0
 texture = ExtResource("1_61b6l")
 expand_mode = 1
 stretch_mode = 3

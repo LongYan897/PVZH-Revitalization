@@ -160,10 +160,10 @@ public class PlayerBox
     /// </summary>
     public async Task PlayCardAndDraw(int amount = 1)
     {
+        var maxAmount = 10 - HandCards.Count;
+        CardCmd.PushStop();
         try
         {
-            var maxAmount = 10 - HandCards.Count;
-            CardCmd.PushStop();
             if (maxAmount <= 0) return;
             else
             {
@@ -234,9 +234,9 @@ public class PlayerBox
     /// </summary>
     public async Task ReturnHand(CardModel card,Vector2 posStart)
     {
+        CardCmd.PushStop();
         try
         {
-            CardCmd.PushStop();
             HandAddCard(card);
             card.Status = Player == PlayerManager.HostPlayer ? Status.FaceUp : Status.FaceDown;
             await NodeCard.DisplayCard(card, posStart);

@@ -101,12 +101,14 @@ public static class PhraseManager
         }
         return Roads.First(r => r.Index == Index);
     }
+    private static object PhraseLock = new();
     /// <summary>
     /// 下一个阶段
     /// </summary>
     /// <returns></returns>
     public static async Task NextPhrase(bool isAuto = false)
     {
+
         if (!IsInBattle) return;
         CardCmd.PushStop();
         PushProcessing();
@@ -203,9 +205,9 @@ public static class PhraseManager
     {
         if (!IsInBattle) return;
         if (!turnFirst) return;
+        PushProcessing();
         CardCmd.PushStop();
         turnFirst = false;
-        PushProcessing();
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
         var loop = plantSide ? Phrase switch
         {

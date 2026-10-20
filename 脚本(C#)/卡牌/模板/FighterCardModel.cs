@@ -32,6 +32,33 @@ public class FighterCardModel : CardModel
     {
         Fighter.Overlay(fighter, Icon);
     }
+
+    /// <summary>
+    /// 对一名敌人发射子弹(无伤害)
+    /// </summary>
+    /// <param name="texture">子弹的图标</param>
+    /// <param name="from">从哪里开始</param>
+    /// <param name="to">到哪里去</param>
+    /// <param name="duration">飞行的时间</param>
+    /// <returns></returns>
+    public async Task SpawnAmmo(Texture2D texture, Vector2 from, Vector2 to, float duration)
+    {
+        if (!IsPlaced) return;
+        await Fighter.GetNode(this).CreateAmmon(texture, from, to, duration);
+    }
+    /// <summary>
+    /// 对一名敌人发射子弹并播放攻击动画(无伤害)
+    /// </summary>
+    /// <param name="texture">子弹的图标</param>
+    /// <param name="from">从哪里开始</param>
+    /// <param name="to">到哪里去</param>
+    /// <param name="duration">飞行的时间</param>
+    /// <returns></returns>
+    public async Task Attack(IAttackable target)
+    {
+        if (!IsPlaced) return;
+        await Fighter.GetNode(this).Battle([target],InstantAmmo);
+    }
     /// <summary>
     /// 把一个单位归类到自己的子类
     /// </summary>
@@ -43,6 +70,11 @@ public class FighterCardModel : CardModel
     /// 检测该单位是否在场上
     /// </summary>
     public bool IsPlaced => Fighter.GetNode(this) != null;
+    /// <summary>
+    /// 获取这个单位的坐标 如果没有返回(0,0)
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 Locating() => IsPlaced ? GlobalPosition : new();
     protected Vector2 GlobalPosition => Fighter.GetNode(this).GlobalPosition;
     /// <summary>
     /// 把这张卡牌弹回手牌

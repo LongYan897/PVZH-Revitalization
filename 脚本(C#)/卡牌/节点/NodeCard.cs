@@ -449,7 +449,7 @@ public partial class NodeCard : Control
     }
 
     private bool currentPlayable = true;
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("fc1e1e"));
     private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     private bool _isOpen = true;
     private void OnInfoButtonPressed()
@@ -1270,9 +1270,9 @@ public partial class NodeCard : Control
                             GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
                         }
 
-                        if (fighter.Hp.HasChanged)
+                        if (fighter.MaxHp.HasChanged || fighter.Hp.Current != fighter.MaxHp.Current)
                         {
-                            if (fighter.Hp.PositiveChanged)
+                            if (fighter.MaxHp.PositiveChanged && fighter.MaxHp.Current == fighter.Hp.Current)
                                 GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorB;
                             else
                             {
@@ -1290,7 +1290,7 @@ public partial class NodeCard : Control
                             if (fighter.Atk.PositiveChanged)
                                 GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.ColorB;
                             else
-                                GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox2.Default;
+                                GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.ColorC;
                         }
                         else
                             GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.Default;

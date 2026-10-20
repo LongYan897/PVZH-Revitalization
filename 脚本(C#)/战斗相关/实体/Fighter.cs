@@ -70,7 +70,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     private Tween _tweenTargeted2;
 
     private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), new Color("6ef0ff"), default);
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("fc1e1e"));
     private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
 
     public Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget =>
@@ -364,7 +364,11 @@ public partial class Fighter : Control, ITarget, IAttackable
         spine.ClearTracks();
         var eventWait = spine.WaitForAnimEvent("attack");
 
-        var animTask = PlayAnimation(key, true);
+        Task animTask;
+        if (key.Any(k =>spine.HasAnimation(k)))
+            animTask = PlayAnimation(key, true);
+        else
+            animTask = PlayAnimation("attack", true);
 
         var ammoTasks = new List<Task>();
 
@@ -407,7 +411,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             _ = PlayAnimation("idle", false);
     }
 
-    private async Task CreateAmmon(Texture2D texture, Vector2 from, Vector2 to, float duration)
+    public async Task CreateAmmon(Texture2D texture, Vector2 from, Vector2 to, float duration)
     {
         var textureR = new TextureRect
         {
@@ -415,10 +419,12 @@ public partial class Fighter : Control, ITarget, IAttackable
             Position = from,
             Visible = true
         };
+        var size = textureR.Size;
+        textureR.Position -= size / 2;
         Main.AmmoAnimator.AddChild(textureR);
 
         Tween tween = CreateTween();
-        tween.TweenProperty(textureR, "position", to, duration);
+        tween.TweenProperty(textureR, "position", to - size / 2, duration);
         await ToSignal(tween, Tween.SignalName.Finished);
 
         textureR.QueueFree();
@@ -885,9 +891,9 @@ public partial class Fighter : Control, ITarget, IAttackable
                 GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
                 GetNode<SpineHandler>("%等级").SetAnimation(0, "intro", false);
             }
-            if (fighterCard.Hp.HasChanged)
+            if (fighterCard.MaxHp.HasChanged || fighterCard.Hp.Current != fighterCard.MaxHp.Current)
             {
-                if (fighterCard.Hp.PositiveChanged)
+                if (fighterCard.MaxHp.PositiveChanged && fighterCard.MaxHp.Current == fighterCard.Hp.Current)
                     GetNode<Label>("%血量数值").SelfModulate = _colorBox.ColorB;
                 else
                 {
@@ -905,7 +911,7 @@ public partial class Fighter : Control, ITarget, IAttackable
                 if (fighterCard.Atk.PositiveChanged)
                     GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorB;
                 else
-                    GetNode<Label>("%伤害数值").SelfModulate = _colorBox2.Default;
+                    GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorC;
             }
             else
                 GetNode<Label>("%伤害数值").SelfModulate = _colorBox.Default;
