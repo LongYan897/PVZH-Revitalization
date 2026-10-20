@@ -12,6 +12,7 @@
 	  <Content Include="数据%28C#%29\playerAsset.json" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="场景%28C#%29\卡包\" />
 	  <Folder Include="脚本%28C#%29\游戏控制\动态音乐\鼓点\" />
 	  <Folder Include="脚本%28C#%29\随机\" />
 	</ItemGroup>

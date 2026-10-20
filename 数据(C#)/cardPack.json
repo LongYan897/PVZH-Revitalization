@@ -1,35 +1,100 @@
 {
-  "pack1": {
-	"group": [
-	  {
-		"Name": "group1",
-		"Cards": [
-		  "Peashooter",
-		  "SunFlower",
-          "BackupDancer"
+	"Pack1": {
+		"PackName": "测试卡包1",
+		"IntroduceText": "这是卡包测试文本，限购4包！\n* 包含1张超稀有卡牌,\n* 3张稀有卡牌。",
+		"CardTexture": "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png",
+		"MainColor": "477fff",
+		"TopColor": "007190",
+		"Options": [
+			{
+				"ButtonText": "1包",
+				"PriceType": "Gem",
+				"Price": 300,
+				"PullCount": 4
+			},
+			{
+				"ButtonText": "买10包送1包",
+				"PriceType": "Gem",
+				"Price": 3000,
+				"PullCount": 44
+			}
 		],
-		"MaxCount": 0,
-		"BaseRate": 0.70,
-		"UltimateRate": 0
-	  },
-	  {
-		"Name": "group2",
-		"Cards": [
-          "HailACopter"
+		"group": [
+			{
+				"Name": "group1",
+				"Cards": [
+					"Peashooter",
+					"SunFlower",
+					"BackupDancer"
+				],
+				"MaxCount": 0,
+				"BaseRate": 0.70,
+				"UltimateRate": 0
+			},
+			{
+				"Name": "group2",
+				"Cards": [
+					"HailACopter"
+				],
+				"MaxCount": 0,
+				"BaseRate": 0.25,
+				"UltimateRate": 0.5
+			},
+			{
+				"Name": "group3",
+				"Cards": [
+					"FinalMission"
+				],
+				"MaxCount": 0,
+				"BaseRate": 0.05,
+				"UltimateRate": 0.5
+			}
+		]
+	},
+	"Pack2": {
+		"PackName": "测试卡包2",
+		"IntroduceText": "这是卡包测试文本，限购4包！\n* 包含1张超稀有卡牌,\n* 3张稀有卡牌。",
+		"CardTexture": "res://素材(C#)/卡包/卡包封面/pack_premium_hero_wall-knight.png",
+		"MainColor": "00fc22",
+		"TopColor": "00800c",
+		"Options": [
+			{
+				"ButtonText": "1包",
+				"PriceType": "Gem",
+				"Price": 300,
+				"PullCount": 4
+			}
 		],
-		"MaxCount": 0,
-		"BaseRate": 0.25,
-		"UltimateRate": 0.5
-	  },
-	  {
-		"Name": "group3",
-		"Cards": [
-          "FinalMission"
-		],
-		"MaxCount": 0,
-		"BaseRate": 0.05,
-		"UltimateRate": 0.5
-	  }
-	]
-  }
+		"group": [
+			{
+				"Name": "group1",
+				"Cards": [
+					"Peashooter",
+					"SunFlower",
+					"BackupDancer"
+				],
+				"MaxCount": 0,
+				"BaseRate": 0.70,
+				"UltimateRate": 0
+			},
+			{
+				"Name": "group2",
+				"Cards": [
+					"HailACopter"
+				],
+				"MaxCount": 0,
+				"BaseRate": 0.25,
+				"UltimateRate": 0.5
+			},
+			{
+				"Name": "group3",
+				"Cards": [
+					"FinalMission"
+				],
+				"MaxCount": 0,
+				"BaseRate": 0.05,
+				"UltimateRate": 0.5
+			}
+		]
+	}
 }

@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://0v2jwbq7klbe" path="res://素材/卡牌属性图片/inhnd_brains.png" id="13_f1tyx"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://38rw6wkfuuf6" path="res://素材/ui/护盾/动画/护盾动画.tres" id="14_vw8as"]
 [ext_resource type="PackedScene" uid="uid://cqnmj7yrerbhj" path="res://场景(C#)/重新选卡.tscn" id="16_4cdlk"]
+[ext_resource type="PackedScene" uid="uid://odbebjsvylb2" path="res://场景(C#)/战斗胜利.tscn" id="18_bggyq"]
 
 [sub_resource type="FontVariation" id="FontVariation_tkg4x"]
 base_font = ExtResource("12_clb5w")
@@ -97,6 +98,7 @@ position = Vector2(88, 863)
 
 [node name="费用特效动画" parent="费用容器/费用" unique_id=634445961 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
+visible = false
 position = Vector2(166, -266)
 
 [node name="SpineNode" parent="费用容器/费用/费用特效动画" index="0" unique_id=273388558]
@@ -219,6 +221,7 @@ position = Vector2(641, 125)
 
 [node name="费用特效动画2" parent="费用容器/费用2" unique_id=2132684599 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
+visible = false
 position = Vector2(-178, 295)
 
 [node name="SpineNode" parent="费用容器/费用2/费用特效动画2" index="0" unique_id=273388558]
@@ -405,6 +408,13 @@ position = Vector2(360, 420)
 [node name="抽卡位置" type="Marker2D" parent="." unique_id=1158534064]
 unique_name_in_owner = true
 position = Vector2(360, 560)
+
+[node name="战斗胜利层" type="CanvasLayer" parent="." unique_id=602986266]
+layer = 75
+
+[node name="战斗胜利" parent="战斗胜利层" unique_id=346782537 instance=ExtResource("18_bggyq")]
+unique_name_in_owner = true
+visible = false
 
 [editable path="道路层"]
 [editable path="阶段/动画"]

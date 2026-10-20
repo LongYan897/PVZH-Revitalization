@@ -260,6 +260,10 @@ public class CardString
             {
                 tag |= CardTag.Amphibious;
             }
+            if (GetData(cardTitle, "Tag").AsStringArray().Contains("GraveStone") || GetData(cardTitle, "Tag").AsStringArray().Contains("墓碑"))
+            {
+                tag |= CardTag.GraveStone;
+            }
             cardString.CardTag = tag;
         }
         if (GetData(cardTitle, "Rarity").VariantType != Variant.Type.Nil)

@@ -60,6 +60,21 @@ public class CustomBuff : Buff
 public enum Timing
 {
     /// <summary>
+    /// 当僵尸现身时
+    /// 参数：[0] FighterCardModel 现身的卡牌 [1] bool 是否是强迫(死亡)现身
+    /// </summary>
+    WhenRevealed,
+    /// <summary>
+    /// 当僵尸现身后
+    /// 参数：[0] FighterCardModel 现身的卡牌 [1] bool 是否是强迫(死亡)现身
+    /// </summary>
+    AfterRevealed,
+    /// <summary>
+    /// 当卡牌弹回时
+    /// 参数：[0] FighterCardModel 被弹回的卡牌
+    /// </summary>
+    WhenBounce,
+    /// <summary>
     /// 当卡牌进化时
     /// 参数：[0] FighterCardModel 被进化的卡牌 [1] FighterCardModel 进化的卡牌
     /// </summary>

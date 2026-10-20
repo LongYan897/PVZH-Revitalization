@@ -1,4 +1,6 @@
 using Card.Dance;
+using Card.Metier;
+using Card.Scientist;
 using Pack;
 using System;
 using System.Collections.Generic;

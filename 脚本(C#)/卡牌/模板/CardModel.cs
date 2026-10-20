@@ -25,7 +25,7 @@ namespace Card;
 /// </summary>
 public class CardModel
 {
-    public Player Player { get; private set; }
+    public Player Player => PlayerManager.GetPlayer(Camp);
     private static readonly Dictionary<string, CardModel> TemplateEntries = new();
     /// <summary>
     /// 获取卡牌已有的变量
@@ -136,7 +136,7 @@ public class CardModel
                     .GetMethod("Load", BindingFlags.NonPublic | BindingFlags.Static);
 
                 var generic = loadData.MakeGenericMethod(type);
-                var model = (CardModel)generic.Invoke(null, new object[] { cardString, null });
+                var model = (CardModel)generic.Invoke(null, new object[] { cardString });
                 if (!string.IsNullOrEmpty(model.Title))
                     TemplateEntries[model.Title] = model;
             }
@@ -168,14 +168,22 @@ public class CardModel
             if (fighter.CardTag.HasFlag(CardTag.Amphibious))
             {
                 v += "_两栖_";
+                v += " ";
             }
             if (fighter.AtkType.Current.ExLabel != null)
             {
                 v += fighter.AtkType.Current.ExLabel;
+                v += " ";
             }
             if (fighter.HpType.Current.ExLabel != null)
             {
                 v += fighter.HpType.Current.ExLabel;
+                v += " ";
+            }
+            if (fighter.CardTag.HasFlag(CardTag.GraveStone))
+            {
+                v += "_墓碑_";
+                v += " ";
             }
             if (fighter.CardTag.HasFlag(CardTag.Coop))
             {
@@ -245,10 +253,9 @@ public class CardModel
     /// </summary>
     /// <param name="cardString">目标String</param>
     /// <returns>加载出来的卡牌</returns>
-    private static T Load<T>(CardString cardString, Player player = null) where T : CardModel
+    private static T Load<T>(CardString cardString) where T : CardModel
     {
         var card = Activator.CreateInstance<T>();
-        card.Player = player;
         card.Cost = new CardIntVariable(card, "Cost", cardString.Cost);
         card.Title = cardString.Title;
         card.Description = cardString.Description;

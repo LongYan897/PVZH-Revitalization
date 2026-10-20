@@ -1,3 +1,5 @@
+using Card.Flower;
+using Card.Mushroom;
 using Card.Pea;
 using Pack;
 using System;
@@ -12,5 +14,5 @@ public class AllPea : PresetPack
 {
     public override string PackName => "唯一爱豆";
     public override IReadOnlyList<CardModel> Cards => 
-        new List<CardModel>().RepeatLoad<Peashooter>(40);
+        new List<CardModel>().RepeatLoad<ButtonMushroom>(20).RepeatLoad<GrowMushroom>(20);
 }

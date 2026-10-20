@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://bjtgsi5vcog2r"
+path="res://.godot/imported/skeleton.skel-c2115dc2af8bc540945ac7fe9d694239.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/成长蘑菇植物/skeleton.skel"
+dest_files=["res://.godot/imported/skeleton.skel-c2115dc2af8bc540945ac7fe9d694239.spskel"]
+
+[params]
+

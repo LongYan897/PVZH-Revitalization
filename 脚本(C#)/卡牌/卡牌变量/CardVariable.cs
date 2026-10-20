@@ -109,7 +109,10 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
         return async () =>
         {
             var o = variable.Current;
-            variable.Lose(value, VariableReason.Reset);
+            var v = value;
+            if (!canNegative && o - v < 0)
+                v = o;
+            variable.Lose(v, VariableReason.Reset);
             await CardCmd.ChangedCard(card, sign, o, variable.Current, reason);
         };
     }

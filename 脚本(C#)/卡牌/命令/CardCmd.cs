@@ -1,5 +1,7 @@
 using Battle;
 using Battle.Entity;
+using Logger;
+using Phrases;
 using Play;
 using System;
 using System.Collections.Generic;
@@ -22,14 +24,18 @@ public static class CardCmd
     /// 是否禁止出牌
     /// </summary>
     public static bool StopCardPlay => _stopCount > 0;
-
-    /// <summary>
-    /// 进入一次禁止出牌状态
-    /// </summary>
+    private static object stopLock = new();
+    private static object stepLock = new();
     public static void PushStop()
     {
-        _stopCount++;
-        if (_stopCount == 1) JustFreshAllCards();
+        lock(stopLock)
+        {
+            _stopCount++;
+            if (_stopCount == 1)
+            {
+                JustFreshAllCards();
+            } 
+        }
     }
 
     /// <summary>
@@ -37,8 +43,14 @@ public static class CardCmd
     /// </summary>
     public static void PopStop()
     {
-        _stopCount = Math.Max(0, _stopCount - 1);
-        if (_stopCount == 0) JustFreshAllCards();
+        lock (stepLock)
+        {
+            _stopCount = Math.Max(0, _stopCount - 1);
+            if (_stopCount == 0)
+            {
+                JustFreshAllCards();
+            }
+        }
     }
 
     public static void Clear() => CardInstances.Clear();
@@ -72,8 +84,8 @@ public static class CardCmd
     public static async Task ChangedCard<T>(CardModel cardModel, string key, T before, T after, VariableReason variableReason)
     {
         cardModel.Fresh();
-        await cardModel.Changed<T>(key, before, after);
-        await TimingOnCards(null, Timing.OnVariableChanged, key, before, after, variableReason);
+        await cardModel.Changed<T>(key, after, before);
+        await TimingOnCards(null, Timing.OnVariableChanged, key,  after, before, variableReason);
     }
 
     /// <summary>
@@ -93,6 +105,10 @@ public static class CardCmd
         finally
         {
             PopStop();
+            if (!CardInstances.Any(c => PhraseManager.CurrentTurnPlayer != null && PhraseManager.CurrentTurnPlayer.Status.Hero.Camp == c.Camp && c.CanPlay()))
+            {
+                await PhraseManager.HintCostNotEnough();
+            }
         }
     }
 
@@ -131,48 +147,39 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
     {
+        PhraseManager.PushProcessing();
         foreach (var card in CardInstances.ToList())
         {
             if (card != cardModel)
                 await card.FireTiming(timing, paramters);
         }
-        foreach (Fighter fighter in TargetRegistry.All.OfType<Fighter>())
+
+        var fighters = TargetRegistry.All.OfType<Fighter>().ToList();
+        fighters.Sort((a, b) =>
+        {
+            int byRoad = a.Road.Index.CompareTo(b.Road.Index);
+            if (byRoad != 0) return byRoad;
+
+            return LocationPriority(a.Model.Location).CompareTo(LocationPriority(b.Model.Location));
+        });
+
+        foreach (Fighter fighter in fighters)
         {
             if (fighter.Model != cardModel && !CardInstances.Contains(fighter.Model))
                 await fighter.Model.FireTiming(timing, paramters);
         }
+        PhraseManager.PopProcessing();
     }
+
+    private static int LocationPriority(Location location) => location switch
+    {
+        Location.Zombie => 0,
+        Location.PlantFront => 1,
+        Location.Plant => 2,
+        _ => 3
+    };
 
     private static TaskCompletionSource<ITarget> _tcs;
-
-    /// <summary>
-    /// 让玩家选择一个目标
-    /// </summary>
-    /// <param name="player">选中的玩家</param>
-    /// <param name="cardModel">选中的卡牌</param>
-    /// <param name="targetType">目标类型</param>
-    /// <returns></returns>
-    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, bool fromBuff, TargetType targetType)
-    {
-        player ??= PlayerManager.GetPlayer(cardModel.Camp);
-
-        PushStop();
-        try
-        {
-            TargetRegistry.CallTargeted(cardModel, targetType, fromBuff);
-
-            _tcs = new TaskCompletionSource<ITarget>();
-            var result = await _tcs.Task;
-
-            TargetRegistry.DeleteTargeted(targetType);
-            return result;
-        }
-        finally
-        {
-            _tcs = null;
-            PopStop();
-        }
-    }
 
     /// <summary>
     /// 让玩家选择一个目标(自定义过滤器)
@@ -185,15 +192,31 @@ public static class CardCmd
     public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null)
     {
         PushStop();
+        player ??= PlayerManager.GetPlayer(cardModel.Camp);
         try
         {
-            TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter);
+            if (player == PlayerManager.HostPlayer)
+            {
+                if (!TargetRegistry.AnyCanBeTarget(cardModel, targetType, fromBuff, filter)) return null;
+                TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter);
 
-            _tcs = new TaskCompletionSource<ITarget>();
-            var result = await _tcs.Task;
+                _tcs = new TaskCompletionSource<ITarget>();
+                var result = await _tcs.Task;
 
-            TargetRegistry.DeleteTargeted(targetType);
-            return result;
+                TargetRegistry.DeleteTargeted(targetType);
+                return result;
+            }
+            else
+            {
+                if (player is AiPlayer ai)
+                {
+                    return await ai.ChoiceTarget(cardModel,targetType,fromBuff,filter);
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
         finally
         {
@@ -274,6 +297,17 @@ public static class CardCmd
     }
 
     /// <summary>
+    /// 直接获取目标 而不需要玩家选取(自定义过滤器)
+    /// </summary>
+    /// <param name="cardModel">调用的卡牌</param>
+    /// <param name="targetType">目标类型</param>
+    /// <param name="fromBuff">是不是由Buff而来</param>
+    /// <param name="filter">过滤器</param>
+    public static IEnumerable<ITarget> GetTargets(CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null)
+    {
+        return TargetRegistry.GetAllCanBeTarget(cardModel,targetType,fromBuff,filter);
+    }
+    /// <summary>
     /// 生成战斗单位
     /// </summary>
     /// <param name="fighter">战斗单位卡牌</param>
@@ -282,12 +316,14 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task FighterGenerate(FighterCardModel fighter, Road road, Location location)
     {
+        PushStop();
         await Fighter.Generate(fighter, road, location);
-        await fighter.IntroPlayed();
+        if (!fighter.CardTag.HasFlag(CardTag.GraveStone))
+            await fighter.IntroPlayed();
         await fighter.AnimationWhenPlayed(road);
         await fighter.FireTiming(Timing.AfterPlay, NodeRoad.GetNode(road));
+        PopStop();
     }
-
     /// <summary>
     /// 搜寻有没有可以作为Target的对象
     /// </summary>
@@ -311,9 +347,9 @@ public static class CardCmd
     /// </summary>
     /// <param name="predicate">过滤器</param>
     /// <returns></returns>
-    public static bool AnyZombie(Func<FighterCardModel, bool> predicate = null)
+    public static bool AnyZombie(Func<FighterCardModel, bool> predicate = null,bool checkHiding = true)
         => AnyFighter(f => f != null
-            && f.Camp == Camp.Zombie
+            && f.Camp == Camp.Zombie && (!f.Hiding || !checkHiding)
             && (predicate == null || predicate(f)));
 
     /// <summary>
@@ -334,9 +370,11 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task Fuse(FighterCardModel fusioned, FighterCardModel fusioner)
     {
+        PushStop();
         await fusioner.Fuse(fusioned);
         await fusioner.FireTiming(Timing.WhenFuse, fusioned, fusioner);
         await TimingOnCards(fusioner, Timing.WhenFuse, fusioned, fusioner);
+        PopStop();
     }
 
     /// <summary>
@@ -358,8 +396,10 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task Evolve(FighterCardModel evolver, FighterCardModel evolved)
     {
+        PushStop();
         await evolver.Evolve(evolved);
         await evolver.FireTiming(Timing.WhenFuse, evolved, evolver);
         await TimingOnCards(evolver, Timing.WhenFuse, evolved, evolver);
+        PopStop();
     }
 }

@@ -1,0 +1,174 @@
+[gd_scene format=3 uid="uid://34ltudue2q6j"]
+
+[ext_resource type="Script" uid="uid://u2qwo6q186sa" path="res://脚本(C#)/卡牌/卡包/CardTile.cs" id="1_4xl43"]
+[ext_resource type="Script" uid="uid://cjmmhbp1b5312" path="res://addons/StyleboxFancy/StyleBorder.gd" id="1_x878q"]
+[ext_resource type="Script" uid="uid://bkl6g25jwb47h" path="res://addons/StyleboxFancy/StyleBoxFancy.gd" id="2_4xl43"]
+[ext_resource type="Script" uid="uid://bfqwiu4rvgja4" path="res://脚本(C#)/卡牌/卡包/CardPackButton1.cs" id="3_bhvu4"]
+[ext_resource type="FontFile" uid="uid://rm3h54fev3jd" path="res://素材/字体/拙黑拼贴体.ttf" id="4_hh515"]
+[ext_resource type="Texture2D" uid="uid://b6nuesl42eyfl" path="res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png" id="5_tcq48"]
+[ext_resource type="PackedScene" uid="uid://duu5k5sihgqo7" path="res://场景(C#)/卡包/购买按钮槽.tscn" id="8_bhvu4"]
+[ext_resource type="Texture2D" uid="uid://ob1rea3ewoip" path="res://素材(C#)/卡包/infobutton.png" id="9_3ydqm"]
+[ext_resource type="Script" uid="uid://c0kn17ynwxpil" path="res://addons/ExtraNode/AutoFitHBoxContainer/AutoFitHBoxContainer.gd" id="11_auto_fit_hbox"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_h8wgi"]
+
+[sub_resource type="Resource" id="Resource_688hr"]
+script = ExtResource("1_x878q")
+color = Color(0.4862745, 0.4862745, 0.4862745, 1)
+texture = SubResource("CanvasTexture_h8wgi")
+width_left = 3
+width_top = 3
+width_right = 3
+width_bottom = 3
+metadata/_custom_type_script = "uid://cjmmhbp1b5312"
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_qtwn3"]
+
+[sub_resource type="Gradient" id="Gradient_ebe1x"]
+colors = PackedColorArray(0.2, 0.2, 0.2, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ifow5"]
+gradient = SubResource("Gradient_ebe1x")
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBox" id="StyleBox_wvhbo"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_4xl43")
+color = Color(0.2784314, 0.49803922, 1, 1)
+borders = Array[ExtResource("1_x878q")]([SubResource("Resource_688hr")])
+texture = SubResource("GradientTexture2D_ifow5")
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0.5251017, 0.5251012, 0.5251014, 1)
+shadow_texture = SubResource("CanvasTexture_qtwn3")
+shadow_blur = 0
+shadow_spread = Vector2(7, 7)
+metadata/_custom_type_script = "uid://bkl6g25jwb47h"
+
+[sub_resource type="Resource" id="Resource_m5mgl"]
+script = ExtResource("1_x878q")
+color = Color(0.4862745, 0.4862745, 0.4862745, 1)
+width_left = 3
+width_top = 3
+width_right = 3
+metadata/_custom_type_script = "uid://cjmmhbp1b5312"
+
+[sub_resource type="Gradient" id="Gradient_qtwn3"]
+colors = PackedColorArray(0.52, 0.52, 0.52, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ibjym"]
+gradient = SubResource("Gradient_qtwn3")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBox" id="StyleBox_abi3o"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_4xl43")
+color = Color(0, 0.44313726, 0.5647059, 1)
+borders = Array[ExtResource("1_x878q")]([SubResource("Resource_m5mgl")])
+texture = SubResource("GradientTexture2D_ibjym")
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+metadata/_custom_type_script = "uid://bkl6g25jwb47h"
+
+[node name="卡包" type="CenterContainer" unique_id=221309904]
+script = ExtResource("1_4xl43")
+
+[node name="底版" type="Panel" parent="." unique_id=748168295]
+custom_minimum_size = Vector2(680, 315)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBox_wvhbo")
+script = ExtResource("3_bhvu4")
+
+[node name="顶部横幅" type="Panel" parent="底版" unique_id=286829868]
+clip_contents = true
+layout_mode = 0
+offset_right = 680.0
+offset_bottom = 59.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_abi3o")
+
+[node name="卡包名字" type="Label" parent="底版/顶部横幅" unique_id=610085271]
+layout_mode = 0
+offset_left = 183.0
+offset_right = 625.0
+offset_bottom = 59.0
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_hh515")
+theme_override_font_sizes/font_size = 42
+text = "测试卡包1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="卡包图片" type="TextureRect" parent="底版" unique_id=1645708986]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 30.0
+offset_right = 360.0
+offset_bottom = 387.0
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("5_tcq48")
+
+[node name="介绍文本" type="Label" parent="底版" unique_id=1261753486]
+layout_mode = 0
+offset_left = 289.0
+offset_top = 69.0
+offset_right = 649.0
+offset_bottom = 194.0
+theme_override_colors/font_color = Color(0.8797756, 0.87977576, 0.8797755, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("4_hh515")
+theme_override_font_sizes/font_size = 26
+text = "这是卡包测试文本，限购4包！
+* 包含1张超稀有卡牌
+* 3张稀有卡牌"
+
+[node name="购买按钮组" type="Control" parent="底版" unique_id=1118441250]
+layout_mode = 1
+anchor_left = 0.4
+anchor_top = 0.61904764
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -17.0
+offset_top = -9.0
+offset_right = -36.0
+offset_bottom = -15.0
+pivot_offset = Vector2(323.5, 57)
+mouse_filter = 2
+script = ExtResource("11_auto_fit_hbox")
+separation = 20.0
+
+[node name="购买按钮槽" parent="底版/购买按钮组" unique_id=1896250967 instance=ExtResource("8_bhvu4")]
+layout_mode = 0
+offset_left = 88.0
+offset_right = 301.0
+
+[node name="详情按钮" type="TextureButton" parent="底版" unique_id=569086714]
+layout_mode = 0
+offset_left = 625.0
+offset_top = 4.9999995
+offset_right = 751.0
+offset_bottom = 131.0
+scale = Vector2(0.4, 0.4)
+mouse_filter = 1
+texture_normal = ExtResource("9_3ydqm")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1135047470]
+visible = false
+layout_mode = 2
+color = Color(1.8410012e-06, 0.5032994, 0.046293475, 1)

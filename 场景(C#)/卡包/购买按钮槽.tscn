@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://duu5k5sihgqo7"]
+
+[ext_resource type="Script" uid="uid://c7lqstknktp4" path="res://脚本(C#)/卡牌/卡包/OptionSlot.cs" id="1_r5sun"]
+[ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="1_ulpky"]
+[ext_resource type="FontFile" uid="uid://rm3h54fev3jd" path="res://素材/字体/拙黑拼贴体.ttf" id="2_r5sun"]
+[ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="3_kmd32"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="4_eqv1e"]
+
+[node name="购买按钮槽" type="Control" unique_id=1896250967]
+custom_minimum_size = Vector2(213, 114)
+layout_mode = 3
+anchors_preset = 0
+offset_left = 69.5
+offset_right = 282.5
+offset_bottom = 114.0
+mouse_filter = 2
+script = ExtResource("1_r5sun")
+
+[node name="购买按钮" type="NinePatchRect" parent="." unique_id=134701672]
+self_modulate = Color(0.039215688, 0.8784314, 0.28235295, 1)
+layout_mode = 0
+offset_top = 26.0
+offset_right = 532.5
+offset_bottom = 246.0
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_ulpky")
+region_rect = Rect2(0, 0, 255, 250)
+patch_margin_left = 32
+patch_margin_top = 34
+patch_margin_right = 32
+patch_margin_bottom = 42
+
+[node name="按钮文本" type="Label" parent="购买按钮" unique_id=1205864634]
+layout_mode = 0
+offset_top = -65.0
+offset_right = 532.49994
+offset_bottom = -3.0517578e-05
+theme_override_colors/font_color = Color(0.851769, 0.8517689, 0.85176885, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_r5sun")
+theme_override_font_sizes/font_size = 64
+text = "1包"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="购买按钮" unique_id=798992529]
+layout_mode = 0
+offset_right = 532.49994
+offset_bottom = 212.49994
+
+[node name="HBoxContainer" type="HBoxContainer" parent="购买按钮/CenterContainer" unique_id=522766578]
+custom_minimum_size = Vector2(398.13, 150)
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="钻石" type="TextureRect" parent="购买按钮/CenterContainer/HBoxContainer" unique_id=1874458132]
+custom_minimum_size = Vector2(111, 0)
+layout_mode = 2
+texture = ExtResource("3_kmd32")
+stretch_mode = 5
+
+[node name="钻石数量" type="Label" parent="购买按钮/CenterContainer/HBoxContainer" unique_id=1834490878]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 10
+theme_override_fonts/font = ExtResource("4_eqv1e")
+theme_override_font_sizes/font_size = 104
+text = "300"
+horizontal_alignment = 1
+vertical_alignment = 1

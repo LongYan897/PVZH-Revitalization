@@ -55,7 +55,7 @@ public static class DeckCmd
         p.replacement = null;
         freshedCards[index] = p;
     }
-    public static Task HintFreshEnd()
+    public static async Task HintFreshEnd()
     {
         var player = PlayerManager.HostPlayer;
         foreach (var p in freshedCards)
@@ -70,8 +70,14 @@ public static class DeckCmd
             }
             p.Value.node.BindOrigin();
         }
+        var plantSide = player == PlayerManager.GetPlayer(Camp.Plant);
+        var player2 = (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant));
+        if (PhraseManager.IsInBattle)
+        {
+            if (player2 == null) return;
+            await player2.Status.PlayCardAndDraw(4);
+        }
         PlayerBox.StuffCard();
         CardCmd.PopStop();
-        return Task.CompletedTask;
     }
 }

@@ -1,0 +1,25 @@
+skeleton.png
+size:243,502
+filter:Linear,Linear
+Template_R4_glow_1 #33948
+bounds:2,280,220,220
+offsets:3,0,223,223
+growshroom_body
+bounds:2,7,128,123
+rotate:90
+growshroom_cloud_2
+bounds:127,2,133,109
+offsets:5,5,143,119
+rotate:90
+growshroom_eyes
+bounds:198,161,57,30
+rotate:90
+growshroom_eyes_closed
+bounds:198,220,58,33
+rotate:90
+growshroom_head_yellow
+bounds:2,137,194,141
+growshroom_mouth
+bounds:224,486,17,14
+growshroom_mouth_2
+bounds:224,474,16,10
