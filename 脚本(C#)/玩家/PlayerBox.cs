@@ -105,6 +105,13 @@ public class PlayerBox
 
         _stuffCard(row1, 925.0f);
         _stuffCard(row2, 925.0f + 193f * 0.56f);
+
+        var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
+        var player2 = (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant));
+        var box2 = player2.Status;
+        var cards2 = box2.HandCards;
+
+        _stuffCardForEnemy(cards2);
     }
     private static void _stuffCard(List<CardModel> cards, float y)
     {
@@ -120,7 +127,30 @@ public class PlayerBox
         for (int i = 0; i < n; i++)
         {
             var node = NodeCard.GetNode(cards[i]);
-            var pos = new Vector2(startX + i * cardW, y) - new Vector2(256 * 0.28f,0f);
+            node.Scale = new Vector2(0.56f, 0.56f);
+            var pos = new Vector2(startX + i * cardW, y) - new Vector2(56f,0);
+            node.BindOrigin(pos);
+            node.BringToFront();
+        }
+    }
+    private static void _stuffCardForEnemy(IReadOnlyList<CardModel> cards)
+    {
+        const float cardW = 256f * 0.28f;
+        const float minGap = 8f;
+        const float baseGap = cardW;
+
+        int n = cards.Count;
+        if (n == 0) return;
+
+        float gap = n <= 1 ? baseGap : Mathf.Max(minGap, baseGap / n);
+
+        float startX = -40f;
+
+        for (int i = 0; i < n; i++)
+        {
+            var node = NodeCard.GetNode(cards[i]);
+            node.Scale = new Vector2(0.5f, 0.5f);
+            var pos = new Vector2(startX + i * gap, 15f);
             node.BindOrigin(pos);
             node.BringToFront();
         }
@@ -130,28 +160,41 @@ public class PlayerBox
     /// </summary>
     public async Task PlayCardAndDraw(int amount = 1)
     {
+        var maxAmount = 10 - HandCards.Count;
         CardCmd.PushStop();
-        var cards = DrawCard(amount);
-
-        const float cardW = 256f * 0.56f;
-        const float screenW = 720f;
-
-        int n = cards.Count;
-        if (n == 0) return;
-
-        float totalW = n * cardW;
-        float startX = (screenW - totalW) / 2f - 256f * 0.28f;
-        float baseY = Player == PlayerManager.HostPlayer ? 560.0f : 420.0f;
-
-        var tasks = new List<Task>();
-        for (int i = 0; i < n; i++)
+        try
         {
-            var pos = new Vector2(startX + i * cardW, baseY);
-            tasks.Add(NodeCard.DrawACard(cards[i], pos));
+            if (maxAmount <= 0) return;
+            else
+            {
+                if (maxAmount < amount)
+                    amount = maxAmount;
+            }
+            var cards = DrawCard(amount);
+            cards.ForEach(c => c.Status = Player == PlayerManager.HostPlayer ? Status.FaceUp : Status.FaceDown);
+            const float cardW = 256f * 0.56f;
+            const float screenW = 720f;
+
+            int n = cards.Count;
+            if (n == 0) return;
+
+            float totalW = n * cardW;
+            float startX = (screenW - totalW) / 2f - 256f * 0.28f;
+            float baseY = Player == PlayerManager.HostPlayer ? 560.0f : 420.0f;
+
+            var tasks = new List<Task>();
+            for (int i = 0; i < n; i++)
+            {
+                var pos = new Vector2(startX + i * cardW, baseY);
+                tasks.Add(NodeCard.DrawACard(cards[i], pos));
+            }
+            await Task.WhenAll(tasks);
+            StuffCard();
         }
-        await Task.WhenAll(tasks);
-        StuffCard();
-        CardCmd.PopStop();
+        finally
+        {
+            CardCmd.PopStop();
+        }
     }
     /// <summary>
     /// 抽出一张卡牌
@@ -183,7 +226,26 @@ public class PlayerBox
         {
             cards.Add(DrawCard());
         }
+        cards.RemoveAll(c => c == null);
         return cards;
+    }
+    /// <summary>
+    /// 返回手牌
+    /// </summary>
+    public async Task ReturnHand(CardModel card,Vector2 posStart)
+    {
+        CardCmd.PushStop();
+        try
+        {
+            HandAddCard(card);
+            card.Status = Player == PlayerManager.HostPlayer ? Status.FaceUp : Status.FaceDown;
+            await NodeCard.DisplayCard(card, posStart);
+            StuffCard();
+        }
+        finally
+        {
+            CardCmd.PopStop();
+        }
     }
     /// <summary>
     /// 把卡牌塞回卡组

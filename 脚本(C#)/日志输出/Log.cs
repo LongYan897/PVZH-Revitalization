@@ -26,4 +26,5 @@ public static class Log
         if (debugId == DebugId)
             GD.Print(content);
     }
+    public static void DebugL(int tma) => Debug($"{tma}", DebugId);
 }

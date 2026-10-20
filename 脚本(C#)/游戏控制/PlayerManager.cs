@@ -37,12 +37,7 @@ public static class PlayerManager
     {
         if (!PhraseManager.IsInBattle)
             return null;
-        return camp switch
-        {
-            Camp.Plant => P2,
-            Camp.Zombie => P1,
-            _ => null
-        };
+        return P1.Status.Hero.Camp == camp ? P1 : P2;
     }
     public static void Hosting(Player host)
     {

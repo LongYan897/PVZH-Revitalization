@@ -7,6 +7,6 @@ public class SunFlower : FighterCardModel
 {
     protected override List<Buff> InitBuffs =>
         [
-        new SunBuff(1,Phrase.Plant,async () => { await PlayFighterAnimationTask("special2"); }) {OnlyPlaced = true}
+        new SunBuff(GetSignInt("Sun"),Phrase.Plant,async () => { await PlayFighterAnimationTask("special2"); }) {OnlyPlaced = true}
         ];
 }

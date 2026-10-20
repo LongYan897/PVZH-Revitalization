@@ -81,20 +81,28 @@ public partial class HeroInstance : Control, ITarget, IAttackable
             _tweenTargeted2.Kill();
     }
     private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
-    public void OnCallTargeted(TargetType type)
+    public void OnCallTargeted(TargetType type, CardModel card)
     {
         if (!type.HasFlag(TargetType.Hero)) return;
         CallTargeted();
         GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
     }
-    private void CallTargeted()
+    private async void CallTargeted()
     {
         KillTween();
         Calling = true;
         var sp = GetNode<Node2D>("ExSprite");
-        _tweenTargeted = CreateTween().BindNode(sp).SetLoops(-1);
         sp.Modulate = _colortgBox.Default;
         sp.Visible = true;
+        sp.Scale = new();
+
+        _tweenTargeted = CreateTween().BindNode(sp);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1f, 1f), 0.15f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.1f, 1.1f), 0.05f);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1f, 1f), 0.05f);
+        await ToSignal(_tweenTargeted, Tween.SignalName.Finished);
+
+        _tweenTargeted = CreateTween().BindNode(sp).SetLoops(-1);
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f, 0.98f), 0.7f);
     }
@@ -111,7 +119,17 @@ public partial class HeroInstance : Control, ITarget, IAttackable
         var sp = GetNode<Node2D>("ExSprite");
         sp.Modulate = _colortgBox.Default;
         sp.Scale = 2.4f * new Vector2(1f, 1f);
-        sp.Visible = false;
+        _tweenTargeted = CreateTween().BindNode(sp);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.1f, 1.1f), 0.05f)
+            .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        _tweenTargeted.TweenProperty(sp, "scale", Vector2.Zero, 0.15f)
+            .SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        _tweenTargeted.TweenCallback(Callable.From(() =>
+        {
+            sp.Visible = false;
+            sp.Scale = 2.4f * new Vector2(1f, 1f);
+            sp.Modulate = _colortgBox.Default;
+        }));
     }
     public async void OnDistargeted(TargetContext ctx)
     {
@@ -198,5 +216,47 @@ public partial class HeroInstance : Control, ITarget, IAttackable
             await PlayAnimation("idle", true);
 
         SetLoop();
+    }
+    //专门用于远程同步或者Ai的区域
+    public void AutoTargeted(TargetContext ctx)
+    {
+        KillTween();
+
+        var sp = GetNode<Node2D>("ExSprite");
+        sp.Visible = true;
+        sp.Scale = Vector2.Zero;
+        sp.Modulate = _colortgBox.Default;
+
+        _tweenTargeted = CreateTween().BindNode(sp);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.1f, 1.1f), 0.1f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Quad);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1f, 1f), 0.08f)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Quad);
+
+        _tweenTargeted2 = CreateTween().BindNode(sp);
+        _tweenTargeted2.TweenProperty(sp, "modulate", _colortgBox.ColorB, 0.1f);
+    }
+
+    public void AutoDistargeted(TargetContext ctx)
+    {
+        KillTween();
+
+        var sp = GetNode<Node2D>("ExSprite");
+
+        _tweenTargeted = CreateTween().BindNode(sp);
+        _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.1f, 1.1f), 0.05f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Quad);
+        _tweenTargeted.TweenProperty(sp, "scale", Vector2.Zero, 0.15f)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Quad);
+        _tweenTargeted.TweenCallback(Callable.From(() =>
+        {
+            sp.Visible = false;
+            sp.Scale = 2.4f * new Vector2(1f, 1f);
+            sp.Modulate = _colortgBox.Default;
+        }));
     }
 }

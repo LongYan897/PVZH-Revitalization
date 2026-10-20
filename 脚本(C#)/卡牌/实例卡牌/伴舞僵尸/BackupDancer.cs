@@ -25,7 +25,9 @@ public class BackupDancer : FighterCardModel
                         {
                             FighterCardModel fighter = await CardCmd.PlayerChoiceZombie(null, card, true, (z) => z.HasLabel("跳舞"));
                             target = fighter;
-                            redo = await fighter.Atk.Gain(model.GetSignInt("Strength"), Variable.VariableReason.Zombie | Variable.VariableReason.Self);
+                            await fighterCard.PlayFighterAnimationTask("attack");
+                            if (target != null)
+                                redo = await fighter.Atk.Gain(model.GetSignInt("Strength"), Variable.VariableReason.Zombie | Variable.VariableReason.Self);
                         }
                     }
                 }
@@ -36,8 +38,8 @@ public class BackupDancer : FighterCardModel
                 {
                     if (parameters[1] == model || parameters[1] == target)
                     {
-                        if (redo == null) return;
-                        await redo();
+                        if (redo != null) 
+                            await redo();
                     }
                 }
             }

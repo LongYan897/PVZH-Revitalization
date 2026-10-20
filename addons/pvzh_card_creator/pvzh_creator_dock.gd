@@ -39,11 +39,13 @@ var id_edit: TextEdit
 
 var tag_teamup: CheckBox
 var tag_amphibious: CheckBox
+var tag_gravestone: CheckBox
 
 var status_label: Label
 
 const RARITIES := ["基础", "普通", "罕见", "稀有", "超稀有", "传说", "活动", "令牌"]
-const CATEGORIES := ["猛长", "光能", "守卫", "爆花", "聪明", "有脑", "疯狂", "野兽", "狡猾", "健壮"]
+const CATEGORIES_PLANT := ["猛长", "光能", "守卫", "爆花", "聪明"]
+const CATEGORIES_ZOMBIE := ["有脑", "疯狂", "狡猾", "野兽", "健壮"]
 const HP_TYPES := ["普通"]
 const ATK_TYPES := ["普通"]
 const STAR_TYPES := ["星星"]
@@ -62,7 +64,6 @@ func _ready() -> void:
 	title.add_theme_font_size_override("font_size", 18)
 	root.add_child(title)
 
-	# ---------- 基础 ----------
 	_add_label("类名（用于索引）")
 	key_name_edit = LineEdit.new()
 	key_name_edit.placeholder_text = "例如：SnowPea"
@@ -91,21 +92,18 @@ func _ready() -> void:
 	hero_check.text = "超能力？"
 	root.add_child(hero_check)
 
-	# ---------- 描述 ----------
 	_add_label("描述")
 	des_edit = TextEdit.new()
 	des_edit.custom_minimum_size = Vector2(0, 60)
 	des_edit.placeholder_text = "支持 _下划线_ 、 =图标= 、 =图标={N}"
 	root.add_child(des_edit)
 
-	# ---------- 数值 ----------
 	_add_label("费用")
 	cost_spin = SpinBox.new()
 	cost_spin.min_value = 0
 	cost_spin.max_value = 99
 	root.add_child(cost_spin)
 
-	# ---------- 单位字段（仅单位卡显示） ----------
 	hp_box = VBoxContainer.new()
 	hp_box.visible = false
 	hp_box.add_theme_constant_override("separation", 4)
@@ -123,7 +121,6 @@ func _ready() -> void:
 		hp_type_option.add_item(t)
 	hp_box.add_child(hp_type_option)
 
-	# ---- 子项：攻击力 ----
 	include_atk = CheckBox.new()
 	include_atk.text = "有伤害？"
 	include_atk.toggled.connect(_on_include_atk_toggled)
@@ -146,7 +143,6 @@ func _ready() -> void:
 		atk_type_option.add_item(t)
 	atk_box.add_child(atk_type_option)
 
-	# ---- 子项：等级类型 ----
 	include_star_type = CheckBox.new()
 	include_star_type.text = "有等级？"
 	include_star_type.toggled.connect(_on_include_star_type_toggled)
@@ -163,7 +159,6 @@ func _ready() -> void:
 		star_type_option.add_item(t)
 	star_type_box.add_child(star_type_option)
 
-	# ---------- 卡包（独立） ----------
 	include_pack = CheckBox.new()
 	include_pack.text = "有卡包？"
 	include_pack.toggled.connect(_on_include_pack_toggled)
@@ -179,7 +174,6 @@ func _ready() -> void:
 	pack_edit.placeholder_text = "高级"
 	pack_box.add_child(pack_edit)
 
-	# ---------- 关键词（多选） ----------
 	_add_label("关键词")
 	tag_teamup = CheckBox.new()
 	tag_teamup.text = "组队"
@@ -189,19 +183,20 @@ func _ready() -> void:
 	tag_amphibious.text = "两栖"
 	root.add_child(tag_amphibious)
 
-	# ---------- 特别描述 ----------
+	tag_gravestone = CheckBox.new()
+	tag_gravestone.text = "墓碑"
+	root.add_child(tag_gravestone)
+
 	_add_label("特别描述")
 	flavor_edit = TextEdit.new()
 	flavor_edit.custom_minimum_size = Vector2(0, 40)
 	root.add_child(flavor_edit)
 
-	# ---------- 卡牌Id ----------
 	_add_label("卡牌Id")
 	id_edit = TextEdit.new()
 	id_edit.custom_minimum_size = Vector2(0, 40)
 	root.add_child(id_edit)
-	
-	# ---------- 其余 ----------
+
 	_add_label("稀有度")
 	rarity_option = OptionButton.new()
 	for r in RARITIES:
@@ -210,9 +205,9 @@ func _ready() -> void:
 
 	_add_label("派系")
 	category_option = OptionButton.new()
-	for c in CATEGORIES:
-		category_option.add_item(c)
 	root.add_child(category_option)
+
+	faction.item_selected.connect(_on_faction_selected)
 
 	_add_label("标签（逗号分隔）")
 	label_edit = LineEdit.new()
@@ -228,13 +223,12 @@ func _ready() -> void:
 	animation_extra_edit = LineEdit.new()
 	animation_extra_edit.placeholder_text = "res://..."
 	root.add_child(animation_extra_edit)
-	
+
 	_add_label("卡面")
 	icon_edit = LineEdit.new()
 	icon_edit.placeholder_text = "res://..."
 	root.add_child(icon_edit)
 
-	# ---------- 按钮 ----------
 	var button := Button.new()
 	button.text = "创建"
 	button.pressed.connect(_create)
@@ -244,6 +238,7 @@ func _ready() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status_label)
 
+	_on_faction_selected(faction.selected)
 	_on_card_type_selected(card_type.selected)
 
 func _add_label(text: String) -> void:
@@ -253,6 +248,24 @@ func _add_label_to(parent: Node, text: String) -> void:
 	var label := Label.new()
 	label.text = text
 	parent.add_child(label)
+
+func _on_faction_selected(_index: int) -> void:
+	var is_zombie := faction.selected == 1
+	var list := CATEGORIES_ZOMBIE if is_zombie else CATEGORIES_PLANT
+	var prev_text := ""
+	if category_option.selected >= 0:
+		prev_text = category_option.get_item_text(category_option.selected)
+	category_option.clear()
+	for c in list:
+		category_option.add_item(c)
+	var idx := list.find(prev_text)
+	category_option.select(idx if idx >= 0 else 0)
+	tag_teamup.visible = not is_zombie
+	if is_zombie:
+		tag_teamup.button_pressed = false
+	tag_gravestone.visible = is_zombie
+	if not is_zombie:
+		tag_gravestone.button_pressed = false
 
 func _on_card_type_selected(index: int) -> void:
 	hp_box.visible = (index == 0)
@@ -295,11 +308,12 @@ func _create() -> void:
 	_show_success("已输出：" + clean)
 
 func _print_card_entry(clean: String, side: String, type_text: String) -> void:
+	var is_zombie := side == "僵尸"
 	var entry := {}
 	entry["\"%s.Title\"" % clean] = name_edit.text
 	entry["\"%s.Des\"" % clean] = des_edit.text
 	entry["\"%s.Cost\"" % clean] = int(cost_spin.value)
-	entry["\"%s.Camp\"" % clean] = "植物" if side == "植物" else "僵尸"
+	entry["\"%s.Camp\"" % clean] = "僵尸" if is_zombie else "植物"
 	entry["\"%s.Type\"" % clean] = type_text
 	entry["\"%s.Rarity\"" % clean] = rarity_option.get_item_text(rarity_option.selected)
 	entry["\"%s.Category\"" % clean] = category_option.get_item_text(category_option.selected)
@@ -316,10 +330,12 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 	entry["\"%s.Label\"" % clean] = labels
 
 	var tags := []
-	if tag_teamup.button_pressed:
+	if not is_zombie and tag_teamup.button_pressed:
 		tags.append("组队")
 	if tag_amphibious.button_pressed:
 		tags.append("两栖")
+	if is_zombie and tag_gravestone.button_pressed:
+		tags.append("墓碑")
 	entry["\"%s.Tag\"" % clean] = tags
 
 	if card_type.selected == 0:
@@ -332,7 +348,7 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 		else:
 			entry["\"%s.Atk\"" % clean] = 0
 			entry["\"%s.AtkType\"" % clean] = "普通"
-		
+
 		if include_star_type.button_pressed:
 			entry["\"%s.StarType\"" % clean] = star_type_option.get_item_text(star_type_option.selected)
 
@@ -341,7 +357,7 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 	entry["\"%s.Flavor\"" % clean] = flavor_edit.text
 
 	entry["\"%s.Id\"" % clean] = id_edit.text
-	
+
 	print("===== cards.json ：" + clean + " =====")
 	for k in entry.keys():
 		var v = entry[k]

@@ -7,6 +7,7 @@ using Logger;
 using Phrases;
 using Play;
 using Spine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -153,8 +154,6 @@ public partial class BattleSubMenuScene : SubMenuScene
         }
         CardCmd.PopStop();
     }
-    private static bool _firstPlay = true;
-    private static bool _firstPlayed = true;
     public static async Task PlayCostGain(Player player, int amount)
     {
         CardCmd.PushStop();
@@ -166,7 +165,6 @@ public partial class BattleSubMenuScene : SubMenuScene
         Label costLabel2;
         Vector2 posIn;
         Vector2 posStart;
-        Vector2 posDiff;
         if (player == PlayerManager.HostPlayer)
         {
             twNode = instance.GetNode<SpineHandler>("%费用特效动画");
@@ -177,7 +175,6 @@ public partial class BattleSubMenuScene : SubMenuScene
             costLabel = instance.GetNode<Label>("%数值");
             posIn = new Vector2(-360, -380.0f);
             posStart = new Vector2(166.0f, -266.0f);
-            posDiff = new Vector2(-30, 0);
         }
         else
         {
@@ -189,9 +186,7 @@ public partial class BattleSubMenuScene : SubMenuScene
             costLabel = instance.GetNode<Label>("%数值2");
             posIn = new Vector2(223f, 291.0f);
             posStart = new Vector2(-178.0f, 295.0f);
-            posDiff = new Vector2(30, 0);
         }
-        glNode2.Visible = player.Status.Hero.Camp == Camp.Plant;
         costLabel2.Visible = true;
         costLabel2.Text = $"{amount}";
         twNode.Visible = true;
@@ -213,19 +208,25 @@ public partial class BattleSubMenuScene : SubMenuScene
         tween2.TweenProperty(twNode, "position", new Vector2(), 0.4f);
         await instance.ToSignal(tween2, Tween.SignalName.Finished).ToTask();
         twNode.Visible = false;
-        glNode.Visible = true;
         tween = instance.CreateTween();
         tween.TweenProperty(tgNode, "scale", new Vector2(0.8f, 0.8f), 0.1f).SetEase(Tween.EaseType.Out);
         tween.TweenProperty(tgNode, "scale", new Vector2(0.6f, 0.6f), 0.1f).SetEase(Tween.EaseType.Out);
+        glNode2.Visible = player.Status.Hero.Camp == Camp.Plant;
         glNode.Visible = player.Status.Hero.Camp == Camp.Plant;
         glNode.Modulate = new Color(1, 1, 1, 0);
+        glNode2.Modulate = new Color(1, 1, 1, 0);
         Tween tween1 = instance.CreateTween();
         tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 1), 0.2f);
-        await Task.WhenAll(instance.ToSignal(tween, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween1, Tween.SignalName.Finished).ToTask());
+        Tween tween3 = instance.CreateTween();
+        tween3.TweenProperty(glNode, "modulate", new Color(1,1,1,1), 0.2f);
+        tween3.TweenProperty(glNode, "modulate", new Color(1, 1, 1, 0), 0.2f);
+        Tween tween4 = instance.CreateTween();
+        tween4.TweenProperty(glNode2, "modulate", new Color(1, 1, 1, 1), 0.2f);
+        tween4.TweenProperty(glNode2, "modulate", new Color(1, 1, 1, 0), 0.2f);
         var cost = costLabel.Text.ToInt() + amount;
         costLabel.Text = $"{cost}";
+        await Task.WhenAll(instance.ToSignal(tween, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween1, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween3, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween4, Tween.SignalName.Finished).ToTask());
         CardCmd.PopStop();
-        _firstPlay = true;
         twNode.Visible = false;
         costLabel2.Visible = false;
         glNode.Visible = false;
@@ -233,66 +234,85 @@ public partial class BattleSubMenuScene : SubMenuScene
     }
     public static async Task PlayCostLose(Player player, int amount)
     {
-        if (_firstPlay)
+        if (amount <= 0) return;
+
+        CardCmd.PushStop();
+        try
         {
-            _firstPlayed = true;
-            _firstPlay = false;
-            CardCmd.PushStop();
+            SpineHandler twNode;
+            TextureRect tgNode;
+            Label costLabel;
+            if (player == PlayerManager.HostPlayer)
+            {
+                twNode = instance.GetNode<SpineHandler>("%费用特效动画");
+                tgNode = instance.GetNode<TextureRect>("%费用图片");
+                costLabel = instance.GetNode<Label>("%数值");
+            }
+            else
+            {
+                twNode = instance.GetNode<SpineHandler>("%费用特效动画2");
+                tgNode = instance.GetNode<TextureRect>("%费用图片2");
+                costLabel = instance.GetNode<Label>("%数值2");
+            }
+
+            int loops = amount <= 10 ? 1 : Math.Min(10, amount / 2);
+            int baseDeduct = amount / loops;
+            int remainder = amount % loops;
+
+            for (int i = 0; i < loops; i++)
+            {
+                int deduct = baseDeduct + (i < remainder ? 1 : 0);
+
+                var cost = costLabel.Text.ToInt() - deduct;
+                costLabel.Text = $"{cost}";
+
+                float speedDiv = Math.Max(1, loops);
+
+                Tween tween = instance.CreateTween();
+                tween.TweenProperty(tgNode, "scale", new Vector2(0.75f, 0.75f), 0.1f / speedDiv).SetEase(Tween.EaseType.Out);
+                tween.TweenProperty(tgNode, "scale", new Vector2(0.6f, 0.6f), 0.2f / speedDiv).SetEase(Tween.EaseType.Out);
+
+                twNode.Visible = true;
+                twNode.Position = Vector2.Zero;
+                twNode.Scale = Vector2.Zero;
+
+                Tween tween1 = instance.CreateTween();
+                tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 0.1f), 0.3f / speedDiv);
+                tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 1), 0.1f / speedDiv);
+
+                Tween tween2 = instance.CreateTween();
+                twNode.Modulate = new Color(1, 1, 1, 1);
+                tween2.TweenProperty(twNode, "scale", new Vector2(0.5f, 0.5f), 0.1f / speedDiv);
+
+                Tween tweenModu = instance.CreateTween();
+                tweenModu.TweenProperty(twNode, "modulate", new Color(1, 1, 1, 0), 0.4f / speedDiv);
+                tween2.TweenProperty(twNode, "position", new Vector2(0, -120f), 0.3f / speedDiv).SetEase(Tween.EaseType.Out);
+
+                await Task.WhenAll(
+                    instance.ToSignal(tween2, Tween.SignalName.Finished).ToTask(),
+                    instance.ToSignal(tweenModu, Tween.SignalName.Finished).ToTask(),
+                    instance.ToSignal(tween, Tween.SignalName.Finished).ToTask());
+
+                twNode.Visible = false;
+                twNode.Modulate = new Color(1, 1, 1, 1);
+            }
         }
-        SpineHandler twNode;
-        TextureRect tgNode;
-        Label costLabel;
-        Vector2 posDiff;
-        if (player == PlayerManager.HostPlayer)
+        finally
         {
-            twNode = instance.GetNode<SpineHandler>("%费用特效动画");
-            tgNode = instance.GetNode<TextureRect>("%费用图片");
-            costLabel = instance.GetNode<Label>("%数值");
-            posDiff = new Vector2(-30, 0);
-        }
-        else
-        {
-            twNode = instance.GetNode<SpineHandler>("%费用特效动画2");
-            tgNode = instance.GetNode<TextureRect>("%费用图片2");
-            costLabel = instance.GetNode<Label>("%数值2");
-            posDiff = new Vector2(30, 0);
-        }
-        var cost = costLabel.Text.ToInt() - 1;
-        costLabel.Text = $"{cost}";
-        Tween tween = instance.CreateTween();
-        tween.TweenProperty(tgNode, "scale", new Vector2(0.75f, 0.75f), 0.1f).SetEase(Tween.EaseType.Out);
-        tween.TweenProperty(tgNode, "scale", new Vector2(0.6f, 0.6f), 0.2f).SetEase(Tween.EaseType.Out);
-        twNode.Visible = true;
-        twNode.Position = tgNode.Position + posDiff;
-        twNode.Scale = new();
-        Tween tween1 = instance.CreateTween();
-        tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 0.1f), 0.3f);
-        tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 1), 0.1f);
-        Tween tween2 = instance.CreateTween();
-        twNode.Modulate = new Color(1, 1, 1, 1);
-        tween2.TweenProperty(twNode, "scale", new Vector2(0.5f, 0.5f), 0.1f);
-        Tween tweenModu = instance.CreateTween();
-        tweenModu.TweenProperty(twNode, "modulate", new Color(1, 1, 1, 0), 0.4f);
-        tween2.TweenProperty(twNode, "position", tgNode.Position + posDiff + new Vector2(0, -120f), 0.3f).SetEase(Tween.EaseType.Out);
-        await Task.WhenAll(instance.ToSignal(tween2, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tweenModu, Tween.SignalName.Finished).ToTask(), instance.ToSignal(tween, Tween.SignalName.Finished).ToTask());
-        twNode.Visible = false;
-        twNode.Modulate = new Color(1, 1, 1, 1);
-        if (amount > 1)
-        {
-            await PlayCostLose(player, amount - 1);
-        }
-        if (_firstPlayed)
-        {
-            _firstPlay = true;
-            _firstPlayed = false;
             CardCmd.PopStop();
         }
     }
     private static async Task FollowScale(Label label,float dur)
     {
+        var cannoncial = label.Position;
         Tween tween = label.CreateTween();
-        tween.TweenProperty(label,"scale",new Vector2(0.7f,1f),dur - 0.4f);
-        tween.TweenProperty(label, "scale", new Vector2(1f, 1.2f), 0.2f );
+        Tween tween1 = label.CreateTween();
+        tween.TweenProperty(label,"scale",new Vector2(0.7f,1f),dur - 0.5f);
+        tween1.TweenProperty(label, "position", cannoncial, dur - 0.5f);
+        tween.TweenProperty(label, "scale", new Vector2(1f, 1.3f), 0.1f);
+        tween1.TweenProperty(label, "position", cannoncial + new Vector2(0, -10f), 0.15f);
+        tween.TweenProperty(label, "scale", new Vector2(1f, 0.8f), 0.15f );
+        tween1.TweenProperty(label, "position", cannoncial, 0.2f);
         tween.TweenProperty(label, "scale", new Vector2(1f, 1f), 0.2f);
         var pos = label.Position;
     }

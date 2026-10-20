@@ -195,7 +195,7 @@ public partial class CardDes : Control
         }
     }
 
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("fc1e1e"));
     private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     public void CardTryFresh(CardModel cardModel)
     {
@@ -542,9 +542,9 @@ public partial class CardDes : Control
                     GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
                     GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
                 }
-                if (fighterCard.Hp.HasChanged)
+                if (fighterCard.MaxHp.HasChanged || fighterCard.Hp.Current != fighterCard.MaxHp.Current)
                 {
-                    if (fighterCard.Hp.PositiveChanged)
+                    if (fighterCard.MaxHp.PositiveChanged && fighterCard.MaxHp.Current == fighterCard.Hp.Current)
                         GetNode<Label>("%血量数值").SelfModulate = _colorBox.ColorB;
                     else
                     {
@@ -562,7 +562,7 @@ public partial class CardDes : Control
                     if (fighterCard.Atk.PositiveChanged)
                         GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorB;
                     else
-                        GetNode<Label>("%伤害数值").SelfModulate = _colorBox2.Default;
+                        GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorC;
                 }
                 else
                     GetNode<Label>("%伤害数值").SelfModulate = _colorBox.Default;

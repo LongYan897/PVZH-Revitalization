@@ -4,6 +4,7 @@ using Card.Cmd;
 using Card.String;
 using Godot;
 using Hero;
+using Logger;
 using Play;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,10 @@ namespace Card;
 /// </summary>
 public class FighterCardModel : CardModel
 {
+    /// <summary>
+    /// 僵尸是否隐藏在墓碑之中
+    /// </summary>
+    public bool Hiding => Camp == Camp.Zombie && (Fighter.GetNode(this) ?? null) != null && Fighter.GetNode(this).IsHiding;
     private readonly List<FighterCardModel> additiveCards = new();
     /// <summary>
     /// 隐藏单位的数值,并销毁单位
@@ -26,6 +31,33 @@ public class FighterCardModel : CardModel
     public static void Overlay(FighterCardModel fighter, Texture2D Icon)
     {
         Fighter.Overlay(fighter, Icon);
+    }
+
+    /// <summary>
+    /// 对一名敌人发射子弹(无伤害)
+    /// </summary>
+    /// <param name="texture">子弹的图标</param>
+    /// <param name="from">从哪里开始</param>
+    /// <param name="to">到哪里去</param>
+    /// <param name="duration">飞行的时间</param>
+    /// <returns></returns>
+    public async Task SpawnAmmo(Texture2D texture, Vector2 from, Vector2 to, float duration)
+    {
+        if (!IsPlaced) return;
+        await Fighter.GetNode(this).CreateAmmon(texture, from, to, duration);
+    }
+    /// <summary>
+    /// 对一名敌人发射子弹并播放攻击动画(无伤害)
+    /// </summary>
+    /// <param name="texture">子弹的图标</param>
+    /// <param name="from">从哪里开始</param>
+    /// <param name="to">到哪里去</param>
+    /// <param name="duration">飞行的时间</param>
+    /// <returns></returns>
+    public async Task Attack(IAttackable target)
+    {
+        if (!IsPlaced) return;
+        await Fighter.GetNode(this).Battle([target],InstantAmmo);
     }
     /// <summary>
     /// 把一个单位归类到自己的子类
@@ -38,7 +70,23 @@ public class FighterCardModel : CardModel
     /// 检测该单位是否在场上
     /// </summary>
     public bool IsPlaced => Fighter.GetNode(this) != null;
+    /// <summary>
+    /// 获取这个单位的坐标 如果没有返回(0,0)
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 Locating() => IsPlaced ? GlobalPosition : new();
     protected Vector2 GlobalPosition => Fighter.GetNode(this).GlobalPosition;
+    /// <summary>
+    /// 把这张卡牌弹回手牌
+    /// </summary>
+    /// <returns></returns>
+    public async Task Bounced()
+    {
+        if (IsPlaced)
+        {
+            await Fighter.GetNode(this).ReturnCard();
+        }
+    }
     protected override CardModel LoadData(CardString cardString)
     {
         Atk = new(this, "Attack", cardString.Attack);
@@ -76,6 +124,7 @@ public class FighterCardModel : CardModel
         }
     }
     public ITarget Targeting() => Fighter.GetNode(this);
+    public IAttackable Attacking() => Fighter.GetNode(this);
     /// <summary>
     /// 所处的道路
     /// </summary>
@@ -149,6 +198,7 @@ public class FighterCardModel : CardModel
         {
             if (itg is Fighter fighter)
             {
+                if (fighter.IsHiding) continue;
                 atkStack.FinalDamage = atkStack.BaseDamage;
 
                 await FireTiming(Timing.WhenAttacked, atkStack);
@@ -399,7 +449,23 @@ public class FighterCardModel : CardModel
     {
         await PlayFighterAnimationTask("intro");
     }
-
+    public override Task Changed<T>(string key, T valueAfter, T valueBefore)
+    {
+        if (IsPlaced)
+        {
+            if (key == "Attack" || key == "Health" || key == "MaxHealth")
+            {
+                if (valueAfter is int t && valueBefore is int tb)
+                {
+                    if (t - tb > 0)
+                    {
+                        Fighter.GetNode(this).Boost();
+                    }
+                }
+            }
+        }
+        return base.Changed(key, valueAfter, valueBefore);
+    }
     public sealed override TargetType TargetType
     {
         get

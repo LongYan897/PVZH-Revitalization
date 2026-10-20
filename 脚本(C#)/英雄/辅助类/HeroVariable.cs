@@ -2,6 +2,7 @@ using Card;
 using Card.Cmd;
 using Hero.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Variable;
@@ -23,6 +24,8 @@ public class HeroIntVariable(HeroModel hero, string sign, int baseValue)
     public bool HasChanged => variable.HasChanged;
     public bool NegetiveChanged => variable.NegitiveChanged;
     public bool PositiveChanged => variable.PositiveChanged;
+    public IReadOnlyList<VariableHistory> History => variable.History;
+    public bool HasReasonHistory(VariableReason reason) => variable.HasReasonHistory(reason);
     public string Key => variable.Sign;
     /// <summary>
     /// 减少值
@@ -39,7 +42,8 @@ public class HeroIntVariable(HeroModel hero, string sign, int baseValue)
         IntVariable v = new("Lose", value);
         await CardCmd.TimingOnCards(null, Timing.ModifyHeroChanged, variable.Sign, value, card, reason, v);
         await CardCmd.TimingOnCards(null, Timing.BeforeHeroChanged, variable.Sign, v.Current, card, reason);
-        variable.Lose(v.Current, reason);
+        int actual = Math.Min(v.Current, variable.Current);
+        variable.Lose(actual, reason);
         await hero.Changed(sign, old, variable.Current, Math.Abs(v.Current), reason, card, objects);
         await CardCmd.TimingOnCards(null, Timing.OnHeroChanged, variable.Sign, v.Current, card, reason);
         await CardCmd.TimingOnCards(null, Timing.AfterHeroChanged, variable.Sign, v.Current, card, reason);
@@ -79,7 +83,8 @@ public class HeroIntVariable(HeroModel hero, string sign, int baseValue)
         IntVariable v = new("Set", value);
         await CardCmd.TimingOnCards(null, Timing.ModifyHeroChanged, variable.Sign, value, card, reason, v);
         await CardCmd.TimingOnCards(null, Timing.BeforeHeroChanged, variable.Sign, v.Current, card, reason);
-        int val = variable.Set(v.Current, reason);
+        int actual = Math.Max(0, v.Current);
+        int val = variable.Set(actual, reason);
         await hero.Changed(sign, old, variable.Current, Math.Abs(v.Current), reason, card, objects);
         await CardCmd.TimingOnCards(null, Timing.OnHeroChanged, variable.Sign, v.Current, card, reason);
         await CardCmd.TimingOnCards(null, Timing.AfterHeroChanged, variable.Sign, v.Current, card, reason);
