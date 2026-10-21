@@ -36,7 +36,8 @@ public partial class SubMenu : Control
 		Tween tween = CreateTween();
 		tween.TweenProperty(this, "scale", (InitScale - 0.1f) * new Vector2(1, 1), 0.1f);
 		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
-		await ToSignal(tween, Tween.SignalName.Finished);
+        tween.TweenProperty(this, "scale", InitScale * new Vector2(0, 0), 0.2f).SetEase(Tween.EaseType.In);
+        await ToSignal(tween, Tween.SignalName.Finished);
 		SceneManager.JumpToSub(this);
 	}
 	private bool canPress = true;
