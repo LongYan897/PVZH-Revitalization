@@ -76,6 +76,8 @@ public partial class Fighter : Control, ITarget, IAttackable
     public Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget =>
         (t, f, from) =>
         {
+            if (Model.IsDie)
+                return false;
             bool? a;
             a = f?.Invoke(this);
             bool b;
@@ -147,16 +149,16 @@ public partial class Fighter : Control, ITarget, IAttackable
         await road.AddFighter(model, fighter);
         if (model.CardTag.HasFlag(CardTag.GraveStone))
         {
-            fighter.Visible = true;
             fighter.Fresh();
+            fighter.Visible = true;
             await fighter.HideToGrave();
             return fighter;
         }
         else
         {
-            fighter.Visible = true;
-            fighter.ToVisible();
             fighter.Fresh();
+            fighter.ToVisible();
+            fighter.Visible = true;
             return fighter;
         }
     }

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cff6hspomvppo"
-path="res://.godot/imported/sh5.png-7d526c6258dcf86c228612a9d4800b37.ctex"
+uid="uid://b7psyjvhdnrv1"
+path="res://.godot/imported/burst.png-7a3aef24a4668b96a03153f74a3a1e8b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://素材(C#)/战斗胜利/sh5.png"
-dest_files=["res://.godot/imported/sh5.png-7d526c6258dcf86c228612a9d4800b37.ctex"]
+source_file="res://素材(C#)/战斗胜利/burst.png"
+dest_files=["res://.godot/imported/burst.png-7a3aef24a4668b96a03153f74a3a1e8b.ctex"]
 
 [params]
 

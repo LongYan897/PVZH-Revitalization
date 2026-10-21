@@ -32,7 +32,8 @@ public partial class Main : Node
 	public static Node DesLayer { get; private set; }
 	public static Node AudioContainer { get; private set; }
 	public static Node SceneContainer { get; private set; }
-	public static Loading Load { get; private set; }
+    public static Node SubSceneContainer { get; private set; }
+    public static Loading Load { get; private set; }
 	public override async void _Ready()
 	{
 		//初始化各各组件

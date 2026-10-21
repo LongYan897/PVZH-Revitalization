@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ei6ow6t8swrj"
-path="res://.godot/imported/Electric_ball_01.png-064c25c8548915253ff23fa39fdb61cb.ctex"
+uid="uid://dbybcr2i08m2c"
+path="res://.godot/imported/ribbon.png-95c09f6610257c13c9b2dab88f8eec8d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://素材(C#)/战斗胜利/Electric_ball_01.png"
-dest_files=["res://.godot/imported/Electric_ball_01.png-064c25c8548915253ff23fa39fdb61cb.ctex"]
+source_file="res://素材(C#)/战斗胜利/ribbon.png"
+dest_files=["res://.godot/imported/ribbon.png-95c09f6610257c13c9b2dab88f8eec8d.ctex"]
 
 [params]
 

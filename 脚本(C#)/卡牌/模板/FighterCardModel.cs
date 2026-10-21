@@ -157,14 +157,7 @@ public class FighterCardModel : CardModel
         {
             await FireTiming(Timing.AfterAttack, atkStack);
             await CardCmd.TimingOnCards(this, Timing.AfterAttack, atkStack);
-            if (atkStack.ExtraAttacks > 0)
-            {
-                atkStack.ExtraAttacks -= 1;
-                await Battle(atkStack);
-                return;
-            }
-            else
-                return;
+            return;
         }
         var fighters = atkStack.Road.GetFighters();
         var target = (IAttackable)fighters.FirstOrDefault(
@@ -204,7 +197,7 @@ public class FighterCardModel : CardModel
                 await FireTiming(Timing.WhenAttacked, atkStack);
                 await CardCmd.TimingOnCards(fighter.Model, Timing.WhenAttacked, atkStack);
 
-                await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, atkStack, true, false);
+                await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter | VariableReason.Damaged, atkStack, true, false);
 
                 await fighter.Model.FireTiming(Timing.AfterAttacked, atkStack);
                 await CardCmd.TimingOnCards(fighter.Model, Timing.AfterAttacked, atkStack);
@@ -217,7 +210,7 @@ public class FighterCardModel : CardModel
 
                 await CardCmd.TimingOnCards(null, Timing.WhenAttacked, atkStack);
 
-                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, this, atkStack);
+                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter | VariableReason.Damaged, this, atkStack);
 
                 await CardCmd.TimingOnCards(null, Timing.AfterAttacked, atkStack);
 
@@ -235,19 +228,49 @@ public class FighterCardModel : CardModel
                 if (itg is Fighter fighter)
                 {
                     if (fighter.Model.IsDie)
-                        await fighter.Model.Kill(VariableReason.Fighter);
+                        await fighter.Model.Die(VariableReason.Fighter | VariableReason.Damaged,atkStack);
                 }
             }
         }
-        if (atkStack.ExtraAttacks > 0)
+    }
+    /// <summary>
+    /// 是否正在处理死亡
+    /// </summary>
+    public bool IsDying { get; private set; }
+
+    /// <summary>
+    /// 触发死亡时点并播放死亡动画。
+    /// 调用前确保 Hp ≤ 0；方法内部会校验。
+    /// </summary>
+    /// <param name="reason">死亡原因</param>
+    /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
+    public async Task Die(Variable.VariableReason reason, AtkStack stack = null)
+    {
+        if (!IsDie) return;
+        if (IsDying) return;
+        IsDying = true;
+
+        bool isDamage = reason.HasFlag(Variable.VariableReason.Fighter) || reason.HasFlag(Variable.VariableReason.Damaged);
+
+        if (isDamage && stack?.Attacker != null)
         {
-            atkStack.ExtraAttacks -= 1;
-            await Battle(atkStack);
+            await FireTiming(Timing.OnKilled, stack);
+            await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
         }
+        else
+        {
+            stack ??= new AtkStack(null, [Attacking()], Road, 0);
+            await FireTiming(Timing.OnDeath, stack);
+            await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
+        }
+
+        var fighter = Fighter.GetNode(this);
+        if (fighter != null)
+            await fighter.Die();
     }
 
     /// <summary>
-    /// 统一伤害入口
+    /// 伤害入口
     /// </summary>
     /// <param name="amount">伤害量</param>
     /// <param name="reason">原因</param>
@@ -271,37 +294,10 @@ public class FighterCardModel : CardModel
         if (playHurtAnim && actual > 0)
             await Fighter.GetNode(this).Hurt(stack.FinalDamage);
 
-        if (Hp.Current <= 0)
+        if (Hp.Current <= 0 && immediateDeath)
         {
-            bool isDamage = reason.HasFlag(Variable.VariableReason.Damaged);
-
-            if (isDamage && stack.Attacker != null)
-            {
-                await FireTiming(Timing.OnKilled, stack);
-                await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
-            }
-            else
-            {
-                await FireTiming(Timing.OnDeath, stack);
-                await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
-            }
-
-            if (immediateDeath)
-            {
-                var fighter = Fighter.GetNode(this);
-                if (fighter != null)
-                    await fighter.Die();
-            }
+            await Die(VariableReason.Damaged | reason,stack);
         }
-    }
-
-
-    /// <summary>
-    /// 直接消灭（扣光血）
-    /// </summary>
-    public async Task Kill(Variable.VariableReason reason, AtkStack stack = null, bool immediateDeath = true)
-    {
-        await ApplyDamage(Hp.Current, reason, stack, false, immediateDeath);
     }
     /// <summary>
     /// 是否有初始血量
@@ -545,5 +541,46 @@ public class FighterCardModel : CardModel
     private IAttackable Targeted()
     {
         return Fighter.GetNode(this);
+    }
+    /// <summary>
+    /// 触发死亡时点。
+    /// 调用前确保 Hp ≤ 0；方法内部会校验。
+    /// </summary>
+    /// <param name="reason">死亡原因</param>
+    /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
+    public async Task BeginDie(Variable.VariableReason reason, AtkStack stack = null)
+    {
+        if (!IsDie) return;
+        if (IsDying) return;
+        IsDying = true;
+
+        bool isDamage = reason.HasFlag(Variable.VariableReason.Fighter) || reason.HasFlag(Variable.VariableReason.Damaged);
+
+        if (isDamage && stack?.Attacker != null)
+        {
+            await FireTiming(Timing.OnKilled, stack);
+            await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
+        }
+        else
+        {
+            stack ??= new AtkStack(null, [Attacking()], Road, 0);
+            await FireTiming(Timing.OnDeath, stack);
+            await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
+        }
+    }
+
+    /// <summary>
+    /// 触发死亡动画。
+    /// 调用前确保 Hp ≤ 0；方法内部会校验。
+    /// </summary>
+    /// <param name="reason">死亡原因</param>
+    /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
+    public async Task EndDie()
+    {
+        if (!IsDie) return;
+        if (IsPlaced)
+        {
+            await Fighter.GetNode(this).Die();
+        }
     }
 }

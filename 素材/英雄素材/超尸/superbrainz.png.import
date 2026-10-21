@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhu421e2bmmp6"
-path="res://.godot/imported/Electric_ball_02.png-d87ac9ee0ccff3fcf5b2e71e93e995da.ctex"
+uid="uid://cnuf3odi7pgv1"
+path="res://.godot/imported/superbrainz.png-b1c387a6ce773a3824a6ecf8d960e000.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://素材(C#)/战斗胜利/Electric_ball_02.png"
-dest_files=["res://.godot/imported/Electric_ball_02.png-d87ac9ee0ccff3fcf5b2e71e93e995da.ctex"]
+source_file="res://素材/英雄素材/超尸/superbrainz.png"
+dest_files=["res://.godot/imported/superbrainz.png-b1c387a6ce773a3824a6ecf8d960e000.ctex"]
 
 [params]
 

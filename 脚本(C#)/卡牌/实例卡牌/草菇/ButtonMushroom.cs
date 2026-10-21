@@ -14,7 +14,7 @@ public class ButtonMushroom : FighterCardModel
     public override string AmmoPath => "res://场景/植物卡/草菇植物/cloud_1 #91307.png";
     private class ButtonBuff : Buff
     {
-        public override Timing[] Timings => [Timing.OnDeath];
+        public override Timing[] Timings => [Timing.OnDeath,Timing.OnKilled];
         public override bool IsTransferable => false;
         public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
         {

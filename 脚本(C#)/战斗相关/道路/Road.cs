@@ -61,46 +61,122 @@ public class Road
     /// <summary>
     /// 开始这条线上的战斗
     /// </summary>
-    public async Task Start()
+    public async Task Start(List<AtkStack> stks = null)
     {
         IsBattling = true;
-
-        await CardCmd.TimingOnCards(null, Timing.BeforeLaneStart, this);
-
-        foreach (var fighter in fighters.ToList())
+        var bol = stks == null;
+        if (bol)
         {
-            await fighter.BeforeAtk(new AtkStack(null, [], this, 0));
+            await CardCmd.TimingOnCards(null, Timing.BeforeLaneStart, this);
+
+            foreach (var fighter in fighters.ToList())
+            {
+                await fighter.BeforeAtk(new AtkStack(null, [], this, 0));
+            }
+            stks = new List<AtkStack>();
+            await CardCmd.TimingOnCards(null, Timing.AfterLaneStart, this);
+            var zombie = fighters.FirstOrDefault(f => f.Zombie);
+            if (zombie != null)
+            {
+                var stk = new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current);
+                await zombie.Model.Battle(stk);
+                stks.Add(stk);
+            }
+            var plantf = fighters.FirstOrDefault(f => f.Plant1);
+            if (plantf != null)
+            {
+                var stk = new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current);
+                await plantf?.Model?.Battle(stk);
+                stks.Add(stk);
+            }
+            var plant = fighters.FirstOrDefault(f => f.Plant2);
+            if (plant != null)
+            {
+                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current);
+                await plant?.Model?.Battle(stk);
+                stks.Add(stk);
+            }
+        }
+        else
+        {
+            foreach (var fighter in fighters.ToList())
+            {
+                await fighter.BeforeAtk(new AtkStack(null, [], this, 0));
+            }
+            var zombie = fighters.FirstOrDefault(f => f.Zombie);
+            if (zombie != null)
+            {
+                if (stks.Any(atk => atk.Attacker == zombie.Model && atk.ExtraAttacks > 0))
+                {
+                    var stk = stks.FirstOrDefault(atk => atk.Attacker == zombie.Model && atk.ExtraAttacks > 0);
+                    stk.ExtraAttacks -= 1;
+                    await zombie.Model.Battle(stk);
+                }
+            }
+            var plantf = fighters.FirstOrDefault(f => f.Plant1);
+            if (plantf != null)
+            {
+                if (stks.Any(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0))
+                {
+                    var stk = stks.FirstOrDefault(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0);
+                    stk.ExtraAttacks -= 1;
+
+                    await plantf.Model.Battle(stk);
+                }
+            }
+            var plant = fighters.FirstOrDefault(f => f.Plant2);
+            if (plant != null)
+            {
+                if (stks.Any(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0))
+                {
+                    var stk = stks.FirstOrDefault(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0);
+                    stk.ExtraAttacks -= 1;
+
+                    await plant.Model.Battle(stk);
+
+                }
+            }
         }
 
-        await CardCmd.TimingOnCards(null, Timing.AfterLaneStart, this);
-        var zombie = fighters.FirstOrDefault(f => f.Zombie);
-        if (zombie != null)
-            await zombie.Model.Battle(new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current));
-        var plantf = fighters.FirstOrDefault(f => f.Plant1);
-        if (plantf != null)
-            await plantf?.Model?.Battle(new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current));
-        var plant = fighters.FirstOrDefault(f => f.Plant2);
-        if (plant != null)
-            await plant?.Model?.Battle(new AtkStack(plant.Model, [], this, plant.Model.Atk.Current));
         foreach (var fighter in fighters.ToList())
         {
             await fighter.AfterAtk(new AtkStack(null, [], this, 0));
         }
 
-        await CardCmd.TimingOnCards(null, Timing.BeforeLaneEnd, this);
+        await ResolveDeaths(stks);
 
-        List<Task> tasks = new();
+        if (stks != null && stks.Any(s => s.ExtraAttacks > 0))
+        {
+            await Start(stks);
+        }
+
+        if (bol)
+        {
+            await CardCmd.TimingOnCards(null, Timing.BeforeLaneEnd, this);
+
+            await CardCmd.TimingOnCards(null, Timing.AfterLaneEnd, this);
+
+            IsBattling = false;
+        }
+    }
+
+    /// <summary>
+    /// 结算死亡
+    /// </summary>
+    private async Task ResolveDeaths(List<AtkStack> stacks)
+    {
+        var tasks = new List<Task>();
         foreach (var fighter in fighters.ToList())
         {
-            if (fighter.Model.IsDie)
-                tasks.Add(fighter.Die());
+            if (fighter.Model is { IsDie: true } model)
+            {
+                await model.BeginDie(VariableReason.Fighter | VariableReason.Damaged, stacks.FirstOrDefault(stk => stk.Targets.Contains(fighter)));
+                tasks.Add(model.EndDie());
+            }
         }
         await Task.WhenAll(tasks);
-
-        await CardCmd.TimingOnCards(null, Timing.AfterLaneEnd, this);
-
-        IsBattling = false;
     }
+
     private readonly Variable<Environment> _environment = new("Environment", null);
     /// <summary>
     /// 该道路的环境

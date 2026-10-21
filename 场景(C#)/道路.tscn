@@ -66,7 +66,7 @@ texture = ExtResource("3_x76yt")
 [node name="植物_僵尸1" type="Node2D" parent="." unique_id=545167542]
 unique_name_in_owner = true
 z_index = 10
-position = Vector2(-55, 123)
+position = Vector2(-55, 90)
 
 [node name="单位高亮" type="TextureRect" parent="植物_僵尸1" unique_id=1842500548]
 unique_name_in_owner = true
@@ -107,7 +107,7 @@ position = Vector2(0, 119)
 [node name="植物_2" type="Node2D" parent="." unique_id=503027257]
 unique_name_in_owner = true
 z_index = 10
-position = Vector2(-55, -19)
+position = Vector2(-55, -52)
 
 [node name="单位高亮2" type="TextureRect" parent="植物_2" unique_id=1021507255]
 unique_name_in_owner = true

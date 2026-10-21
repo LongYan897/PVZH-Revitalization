@@ -340,7 +340,7 @@ public static class CardCmd
     /// <param name="predicate">过滤器</param>
     /// <returns></returns>
     public static bool AnyFighter(Func<FighterCardModel, bool> predicate)
-    => TargetRegistry.All.Any(t => t is Fighter f && predicate(f.Model));
+    => TargetRegistry.All.Any(t => t is Fighter f && predicate(f.Model) && !f.Model.IsDie);
 
     /// <summary>
     /// 搜寻有没有符合目标的僵尸单位
