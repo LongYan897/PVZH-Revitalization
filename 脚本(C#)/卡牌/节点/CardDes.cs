@@ -141,7 +141,12 @@ public partial class CardDes : Control
     private bool _isEnd = false;
     private Node2D _target;
     private bool _targetCanScale = false;
-
+    public static void Close()
+    {
+        instance?.Clear();
+        if (instance != null)
+            instance._isEnd = true;
+    }
     private void Open()
     {
         _isEnd = false;

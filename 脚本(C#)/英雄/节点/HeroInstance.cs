@@ -21,6 +21,14 @@ public partial class HeroInstance : Control, ITarget, IAttackable
     public TargetType TargetType => TargetType.Hero;
     public HeroModel Hero { get; private set; }
     public SpineHandler spineHandler;
+    public static void Clear()
+    {
+        foreach (var p in Instances)
+        {
+            if (p.Key != null && GodotObject.IsInstanceValid(p.Key))
+                p.Key.QueueFree();
+        }
+    }
     private static readonly Dictionary<HeroInstance, HeroModel> Instances = new();
     public override void _Ready()
     {

@@ -23,8 +23,15 @@ public partial class Fighter : Control, ITarget, IAttackable
 {
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/战斗单位.tscn");
     private static readonly List<Fighter> Instances = new();
-    private const int maxInstance = 20;
-
+    private const int maxInstance = 40;
+    public static void ClearAll()
+    {
+        foreach (var p in Instances)
+        {
+            if (GodotObject.IsInstanceValid(p))
+                p.QueueFree();
+        }
+    }
     public static bool CanTargetedBy(CardModel card, bool fromBuff)
     {
         if (card.TargetType.HasFlag(TargetType.Fighters) || card.TargetType.HasFlag(TargetType.GraveStone))

@@ -33,6 +33,7 @@ public partial class BattleSubMenuScene : SubMenuScene
     {
         await Refresh();
         await PhraseManager.StartBattle();
+        await Win(PlayerManager.HostPlayer);
     }
     private static async Task Refresh()
     {
@@ -51,20 +52,37 @@ public partial class BattleSubMenuScene : SubMenuScene
         node.Visible = true;
         var icon = node.GetNode<TextureRect>("Hero");
         var flag = node.GetNode<Sprite2D>("Ribbon");
-        var label = node.GetNode<Label>("Ribbon");
+        var label = node.GetNode<Label>("%Label");
         var glow = node.GetNode<Node2D>("Glow");
-        var rect = node.GetNode<Node2D>("ColorRect");
+        var rect = node.GetNode<ColorRect>("ColorRect");
         label.Position = new(240f, -510f);
         label.Text = player.Status.Hero.Camp.Plant() ? "植物胜利！" : "僵尸胜利！";
         glow.Position = new(515.0f, 799.0f);
+        glow.Scale = new(0, 0);
+        icon.Position = new(94.0f, 272.0f);
+        icon.Scale = new(0,0);
+        flag.Scale = new(1.8f, 1.8f);
+        flag.Modulate = new(1, 1, 1, 1);
+        flag.Texture = player.Status.Hero.Camp.Switch(GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbon.png"),GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbonz.png"));
+        Tween tweenR = instance.CreateTween();
+        tweenR.TweenProperty(rect, "modulate", new Color(1,1,1,1), 0.3f);
         Tween tween = instance.CreateTween();
         tween.TweenProperty(label,"position", new Vector2(240f, 67f),0.5f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
-        await instance.ToSignal(tween, Tween.SignalName.Finished);
+        await tween.ToTask();
         Tween tween1 = instance.CreateTween();
         Tween tween2 = instance.CreateTween();
         Tween tween3 = instance.CreateTween();
+        Tween tween4 = instance.CreateTween();
         tween1.TweenProperty(glow, "position", new Vector2(360.0f, 668.0f),0.4f);
         tween2.TweenProperty(glow, "scale", new Vector2(1.4f,1.4f),0.4f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        tween3.TweenProperty(icon, "position", new Vector2(0, 198.0f), 0.4f);
+        tween4.TweenProperty(icon, "scale", new Vector2(1,1), 0.4f);
+        await Task.WhenAll(tween1.ToTask(), tween2.ToTask(),tween3.ToTask(),tween4.ToTask());
+        Tween tween5 = instance.CreateTween();
+        Tween tween6 = instance.CreateTween();
+        tween5.TweenProperty(flag, "scale", new Vector2(2.4f,2.4f),0.2f);
+        tween6.TweenProperty(flag, "modulate", new Color(1,1,1,0), 0.2f);
+        await Task.WhenAll(tween5.ToTask(), tween6.ToTask());
         SceneManager.ReturnToSub();
     }
     private static async Task Prepare()

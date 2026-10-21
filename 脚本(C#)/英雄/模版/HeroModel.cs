@@ -107,6 +107,8 @@ public abstract class HeroModel
         stack ??= new(null, [Targeted()], null, amount);
         await CardCmd.TimingOnCards(null, Timing.TryStopHeroTakeDamage, stop, this);
         PlayAnimation("hit", true);
+        if (amount > Health.Current)
+            amount = Health.Current;
         await BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield, cardModel);
         if (shield + Shield.Current >= 8)
         {
@@ -121,7 +123,7 @@ public abstract class HeroModel
 
         if (Health.Current <= 0)
         {
-
+            await BattleSubMenuScene.Win(PlayerManager.GetPlayer(Camp.Plant() ? Camp.Zombie : Camp.Plant));
         }
     }
     /// <summary>

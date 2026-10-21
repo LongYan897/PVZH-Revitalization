@@ -197,7 +197,12 @@ public static class CardCmd
         {
             if (player == PlayerManager.HostPlayer)
             {
-                if (!TargetRegistry.AnyCanBeTarget(cardModel, targetType, fromBuff, filter)) return null;
+                var candidates = TargetRegistry.GetAllCanBeTarget(cardModel, targetType, fromBuff, filter).ToList();
+
+                if (candidates.Count == 0) return null;
+
+                if (candidates.Count == 1) return candidates[0];
+
                 TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter);
 
                 _tcs = new TaskCompletionSource<ITarget>();
