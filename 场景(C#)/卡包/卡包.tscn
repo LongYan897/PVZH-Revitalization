@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://b6nuesl42eyfl" path="res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png" id="5_tcq48"]
 [ext_resource type="PackedScene" uid="uid://duu5k5sihgqo7" path="res://场景(C#)/卡包/购买按钮槽.tscn" id="8_bhvu4"]
 [ext_resource type="Texture2D" uid="uid://ob1rea3ewoip" path="res://素材(C#)/卡包/infobutton.png" id="9_3ydqm"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="9_4xl43"]
 [ext_resource type="Script" uid="uid://c0kn17ynwxpil" path="res://addons/ExtraNode/AutoFitHBoxContainer/AutoFitHBoxContainer.gd" id="11_auto_fit_hbox"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_h8wgi"]
@@ -158,15 +159,25 @@ layout_mode = 0
 offset_left = 88.0
 offset_right = 301.0
 
-[node name="详情按钮" type="TextureButton" parent="底版" unique_id=569086714]
-layout_mode = 0
+[node name="详情按钮" type="Control" parent="底版" unique_id=68450910]
+anchors_preset = 0
 offset_left = 625.0
-offset_top = 4.9999995
-offset_right = 751.0
-offset_bottom = 131.0
+offset_top = 5.0
+offset_right = 625.0
+offset_bottom = 5.0
+script = ExtResource("9_4xl43")
+SubScene = "res://场景(C#)/卡包/卡包详情.tscn"
+ShowLoading = false
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="底版/详情按钮" unique_id=506049850]
+layout_mode = 0
+offset_right = 126.0
+offset_bottom = 126.0
 scale = Vector2(0.4, 0.4)
 mouse_filter = 1
-texture_normal = ExtResource("9_3ydqm")
+icon = ExtResource("9_3ydqm")
+flat = true
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1135047470]
 visible = false

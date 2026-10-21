@@ -20,8 +20,8 @@ namespace Controller;
 public partial class Main : Node
 {
 	public static Node Animator { get; private set; }
-    public static Node AmmoAnimator { get; private set; }
-    public static Node CardContainer { get; private set; }
+	public static Node AmmoAnimator { get; private set; }
+	public static Node CardContainer { get; private set; }
 	public static Node FighterContainer { get; private set; }
 	public static Node HeroContainer { get; private set; }
 	public static Node GuestHeroContainer { get; private set; }
@@ -53,8 +53,8 @@ public partial class Main : Node
 		FighterFrontUp = FighterContainer.GetNode<Node>("FrontUp");
 		FighterDown = FighterContainer.GetNode<Node>("Down");
 		FighterFrontDown = FighterContainer.GetNode<Node>("FrontDown");
-        AmmoAnimator = FighterContainer.GetNode<Node>("Ammo");
-        DesLayer = GetNode<CanvasLayer>("Des");
+		AmmoAnimator = FighterContainer.GetNode<Node>("Ammo");
+		DesLayer = GetNode<CanvasLayer>("Des");
 		AudioContainer = GetNode<Node2D>("Audios");
 		Load = GetNode<Loading>("%Load");
 		WavPlayer.SetBgMusic<MainMenuWav>();
