@@ -14,6 +14,7 @@ namespace Hero.String;
 ///     派系  : 使用 "Category" 当作Json的键，必须写为含两个派系列表形式 []<br/>
 ///     阵营 : 使用 "Camp" 当作Json的键<br/>
 ///     特别描述 : 使用 "Flavor" 当作Json的键<br/>
+///     胜利图标 : 使用 "Winning" 当作Json的键<br/>
 ///     图鉴缩小倍率 : 使用 "DesScale" 当作Json的键<br/>
 ///     图鉴Y偏移量 : 使用 "DesOffset" 当作Json的键<br/>
 /// 例如：<br/>
@@ -33,6 +34,10 @@ public class HeroString
     ///特别描述
     ///</summary>
     public string Flavor { get; private set; }
+    /// <summary>
+    /// 获胜图标
+    /// </summary>
+    public string WinningIcon { get; private set; }
     ///<summary>
     ///派系
     ///</summary>
@@ -108,6 +113,10 @@ public class HeroString
         if (GetData(heroTitle, "Flavor").VariantType != Variant.Type.Nil)
         {
             heroString.Flavor = GetData(heroTitle, "Flavor").AsString();
+        }
+        if (GetData(heroTitle, "Winning").VariantType != Variant.Type.Nil)
+        {
+            heroString.WinningIcon = GetData(heroTitle, "Winning").AsString();
         }
         if (GetData(heroTitle, "Camp").VariantType != Variant.Type.Nil)
         {

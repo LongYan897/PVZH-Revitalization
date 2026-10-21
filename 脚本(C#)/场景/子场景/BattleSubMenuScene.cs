@@ -4,6 +4,7 @@ using Controller;
 using Godot;
 using Hero;
 using Logger;
+using Pack;
 using Phrases;
 using Play;
 using Spine;
@@ -35,14 +36,41 @@ public partial class BattleSubMenuScene : SubMenuScene
     }
     private static async Task Refresh()
     {
+        instance.GetNode<Node2D>("%重新选卡").Visible = true;
         freshAwaiters = new(false);
         await DeckCmd.HintFresh();
         UnableFresh();
         await DeckCmd.HintFreshEnd();
         freshAwaiters = null;
     }
+    public static async Task Win(Player player)
+    {
+        var node = instance.GetNode<Node2D>("%战斗胜利");
+        var heroIcon = player.Status.Hero.Data.WinningIcon.Load<Texture2D>();
+        node.GetNode<TextureRect>("Hero").Texture = heroIcon;
+        node.Visible = true;
+        var icon = node.GetNode<TextureRect>("Hero");
+        var flag = node.GetNode<Sprite2D>("Ribbon");
+        var label = node.GetNode<Label>("Ribbon");
+        var glow = node.GetNode<Node2D>("Glow");
+        var rect = node.GetNode<Node2D>("ColorRect");
+        label.Position = new(240f, -510f);
+        label.Text = player.Status.Hero.Camp.Plant() ? "植物胜利！" : "僵尸胜利！";
+        glow.Position = new(515.0f, 799.0f);
+        Tween tween = instance.CreateTween();
+        tween.TweenProperty(label,"position", new Vector2(240f, 67f),0.5f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        await instance.ToSignal(tween, Tween.SignalName.Finished);
+        Tween tween1 = instance.CreateTween();
+        Tween tween2 = instance.CreateTween();
+        Tween tween3 = instance.CreateTween();
+        tween1.TweenProperty(glow, "position", new Vector2(360.0f, 668.0f),0.4f);
+        tween2.TweenProperty(glow, "scale", new Vector2(1.4f,1.4f),0.4f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        SceneManager.ReturnToSub();
+    }
     private static async Task Prepare()
     {
+        instance.GetNode<Node2D>("%战斗胜利").Visible = false;
+        instance.GetNode<Node2D>("%重新选卡").Visible = false;
         instance.GetNode<SpineHandler>("%护盾").LoadSkeletonData("res://素材/ui/护盾/动画/护盾动画.tres");
         instance.GetNode<SpineHandler>("%护盾").Visible = false;
         instance.GetNode<SpineHandler>("%护盾2").LoadSkeletonData("res://素材/ui/护盾/动画/护盾动画.tres");

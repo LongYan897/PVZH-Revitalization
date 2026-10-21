@@ -5,6 +5,7 @@
   "Penelopea.Camp": "植物",
   "Penelopea.Icon": "res://素材/ui/英雄图片/cornerimage_greenshadow.png",
   "Penelopea.Animation": "res://素材/英雄素材/绿影侠/绿影侠.tres",
+  "Penelopea.Winning": "res://素材/英雄素材/绿影侠/greenShadow.png",
   "Penelopea.DesScale": 0.8,
   "Penelopea.DesOffset": 0,
 
@@ -21,6 +22,7 @@
   "SuperZombie.Camp": "僵尸",
   "SuperZombie.Icon": "res://素材/ui/英雄图片/cornerimage_superbrainz.png",
   "SuperZombie.Animation": "res://素材/英雄素材/超尸/超尸.tres",
+  "SuperZombie.Winning": "res://素材/英雄素材/超尸/superbrainz.png",
   "SuperZombie.DesScale": 0.8,
   "SuperZombie.DesOffset": 200
 }

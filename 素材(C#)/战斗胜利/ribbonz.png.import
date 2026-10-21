@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blyc8fkubvlh5"
-path="res://.godot/imported/sh2.png-c3ed86b2c7c864ad08c87514772262d7.ctex"
+uid="uid://byjgsqetxcd6n"
+path="res://.godot/imported/ribbonz.png-ff09fd3c2c91d869d253740bfe9648d7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://素材(C#)/战斗胜利/sh2.png"
-dest_files=["res://.godot/imported/sh2.png-c3ed86b2c7c864ad08c87514772262d7.ctex"]
+source_file="res://素材(C#)/战斗胜利/ribbonz.png"
+dest_files=["res://.godot/imported/ribbonz.png-ff09fd3c2c91d869d253740bfe9648d7.ctex"]
 
 [params]
 

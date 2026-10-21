@@ -399,6 +399,7 @@ follow_viewport_enabled = true
 
 [node name="重新选卡" parent="重新选卡层" unique_id=2139683625 instance=ExtResource("16_4cdlk")]
 unique_name_in_owner = true
+visible = false
 z_index = 175
 
 [node name="抽卡位置2" type="Marker2D" parent="." unique_id=361908283]
@@ -414,7 +415,6 @@ layer = 75
 
 [node name="战斗胜利" parent="战斗胜利层" unique_id=346782537 instance=ExtResource("18_bggyq")]
 unique_name_in_owner = true
-visible = false
 
 [editable path="道路层"]
 [editable path="阶段/动画"]

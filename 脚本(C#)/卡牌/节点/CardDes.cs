@@ -63,9 +63,9 @@ public partial class CardDes : Control
             }
 
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     /// <summary>
@@ -87,9 +87,9 @@ public partial class CardDes : Control
             }
 
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     /// <summary>
@@ -114,9 +114,9 @@ public partial class CardDes : Control
         {
             if (instance.Visible == true) return;
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     /// <summary>
@@ -132,9 +132,9 @@ public partial class CardDes : Control
         else
         {
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     private Tween _tween;

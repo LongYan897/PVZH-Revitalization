@@ -95,7 +95,6 @@ public static class SceneManager
         {
             var last = Menus.Last().Key;
             Menus[subMenu] = last;
-            last.Destory();
             parent.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
         }
         await LoadTask;

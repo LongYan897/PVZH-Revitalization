@@ -7,30 +7,30 @@ namespace Card;
 
 public class FinalMission : CardModel
 {
-    public override bool TargetFilter(ITarget target)
-    {
-        if (Fighter.HasFighter(f => f.Model.Camp == Camp.Plant))
-            return target is Fighter fighter && fighter.Model.Camp == Camp.Zombie;
-        else
-            return false;
-    }
-    public override bool FriendTarget => true;
-    public override async Task Play(ITarget target)
-    {
-        if (target.CanBeFighter(out var zomb) && zomb.Camp == Camp.Zombie)
-        {
-            FighterCardModel plant = await CardCmd.PlayerChoiceFighter(null, this, true, (itg) => itg.Camp == Camp.Plant);
+	public override bool TargetFilter(ITarget target)
+	{
+		if (Fighter.HasFighter(f => f.Model.Camp == Camp.Plant))
+			return target is Fighter fighter && fighter.Model.Camp == Camp.Zombie;
+		else
+			return false;
+	}
+	public override bool FriendTarget => true;
+	public override async Task Play(ITarget target)
+	{
+		if (target.CanBeFighter(out var zomb) && zomb.Camp == Camp.Zombie)
+		{
+			FighterCardModel plant = await CardCmd.PlayerChoiceFighter(null, this, true, (itg) => itg.Camp == Camp.Plant);
 
-            await PlayInstantAnimation("intro", target);
+			await PlayInstantAnimation("intro", target);
 
-            await zomb.Kill(Variable.VariableReason.Trick);
+			await zomb.Die(Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
 
-            if (plant != null)
-            {
-                await PlayInstantAnimation("hit", plant.Targeting());
+			if (plant != null)
+			{
+				await PlayInstantAnimation("hit", plant.Targeting());
 
-                await plant.ApplyDamage(GetSignInt("Health"), Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
-            }
-        }
-    }
+				await plant.ApplyDamage(GetSignInt("Health"), Variable.VariableReason.Zombie | Variable.VariableReason.Trick | Variable.VariableReason.Damaged);
+			}
+		}
+	}
 }

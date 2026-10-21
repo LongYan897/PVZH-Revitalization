@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6oknyr5r8oqs"
-path="res://.godot/imported/sh3.png-1eaefa55b0f76c67c457b3de2363ca8a.ctex"
+uid="uid://dj8ufx3ayxlu"
+path="res://.godot/imported/greenShadow.png-5398393df5fd32ca8bf119c31bdf5a15.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://素材(C#)/战斗胜利/sh3.png"
-dest_files=["res://.godot/imported/sh3.png-1eaefa55b0f76c67c457b3de2363ca8a.ctex"]
+source_file="res://素材/英雄素材/绿影侠/greenShadow.png"
+dest_files=["res://.godot/imported/greenShadow.png-5398393df5fd32ca8bf119c31bdf5a15.ctex"]
 
 [params]
 
