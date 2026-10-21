@@ -490,6 +490,7 @@ public partial class CardDes : Control
             await AppendWithIcons(exLabel, Model.ExDescription ?? "", convertLinks: true);
             await SetDescription(Model.GetDescription());
             GetNode<RichTextLabel>("%故事标签").Text = Model.Flavor;
+            FitStoryFontSize(GetNode<RichTextLabel>("%故事标签"));
             if (Model.Cost.HasChanged)
             {
                 if (Model.Cost.PositiveChanged)
@@ -738,6 +739,22 @@ public partial class CardDes : Control
 
             Visible = true;
         }
+    }
+    private static void FitStoryFontSize(RichTextLabel label, int baseSize = 38, int minSize = 12, int maxChars = 20)
+    {
+        int length = label.GetParsedText().Length;
+        if (length <= 0) return;
+
+        float ratio = length <= maxChars
+            ? 1f
+            : Mathf.Sqrt((float)maxChars / length);
+        int size = Mathf.Clamp(Mathf.RoundToInt(baseSize * ratio), minSize, baseSize);
+
+        label.AddThemeFontSizeOverride("normal_font_size", size);
+        label.AddThemeFontSizeOverride("bold_font_size", size);
+        label.AddThemeFontSizeOverride("italics_font_size", size);
+        label.AddThemeFontSizeOverride("bold_italics_font_size", size);
+        label.AddThemeFontSizeOverride("mono_font_size", size);
     }
     private Tween _tweenAtk;
     private Tween _tweenHp;
