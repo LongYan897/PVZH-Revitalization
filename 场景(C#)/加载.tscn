@@ -5,6 +5,7 @@
 [ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="2_uagl4"]
 
 [node name="加载" type="Node2D" unique_id=2051238835]
+visible = false
 script = ExtResource("1_el382")
 metadata/_custom_type_script = "uid://4c4i8ptdqmhi"
 

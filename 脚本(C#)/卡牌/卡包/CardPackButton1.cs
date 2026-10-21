@@ -1,7 +1,8 @@
 using Godot;
 using System.Threading.Tasks;
+namespace Pack;
 
-public partial class CardPackButton : Panel
+public partial class CardPackButton1 : Panel
 {
 	private bool _isPressed = false;
 	private Tween _scaleTween; // 存储 Tween，防止多次点击/悬停导致动画冲突
