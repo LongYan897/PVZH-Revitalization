@@ -82,7 +82,9 @@ public static class SceneManager
 		await Clear();
 		var parent =
 			Main.SceneContainer;
-		_LoadTask = new TaskCompletionSource<bool>();
+        var subParent =
+            Main.SubSceneContainer;
+        _LoadTask = new TaskCompletionSource<bool>();
 		var scene = subMenu.Instantiate();
 		scene.Visible = false;
 		// 只有勾了 ShowLoading 的“整屏场景”才过加载界面，二级面板直接进
@@ -98,7 +100,7 @@ public static class SceneManager
 		{
 			var last = Menus.Last().Key;
 			Menus[subMenu] = last;
-			last.Destory();
+			last.Reparent(subParent);
 			parent.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
 		}
 		await LoadTask;
@@ -111,6 +113,7 @@ public static class SceneManager
 	/// </summary>
 	public static async void ReturnToSub()
 	{
+		if (Menus.Count == 0) return;
 		var last = Menus.Last();
 		Menus.Remove(last.Key);
 		if (last.Value == null)

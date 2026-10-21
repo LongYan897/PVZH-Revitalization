@@ -63,7 +63,6 @@ offset_top = 1205.0
 offset_right = 447.0
 offset_bottom = 1205.0
 scale = Vector2(0.7, 0.7)
-ShowLoading = false
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
@@ -119,9 +118,13 @@ scale = Vector2(1.25, 1.25)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
+[node name="SubScene" type="CanvasLayer" parent="Scene" unique_id=454554130]
+unique_name_in_owner = true
+layer = 3
+
 [node name="UponScene" type="CanvasLayer" parent="Scene" unique_id=552437376]
 unique_name_in_owner = true
-layer = 0
+layer = 5
 follow_viewport_enabled = true
 
 [node name="Button" type="CanvasLayer" parent="Scene" unique_id=948884562]
