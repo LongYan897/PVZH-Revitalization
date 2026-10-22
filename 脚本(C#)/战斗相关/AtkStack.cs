@@ -74,4 +74,9 @@ public class AtkStack
     /// 额外攻击次数（狂热/双重打击累加）
     /// </summary>
     public int ExtraAttacks { get; set; }
+
+    /// <summary>
+    /// 不增加护盾值
+    /// </summary>
+    public bool IgnoreShield {  get; set; }
 }

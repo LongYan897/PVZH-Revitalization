@@ -58,8 +58,10 @@ public partial class Main : Node
         DesLayer = GetNode<CanvasLayer>("Des");
 		AudioContainer = GetNode<Node2D>("Audios");
 		Load = GetNode<Loading>("%Load");
+		//
 		WavPlayer.SetBgMusic<MainMenuWav>();
 		TextureBag.SetCurrent<DiscoBag>();
+		//
 		var p1 = new Player("MME");
 		var p2 = new AiPlayer("Ai");
 		p2.PrefABox<SuperZombie>(new AllDancer());

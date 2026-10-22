@@ -33,7 +33,6 @@ public partial class BattleSubMenuScene : SubMenuScene
     {
         await Refresh();
         await PhraseManager.StartBattle();
-        await Win(PlayerManager.HostPlayer);
     }
     private static async Task Refresh()
     {
@@ -48,41 +47,91 @@ public partial class BattleSubMenuScene : SubMenuScene
     {
         var node = instance.GetNode<Node2D>("%战斗胜利");
         var heroIcon = player.Status.Hero.Data.WinningIcon.Load<Texture2D>();
-        node.GetNode<TextureRect>("Hero").Texture = heroIcon;
+        node.GetNode<TextureRect>("%Hero").Texture = heroIcon;
         node.Visible = true;
-        var icon = node.GetNode<TextureRect>("Hero");
+
+        var icon = node.GetNode<TextureRect>("%Hero");
         var flag = node.GetNode<Sprite2D>("Ribbon");
         var label = node.GetNode<Label>("%Label");
         var glow = node.GetNode<Node2D>("Glow");
         var rect = node.GetNode<ColorRect>("ColorRect");
-        label.Position = new(240f, -510f);
+        var pathFollow = node.GetNode<PathFollow2D>("%PathFollow");
+        var path = node.GetNode<Path2D>("%Path");
+
+        label.Position = new(-120f, -710f);
         label.Text = player.Status.Hero.Camp.Plant() ? "植物胜利！" : "僵尸胜利！";
-        glow.Position = new(515.0f, 799.0f);
+        label.Modulate = new Color(1, 1, 1, 0);
+        glow.Position = new(515.0f, 899.0f);
         glow.Scale = new(0, 0);
-        icon.Position = new(94.0f, 272.0f);
-        icon.Scale = new(0,0);
-        flag.Scale = new(1.8f, 1.8f);
+        flag.Scale = new(1.4f, 1.4f);
         flag.Modulate = new(1, 1, 1, 1);
-        flag.Texture = player.Status.Hero.Camp.Switch(GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbon.png"),GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbonz.png"));
-        Tween tweenR = instance.CreateTween();
-        tweenR.TweenProperty(rect, "modulate", new Color(1,1,1,1), 0.3f);
-        Tween tween = instance.CreateTween();
-        tween.TweenProperty(label,"position", new Vector2(240f, 67f),0.5f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
-        await tween.ToTask();
-        Tween tween1 = instance.CreateTween();
-        Tween tween2 = instance.CreateTween();
-        Tween tween3 = instance.CreateTween();
-        Tween tween4 = instance.CreateTween();
-        tween1.TweenProperty(glow, "position", new Vector2(360.0f, 668.0f),0.4f);
-        tween2.TweenProperty(glow, "scale", new Vector2(1.4f,1.4f),0.4f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
-        tween3.TweenProperty(icon, "position", new Vector2(0, 198.0f), 0.4f);
-        tween4.TweenProperty(icon, "scale", new Vector2(1,1), 0.4f);
-        await Task.WhenAll(tween1.ToTask(), tween2.ToTask(),tween3.ToTask(),tween4.ToTask());
-        Tween tween5 = instance.CreateTween();
-        Tween tween6 = instance.CreateTween();
-        tween5.TweenProperty(flag, "scale", new Vector2(2.4f,2.4f),0.2f);
-        tween6.TweenProperty(flag, "modulate", new Color(1,1,1,0), 0.2f);
-        await Task.WhenAll(tween5.ToTask(), tween6.ToTask());
+        flag.Texture = player.Status.Hero.Camp.Switch(
+            GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbon.png"),
+            GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbonz.png"));
+        icon.Position = Vector2.Zero;
+        icon.Scale = new(0, 0);
+        rect.Modulate = new Color(1, 1, 1, 0);
+        pathFollow.ProgressRatio = 0f;
+
+        var t = instance.CreateTween();
+        t.SetParallel(true);
+
+        t.TweenProperty(rect, "modulate", new Color(1, 1, 1, 1), 0.74f)
+         .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Sine);
+
+        t.TweenProperty(label, "position", new Vector2(-120f, -46f), 0.9f)
+         .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        t.TweenProperty(label, "modulate", new Color(1, 1, 1, 1), 0.6f)
+         .SetEase(Tween.EaseType.Out);
+
+        t.TweenProperty(glow, "position", new Vector2(360.0f, 604.0f), 0.74f)
+         .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        t.TweenProperty(glow, "scale", new Vector2(1.5f, 1.5f), 0.74f)
+         .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        t.TweenProperty(glow, "scale", new Vector2(1.4f, 1.4f), 0.3f)
+         .SetDelay(0.74f).SetEase(Tween.EaseType.InOut)
+         .SetTrans(Tween.TransitionType.Sine);
+
+        t.TweenProperty(icon, "scale", new Vector2(1.1f, 1.1f), 0.74f)
+         .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back);
+        t.TweenProperty(icon, "scale", new Vector2(1, 1), 0.3f)
+         .SetDelay(0.74f).SetEase(Tween.EaseType.InOut)
+         .SetTrans(Tween.TransitionType.Sine);
+
+        t.TweenProperty(pathFollow, "progress_ratio", 0.7061f, 0.99f)
+         .SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Cubic);
+
+        await t.ToTask();
+        await instance.ToSignal(instance.GetTree().CreateTimer(0.2f), Timer.SignalName.Timeout);
+
+        var t2 = instance.CreateTween();
+        t2.SetParallel(true);
+
+        t2.TweenProperty(flag, "scale", new Vector2(1.6f, 1.6f), 0.15f)
+          .SetEase(Tween.EaseType.Out);
+        t2.TweenProperty(flag, "scale", new Vector2(2.4f, 2.4f), 0.9f)
+          .SetDelay(0.15f).SetEase(Tween.EaseType.In)
+          .SetTrans(Tween.TransitionType.Quad);
+        t2.TweenProperty(flag, "modulate", new Color(1, 1, 1, 0), 0.8f)
+          .SetDelay(0.2f).SetEase(Tween.EaseType.In)
+          .SetTrans(Tween.TransitionType.Sine);
+
+        t2.TweenProperty(pathFollow, "progress_ratio", 1.0f, 1.05f)
+          .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
+
+        t2.TweenProperty(icon, "scale", new Vector2(1.15f, 1.15f), 0.15f)
+          .SetEase(Tween.EaseType.Out);
+        t2.TweenProperty(icon, "scale", new Vector2(0, 0), 0.6f)
+          .SetDelay(0.15f).SetEase(Tween.EaseType.In)
+          .SetTrans(Tween.TransitionType.Back);
+
+        t2.TweenProperty(glow, "scale", new Vector2(1.8f, 1.8f), 0.2f)
+          .SetEase(Tween.EaseType.Out);
+        t2.TweenProperty(glow, "scale", new Vector2(0, 0), 0.55f)
+          .SetDelay(0.2f).SetEase(Tween.EaseType.In)
+          .SetTrans(Tween.TransitionType.Back);
+
+        await t2.ToTask();
         SceneManager.ReturnToSub();
     }
     private static async Task Prepare()
@@ -187,16 +236,29 @@ public partial class BattleSubMenuScene : SubMenuScene
     {
         freshAwaiters?.SetResult(true);
     }
-    public static async Task PlayHurt(Player player, int amount, int shieldAmount, CardModel cardModel)
+    public static async Task PlayHurt(Player player, int amount, int shieldAmount)
     {
         CardCmd.PushStop();
         if (player == PlayerManager.HostPlayer)
         {
-            await instance.GetNode<HeroHealth>("%英雄血量").Hurt(player.Status.Hero, amount, shieldAmount, cardModel, instance.GetNode<SpineHandler>("%护盾"));
+            await instance.GetNode<HeroHealth>("%英雄血量").Hurt(player.Status.Hero, amount, shieldAmount, instance.GetNode<SpineHandler>("%护盾"));
         }
         else
         {
-            await instance.GetNode<HeroHealth>("%英雄血量2").Hurt(player.Status.Hero, amount, shieldAmount, cardModel, instance.GetNode<SpineHandler>("%护盾2"));
+            await instance.GetNode<HeroHealth>("%英雄血量2").Hurt(player.Status.Hero, amount, shieldAmount, instance.GetNode<SpineHandler>("%护盾2"));
+        }
+        CardCmd.PopStop();
+    }
+    public static async Task PlayLoseShield(Player player,int amount)
+    {
+        CardCmd.PushStop();
+        if (player == PlayerManager.HostPlayer)
+        {
+            await instance.GetNode<HeroHealth>("%英雄血量").LoseShield(player.Status.Hero, amount, instance.GetNode<SpineHandler>("%护盾"));
+        }
+        else
+        {
+            await instance.GetNode<HeroHealth>("%英雄血量2").LoseShield(player.Status.Hero, amount, instance.GetNode<SpineHandler>("%护盾2"));
         }
         CardCmd.PopStop();
     }

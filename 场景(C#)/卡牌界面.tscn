@@ -275,6 +275,7 @@ offset_left = -157.0
 offset_top = -88.25
 offset_right = 157.0
 offset_bottom = 225.75
+scale = Vector2(1.05, 1.05)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = SubResource("ViewportTexture_oon7a")
 

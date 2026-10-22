@@ -83,16 +83,17 @@ public class Road
                 stks.Add(stk);
             }
             var plantf = fighters.FirstOrDefault(f => f.Plant1);
+            var plant = fighters.FirstOrDefault(f => f.Plant2);
+            var bothppf = plantf != null && plant != null;
             if (plantf != null)
             {
                 var stk = new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current);
                 await plantf?.Model?.Battle(stk);
                 stks.Add(stk);
             }
-            var plant = fighters.FirstOrDefault(f => f.Plant2);
             if (plant != null)
             {
-                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current);
+                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current) { IgnoreShield = bothppf };
                 await plant?.Model?.Battle(stk);
                 stks.Add(stk);
             }
@@ -114,6 +115,8 @@ public class Road
                 }
             }
             var plantf = fighters.FirstOrDefault(f => f.Plant1);
+            var plant = fighters.FirstOrDefault(f => f.Plant2);
+            var bothppf = plantf != null && plant != null;
             if (plantf != null)
             {
                 if (stks.Any(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0))
@@ -124,14 +127,13 @@ public class Road
                     await plantf.Model.Battle(stk);
                 }
             }
-            var plant = fighters.FirstOrDefault(f => f.Plant2);
             if (plant != null)
             {
                 if (stks.Any(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0))
                 {
                     var stk = stks.FirstOrDefault(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0);
                     stk.ExtraAttacks -= 1;
-
+                    stk.IgnoreShield = bothppf;
                     await plant.Model.Battle(stk);
 
                 }
