@@ -449,13 +449,23 @@ public class FighterCardModel : CardModel
     {
         if (IsPlaced)
         {
-            if (key == "Attack" || key == "Health" || key == "MaxHealth")
+            if (key == "Health" || key == "MaxHealth")
             {
                 if (valueAfter is int t && valueBefore is int tb)
                 {
                     if (t - tb > 0)
                     {
                         Fighter.GetNode(this).Boost();
+                    }
+                }
+            }
+            if (key == "Attack")
+            {
+                if (valueAfter is int t && valueBefore is int tb)
+                {
+                    if (t - tb > 0)
+                    {
+                        Fighter.GetNode(this).BoostAtk();
                     }
                 }
             }

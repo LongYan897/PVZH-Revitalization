@@ -211,7 +211,10 @@ public partial class CardDes : Control
         }
     }
     private static readonly Regex IconRegex =
-        new Regex(@"=(\w+)=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
+    new Regex(@"=(\w+)=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
+
+    private static readonly Regex UrlIconRegex =
+        new Regex(@"==([^=]+?)(?:\{([^}]*)\})?==", RegexOptions.Compiled);
 
     private static readonly Regex LinkRegex =
         new Regex(@"_([^_]+)_", RegexOptions.Compiled);
@@ -256,6 +259,44 @@ public partial class CardDes : Control
 
         return text;
     }
+    private static bool TryExtractLinkMeta(string raw, out string meta, out string display)
+    {
+        meta = null;
+        display = null;
+
+        var mb = ArgBeforeRegex.Match(raw);
+        if (mb.Success)
+        {
+            char sep = mb.Groups[1].Value[0];
+            string arg = mb.Groups[2].Value;
+            string word = mb.Groups[3].Value;
+            meta = $"{word}|{arg}|{sep}|before";
+            display = sep == '#' ? $"${arg}${word}" : $"{arg}{word}";
+            return true;
+        }
+
+        var ma = ArgAfterRegex.Match(raw);
+        if (ma.Success)
+        {
+            string word = ma.Groups[1].Value;
+            char sep = ma.Groups[2].Value[0];
+            string arg = ma.Groups[3].Value;
+            meta = $"{word}|{arg}|{sep}|after";
+            display = sep == '#' ? $"{word}${arg}$" : $"{word}{arg}";
+            return true;
+        }
+
+        var ml = LinkRegex.Match(raw);
+        if (ml.Success)
+        {
+            meta = ml.Groups[1].Value;
+            display = ml.Groups[1].Value;
+            return true;
+        }
+
+        return false;
+    }
+
     private static readonly Regex PlaceholderRegex =
     new Regex(@"\{([#&/]+):([nx])\}", RegexOptions.Compiled);
 
@@ -284,9 +325,21 @@ public partial class CardDes : Control
         label.Clear();
         label.BbcodeEnabled = true;
 
-        int last = 0;
+        var all = new List<(Match m, bool isUrl)>();
+        foreach (Match m in UrlIconRegex.Matches(raw)) all.Add((m, true));
         foreach (Match m in IconRegex.Matches(raw))
         {
+            if (all.Any(t => t.isUrl && m.Index >= t.m.Index && m.Index + m.Length <= t.m.Index + t.m.Length))
+                continue;
+            all.Add((m, false));
+        }
+        all.Sort((a, b) => a.m.Index.CompareTo(b.m.Index));
+
+        int last = 0;
+        foreach (var (m, isUrl) in all)
+        {
+            if (m.Index < last) continue;
+
             if (m.Index > last)
             {
                 string seg = raw.Substring(last, m.Index - last);
@@ -294,22 +347,60 @@ public partial class CardDes : Control
                 label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
             }
 
-            string name = m.Groups[1].Value;
-            bool hasNum = m.Groups[2].Success;
-            string value = hasNum ? m.Groups[2].Value : null;
-
-            if (Icon.TryGet(name, out var path, out var attr))
+            if (isUrl)
             {
-                if (hasNum)
+                string name = m.Groups[1].Value.Trim();
+                string urlRaw = m.Groups[2].Success ? m.Groups[2].Value : null;
+
+                if (Icon.TryGet(name, out var path, out var attr))
                 {
-                    var tex = await IconComposer.Instance.ComposeAsync(
-                        path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
-                    if (tex != null)
-                        label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+                    if (!string.IsNullOrEmpty(urlRaw) && TryExtractLinkMeta(urlRaw, out string meta, out string display))
+                    {
+                        string inner = $"[img=32]{path}[/img]{ConvertLabels(display)}";
+                        label.AppendText($"[color=#44ffff][url={meta}]{inner}[/url][/color]");
+                    }
+                    else
+                    {
+                        string meta2 = string.IsNullOrEmpty(urlRaw) ? name : urlRaw;
+                        bool hasNum = int.TryParse(meta2, out _);
+
+                        if (hasNum)
+                        {
+                            var tex = await IconComposer.Instance.ComposeAsync(
+                                path, meta2, attr.Color, attr.OutlineColor, attr.OutlineSize);
+                            if (tex != null)
+                                label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+                        }
+                        else
+                        {
+                            label.AppendText($"[color=#44ffff][url={meta2}][img=32]{path}[/img][/url][/color]");
+                        }
+                    }
                 }
                 else
                 {
-                    label.AppendText($"[img=32]{path}[/img]");
+                    label.AppendText(m.Value);
+                }
+            }
+            else
+            {
+                string name = m.Groups[1].Value;
+                bool hasNum = m.Groups[2].Success;
+                string value = hasNum ? m.Groups[2].Value : null;
+
+                if (Icon.TryGet(name, out var path, out var attr))
+                {
+                    if (hasNum)
+                    {
+                        var tex = await IconComposer.Instance.ComposeAsync(
+                            path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
+                        if (tex != null)
+                            label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+                    }
+                    else
+                    {
+                        label.AppendText($"[img=32]{path}[/img]");
+                    }
                 }
             }
 

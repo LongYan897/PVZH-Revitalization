@@ -170,7 +170,7 @@
   "Firefighter.Id": "9",
 
   "ButtonMushroom.Title": "草菇",
-  "ButtonMushroom.Des": "被_消灭_时：一只僵尸获得=Strength={-2}。",
+  "ButtonMushroom.Des": "被_消灭_：一只僵尸获得=Strength={-2}。",
   "ButtonMushroom.Cost": 1,
   "ButtonMushroom.Camp": "植物",
   "ButtonMushroom.Type": "单位",

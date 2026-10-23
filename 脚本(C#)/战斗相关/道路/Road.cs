@@ -167,15 +167,28 @@ public class Road
     /// </summary>
     private async Task ResolveDeaths(List<AtkStack> stacks)
     {
+        var dying = CardCmd.GetOrderedFighters()
+            .Where(f => f.Model is { IsDie: true })
+            .ToList();
+
         var tasks = new List<Task>();
-        foreach (var fighter in fighters.ToList())
+
+        foreach (var fighter in dying)
         {
-            if (fighter.Model is { IsDie: true } model)
-            {
-                await model.BeginDie(VariableReason.Fighter | VariableReason.Damaged, stacks.FirstOrDefault(stk => stk.Targets.Contains(fighter)));
-                tasks.Add(model.EndDie());
-            }
+            var related = stacks
+                .Where(stk => stk.Targets.Contains(fighter))
+                .ToList();
+
+            await fighter.Model.BeginDie(
+                VariableReason.Fighter | VariableReason.Damaged,
+                related.FirstOrDefault());
         }
+
+        foreach (var fighter in dying)
+        {
+            tasks.Add(fighter.Model.EndDie());
+        }
+
         await Task.WhenAll(tasks);
     }
 

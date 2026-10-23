@@ -187,12 +187,12 @@ public class CardModel
                 v += "_两栖_";
                 v += " ";
             }
-            if (fighter.AtkType.Current.ExLabel != null)
+            if (!string.IsNullOrEmpty(fighter.AtkType.Current.ExLabel))
             {
                 v += fighter.AtkType.Current.ExLabel;
                 v += " ";
             }
-            if (fighter.HpType.Current.ExLabel != null)
+            if (!string.IsNullOrEmpty(fighter.HpType.Current.ExLabel))
             {
                 v += fighter.HpType.Current.ExLabel;
                 v += " ";
@@ -604,19 +604,21 @@ public static class CardModelExtensions
         => model != null && model.Class.HasFlag(@class);
     public static List<string> GetAllStrings(this CardModel model)
     {
-        List<string> strings = new List<string>();
-        strings.Add(model.Rarity.ToName());
-        strings.Add(model.CardType.ToName());
-        strings.Add(model.Title);
-        strings.Add(model.Pack);
-        strings.Add(model.Camp.ToName());
-        strings.Add(model.Class.ToName());
-        strings.Add(model.Description);
-        strings.AddRange(model.Labels.Current);
-        strings.Add(model.Flavor);
-        strings.Add(model.CardType.ToName());
-        strings.Add(model.ExDescription);
-        strings.Add(model.Cost.Current.ToString());
+        List<string> strings =
+        [
+            model.Rarity.ToName(),
+            model.CardType.ToName(),
+            model.Title,
+            model.Pack,
+            model.Camp.ToName(),
+            model.Class.ToName(),
+            model.Description,
+            .. model.Labels.Current,
+            model.Flavor,
+            model.CardType.ToName(),
+            model.ExDescription,
+            model.Cost.Current.ToString(),
+        ];
         List<string> result = new List<string>(strings);
         foreach (string s in strings) if (string.IsNullOrEmpty(s)) { result.Remove(s); }
         return result;
