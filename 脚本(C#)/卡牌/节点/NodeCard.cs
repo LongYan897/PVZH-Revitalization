@@ -398,6 +398,11 @@ public partial class NodeCard : Control
 
 	public override void _Ready()
 	{
+		// 直接在场景里摆放的卡牌实例没有经过 CreateCard（不会写入 _baseScale），
+		// 这里用场景里设置的 scale 兜底；否则点击动画会 tween 到 _baseScale(0,0)，卡片被缩没。
+		if (_baseScale == Vector2.Zero)
+			_baseScale = Scale;
+
 		var hitBtn = GetNode<Button>("碰撞");
 		hitBtn.GuiInput += OnHitButtonGuiInput;
 		GetNode<Area2D>("碰撞箱").AreaEntered += AreaEntered;

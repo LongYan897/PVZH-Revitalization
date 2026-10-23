@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cekvcogcwvkuu"]
+
+[ext_resource type="Script" uid="uid://cjmmhbp1b5312" path="res://addons/StyleboxFancy/StyleBorder.gd" id="1_jcuk3"]
+[ext_resource type="Script" uid="uid://bkl6g25jwb47h" path="res://addons/StyleboxFancy/StyleBoxFancy.gd" id="2_5iy0u"]
+[ext_resource type="Script" uid="uid://ceid0iq0v368i" path="res://脚本(C#)/卡牌/卡包/CardBar.cs" id="3_5iy0u"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="3_n5elu"]
+
+[sub_resource type="StyleBox" id="StyleBox_abi3o"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_5iy0u")
+color = Color(0.11, 0.11, 0.11, 0.74509805)
+metadata/_custom_type_script = "uid://bkl6g25jwb47h"
+
+[node name="横幅" type="Panel" unique_id=1137179811]
+custom_minimum_size = Vector2(720, 50)
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBox_abi3o")
+script = ExtResource("3_5iy0u")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="介绍文本" type="Label" parent="." unique_id=499431902]
+layout_mode = 0
+offset_left = 21.0
+offset_right = 716.0
+offset_bottom = 50.0
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("3_n5elu")
+theme_override_font_sizes/font_size = 32
+text = "组名字"
+vertical_alignment = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true

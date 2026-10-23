@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="2_d5m1c"]
 [ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="2_n74wj"]
 [ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="3_n74wj"]
+[ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="5_2lx20"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_1cjfr"]
 [ext_resource type="PackedScene" uid="uid://b5x4veawhq8g4" path="res://场景(C#)/主界面按钮/僵尸任务.tscn" id="14_2lx20"]
 [ext_resource type="PackedScene" uid="uid://dy7pegrhba8bu" path="res://场景(C#)/主界面按钮/每日挑战.tscn" id="15_1cjfr"]
 [ext_resource type="PackedScene" uid="uid://b82k587le8ukv" path="res://场景(C#)/主界面按钮/对战.tscn" id="18_1pb50"]
@@ -27,6 +29,13 @@ shader_parameter/texture_scaling = Vector2(1, 1)
 shader_parameter/texture_rotation = 0.0
 shader_parameter/tint_color = Color(0.13725491, 0.53333336, 0.6745098, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00smb"]
+bg_color = Color(0, 0, 0, 0.6117647)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
 [node name="MainController" type="Node" unique_id=2010804404]
 script = ExtResource("1_u0aj0")
 metadata/_custom_type_script = "uid://ccaq7lefsnojt"
@@ -47,6 +56,36 @@ Color = Color(0.13725491, 0.53333336, 0.6745098, 1)
 metadata/_custom_type_script = "uid://c4d6enygyoawb"
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
+
+[node name="钻石" type="Panel" parent="Scene/ButtomScene" unique_id=702204985]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 33.0
+offset_right = 150.0
+offset_bottom = 93.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_00smb")
+
+[node name="钻石" type="TextureRect" parent="Scene/ButtomScene/钻石" unique_id=1533700988]
+layout_mode = 0
+offset_left = -22.000004
+offset_right = 88.4762
+offset_bottom = 114.53037
+scale = Vector2(0.525, 0.525)
+texture = ExtResource("5_2lx20")
+
+[node name="钻石数量" type="Label" parent="Scene/ButtomScene/钻石" unique_id=1178692357]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 60.0
+theme_override_fonts/font = ExtResource("6_1cjfr")
+theme_override_font_sizes/font_size = 54
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
 offset_left = 360.0
