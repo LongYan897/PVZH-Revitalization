@@ -87,9 +87,9 @@ public static class SceneManager
 		await Clear();
 		var parent =
 			Main.SceneContainer;
-        var subParent =
-            Main.SubSceneContainer;
-        _LoadTask = new TaskCompletionSource<bool>();
+		var subParent =
+			Main.SubSceneContainer;
+		_LoadTask = new TaskCompletionSource<bool>();
 		var scene = subMenu.Instantiate();
 		scene.Visible = false;
 		// 只有勾了 ShowLoading 的“整屏场景”才过加载界面，二级面板直接进

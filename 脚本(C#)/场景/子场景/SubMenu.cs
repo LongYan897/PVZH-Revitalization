@@ -34,10 +34,10 @@ public partial class SubMenu : Control
 	{
 		if (!canPress) return;
 		canPress = false;
-        Tween tween = CreateTween();
+		Tween tween = CreateTween();
 		tween.TweenProperty(this, "scale", (InitScale - 0.1f) * new Vector2(1, 1), 0.1f);
 		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
-        await ToSignal(tween, Tween.SignalName.Finished);
+		await ToSignal(tween, Tween.SignalName.Finished);
 		SceneManager.JumpToSub(this);
 	}
 	private bool canPress = true;
