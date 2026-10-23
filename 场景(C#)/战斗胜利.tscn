@@ -5,6 +5,13 @@
 [ext_resource type="Texture2D" uid="uid://cnuf3odi7pgv1" path="res://素材/英雄素材/超尸/superbrainz.png" id="2_5xtm1"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="3_ruav5"]
 
+[sub_resource type="Curve2D" id="Curve2D_5xtm1"]
+bake_interval = 0.01
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1150, 1210, 0, 0, 0, 0, 929, 962, 0, 0, 0, 0, 674, 725, 0, 0, 0, 0, 509, 600, 0, 0, 0, 0, 421, 543, 0, 0, 0, 0, 359, 510, 0, 0, 0, 0, 312, 496, 0, 0, 0, 0, 269, 489, 0, 0, 0, 0, 226, 488, 0, 0, 0, 0, 191, 501, 0, 0, 0, 0, 172, 527, 0, 0, 0, 0, 168, 560, 0, 0, 0, 0, 182, 607, 0, 0, 0, 0, 200, 630, 0, 0, 0, 0, 233, 643, 0, 0, 0, 0, 260, 653, 0, 0, 0, 0, 295, 653, 0, 0, 0, 0, 330, 653, 0, 0, 0, 0, 353, 640, 0, 0, 0, 0, 381, 612, 0, 0, 0, 0, 405, 585, 0, 0, 0, 0, 414, 570, 0, 0, 0, 0, 419, 543, 0, 0, 0, 0, 419, 520, 0, 0, 0, 0, 413, 494, 0, 0, 0, 0, 396, 470, 0, 0, 0, 0, 381, 458, 0, 0, 0, 0, 364, 450, 0, 0, 0, 0, 331, 453, 0, 0, 0, 0, 302, 471, 0, 0, 0, 0, 282, 491, 0, 0, 0, 0, 269, 522, 0, 0, 0, 0, 264, 572, 0, 0, 0, 0, 278, 632, 0, 0, 0, 0, 312, 704, 0, 0, 0, 0, 371, 782)
+}
+point_count = 36
+
 [node name="战斗胜利" type="Node2D" unique_id=346782537]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=691012042]
@@ -15,7 +22,7 @@ offset_bottom = 1553.0
 color = Color(0, 0, 0, 0.26666668)
 
 [node name="Glow" type="Node2D" parent="." unique_id=2147219713]
-position = Vector2(360, 668)
+position = Vector2(360, 604)
 scale = Vector2(1.4, 1.4)
 
 [node name="Sprite2D" type="TextureRect" parent="Glow" unique_id=1407886724]
@@ -37,10 +44,21 @@ scale = Vector2(1.5, 1.5)
 pivot_offset_ratio = Vector2(0.5, 1)
 texture = ExtResource("2_2d4ng")
 
-[node name="Hero" type="TextureRect" parent="." unique_id=492632292]
-offset_top = 198.0
+[node name="Path" type="Path2D" parent="." unique_id=673970358]
+unique_name_in_owner = true
+position = Vector2(-371, -426)
+curve = SubResource("Curve2D_5xtm1")
+
+[node name="PathFollow" type="PathFollow2D" parent="Path" unique_id=995842449]
+unique_name_in_owner = true
+position = Vector2(360.3575, 632.6425)
+progress = 1550.1389
+rotates = false
+
+[node name="Hero" type="TextureRect" parent="Path/PathFollow" unique_id=492632292]
+unique_name_in_owner = true
 offset_right = 720.0
-offset_bottom = 710.0
+offset_bottom = 512.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("2_5xtm1")
 expand_mode = 1
@@ -59,9 +77,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -318.5
-offset_top = -99.07141
+offset_top = -99.0
 offset_right = -78.5
-offset_bottom = -34.07141
+offset_bottom = -34.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)

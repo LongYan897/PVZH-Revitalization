@@ -20,7 +20,7 @@ public class RollingStone : CardModel
 		if (target.CanBeFighter(out FighterCardModel tg))
 		{
 			WavPlayer.Play<RollingStoneWav>();
-			await PlayInstantAnimation("intro", target);
+			await PlayLocationalAnimation("intro","intro1", target);
 			await tg.Die(Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
 		}
 	}

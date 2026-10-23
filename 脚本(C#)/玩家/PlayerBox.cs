@@ -22,8 +22,10 @@ namespace Play;
 /// </summary>
 public class PlayerBox
 {
+    private Random battleRng;
     public void PrefABox(Player player,HeroModel hero,PresetPack cards)
     {
+        battleRng = new();
         Player = player;
         Hero = hero;
         _deckCards = cards;
@@ -207,8 +209,7 @@ public class PlayerBox
         {
             return null;
         }
-        Random random = new();
-        int index = random.Next(unDrawed.Count);
+        int index = battleRng.Next(unDrawed.Count);
         var card = unDrawed[index];
         DeckRemoveCard(card);
         HandAddCard(card);

@@ -240,13 +240,11 @@ public class FighterCardModel : CardModel
 
     /// <summary>
     /// 触发死亡时点并播放死亡动画。
-    /// 调用前确保 Hp ≤ 0；方法内部会校验。
     /// </summary>
     /// <param name="reason">死亡原因</param>
     /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
     public async Task Die(Variable.VariableReason reason, AtkStack stack = null)
     {
-        if (!IsDie) return;
         if (IsDying) return;
         IsDying = true;
 
@@ -294,7 +292,7 @@ public class FighterCardModel : CardModel
         if (playHurtAnim && actual > 0)
             await Fighter.GetNode(this).Hurt(stack.FinalDamage);
 
-        if (Hp.Current <= 0 && immediateDeath)
+        if (IsDie && immediateDeath)
         {
             await Die(VariableReason.Damaged | reason,stack);
         }

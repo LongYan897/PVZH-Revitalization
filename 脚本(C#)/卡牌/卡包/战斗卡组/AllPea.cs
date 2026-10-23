@@ -13,6 +13,6 @@ namespace Card.Pack;
 public class AllPea : PresetPack
 {
     public override string PackName => "唯一爱豆";
-    public override IReadOnlyList<CardModel> Cards => 
-        new List<CardModel>().RepeatLoad<ButtonMushroom>(20).RepeatLoad<GrowMushroom>(20);
+    protected override IReadOnlyList<CardModel> DeckCards => 
+        new List<CardModel>().RepeatLoad<ButtonMushroom>(4).RepeatLoad<GrowMushroom>(4).RepeatLoad<SunFlower>(2);
 }

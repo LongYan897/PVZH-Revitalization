@@ -13,6 +13,6 @@ namespace Card.Pack;
 public class AllDancer : PresetPack
 {
     public override string PackName => "舞动";
-    public override IReadOnlyList<CardModel> Cards => 
-        new List<CardModel>().RepeatLoad<BackupDancer>(40);
+    protected override IReadOnlyList<CardModel> DeckCards => 
+        new List<CardModel>().RepeatLoad<BackupDancer>(20).RepeatLoad<RollingStone>(20);
 }

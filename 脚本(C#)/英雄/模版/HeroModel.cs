@@ -99,15 +99,19 @@ public abstract class HeroModel
     int amount,
     Variable.VariableReason reason,
     CardModel cardModel = null,
-    AtkStack stack = null)
+    AtkStack stack = null,
+    bool isShieldGain = true)
     {
         Random random = new();
         int shield = random.Next(1, 4);
+        if (!isShieldGain) shield = 0;
         Variable<bool> stop = new("HeroDamaged", false);
         stack ??= new(null, [Targeted()], null, amount);
         await CardCmd.TimingOnCards(null, Timing.TryStopHeroTakeDamage, stop, this);
         PlayAnimation("hit", true);
-        await BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield, cardModel);
+        if (amount > Health.Current)
+            amount = Health.Current;
+        await BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield);
         if (shield + Shield.Current >= 8)
         {
             await Shield.Reset(null);
@@ -117,12 +121,28 @@ public abstract class HeroModel
         await CardCmd.TimingOnCards(null, Timing.ModifyCardDamage, stack);
         await Health.Lose(stack.FinalDamage, reason, cardModel ?? stack.Attacker);
         await CardCmd.TimingOnCards(null, Timing.OnDamaged, stack);
-        await Shield.Gain(shield, Variable.VariableReason.Damaged, cardModel);
+        if (shield > 0)
+            await Shield.Gain(shield, Variable.VariableReason.Damaged, cardModel);
 
         if (Health.Current <= 0)
         {
-
+            await BattleSubMenuScene.Win(PlayerManager.GetPlayer(Camp.Plant() ? Camp.Zombie : Camp.Plant));
         }
+    }
+    /// <summary>
+    /// 失去护盾值
+    /// </summary>
+    /// <param name="amount">失去的数量</param>
+    /// <returns></returns>
+    public async Task LoseShield(int amount,
+    Variable.VariableReason reason,
+    CardModel cardModel = null)
+    {
+        if (amount <= 0) return;
+        if (amount > Shield.Current)
+            amount = Shield.Current;
+        await BattleSubMenuScene.PlayLoseShield(PlayerManager.GetFromHero(this),amount);
+        await Shield.Lose(amount,reason,cardModel);
     }
     /// <summary>
     /// 加载英雄

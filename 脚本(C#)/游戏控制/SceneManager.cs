@@ -1,5 +1,7 @@
+using Battle.Entity;
 using Card;
 using Godot;
+using Hero;
 using Scene;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +71,9 @@ public static class SceneManager
 	private static Task Clear()
 	{
 		NodeCard.Clear();
+		HeroInstance.Clear();
+		Fighter.ClearAll();
+		CardDes.Close();
 		return Task.CompletedTask;
 	}
 	/// <summary>

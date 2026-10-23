@@ -3,6 +3,7 @@ using Controller;
 using Godot;
 using Hero.Model;
 using Spine;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,7 +32,17 @@ public partial class HeroHealth : Node2D
     {
         return index * (1f / 8f);
     }
-    public async Task Hurt(HeroModel hero, int amount, int shieldAmount, CardModel cardModel, SpineHandler shield)
+    public async Task LoseShield(HeroModel hero, int amount, SpineHandler shield)
+    {
+        var mat = _shieldMat;
+        Tween tween = CreateTween();
+        tween.TweenMethod(Callable.From((float v) =>
+        {
+            mat.SetShaderParameter("progress", v);
+        }), GetRot(hero.Shield.Current), GetRot(hero.Shield.Current - amount), amount * 0.1f).SetTrans(Tween.TransitionType.Quad);
+        await ToSignal(tween, Tween.SignalName.Finished);
+    }
+    public async Task Hurt(HeroModel hero, int amount, int shieldAmount, SpineHandler shield)
     {
         var mat = _shieldMat;
         var i = shieldAmount;
@@ -53,7 +64,7 @@ public partial class HeroHealth : Node2D
         GetNode<Sprite2D>("生命值"), "scale", origin * 1.25f, 3 * 0.1f);
         tween4.TweenProperty(
         GetNode<Sprite2D>("生命值"), "scale", origin, 3 * 0.1f);
-        if (hero.Shield.Current + i >= 8)
+        if (hero.Shield.Current + i >= 8 && shieldAmount > 0)
         {
             GetNode<SpineHandler>("%护盾").Visible = true;
             GetNode<SpineHandler>("%护盾").SetAttachment("护盾槽位", str);
@@ -88,6 +99,7 @@ public partial class HeroHealth : Node2D
         }
         var final = GetNode<Label>("%数值").Text.ToInt() - amount;
         GetNode<Label>("%数值").Text = $"{final}";
+        if (shieldAmount <= 0) return;
         GetNode<SpineHandler>("%护盾").Visible = true;
         GetNode<SpineHandler>("%护盾").SetAttachment("护盾槽位", str);
         GetNode<SpineHandler>("%护盾").SetAnimation(0, "shieldIntro", false);

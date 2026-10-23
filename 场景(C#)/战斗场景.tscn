@@ -415,6 +415,7 @@ layer = 75
 
 [node name="战斗胜利" parent="战斗胜利层" unique_id=346782537 instance=ExtResource("18_bggyq")]
 unique_name_in_owner = true
+visible = false
 
 [editable path="道路层"]
 [editable path="阶段/动画"]

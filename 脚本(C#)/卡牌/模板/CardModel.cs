@@ -219,6 +219,37 @@ public class CardModel
             };
         }
     }
+    /// <summary>
+    /// 播放一个即时的动画,如果玩家是HostPlayer播放up,反之down
+    /// </summary>
+    /// <param name="up">向上的动画</param>
+    /// <param name="down">向下的动画</param>
+    /// <param name="target">目标</param>
+    /// <param name="track">轨道</param>
+    /// <param name="eventName">要等待到哪一个事件(null为等到动画完成)</param>
+    /// <returns></returns>
+    protected async Task PlayLocationalAnimation(string up,string down, ITarget target, int track = 0, string eventName = null)
+    {
+        var node = Main.Animator;
+        var sp = SpineHandler.Get();
+        sp.Position = ((Control)(GodotObject)target).GlobalPosition;
+        sp.Scale = new(0.7f, 0.7f);
+        node.AddChild(sp);
+        sp.LoadSkeletonData(AnimationPath);
+        var animName = PlayerManager.HostPlayer == Player ? up : down;
+        if (eventName != null)
+            await sp.SetAnimationAndFreeOnEvent(track, animName, eventName, false);
+        else
+            await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
+    }
+    /// <summary>
+    /// 播放一个即时的动画
+    /// </summary>
+    /// <param name="animName">动画名</param>
+    /// <param name="target">目标</param>
+    /// <param name="track">轨道</param>
+    /// <param name="eventName">要等待到哪一个事件(null为等到动画完成)</param>
+    /// <returns></returns>
     protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0, string eventName = null)
     {
         var node = Main.Animator;
@@ -232,6 +263,13 @@ public class CardModel
         else
             await sp.SetAnimationAndFreeOnEndTask(track, animName, false);
     }
+    /// <summary>
+    /// 播放一个循环的动画
+    /// </summary>
+    /// <param name="animName">动画名</param>
+    /// <param name="target">目标</param>
+    /// <param name="track">轨道</param>
+    /// <returns></returns>
     protected async Task PlayLoopAnimation(string animName, ITarget target, int track = 0)
     {
         var node = Main.Animator;

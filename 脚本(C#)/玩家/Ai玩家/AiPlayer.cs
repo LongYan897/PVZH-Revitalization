@@ -24,7 +24,7 @@ public class AiPlayer : Player
     private const int MaxHand = 10;
     private const int FighterFeat = 12;
     private const int MaxFighters = 12;
-    private const int GlobalFeat = 24;
+    private const int GlobalFeat = 27;
     private const int TgtFeat = 8;
     private const int InDim = MaxHand * HandFeat + MaxFighters * FighterFeat + GlobalFeat;
     private const int HidDim = 128;
@@ -92,11 +92,11 @@ public class AiPlayer : Player
     private const float ValueCoef = 0.5f;
     private const int SaveEverySteps = 10;
 
-    private const string WeightPath = "res://ai_weights.json";
+    private const string WeightPath = "res://数据资源/ai_weights.json";
 
     private static readonly List<Func<PlayerBox, CardModel, ITarget, float>> ActionRules = new();
 
-    public static bool TrainingMode = false;
+    public static bool TrainingMode = true;
 
     private bool _hasPending = false;
     private readonly float[] _pendingState = new float[InDim];
@@ -291,6 +291,8 @@ public class AiPlayer : Player
                 int myU0 = CountUnits(s.Hero.Camp);
                 int enU0 = CountUnits(EnemyCamp());
                 int cost0 = s.Hero.Cost.Current;
+                float myFv0 = FieldValue(s.Hero.Camp);
+                float enFv0 = FieldValue(EnemyCamp());
 
                 var node = NodeCard.GetNode(pick.Card);
                 if (node == null || !GodotObject.IsInstanceValid(node))
@@ -310,6 +312,8 @@ public class AiPlayer : Player
                         enU0, CountUnits(EnemyCamp()),
                         cost0 - s.Hero.Cost.Current,
                         pick.Card);
+                    r += (FieldValue(s.Hero.Camp) - myFv0) * 0.1f;
+                    r += (enFv0 - FieldValue(EnemyCamp())) * 0.15f;
                     UpdateStep(r, false);
                     _stepsSinceSave++;
                     if (_stepsSinceSave >= SaveEverySteps)
@@ -389,11 +393,19 @@ public class AiPlayer : Player
             {
                 float d = -adv * ((i == _pendingHandIdx ? 1f : 0f) - handP[i]);
                 if (d == 0f) continue;
-                int featBase = (i - 1) * HandFeat;
-                int wBase = i * (HidDim + HandFeat);
-                for (int j = 0; j < HidDim; j++) gWH[wBase + j] += d * h2[j];
-                for (int j = 0; j < HandFeat; j++) gWH[wBase + HidDim + j] += d * xBuf[featBase + j];
-                gBH[i] += d;
+                if (i == 0)
+                {
+                    for (int j = 0; j < HidDim; j++) gWV[j] += d * h2[j];
+                    gBH[0] += d;
+                }
+                else
+                {
+                    int featBase = (i - 1) * HandFeat;
+                    int wBase = i * (HidDim + HandFeat);
+                    for (int j = 0; j < HidDim; j++) gWH[wBase + j] += d * h2[j];
+                    for (int j = 0; j < HandFeat; j++) gWH[wBase + HidDim + j] += d * xBuf[featBase + j];
+                    gBH[i] += d;
+                }
             }
         }
         else
@@ -496,16 +508,26 @@ public class AiPlayer : Player
         v[i++] = (eBox?.HandCards.Count ?? 0) / 10f;
 
         int myUnits = 0, enemyUnits = 0, myAtk = 0, enemyAtk = 0;
+        float myFieldValue = 0f, enemyFieldValue = 0f;
         foreach (var f in fighters)
         {
             if (f.Model == null || f.Model.IsDie) continue;
-            if (f.Model.Camp == myCamp) { myUnits++; myAtk += f.Model.Atk.Current; }
-            else { enemyUnits++; enemyAtk += f.Model.Atk.Current; }
+            var m = f.Model;
+            float fv = m.Atk.Current * 1.0f
+                     + m.Hp.Current * 0.8f
+                     + (f.IsHiding ? 0f : 0.3f)
+                     + (m.CardTag.HasFlag(CardTag.Amphibious) ? 0.2f : 0f)
+                     + (m.CardTag.HasFlag(CardTag.Coop) ? 0.2f : 0f);
+
+            if (m.Camp == myCamp) { myUnits++; myAtk += m.Atk.Current; myFieldValue += fv; }
+            else { enemyUnits++; enemyAtk += m.Atk.Current; enemyFieldValue += fv; }
         }
         v[i++] = myUnits / 12f;
         v[i++] = enemyUnits / 12f;
         v[i++] = myAtk / 30f;
         v[i++] = enemyAtk / 30f;
+        v[i++] = myFieldValue / 40f;
+        v[i++] = enemyFieldValue / 40f;
 
         v[i++] = IsMyTurn(myCamp) ? 1f : 0f;
         v[i++] = PhraseManager.Phrase == Phrases.Phrase.Fight ? 1f : 0f;
@@ -730,6 +752,22 @@ public class AiPlayer : Player
     private static int CountUnits(Camp camp)
         => TargetRegistry.All.OfType<Fighter>().Count(f => f.Model != null && f.Model.Camp == camp && !f.IsHiding);
 
+    private static float FieldValue(Camp camp)
+    {
+        float sum = 0f;
+        foreach (var f in TargetRegistry.All.OfType<Fighter>())
+        {
+            if (f.Model == null || f.Model.IsDie || f.Model.Camp != camp || f.IsHiding) continue;
+            var m = f.Model;
+            sum += m.Atk.Current * 1.0f
+                 + m.Hp.Current * 0.8f
+                 + 0.3f
+                 + (m.CardTag.HasFlag(CardTag.Amphibious) ? 0.2f : 0f)
+                 + (m.CardTag.HasFlag(CardTag.Coop) ? 0.2f : 0f);
+        }
+        return sum;
+    }
+
     private float ShapeReward(int hp0, int hp1, int ehp0, int ehp1,
                               int myU0, int myU1, int enU0, int enU1,
                               int costSpent, CardModel card)
@@ -825,7 +863,7 @@ public class AiPlayer : Player
                 adamT
             };
             var json = JsonSerializer.Serialize(data);
-            string path = OS.HasFeature("editor") ? "res://ai_weights.json" : "user://ai_weights.json";
+            string path = OS.HasFeature("editor") ? WeightPath : "user://ai_weights.json";
             using var f = Godot.FileAccess.Open(path, Godot.FileAccess.ModeFlags.Write);
             f.StoreString(json);
         }
