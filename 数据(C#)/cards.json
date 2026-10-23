@@ -167,7 +167,7 @@
   "Firefighter.Atk": 4,
   "Firefighter.AtkType": "普通",
   "Firefighter.Flavor": "他对爬树救猫咪这种事有点热心过头了。",
-  "Firefighter.Id": "9",
+  "Firefighter.Id": 9,
 
   "ButtonMushroom.Title": "草菇",
   "ButtonMushroom.Des": "被_消灭_：一只僵尸获得=Strength={-2}。",
@@ -185,7 +185,7 @@
   "ButtonMushroom.Atk": 1,
   "ButtonMushroom.AtkType": "普通",
   "ButtonMushroom.Flavor": "大家总是对她说：“你真是个小可爱！”但她不光可爱，也很机灵幽默哦。",
-  "ButtonMushroom.Id": "10",
+  "ButtonMushroom.Id": 10,
 
   "GrowMushroom.Title": "成长蘑菇",
   "GrowMushroom.Des": "_打出_：另一株植物获得=Strength={+2}/=Health={+2}。",
@@ -203,5 +203,23 @@
   "GrowMushroom.Atk": 2,
   "GrowMushroom.AtkType": "普通",
   "GrowMushroom.Flavor": "她总能让其他植物绽放出最美的一面。",
-  "GrowMushroom.Id": "11"
+  "GrowMushroom.Id": 11,
+
+  "Cattail.Title": "猫尾草",
+  "Cattail.Des": "",
+  "Cattail.Cost": 3,
+  "Cattail.Camp": "植物",
+  "Cattail.Type": "单位",
+  "Cattail.Rarity": "基础",
+  "Cattail.Category": "聪明",
+  "Cattail.Animation": "res://数据资源/植物动画/草菇动画.tres",
+  "Cattail.Icon": "res://场景(C#)/卡面/cattail.tscn",
+  "Cattail.Label": [ "动物" ],
+  "Cattail.Tag": [ "两栖" ],
+  "Cattail.Hp": 2,
+  "Cattail.HpType": "普通",
+  "Cattail.Atk": 3,
+  "Cattail.AtkType": "追踪",
+  "Cattail.Flavor": "我的秘密武器？就是这顶可爱的小帽子！",
+  "Cattail.Id": 12
 }

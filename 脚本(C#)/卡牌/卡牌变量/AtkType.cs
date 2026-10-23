@@ -142,7 +142,7 @@ public sealed class MergedAtkType(IEnumerable<AtkType> types) : AtkType
     public override string IconSkelPath => MergedIconSkelPath;
 
     public override string ExLabel =>
-        string.Join(" ", _types.Select(t => t.ExLabel).Where(s => !string.IsNullOrEmpty(s)));
+        string.Join("，", _types.Select(t => t.ExLabel).Where(s => !string.IsNullOrEmpty(s)));
 
     public override Buff Buff =>
         _types.Select(t => t.Buff).FirstOrDefault(b => b != null);
