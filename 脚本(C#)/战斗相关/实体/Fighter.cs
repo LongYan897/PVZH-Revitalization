@@ -535,6 +535,46 @@ public partial class Fighter : Control, ITarget, IAttackable
         GetNode<SpineHandler>("%加成动画").Visible = false;
     }
 
+    private Tween _tweenBoostAtk;
+    public async void BoostAtk()
+    {
+        GetNode<SpineHandler>("%加成动画").Visible = true;
+
+        BoostAtkAnim();
+
+        await GetNode<SpineHandler>("%加成动画").SetAnimationTask(0, "intro", false);
+        GetNode<SpineHandler>("%加成动画").Visible = false;
+    }
+
+    private void BoostAtkAnim()
+    {
+        if (Model == null || isInvisible || !Visible) return;
+
+        var atkLabel = GetNode<Label>("%伤害数值");
+        var atkSpine = GetNode<SpineHandler>("%伤害动画");
+
+        if (_tweenBoostAtk != null && _tweenBoostAtk.IsValid())
+            _tweenBoostAtk.Kill();
+
+        atkLabel.Scale = Vector2.One;
+        _tweenBoostAtk = CreateTween().BindNode(atkLabel);
+        _tweenBoostAtk.SetTrans(Tween.TransitionType.Back);
+        _tweenBoostAtk.SetEase(Tween.EaseType.Out);
+        _tweenBoostAtk.TweenProperty(atkLabel, "scale", new Vector2(2.0f, 2.0f), 0.15f)
+            .SetEase(Tween.EaseType.Out);
+        _tweenBoostAtk.TweenProperty(atkLabel, "scale", Vector2.One, 0.3f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+
+        var baseScale = atkSpine.Scale;
+        var spineTween = CreateTween().BindNode(atkSpine);
+        spineTween.TweenProperty(atkSpine, "scale", baseScale * 1.6f, 0.15f)
+            .SetEase(Tween.EaseType.Out);
+        spineTween.TweenProperty(atkSpine, "scale", baseScale, 0.25f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+    }
+
     public async Task PlayAnimation(List<string> name, bool returnToIdle, int track = 0)
     {
         var spine = GetNode<SpineHandler>("%动画");

@@ -10,7 +10,7 @@
   "Peashooter.Category": "猛长",
   "Peashooter.Camp": "植物",
   "Peashooter.Type": "单位",
-  "Peashooter.AtkType": "普通",
+  "Peashooter.AtkType": "追踪",
   "Peashooter.HpType": "普通",
   "Peashooter.Icon": "res://场景(C#)/卡面/pea.tscn",
   "Peashooter.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
@@ -170,7 +170,7 @@
   "Firefighter.Id": "9",
 
   "ButtonMushroom.Title": "草菇",
-  "ButtonMushroom.Des": "被_消灭_时：一只僵尸获得=Strength={-2}。",
+  "ButtonMushroom.Des": "被_消灭_：一只僵尸获得=Strength={-2}。",
   "ButtonMushroom.Cost": 1,
   "ButtonMushroom.Camp": "植物",
   "ButtonMushroom.Type": "单位",

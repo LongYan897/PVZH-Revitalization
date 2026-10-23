@@ -313,6 +313,42 @@ public static class CardCmd
         return TargetRegistry.GetAllCanBeTarget(cardModel,targetType,fromBuff,filter);
     }
     /// <summary>
+    /// 获取最左侧（第一个）的单位（按 TimingOnCards 顺序：Road.Index 升序，再按 Location 优先级）
+    /// </summary>
+    /// <param name="predicate">过滤器（可选）</param>
+    /// <param name="camp">阵营过滤（null 表示不区分）</param>
+    /// <returns>第一个 FighterCardModel，没有则返回 null</returns>
+    public static FighterCardModel GetFirstFighter(Func<FighterCardModel, bool> predicate = null, Camp? camp = null)
+    {
+        var query = TargetRegistry.All
+            .OfType<Fighter>()
+            .Where(f => f.Model != null && !f.Model.IsDie);
+
+        if (camp != null)
+            query = query.Where(f => f.Model.Camp == camp);
+
+        if (predicate != null)
+            query = query.Where(f => predicate(f.Model));
+
+        return query
+            .OrderBy(f => f.Road.Index)
+            .ThenBy(f => LocationPriority(f.Model.Location))
+            .Select(f => f.Model)
+            .FirstOrDefault();
+    }
+
+    /// <summary>
+    /// 获取最左侧（第一个）的僵尸单位
+    /// </summary>
+    public static FighterCardModel GetFirstZombie(Func<FighterCardModel, bool> predicate = null)
+        => GetFirstFighter(predicate, Camp.Zombie);
+
+    /// <summary>
+    /// 获取最左侧（第一个）的植物单位
+    /// </summary>
+    public static FighterCardModel GetFirstPlant(Func<FighterCardModel, bool> predicate = null)
+        => GetFirstFighter(predicate, Camp.Plant);
+    /// <summary>
     /// 生成战斗单位
     /// </summary>
     /// <param name="fighter">战斗单位卡牌</param>
