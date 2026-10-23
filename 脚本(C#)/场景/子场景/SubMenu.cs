@@ -22,8 +22,11 @@ public partial class SubMenu : Control
 		InitScale = Scale.X;
 		GetNode<Button>("Button").Pressed += Enter;
 		ReadyField();
-		SceneManager.Register(this);
 	}
+    public sealed override void _EnterTree()
+    {
+        SceneManager.Register(this);
+    }
 	public virtual void ReadyField()
 	{ }
 	public void Function(bool enable)
@@ -40,19 +43,29 @@ public partial class SubMenu : Control
 		await ToSignal(tween, Tween.SignalName.Finished);
 		SceneManager.JumpToSub(this);
 	}
+    public sealed override void _ExitTree()
+    {
+        SceneManager.Unregister(this);
+    }
+    
 	private bool canPress = true;
 	public SubMenuScene Instantiate()
 	{
 		SubmenuScene = GD.Load<PackedScene>(SubScene).Instantiate<SubMenuScene>();
-		return SubmenuScene;
+        return SubmenuScene;
 	}
 	public void Destory()
-	{
-		Visible = true;
+    {
+        SubmenuScene.IsOpening = false;
+        Visible = true;
 		canPress = true;
 		Tween tween = CreateTween();
 		tween.TweenProperty(this, "scale", (InitScale + 0.1f) * new Vector2(1, 1), 0.15f);
 		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
 		SubmenuScene.QueueFree();
 	}
+	public void Reparent(Node node)
+	{
+        SubmenuScene.Reparent(node);
+    }
 }

@@ -44,12 +44,6 @@ public partial class CardTilesControl : SubMenuScene
 		}
 		return Task.CompletedTask;
 	}
-	public override void _ExitTree()
-	{
-		// 场景销毁时解绑，避免信号引用到已释放的节点
-		if (BackButton != null)
-			BackButton.Pressed -= PlayOutro;
-	}
 	private void IntroAn(float time)
 	{
 		if (Container == null) return;

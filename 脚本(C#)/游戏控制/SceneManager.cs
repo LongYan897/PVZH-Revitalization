@@ -19,7 +19,8 @@ public static class SceneManager
 	private static readonly Dictionary<SubMenu, SubMenu> Menus = new();
 	private static readonly List<SubMenu> AllMenus = new();
 	public static void Register(SubMenu menu) => AllMenus.Add(menu);
-	private static TaskCompletionSource<bool> _LoadTask;
+    public static void Unregister(SubMenu menu) => AllMenus.Remove(menu);
+    private static TaskCompletionSource<bool> _LoadTask;
 	public static Task LoadTask => _LoadTask?.Task ?? Task.CompletedTask;
 	public static void InvokeLoadEnd()
 	{
@@ -132,11 +133,14 @@ public static class SceneManager
 			last.Key.Destory();
 			if (showLoading)
 				await LoadEnd();
-			EnableSubmenu();
 		}
 		else
 		{
-			JumpToSub(last.Value);
-		}
-	}
+			last.Key.Destory();
+            var uponScene = Main.SceneContainer.GetNode<CanvasLayer>("%UponScene");
+            var lastSub = last.Value;
+            lastSub.Reparent(uponScene);
+        }
+        EnableSubmenu();
+    }
 }
