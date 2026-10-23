@@ -17,20 +17,20 @@ public class GHpTypeAttribute : Attribute
 /// <summary>
 /// 生命值类型
 /// </summary>
-public class HpType
+public abstract class HpType
 {
     /// <summary>
     /// 生命图标
     /// </summary>
-    public virtual string IconSkelPath { get; }
+    public abstract string IconSkelPath { get; }
     /// <summary>
     /// 生命额外标签(显示在卡牌的描述上,支持所有CardString描述的语法)
     /// </summary>
-    public virtual string ExLabel { get; } = null;
+    public abstract string ExLabel { get; }
     /// <summary>
     /// 血量类型给予时的Buff
     /// </summary>
-    public Buff Buff { get; init; } = null;
+    public abstract Buff Buff { get; }
     /// <summary>
     /// 附加到战斗卡牌时用于增加过滤条件
     /// 比如锦囊免疫等效果
@@ -41,6 +41,34 @@ public class HpType
     {
         return true;
     }
+
+    public virtual bool IsMerged => false;
+
+    public virtual IReadOnlyList<HpType> Flatten() => new[] { this };
+
+    public static HpType Merge(params HpType[] hpTypes)
+        => Merge((IEnumerable<HpType>)hpTypes);
+
+    public static HpType Merge(IEnumerable<HpType> hpTypes)
+    {
+        if (hpTypes == null) return null;
+
+        var flat = hpTypes
+            .Where(t => t != null)
+            .SelectMany(t => t.Flatten())
+            .Distinct()
+            .ToList();
+
+        return flat.Count switch
+        {
+            0 => null,
+            1 => flat[0],
+            _ => new MergedHpType(flat)
+        };
+    }
+
+    public HpType MergeWith(params HpType[] others)
+        => Merge(new[] { this }.Concat(others ?? Array.Empty<HpType>()));
 
     /// <summary>
     /// 注册逻辑
@@ -93,9 +121,47 @@ public class HpType
         foreach (var parser in Parsers)
         {
             if (parser == null) continue;
-            if (parser(parserString).Item1)
-                return parser(parserString).Item2;
+            var parsed = parser(parserString);
+            if (parsed.Item1)
+                return parsed.Item2;
         }
         return null;
     }
+}
+
+/// <summary>
+/// 合并的生命值类型
+/// </summary>
+public sealed class MergedHpType(IEnumerable<HpType> types) : HpType
+{
+    /// <summary>
+    /// 合并后统一使用的生命图标
+    /// </summary>
+    public const string MergedIconSkelPath = "res://icons/hp_merged.tres";
+
+    private readonly List<HpType> _types = types?.Where(t => t != null).ToList() ?? new List<HpType>();
+
+    /// <summary>包含的子生命值类型</summary>
+    public IReadOnlyList<HpType> HpTypes => _types;
+
+    public override bool IsMerged => true;
+
+    public override IReadOnlyList<HpType> Flatten()
+        => _types.SelectMany(t => t.Flatten()).Distinct().ToList();
+
+    public override string IconSkelPath => MergedIconSkelPath;
+
+    public override string ExLabel =>
+        string.Join(" ", _types.Select(t => t.ExLabel).Where(s => !string.IsNullOrEmpty(s)));
+
+    public override Buff Buff =>
+        _types.Select(t => t.Buff).FirstOrDefault(b => b != null);
+
+    public override bool ExtraFilter(CardModel card)
+        => _types.All(t => t.ExtraFilter(card));
+}
+
+public static class MergedHpFactory
+{
+    public static MergedHpType Merge(this HpType hpType, params HpType[] types) => new([hpType, .. types]);
 }

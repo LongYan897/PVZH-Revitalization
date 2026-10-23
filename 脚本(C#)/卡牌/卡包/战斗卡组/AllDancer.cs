@@ -14,5 +14,5 @@ public class AllDancer : PresetPack
 {
     public override string PackName => "舞动";
     protected override IReadOnlyList<CardModel> DeckCards => 
-        new List<CardModel>().RepeatLoad<BackupDancer>(20).RepeatLoad<RollingStone>(20);
+        new List<CardModel>().RepeatLoad<BackupDancer>(20);
 }

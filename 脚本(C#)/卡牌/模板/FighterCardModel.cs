@@ -62,7 +62,7 @@ public class FighterCardModel : CardModel
     /// <summary>
     /// 把一个单位归类到自己的子类
     /// </summary>
-    public void AddGroup(FighterCardModel fighter)
+    private void AddGroup(FighterCardModel fighter)
     {
         Fighter.GetNode(this).GroupWith(fighter);
     }
@@ -87,7 +87,7 @@ public class FighterCardModel : CardModel
             await Fighter.GetNode(this).ReturnCard();
         }
     }
-    protected override CardModel LoadData(CardString cardString)
+    protected sealed override CardModel LoadData(CardString cardString)
     {
         Atk = new(this, "Attack", cardString.Attack);
         BornWithAtk = Atk.Current > 0;
@@ -97,7 +97,9 @@ public class FighterCardModel : CardModel
         HpType = new(this, "HealthType", cardString.HpType ?? new NormalHpType());
         CardTag = cardString.CardTag;
         StarType = cardString.StarType;
-        _ = AddBuff(new HpBuff(), VariableReason.Self);
+        RegistBuff(new HpBuff());
+        RegistBuff(AtkType.Current.Buff);
+        RegistBuff(HpType.Current.Buff);
         return LoadCustomData(cardString);
     }
     /// <summary>
@@ -210,7 +212,7 @@ public class FighterCardModel : CardModel
 
                 await CardCmd.TimingOnCards(null, Timing.WhenAttacked, atkStack);
 
-                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter | VariableReason.Damaged, this, atkStack);
+                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter | VariableReason.Damaged, this, atkStack,!atkStack.IgnoreShield);
 
                 await CardCmd.TimingOnCards(null, Timing.AfterAttacked, atkStack);
 
@@ -443,7 +445,7 @@ public class FighterCardModel : CardModel
     {
         await PlayFighterAnimationTask("intro");
     }
-    public override Task Changed<T>(string key, T valueAfter, T valueBefore)
+    public sealed override Task Changed<T>(string key, T valueAfter, T valueBefore)
     {
         if (IsPlaced)
         {

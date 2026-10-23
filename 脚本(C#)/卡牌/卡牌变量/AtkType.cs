@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace Card;
+
 /// <summary>
 /// 攻击力类型注册属性
 /// </summary>
@@ -12,24 +13,54 @@ namespace Card;
 public class GAtkTypeAttribute : Attribute
 {
 }
+
 [GAtkType]
 /// <summary>
 /// 攻击力类型
 /// </summary>
-public class AtkType
+public abstract class AtkType
 {
     /// <summary>
     /// 攻击力图标
     /// </summary>
-    public virtual string IconSkelPath { get; }
+    public abstract string IconSkelPath { get; }
     /// <summary>
     /// 攻击力额外标签(显示在卡牌的描述上,支持所有CardString描述的语法)
     /// </summary>
-    public virtual string ExLabel { get; } = null;
+    public abstract string ExLabel { get; }
     /// <summary>
     /// 攻击类型赋予的效果
     /// </summary>
-    public Buff Buff { get; init; }
+    public abstract Buff Buff { get; }
+
+    public virtual bool IsMerged => false;
+
+    public virtual IReadOnlyList<AtkType> Flatten() => new[] { this };
+
+    public static AtkType Merge(params AtkType[] atkTypes)
+        => Merge((IEnumerable<AtkType>)atkTypes);
+
+    public static AtkType Merge(IEnumerable<AtkType> atkTypes)
+    {
+        if (atkTypes == null) return null;
+
+        var flat = atkTypes
+            .Where(t => t != null)
+            .SelectMany(t => t.Flatten())
+            .Distinct()
+            .ToList();
+
+        return flat.Count switch
+        {
+            0 => null,
+            1 => flat[0],
+            _ => new MergedAtkType(flat)
+        };
+    }
+
+    public AtkType MergeWith(params AtkType[] others)
+        => Merge(new[] { this }.Concat(others ?? Array.Empty<AtkType>()));
+
     /// <summary>
     /// 注册逻辑
     /// </summary>
@@ -86,4 +117,33 @@ public class AtkType
         }
         return null;
     }
+}
+
+/// <summary>
+/// 合并的攻击类型
+/// </summary>
+public sealed class MergedAtkType(IEnumerable<AtkType> types) : AtkType
+{
+    /// <summary>
+    /// 合并后统一使用的攻击力图标
+    /// </summary>
+    public const string MergedIconSkelPath = "res://icons/atk_merged.tres";
+
+    private readonly List<AtkType> _types = types?.Where(t => t != null).ToList() ?? new List<AtkType>();
+
+    /// <summary>包含的子攻击类型</summary>
+    public IReadOnlyList<AtkType> AtkTypes => _types;
+
+    public override bool IsMerged => true;
+
+    public override IReadOnlyList<AtkType> Flatten()
+        => _types.SelectMany(t => t.Flatten()).Distinct().ToList();
+
+    public override string IconSkelPath => MergedIconSkelPath;
+
+    public override string ExLabel =>
+        string.Join(" ", _types.Select(t => t.ExLabel).Where(s => !string.IsNullOrEmpty(s)));
+
+    public override Buff Buff =>
+        _types.Select(t => t.Buff).FirstOrDefault(b => b != null);
 }

@@ -104,20 +104,19 @@ public partial class BattleSubMenuScene : SubMenuScene
         await t.ToTask();
         await instance.ToSignal(instance.GetTree().CreateTimer(0.2f), Timer.SignalName.Timeout);
 
+        await WaitForClick();
+
         var t2 = instance.CreateTween();
         t2.SetParallel(true);
 
         t2.TweenProperty(flag, "scale", new Vector2(1.6f, 1.6f), 0.15f)
           .SetEase(Tween.EaseType.Out);
-        t2.TweenProperty(flag, "scale", new Vector2(2.4f, 2.4f), 0.9f)
+        t2.TweenProperty(flag, "scale", new Vector2(3.2f, 3.2f), 0.9f)
           .SetDelay(0.15f).SetEase(Tween.EaseType.In)
           .SetTrans(Tween.TransitionType.Quad);
         t2.TweenProperty(flag, "modulate", new Color(1, 1, 1, 0), 0.8f)
           .SetDelay(0.2f).SetEase(Tween.EaseType.In)
           .SetTrans(Tween.TransitionType.Sine);
-
-        t2.TweenProperty(pathFollow, "progress_ratio", 1.0f, 1.05f)
-          .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Cubic);
 
         t2.TweenProperty(icon, "scale", new Vector2(1.15f, 1.15f), 0.15f)
           .SetEase(Tween.EaseType.Out);
@@ -133,6 +132,20 @@ public partial class BattleSubMenuScene : SubMenuScene
 
         await t2.ToTask();
         SceneManager.ReturnToSub();
+    }
+
+    private static async Task WaitForClick()
+    {
+        await instance.ToSignal(instance.GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        while (!Input.IsMouseButtonPressed(MouseButton.Left))
+        {
+            await instance.ToSignal(instance.GetTree(), SceneTree.SignalName.ProcessFrame);
+        }
+        while (Input.IsMouseButtonPressed(MouseButton.Left))
+        {
+            await instance.ToSignal(instance.GetTree(), SceneTree.SignalName.ProcessFrame);
+        }
     }
     private static async Task Prepare()
     {

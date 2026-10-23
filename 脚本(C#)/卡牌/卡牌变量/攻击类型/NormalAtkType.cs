@@ -14,4 +14,6 @@ public class NormalAtkType : AtkType
     [IconText("ffffff", "338000", 3)]
     public const string Strength = "res://素材(C#)/文本图片/attack.png";
     public override string IconSkelPath => "res://数据资源/属性动画/攻击动画.tres";
+    public override string ExLabel => "";
+    public override Buff Buff => null;
 }

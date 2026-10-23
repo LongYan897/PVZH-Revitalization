@@ -528,6 +528,10 @@ public class CardModel
         await buff.OnTiming(Timing.WhenApply, this, reason);
     }
 
+    protected void RegistBuff(Buff buff)
+    {
+        if (buff != null) BuffList.Add(buff);
+    }
     /// <summary>
     /// 移除效果
     /// </summary>
