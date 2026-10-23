@@ -10,7 +10,7 @@
   "Peashooter.Category": "猛长",
   "Peashooter.Camp": "植物",
   "Peashooter.Type": "单位",
-  "Peashooter.AtkType": "追踪",
+  "Peashooter.AtkType": "普通",
   "Peashooter.HpType": "普通",
   "Peashooter.Icon": "res://场景(C#)/卡面/pea.tscn",
   "Peashooter.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",

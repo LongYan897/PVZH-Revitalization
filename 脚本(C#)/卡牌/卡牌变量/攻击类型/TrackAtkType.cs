@@ -25,7 +25,7 @@ public class TrackAtkType : AtkType
     [IconText("ffffff")]
     public const string Track = "res://素材(C#)/文本图片/Track.png";
     [URL]
-    public static string 追踪 => "攻击最高侧的僵尸。";
+    public static string 追踪 => "攻击最左侧的僵尸。";
     private static Task Target(Timing timing,CardModel card,params object[] objects)
     {
         if (card is FighterCardModel fighter)

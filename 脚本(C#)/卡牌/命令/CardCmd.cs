@@ -313,6 +313,22 @@ public static class CardCmd
         return TargetRegistry.GetAllCanBeTarget(cardModel,targetType,fromBuff,filter);
     }
     /// <summary>
+    /// 获得按照先后顺序排列的单位
+    /// </summary>
+    /// <returns></returns>
+    public static List<Fighter> GetOrderedFighters()
+    {
+        var fighters = TargetRegistry.All.OfType<Fighter>().ToList();
+        fighters.Sort((a, b) =>
+        {
+            int byRoad = a.Road.Index.CompareTo(b.Road.Index);
+            if (byRoad != 0) return byRoad;
+            return LocationPriority(a.Model.Location)
+                 .CompareTo(LocationPriority(b.Model.Location));
+        });
+        return fighters;
+    }
+    /// <summary>
     /// 获取最左侧（第一个）的单位（按 TimingOnCards 顺序：Road.Index 升序，再按 Location 优先级）
     /// </summary>
     /// <param name="predicate">过滤器（可选）</param>
