@@ -50,7 +50,8 @@ public partial class Main : Node
 		HeroContainer = GetNode<CanvasLayer>("Hero");
 		GuestHeroContainer = GetNode<CanvasLayer>("Hero2");
 		SceneContainer = GetNode<CanvasLayer>("Scene");
-		FighterUp = FighterContainer.GetNode<Node>("Up");
+        SubSceneContainer = GetNode<CanvasLayer>("%SubScene");
+        FighterUp = FighterContainer.GetNode<Node>("Up");
 		FighterFrontUp = FighterContainer.GetNode<Node>("FrontUp");
 		FighterDown = FighterContainer.GetNode<Node>("Down");
 		FighterFrontDown = FighterContainer.GetNode<Node>("FrontDown");
