@@ -66,7 +66,9 @@ enum SCROLL_TYPE {
 ## 若为 true，则通过 set_input_as_handled() 将输入事件标记为已处理
 @export var handle_input: bool = true
 ## 若为 true，则自动将子 Control 节点的 mouse_filter 设为 MOUSE_FILTER_PASS，
-## 以确保平滑滚动正常工作。
+## 以确保平滑滚动正常工作。[br]
+## 注意：已经设为 MOUSE_FILTER_IGNORE 的节点（通常用于让点击穿透到下层按钮）会被跳过，
+## 不会被改成 PASS，否则会把下层要接收点击的节点挡住。
 @export var override_mouse_filters: bool = true:
 	set(val): override_mouse_filters = _set_override_mouse_filters(val)
 
@@ -232,13 +234,25 @@ func _draw() -> void:
 	if debug_mode: ScrollDebugger.draw_debug(self)
 
 
+## 判断某个子 Control 的 mouse_filter 是否应该被改成 [constant Control.MOUSE_FILTER_PASS]。[br]
+## 已经是 [constant Control.MOUSE_FILTER_IGNORE] 的节点必须原样保留：
+## 这种节点通常是故意让点击穿透到下层按钮的（例如卡牌卡面），
+## 改成 PASS 会让它重新变成命中目标，把下层按钮的点击整个吃掉。[br]
+## 按钮类（[BaseButton]）保持 PASS 反而更合适：按下事件会继续冒泡到滚动容器，
+## 所以既能点击，也能从按钮上按住拖动滚动；拖动超过 scroll_deadzone 后容器会发出
+## NOTIFICATION_SCROLL_BEGIN，按钮自己会取消这次按下，不会误触。
+func _should_override_mouse_filter(node: Control) -> bool:
+	return node.mouse_filter != Control.MOUSE_FILTER_IGNORE
+
+
 ## 将 SmoothScroll 子节点的默认鼠标过滤器设为 [constant Control.MOUSE_FILTER_PASS]。[br]
 ## 当 [param node] 被添加到场景树时调用。
 func _on_node_added(node: Node) -> void:
 	if node is Control and is_ancestor_of(node):
 		if override_mouse_filters:
 			if not node.has_meta("_smooth_scroll_default_mouse_filter_set"):
-				node.mouse_filter = Control.MOUSE_FILTER_PASS
+				if _should_override_mouse_filter(node):
+					node.mouse_filter = Control.MOUSE_FILTER_PASS
 				node.set_meta("_smooth_scroll_default_mouse_filter_set", true)
 
 
@@ -320,7 +334,8 @@ func _apply_mouse_filters_to_children() -> void:
 func _apply_mouse_filter_recursive(node: Node) -> void:
 	if node is Control and node != self and is_ancestor_of(node):
 		if not node.has_meta("_smooth_scroll_default_mouse_filter_set"):
-			node.mouse_filter = Control.MOUSE_FILTER_PASS
+			if _should_override_mouse_filter(node):
+				node.mouse_filter = Control.MOUSE_FILTER_PASS
 			node.set_meta("_smooth_scroll_default_mouse_filter_set", true)
 	
 	for child in node.get_children():

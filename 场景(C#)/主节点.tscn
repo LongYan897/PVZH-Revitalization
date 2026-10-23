@@ -63,6 +63,7 @@ offset_top = 1205.0
 offset_right = 447.0
 offset_bottom = 1205.0
 scale = Vector2(0.7, 0.7)
+ShowLoading = false
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
