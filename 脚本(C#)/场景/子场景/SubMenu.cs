@@ -14,12 +14,19 @@ public partial class SubMenu : Control
 	/// </summary>
 	[Export]
 	public bool ShowLoading { get; set; } = true;
-	private BackButton Return;
+    [Export]
+    public bool CenterPivot { get; set; } = false;
 	private SubMenuScene SubmenuScene;
 	private float InitScale;
-	public sealed override void _Ready()
+    public void ResetPress() => canPress = true;
+    public object Payload { get; set; }
+    public SubMenuScene GetScene() => SubmenuScene;
+
+    public sealed override void _Ready()
 	{
-		InitScale = Scale.X;
+        if (PivotOffset == Vector2.Zero && PivotOffsetRatio == Vector2.Zero && CenterPivot)
+            PivotOffsetRatio = new Vector2(0.5f, 0.5f);
+        InitScale = Scale.X;
 		GetNode<Button>("Button").Pressed += Enter;
 		ReadyField();
 	}
@@ -54,10 +61,39 @@ public partial class SubMenu : Control
 	private bool canPress = true;
 	public SubMenuScene Instantiate()
 	{
-		SubmenuScene = GD.Load<PackedScene>(SubScene).Instantiate<SubMenuScene>();
-        return SubmenuScene;
-	}
-	public void Destory()
+        SubmenuScene = null;
+        if (string.IsNullOrWhiteSpace(SubScene))
+        {
+            GD.PushError($"[SubMenu] {Name} 没有设置 SubScene");
+            return null;
+        }
+        PackedScene packed = GD.Load<PackedScene>(SubScene);
+        if (packed == null)
+        {
+            GD.PushError($"[SubMenu] 加载子场景失败：{SubScene}");
+            return null;
+        }
+        Node node = packed.Instantiate();
+        if (node is SubMenuScene scene)
+        {
+            SubmenuScene = scene;
+            return scene;
+        }
+        GD.PushError($"[SubMenu] {SubScene} 的根节点不是 SubMenuScene（请在根节点挂继承 SubMenuScene 的脚本）");
+        node.Free();
+        return null;
+    }
+    public void FreeScene()
+    {
+        if (SubmenuScene != null && GodotObject.IsInstanceValid(SubmenuScene))
+        {
+            SubmenuScene.IsOpening = false;
+            SubmenuScene.QueueFree();
+        }
+        SubmenuScene = null;
+    }
+
+    public void Destory()
     {
         SubmenuScene.IsOpening = false;
         Visible = true;
@@ -65,8 +101,8 @@ public partial class SubMenu : Control
 		Tween tween = CreateTween();
 		tween.TweenProperty(this, "scale", (InitScale + 0.05f) * new Vector2(1, 1), 0.15f);
 		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
-		SubmenuScene.QueueFree();
-	}
+        FreeScene();
+    }
 	public void Reparent(Node node)
 	{
         SubmenuScene.Reparent(node);

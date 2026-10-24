@@ -136,8 +136,6 @@ public static class SceneManager
 		{
 			UnableSubmenu();
 
-			// 只有进入新的一级场景时才清场；层级内部下钻（如 卡包列表 → 卡包详情）
-			// 不能清，否则会把底层场景仍在用的卡牌/英雄一起清掉。
 			if (Menus.Count == 0) await Clear();
 
 			scene = subMenu.Instantiate();
@@ -147,15 +145,10 @@ public static class SceneManager
 				return;
 			}
 			scene.Visible = false;
-			// 把菜单上挂的数据（比如"点的是哪个卡包"）传给子场景，
-			// 必须在 AddChild 之前塞好：AddChild 会立刻触发子场景的 _EnterTree → _Load。
 			scene.Payload = subMenu.Payload;
 
-			// 只有勾了 ShowLoading 的“整屏场景”才过加载界面，二级面板直接进
 			if (showLoading) await Load();
 
-			// 先建好 LoadTask 再挂进树：子场景的 _EnterTree 会在 AddChild 时同步跑到 await _Load()，
-			// _Load() 完成（或抛异常）后由 InvokeLoadEnd() 放行。
 			_LoadTask = new TaskCompletionSource<bool>();
 			Main.SceneContainer.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
 			Menus.Add(subMenu);
@@ -187,7 +180,6 @@ public static class SceneManager
 	{
 		if (Menus.Count == 0)
 		{
-			// 本来就在主界面
 			BackButton.JoinScene(true);
 			EnableSubmenu();
 			return;
@@ -195,14 +187,12 @@ public static class SceneManager
 		if (_changing) return;
 		_changing = true;
 
-		// 进入第一层时如果走过加载界面，回主界面也补一次，视觉上首尾一致
 		bool showLoading = Menus[0].ShowLoading;
 		var layers = new List<SubMenu>(Menus);
 		Menus.Clear();
 
 		try
 		{
-			// 从上往下播离场动画（当前层先滑走）
 			for (int i = layers.Count - 1; i >= 0; i--)
 			{
 				SubMenuScene scene = layers[i].GetScene();
@@ -220,13 +210,12 @@ public static class SceneManager
 			if (showLoading) await Load();
 			await Clear();
 
-			// 统一回收所有层（Destory 会播按钮动画并释放场景）
 			foreach (SubMenu menu in layers)
 			{
 				if (menu != null && GodotObject.IsInstanceValid(menu)) menu.Destory();
 			}
 
-			BackButton.JoinScene(true); // 主界面不需要全局返回按钮
+			BackButton.JoinScene(true);
 			if (showLoading) await LoadEnd();
 			EnableSubmenu();
 		}
@@ -242,14 +231,11 @@ public static class SceneManager
 	}
 
 	/// <summary>
-	/// 关闭当前层的子目录（出栈）：先播当前层的离场动画，再释放它；
-	/// 回到上一层时上一层场景原样露出，不再重新实例化。
+	/// 关闭当前层的子目录
 	/// </summary>
 	public static async void ReturnToSub(SubMenuScene from = null)
 	{
 		if (Menus.Count == 0 || _changing) return;
-		// 只允许"当前层"退自己：下层场景的返回按钮在子层开着时要忽略，
-		// 否则下层会先把自己的面板滑走、却把上层弹掉，最后主界面看着回来了却点不动。
 		if (from != null && !IsCurrent(from))
 		{
 			GD.PushWarning("[SceneManager] 忽略了非当前层的返回请求");
@@ -263,7 +249,6 @@ public static class SceneManager
 
 		try
 		{
-			// 子场景可以 override Outro() 播自己的离场动画（滑出、淡出……）
 			if (scene != null && GodotObject.IsInstanceValid(scene))
 				await scene.Outro();
 		}
@@ -276,32 +261,27 @@ public static class SceneManager
 		{
 			if (Menus.Count == 0)
 			{
-				// 回到主界面
 				bool showLoading = menu.ShowLoading;
 				if (showLoading) await Load();
 				await Clear();
-				menu.Destory();          // 播主界面按钮动画并释放当前层场景
-				BackButton.JoinScene(true); // 主界面不需要那个全局返回按钮
+				menu.Destory(); 
+				BackButton.JoinScene(true);
 				if (showLoading) await LoadEnd();
 				EnableSubmenu();
 			}
 			else
 			{
-				// 回到上一层：只释放当前层，上一层场景本来就在 %UponScene 里
 				menu.FreeScene();
-				menu.ResetPress();       // 让这个按钮下次还能再点开
+				menu.ResetPress();
 				SubMenu parentMenu = Menus[^1];
 				SubMenuScene parentScene = parentMenu.GetScene();
 				if (parentScene != null && GodotObject.IsInstanceValid(parentScene) && parentScene.Visible)
 				{
-					// 恢复上一层该有的返回按钮状态
 					BackButton.JoinScene(parentScene.HideReturnButton);
 					EnableMenusIn(parentScene);
 				}
 				else
 				{
-					// 上一层场景丢失或不可见（比如被它自己的返回按钮误滑走了），
-					// 干脆把剩下的层全部回收、退回主界面，避免"主界面看得见却点不动"的卡死状态。
 					GD.PushWarning("[SceneManager] 上一层场景不可用，已回收所有层并退回主界面");
 					foreach (var left in Menus) left.FreeScene();
 					Menus.Clear();
