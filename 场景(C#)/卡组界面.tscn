@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="12_o1djq"]
 [ext_resource type="Texture2D" uid="uid://d4l7h6voxbdxg" path="res://素材/ui/界面ui/searchicon_inactive.png" id="13_mem38"]
 [ext_resource type="Texture2D" uid="uid://d1vdub5akb3n5" path="res://素材/ui/界面ui/searchicon_x.png" id="14_mem38"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="17_5056d"]
 
 [sub_resource type="Resource" id="Resource_p80pg"]
 script = ExtResource("4_5056d")
@@ -365,25 +366,26 @@ scale = Vector2(0.65, 0.65)
 pivot_offset = Vector2(127.5, 125)
 texture = ExtResource("14_mem38")
 
-[node name="牌组" type="TextureButton" parent="Fore" unique_id=1738577414]
+[node name="牌组" type="Control" parent="Fore" unique_id=1540023714]
 unique_name_in_owner = true
 z_index = 20
+layout_mode = 3
+anchors_preset = 0
 offset_left = 370.0
 offset_top = 27.0
 offset_right = 890.0
 offset_bottom = 267.0
 scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(260, 125)
-mouse_force_pass_scroll_events = false
-script = ExtResource("6_mem38")
-metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+mouse_filter = 1
+script = ExtResource("17_5056d")
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="Fore/牌组" unique_id=1016321351]
 self_modulate = Color(0.13725491, 1, 1, 1)
 layout_mode = 0
 offset_right = 520.0
 offset_bottom = 250.0
-mouse_filter = 2
 theme = SubResource("Theme_nl4n4")
 
 [node name="Label" type="Label" parent="Fore/牌组" unique_id=118150379]

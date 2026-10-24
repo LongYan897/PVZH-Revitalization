@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bllvnv8y1ygg"]
+
+[ext_resource type="Texture2D" uid="uid://dm6vx61ctijj6" path="res://素材/ui/英雄图片/cornerimage_greenshadow.png" id="1_1akio"]
+[ext_resource type="Script" uid="uid://bhqnh1uogwt06" path="res://脚本(C#)/辅助类/NButton.cs" id="2_2dn6h"]
+
+[node name="英雄跳转球" type="TextureButton" unique_id=1267702890]
+custom_minimum_size = Vector2(227, 227)
+offset_left = -113.5
+offset_top = -113.5
+offset_right = 113.5
+offset_bottom = 113.5
+pivot_offset = Vector2(113.5, 113.5)
+texture_normal = ExtResource("1_1akio")
+script = ExtResource("2_2dn6h")
+metadata/_custom_type_script = "uid://bhqnh1uogwt06"
