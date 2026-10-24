@@ -6,6 +6,8 @@ using Godot;
 using Hero;
 using Logger;
 using Play;
+using Spine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +34,54 @@ public class FighterCardModel : CardModel
     {
         Fighter.Overlay(fighter, Icon);
     }
+    /// <summary>
+    /// 修改单位的动画节点的属性 (比如缩小,移动...)
+    /// </summary>
+    /// <param name="func">修改节点的函数</param>
+    /// <returns></returns>
+    public async Task ShapeMe(Func<Node2D,Task> func)
+    {
+        if (IsPlaced)
+            await func(Fighter.GetNode(this).AnimationNode);
+    }
+    /// <summary>
+    /// 修改单位的动画节点,改变单位颜色
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
+    public async Task ColorMe(Color color, float duration = 0.3f)
+    {
+        if (!IsPlaced) return;
 
+        var fighter = Fighter.GetNode(this);
+        var anim = fighter.AnimationNode;
+
+        Tween tween = fighter.CreateTween();
+        tween.TweenProperty(anim, "modulate", color, duration);
+        await fighter.ToSignal(tween, Tween.SignalName.Finished);
+    }
+    /// <summary>
+    /// 修改单位的动画节点,缩小该单位
+    /// </summary>
+    /// <param name="scale">缩小的倍率</param>
+    /// <returns></returns>
+    public async Task ScaleMe(Vector2 scale, float duration = 0.3f)
+    {
+        if (!IsPlaced) return;
+
+        var fighter = Fighter.GetNode(this);
+        var anim = fighter.AnimationNode;
+        var pit = fighter.GetNode<SpineHandler>("%土坑");
+
+        Vector2 offset = anim.Position - pit.Position;
+        Vector2 targetPos = pit.Position + offset * scale;
+
+        Tween tween = fighter.CreateTween();
+        tween.SetParallel(true);
+        tween.TweenProperty(anim, "scale", scale, duration);
+        tween.TweenProperty(anim, "position", targetPos, duration);
+        await fighter.ToSignal(tween, Tween.SignalName.Finished);
+    }
     /// <summary>
     /// 对一名敌人发射子弹(无伤害)
     /// </summary>
@@ -136,7 +185,7 @@ public class FighterCardModel : CardModel
     /// </summary>
     public Location Location { get; internal set; }
     /// <summary>
-    /// 创建一个攻击堆栈
+    /// 创建一个攻击堆栈(攻击者是这个单位)
     /// </summary>
     /// <returns></returns>
     private AtkStack CreateOwnedStack()
@@ -440,6 +489,10 @@ public class FighterCardModel : CardModel
     /// 子弹是否是瞬间到达目标的
     /// </summary>
     public virtual bool InstantAmmo { get; } = false;
+    /// <summary>
+    /// 子弹是否带方向(会指向目标,需要子弹图标/动画的正方向向下)
+    /// </summary>
+    public virtual bool ArrowAmmo {  get; } = false;
 
     public async Task IntroPlayed()
     {

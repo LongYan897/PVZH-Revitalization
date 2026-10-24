@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://djiclkkycujpx"
-path="res://.godot/imported/_shot_after.png-1618a02b361dc67dd84150f91aad6a71.ctex"
+uid="uid://bp5vn1thny1lr"
+path="res://.godot/imported/deckCustomBackground.png-34f2f471d4352aaf4153b5ca49d6aa30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://_shot_after.png"
-dest_files=["res://.godot/imported/_shot_after.png-1618a02b361dc67dd84150f91aad6a71.ctex"]
+source_file="res://素材(C#)/卡包/卡套/deckCustomBackground.png"
+dest_files=["res://.godot/imported/deckCustomBackground.png-34f2f471d4352aaf4153b5ca49d6aa30.ctex"]
 
 [params]
 

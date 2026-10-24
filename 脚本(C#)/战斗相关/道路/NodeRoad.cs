@@ -159,7 +159,6 @@ public partial class NodeRoad : Control, ITarget
     private static bool NeedG2(TargetType t) =>
         t.HasFlag(TargetType.CoopGrids);
 
-    private static Location p_location;
     public void OnCallTargeted(TargetType targetType,CardModel card)
     {
         bool line = NeedLine(targetType);

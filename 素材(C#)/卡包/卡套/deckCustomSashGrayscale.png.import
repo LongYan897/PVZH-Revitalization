@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxceqec40lstj"
-path="res://.godot/imported/_shot_fresh.png-d023b7f76d8f495f2127f70d5da12a51.ctex"
+uid="uid://tcpwwtsahhjf"
+path="res://.godot/imported/deckCustomSashGrayscale.png-473a8e799e04b86715bd7cf4236ce1cf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://_shot_fresh.png"
-dest_files=["res://.godot/imported/_shot_fresh.png-d023b7f76d8f495f2127f70d5da12a51.ctex"]
+source_file="res://素材(C#)/卡包/卡套/deckCustomSashGrayscale.png"
+dest_files=["res://.godot/imported/deckCustomSashGrayscale.png-473a8e799e04b86715bd7cf4236ce1cf.ctex"]
 
 [params]
 

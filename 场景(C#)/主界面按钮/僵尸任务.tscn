@@ -1,10 +1,27 @@
 [gd_scene format=3 uid="uid://b5x4veawhq8g4"]
 
-[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_m6y8i"]
+[ext_resource type="Script" uid="uid://bbpaefydj08hm" path="res://脚本(C#)/场景/子场景/ZombieQuestMenu.cs" id="1_m6y8i"]
 [ext_resource type="Texture2D" uid="uid://d0cw22xbrdrqa" path="res://素材/ui/界面ui/landingscreen_zombies.png" id="2_jd3fo"]
 [ext_resource type="Texture2D" uid="uid://cdbn38w0t5erj" path="res://素材/ui/界面ui/按钮3.png" id="3_1dxt2"]
 [ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="4_yr6p3"]
 [ext_resource type="Texture2D" uid="uid://bx3epq8oxb2ei" path="res://素材/ui/界面ui/featureunlock_zombiehq.png" id="5_1ow33"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="5_jd3fo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jd3fo"]
+shader = ExtResource("5_jd3fo")
+shader_parameter/color = Color(1, 1, 1, 0.3882353)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = -1.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1dxt2"]
+shader = ExtResource("5_jd3fo")
+shader_parameter/color = Color(1, 1, 1, 0.3882353)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = -1.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
 
 [sub_resource type="FontVariation" id="FontVariation_k3qdf"]
 base_font = ExtResource("4_yr6p3")
@@ -13,7 +30,64 @@ variation_opentype = {
 }
 variation_embolden = 0.1
 
-[node name="Control" type="Control" unique_id=443452423]
+[sub_resource type="Gradient" id="Gradient_jd3fo"]
+offsets = PackedFloat32Array(0, 0.79585797)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1dxt2"]
+gradient = SubResource("Gradient_jd3fo")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Shader" id="Shader_m6y8i"]
+code = "shader_type canvas_item;
+
+uniform vec4 color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float strength : hint_range(0.0, 1.0) = 1.0;
+uniform float brightness : hint_range(-1.0, 1.0) = 0.0;
+uniform float saturation : hint_range(0.0, 2.0) = 1.0;
+uniform float contrast : hint_range(0.0, 2.0) = 1.0;
+
+float luminance(vec3 c) {
+	return dot(c, vec3(0.2126, 0.7152, 0.0722));
+}
+
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	vec3 src = tex.rgb;
+
+	float srcLum = luminance(src);
+	float tgtLum = max(luminance(color.rgb), 0.0001);
+
+	vec3 tinted = color.rgb * (srcLum / tgtLum);
+	float maxc = max(max(tinted.r, tinted.g), tinted.b);
+	if (maxc > 1.0) tinted /= maxc;
+
+	vec3 result = mix(src, tinted, strength);
+	result = (result - 0.5) * contrast + 0.5 + brightness;
+
+	float gray = luminance(result);
+	result = mix(vec3(gray), result, saturation);
+
+	COLOR = vec4(clamp(result, 0.0, 1.0), tex.a * color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m6y8i"]
+shader = SubResource("Shader_m6y8i")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 1.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yr6p3"]
+bg_color = Color(0, 0, 0, 0.61960787)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Control" type="Control" unique_id=1153394981]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,30 +97,45 @@ offset_bottom = -1280.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_m6y8i")
-metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+metadata/_custom_type_script = "uid://bbpaefydj08hm"
 
 [node name="Button" type="Button" parent="." unique_id=224185089]
 layout_mode = 0
 offset_left = -120.0
 offset_top = -128.0
-offset_right = 120.0
+offset_right = 142.0
 offset_bottom = 255.0
 flat = true
 
-[node name="植物战斗按钮" type="Sprite2D" parent="." unique_id=1455259201]
-scale = Vector2(0.9, 0.9)
+[node name="僵尸战斗按钮影子" type="Sprite2D" parent="." unique_id=1957232934]
+modulate = Color(1, 1, 1, 0.28627452)
+material = SubResource("ShaderMaterial_jd3fo")
+position = Vector2(20, 12)
+scale = Vector2(0.986, 0.9)
 texture = ExtResource("2_jd3fo")
 
-[node name="底部栏" type="Sprite2D" parent="." unique_id=1828930564]
+[node name="僵尸战斗按钮" type="Sprite2D" parent="." unique_id=1455259201]
+position = Vector2(11.425, 0)
+scale = Vector2(0.986, 0.9)
+texture = ExtResource("2_jd3fo")
+
+[node name="底部栏影子" type="Sprite2D" parent="." unique_id=2128432720]
 self_modulate = Color(0.60844016, 0.114799984, 0.82, 1)
-position = Vector2(11.5, 188)
-scale = Vector2(1.315, 1.406)
+material = SubResource("ShaderMaterial_1dxt2")
+position = Vector2(42, 195.99998)
+scale = Vector2(1.5450001, 1.406)
+texture = ExtResource("3_1dxt2")
+
+[node name="底部栏" type="Sprite2D" parent="." unique_id=1828930564]
+self_modulate = Color(0.4617, 0.11339999, 0.81, 1)
+position = Vector2(34.5, 188)
+scale = Vector2(1.5450001, 1.406)
 texture = ExtResource("3_1dxt2")
 
 [node name="僵尸任务" type="Label" parent="底部栏" unique_id=8389134]
-offset_left = -96.3481
+offset_left = -89.644005
 offset_top = -47.407417
-offset_right = 93.162384
+offset_right = 99.86648
 offset_bottom = 47.17034
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -61,7 +150,26 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="僵尸属性" type="Sprite2D" parent="." unique_id=91102881]
-position = Vector2(0, 91.75)
-scale = Vector2(0.5, 0.5)
+[node name="Sprite2D" type="Sprite2D" parent="底部栏" unique_id=104741426]
+position = Vector2(-4.854368, -49.07539)
+scale = Vector2(0.7, 0.8)
+texture = SubResource("GradientTexture2D_1dxt2")
+
+[node name="僵尸属性Bg" type="Sprite2D" parent="." unique_id=846799181]
+material = SubResource("ShaderMaterial_m6y8i")
+position = Vector2(26.78, 118.74)
+scale = Vector2(0.34, 0.34)
 texture = ExtResource("5_1ow33")
+
+[node name="僵尸属性" type="Sprite2D" parent="." unique_id=91102881]
+position = Vector2(26.78, 118.74)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("5_1ow33")
+
+[node name="Panel" type="Panel" parent="." unique_id=1793992285]
+layout_mode = 0
+offset_left = -5.0
+offset_top = 241.0
+offset_right = 79.0
+offset_bottom = 267.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yr6p3")

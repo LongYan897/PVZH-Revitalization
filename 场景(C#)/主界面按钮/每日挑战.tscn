@@ -3,7 +3,16 @@
 [ext_resource type="Script" uid="uid://bwhpvfkmcantx" path="res://脚本(C#)/场景/子场景/ActivitySubMenu.cs" id="1_6wrbx"]
 [ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="1_qrkul"]
 [ext_resource type="Texture2D" uid="uid://cophm26o1o4e" path="res://素材/ui/界面ui/Badge_Event.png" id="2_kdrji"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="2_uhrkk"]
 [ext_resource type="Texture2D" uid="uid://w7edbn6x42ea" path="res://素材/ui/界面ui/按钮4.png" id="3_kdrji"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6wrbx"]
+shader = ExtResource("2_uhrkk")
+shader_parameter/color = Color(1, 1, 1, 0.3882353)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = -1.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
 
 [sub_resource type="FontVariation" id="FontVariation_6wrbx"]
 base_font = ExtResource("1_qrkul")
@@ -14,10 +23,6 @@ variation_embolden = 0.1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhrkk"]
 bg_color = Color(0, 0, 0, 0.5568628)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
 border_color = Color(1, 1, 1, 0.6431373)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
@@ -44,8 +49,16 @@ offset_right = 205.0
 offset_bottom = 48.0
 flat = true
 
+[node name="背景影子" type="Sprite2D" parent="." unique_id=420328035]
+self_modulate = Color(0.99, 0.42239997, 0.19799998, 1)
+material = SubResource("ShaderMaterial_6wrbx")
+position = Vector2(5, 5)
+scale = Vector2(1.2, 1)
+texture = ExtResource("3_kdrji")
+
 [node name="背景" type="Sprite2D" parent="." unique_id=241290528]
-self_modulate = Color(0.9882353, 0.44705883, 0.19607843, 1)
+self_modulate = Color(0.99, 0.42239997, 0.19799998, 1)
+scale = Vector2(1.2, 1)
 texture = ExtResource("3_kdrji")
 
 [node name="今日挑战" type="Label" parent="." unique_id=73961676]
@@ -87,14 +100,14 @@ vertical_alignment = 1
 
 [node name="提示框" type="Panel" parent="." unique_id=918246600]
 layout_mode = 0
-offset_left = 129.70001
-offset_top = -32.375023
-offset_right = 186.50003
-offset_bottom = 33.224983
+offset_left = 157.0
+offset_top = -37.0
+offset_right = 223.0
+offset_bottom = 38.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_styles/panel = SubResource("StyleBoxFlat_uhrkk")
 
 [node name="左边奖励图片" type="Sprite2D" parent="." unique_id=1075710363]
-position = Vector2(-143.89996, 0.42500687)
+position = Vector2(-184, 0.42500687)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("2_kdrji")

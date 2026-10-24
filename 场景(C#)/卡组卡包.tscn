@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://c4icmkp4q7ssv"]
+
+[ext_resource type="Texture2D" uid="uid://bp5vn1thny1lr" path="res://素材(C#)/卡包/卡套/deckCustomBackground.png" id="1_4qsqk"]
+[ext_resource type="Texture2D" uid="uid://tcpwwtsahhjf" path="res://素材(C#)/卡包/卡套/deckCustomSashGrayscale.png" id="2_ix31a"]
+
+[node name="卡组卡包" type="Control" unique_id=969405171]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -720.0
+offset_bottom = -1280.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="背景" type="Sprite2D" parent="." unique_id=1756481635]
+texture = ExtResource("1_4qsqk")
+
+[node name="卡套" type="Sprite2D" parent="." unique_id=101791880]
+modulate = Color(0.11339999, 0.39779997, 0.54, 1)
+position = Vector2(5, 45)
+texture = ExtResource("2_ix31a")
