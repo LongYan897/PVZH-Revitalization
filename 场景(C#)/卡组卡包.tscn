@@ -2,6 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://bp5vn1thny1lr" path="res://素材(C#)/卡包/卡套/deckCustomBackground.png" id="1_4qsqk"]
 [ext_resource type="Texture2D" uid="uid://tcpwwtsahhjf" path="res://素材(C#)/卡包/卡套/deckCustomSashGrayscale.png" id="2_ix31a"]
+[ext_resource type="Texture2D" uid="uid://dlpr0abpr6kt6" path="res://素材/英雄素材/绿影侠/Deck_GreenShadow.png" id="3_6n3n6"]
+[ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="4_lm4i2"]
+
+[sub_resource type="FontVariation" id="FontVariation_6n3n6"]
+base_font = ExtResource("4_lm4i2")
 
 [node name="卡组卡包" type="Control" unique_id=969405171]
 layout_mode = 3
@@ -16,7 +21,23 @@ grow_vertical = 2
 [node name="背景" type="Sprite2D" parent="." unique_id=1756481635]
 texture = ExtResource("1_4qsqk")
 
+[node name="封皮" type="Sprite2D" parent="." unique_id=869614436]
+position = Vector2(-5, -51)
+texture = ExtResource("3_6n3n6")
+
 [node name="卡套" type="Sprite2D" parent="." unique_id=101791880]
 modulate = Color(0.11339999, 0.39779997, 0.54, 1)
 position = Vector2(5, 45)
 texture = ExtResource("2_ix31a")
+
+[node name="Label" type="Label" parent="." unique_id=1843997838]
+layout_mode = 0
+offset_left = -99.0
+offset_top = -27.0
+offset_right = 90.0
+offset_bottom = 102.0
+theme_override_fonts/font = SubResource("FontVariation_6n3n6")
+theme_override_font_sizes/font_size = 32
+text = "豆豆"
+horizontal_alignment = 1
+vertical_alignment = 1

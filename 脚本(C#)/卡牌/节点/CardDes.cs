@@ -35,6 +35,10 @@ public partial class CardDes : Control
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌界面.tscn");
     private CardModel Model;
     public static CardDes instance { get; private set; }
+    /// <summary>卡牌描述字号</summary>
+    private const int DesFontSize = 28;
+    /// <summary>描述图标尺寸</summary>
+    private const int IconSize = 42;
     /// <summary>
     /// 创建卡牌的描述
     /// </summary>
@@ -356,7 +360,7 @@ public partial class CardDes : Control
                 {
                     if (!string.IsNullOrEmpty(urlRaw) && TryExtractLinkMeta(urlRaw, out string meta, out string display))
                     {
-                        string inner = $"[img=32]{path}[/img]{ConvertLabels(display)}";
+                        string inner = $"[img={IconSize}]{path}[/img]{ConvertLabels(display)}";
                         label.AppendText($"[color=#44ffff][url={meta}]{inner}[/url][/color]");
                     }
                     else
@@ -369,11 +373,14 @@ public partial class CardDes : Control
                             var tex = await IconComposer.Instance.ComposeAsync(
                                 path, meta2, attr.Color, attr.OutlineColor, attr.OutlineSize);
                             if (tex != null)
-                                label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+                            {
+                                float scale = (float)IconSize / tex.GetWidth();
+                                label.AddImage(tex, tex.GetWidth() * scale, tex.GetHeight() * scale);
+                            }
                         }
                         else
                         {
-                            label.AppendText($"[color=#44ffff][url={meta2}][img=32]{path}[/img][/url][/color]");
+                            label.AppendText($"[color=#44ffff][url={meta2}][img={IconSize}]{path}[/img][/url][/color]");
                         }
                     }
                 }
@@ -395,11 +402,14 @@ public partial class CardDes : Control
                         var tex = await IconComposer.Instance.ComposeAsync(
                             path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
                         if (tex != null)
-                            label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
+                        {
+                            float scale = (float)IconSize / tex.GetWidth();
+                            label.AddImage(tex, tex.GetWidth() * scale, tex.GetHeight() * scale);
+                        }
                     }
                     else
                     {
-                        label.AppendText($"[img=32]{path}[/img]");
+                        label.AppendText($"[img={IconSize}]{path}[/img]");
                     }
                 }
             }
@@ -428,6 +438,13 @@ public partial class CardDes : Control
         label.BbcodeEnabled = true;
         label.MouseFilter = MouseFilterEnum.Stop;
         label.MetaClicked += OnKeywordClicked;
+
+        label.AddThemeFontSizeOverride("normal_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("bold_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("italics_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("bold_italics_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("mono_font_size", DesFontSize);
+
         var contr = GetNode<Control>("%额外区域");
         contr.GuiInput += ControlInput;
     }

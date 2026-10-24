@@ -63,6 +63,47 @@ shader_parameter/brightness = -1.0
 shader_parameter/saturation = 1.0
 shader_parameter/contrast = 1.0
 
+[sub_resource type="Shader" id="Shader_pta5a"]
+code = "shader_type canvas_item;
+
+uniform vec4 color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float strength : hint_range(0.0, 1.0) = 1.0;
+uniform float brightness : hint_range(-1.0, 1.0) = 0.0;
+uniform float saturation : hint_range(0.0, 2.0) = 1.0;
+uniform float contrast : hint_range(0.0, 2.0) = 1.0;
+
+float luminance(vec3 c) {
+	return dot(c, vec3(0.2126, 0.7152, 0.0722));
+}
+
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	vec3 src = tex.rgb;
+
+	float srcLum = luminance(src);
+	float tgtLum = max(luminance(color.rgb), 0.0001);
+
+	vec3 tinted = color.rgb * (srcLum / tgtLum);
+	float maxc = max(max(tinted.r, tinted.g), tinted.b);
+	if (maxc > 1.0) tinted /= maxc;
+
+	vec3 result = mix(src, tinted, strength);
+	result = (result - 0.5) * contrast + 0.5 + brightness;
+
+	float gray = luminance(result);
+	result = mix(vec3(gray), result, saturation);
+
+	COLOR = vec4(clamp(result, 0.0, 1.0), tex.a * color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_setff"]
+shader = SubResource("Shader_pta5a")
+shader_parameter/color = Color(0.16, 0, 0, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = -1.0
+shader_parameter/saturation = 1.2830000609425
+shader_parameter/contrast = 1.0530000500175
+
 [node name="Control" type="Control" unique_id=260714909]
 layout_mode = 3
 anchors_preset = 15
@@ -102,7 +143,7 @@ texture = ExtResource("2_iabat")
 
 [node name="紫色渐变" type="Sprite2D" parent="Frame/卡片" unique_id=2123813251]
 self_modulate = Color(0.79261, 0.1274, 0.91, 1)
-position = Vector2(2.3275757, 66)
+position = Vector2(0.8329773, 48.99997)
 scale = Vector2(1, 0.22)
 texture = ExtResource("3_wx2ff")
 
@@ -137,6 +178,7 @@ texture = ExtResource("5_p6jnt")
 [node name="卡牌2" type="Sprite2D" parent="Frame" unique_id=2082412175]
 self_modulate = Color(0.26339912, 3.880542e-07, 7.219613e-08, 1)
 clip_children = 2
+material = SubResource("ShaderMaterial_setff")
 position = Vector2(511, 571)
 scale = Vector2(3.05, 2.7)
 texture = ExtResource("5_p6jnt")
