@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxceqec40lstj"
-path="res://.godot/imported/_shot_fresh.png-d023b7f76d8f495f2127f70d5da12a51.ctex"
+uid="uid://dkenmhnhiqypp"
+path="res://.godot/imported/Deck_SuperBrainz.png-b3f15d531f40ffad5b7753250ce4114a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://_shot_fresh.png"
-dest_files=["res://.godot/imported/_shot_fresh.png-d023b7f76d8f495f2127f70d5da12a51.ctex"]
+source_file="res://素材/英雄素材/超尸/Deck_SuperBrainz.png"
+dest_files=["res://.godot/imported/Deck_SuperBrainz.png-b3f15d531f40ffad5b7753250ce4114a.ctex"]
 
 [params]
 
