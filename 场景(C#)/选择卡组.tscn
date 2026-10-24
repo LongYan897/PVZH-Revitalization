@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://dh0jm2h4k6jm3"]
+
+[ext_resource type="Script" uid="uid://djw2uav0wcgkd" path="res://脚本(C#)/辅助类/MinimumHFlowContainer.cs" id="1_vvy46"]
+[ext_resource type="Shader" uid="uid://ctimnulvc2pax" path="res://着色器/渐变艺术字.gdshader" id="3_5plu8"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_5056d"]
+script/source = "using Godot;
+using System;
+
+public partial class SelectDeck : Node2D
+{
+}
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5plu8"]
+bg_color = Color(0.25275356, 0.25275356, 0.25275356, 1)
+border_width_top = 5
+border_width_bottom = 5
+border_color = Color(0.28778407, 0.28778407, 0.28778407, 1)
+
+[sub_resource type="Theme" id="Theme_j6ymc"]
+Panel/styles/panel = SubResource("StyleBoxFlat_5plu8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nl4n4"]
+shader = ExtResource("3_5plu8")
+shader_parameter/top_color = Color(1, 1, 1, 1)
+shader_parameter/bottom_color = Color(0, 1, 1, 1)
+
+[sub_resource type="Theme" id="Theme_r34ow"]
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.5568628)
+Label/constants/shadow_offset_x = 3
+Label/constants/shadow_offset_y = 5
+Label/constants/shadow_outline_size = 8
+Label/font_sizes/font_size = 40
+
+[sub_resource type="Theme" id="Theme_i0xha"]
+HFlowContainer/constants/h_separation = 10
+HFlowContainer/constants/v_separation = 10
+
+[node name="选择卡组" type="Node2D" unique_id=2092501463]
+script = SubResource("CSharpScript_5056d")
+
+[node name="背景板" type="ColorRect" parent="." unique_id=423470156]
+custom_minimum_size = Vector2(720, 1280)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0.7882353)
+
+[node name="主容器" type="VBoxContainer" parent="." unique_id=78342785]
+offset_right = 720.0
+offset_bottom = 1280.0
+
+[node name="英雄图标背景板" type="Panel" parent="主容器" unique_id=1312107703]
+custom_minimum_size = Vector2(720, 300)
+layout_mode = 2
+theme = SubResource("Theme_j6ymc")
+
+[node name="艺术字" type="Label" parent="主容器/英雄图标背景板" unique_id=2095221842]
+material = SubResource("ShaderMaterial_nl4n4")
+custom_minimum_size = Vector2(720, 70)
+layout_mode = 0
+offset_right = 720.0
+offset_bottom = 70.0
+theme = SubResource("Theme_r34ow")
+text = "选择牌组"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="滚动框" type="ScrollContainer" parent="主容器/英雄图标背景板" unique_id=116225872]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -70.0
+offset_right = 1274.4
+offset_bottom = 429.40002
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.441, 0.441)
+
+[node name="英雄图标框" type="HFlowContainer" parent="主容器/英雄图标背景板/滚动框" unique_id=1017151613]
+custom_minimum_size = Vector2(1634.4, 499.4)
+layout_mode = 2
+theme = SubResource("Theme_i0xha")
+alignment = 1
+script = ExtResource("1_vvy46")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
