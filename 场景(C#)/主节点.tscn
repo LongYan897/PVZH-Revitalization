@@ -38,12 +38,12 @@ layer = 5
 layer = -80
 
 [node name="Bg" type="Sprite2D" parent="Scene/ButtomScene" unique_id=929997243]
-modulate = Color(0.13725491, 0.53333336, 0.6745098, 1)
+modulate = Color(0.19, 0.7299999, 1, 1)
 material = SubResource("ShaderMaterial_hddma")
 position = Vector2(360, 640)
 texture = ExtResource("3_n74wj")
 script = ExtResource("2_d5m1c")
-Color = Color(0.13725491, 0.53333336, 0.6745098, 1)
+Color = Color(0.14799999, 0.5426666, 0.74, 1)
 metadata/_custom_type_script = "uid://c4d6enygyoawb"
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
@@ -96,19 +96,21 @@ metadata/_edit_group_ = true
 
 [node name="植物任务" parent="Scene/ButtomScene" unique_id=1509446347 instance=ExtResource("19_quj4d")]
 offset_left = 244.0
-offset_top = 240.0
+offset_top = 231.0
 offset_right = -476.0
-offset_bottom = -1040.0
+offset_bottom = -1049.0
+SubScene = "res://场景(C#)/任务.tscn"
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
 [node name="僵尸任务" parent="Scene/ButtomScene" unique_id=443452423 instance=ExtResource("14_2lx20")]
 offset_left = 476.0
-offset_top = 240.0
+offset_top = 231.0
 offset_right = -244.0
-offset_bottom = -1040.0
-metadata/_edit_lock_ = true
+offset_bottom = -1049.0
+SubScene = "res://场景(C#)/任务.tscn"
 metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="每日挑战" parent="Scene/ButtomScene" unique_id=687317841 instance=ExtResource("15_1cjfr")]
 offset_left = 360.0

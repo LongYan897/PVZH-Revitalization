@@ -27,7 +27,7 @@ public partial class SubMenu : Control
     {
         SceneManager.Register(this);
     }
-	public virtual void ReadyField()
+	protected virtual void ReadyField()
 	{ }
 	public void Function(bool enable)
 	{
@@ -38,11 +38,14 @@ public partial class SubMenu : Control
 		if (!canPress) return;
 		canPress = false;
 		Tween tween = CreateTween();
-		tween.TweenProperty(this, "scale", (InitScale - 0.1f) * new Vector2(1, 1), 0.1f);
+		tween.TweenProperty(this, "scale", (InitScale - 0.05f) * new Vector2(1, 1), 0.1f);
 		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
 		await ToSignal(tween, Tween.SignalName.Finished);
+		EnterField();
 		SceneManager.JumpToSub(this);
-	}
+    }
+    protected virtual void EnterField()
+    { }
     public sealed override void _ExitTree()
     {
         SceneManager.Unregister(this);
@@ -60,7 +63,7 @@ public partial class SubMenu : Control
         Visible = true;
 		canPress = true;
 		Tween tween = CreateTween();
-		tween.TweenProperty(this, "scale", (InitScale + 0.1f) * new Vector2(1, 1), 0.15f);
+		tween.TweenProperty(this, "scale", (InitScale + 0.05f) * new Vector2(1, 1), 0.15f);
 		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
 		SubmenuScene.QueueFree();
 	}

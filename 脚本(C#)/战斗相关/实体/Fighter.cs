@@ -430,6 +430,14 @@ public partial class Fighter : Control, ITarget, IAttackable
         };
         var size = textureR.Size;
         textureR.Position -= size / 2;
+
+        if (Model != null && Model.ArrowAmmo)
+        {
+            textureR.PivotOffset = size / 2;
+            Vector2 dir = to - from;
+            textureR.Rotation = dir.Angle() - Mathf.Pi / 2;
+        }
+
         Main.AmmoAnimator.AddChild(textureR);
 
         Tween tween = CreateTween();
@@ -1071,7 +1079,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             f.Visible = false;
         }
     }
-
+    public SpineHandler AnimationNode => GetNode<SpineHandler>("%动画");
     //专门用于远程同步或者Ai的区域
     public void AutoTargeted(TargetContext ctx)
     {
