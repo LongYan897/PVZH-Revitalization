@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c7kyerl2cdca4"
-path="res://.godot/imported/options.png-9f973101242ae950947a08041855db76.ctex"
+path="res://.godot/imported/options.png-80cb468efb3e9ead8b1d08969e6fd00f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://素材/ui/界面ui/options.png"
-dest_files=["res://.godot/imported/options.png-9f973101242ae950947a08041855db76.ctex"]
+source_file="res://素材(C#)/其他/options.png"
+dest_files=["res://.godot/imported/options.png-80cb468efb3e9ead8b1d08969e6fd00f.ctex"]
 
 [params]
 

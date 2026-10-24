@@ -56,6 +56,12 @@ public partial class NodeCard : Control
 	private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌.tscn");
 	public static NodeCard ChoiceCard { get; private set; }
 	public CardModel Model { get; private set; }
+	/// <summary>
+	/// 是否允许点卡展开信息背景。<br/>
+	/// 纯展示的列表（如卡包详情）把它设成 false：点卡只弹 <see cref="CardDes"/> 说明面板，
+	/// 不展开、不改 ZIndex，避免网格布局里出现点不到/卡被遮住的问题。
+	/// </summary>
+	public bool AllowExpand { get; set; } = true;
 	private static readonly System.Collections.Generic.Dictionary<NodeCard, CardModel> instances = new();
 	private const int maxInstance = int.MaxValue;
 	/// <summary>
@@ -605,6 +611,15 @@ public partial class NodeCard : Control
 
 	private void OnCardClick()
 	{
+		// 有些界面（比如卡包详情）只想要“点卡看说明”，不想要展开信息背景：
+		// 展开会改动 ZIndex、盖住后面的节点，在网格布局里很容易出现点不到、卡消失的问题。
+		// 关掉 AllowExpand 后直接弹说明面板，不动卡牌本身的布局和层级。
+		if (!AllowExpand)
+		{
+			CardDes.DisplayDescription(Model);
+			return;
+		}
+
 		ChoiceCard = this;
 		ResetAllZIndex();
 		BringToFront();

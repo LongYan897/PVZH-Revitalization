@@ -28,7 +28,6 @@ public partial class CardPackDetail : SubMenuScene
 	private const float CardNaturalWidth = 255f;
 	private const float CardNaturalHeight = 200f;
 	private FlowContainer ItemListNode;
-	private readonly System.Collections.Generic.List<NodeCard> _cards = new();
 	private Tween _introTween;
 	private bool _introPlayed;
 	/// <summary>点进来的是哪个卡包</summary>
@@ -40,8 +39,8 @@ public partial class CardPackDetail : SubMenuScene
 		// 卡牌之间的间距由容器的 theme 常量决定（HFlowContainer 默认只有 4）
 		ItemListNode.AddThemeConstantOverride("h_separation", RowSeparation);
 		ItemListNode.AddThemeConstantOverride("v_separation", RowSeparation);
-		// 满的一排居中显示；最后一行不满时仍靠左
-		ItemListNode.Alignment = FlowContainer.AlignmentMode.Center;
+		// 一排 4 张，靠左排列（不满 4 张也靠左，空出来的位置留在右边）
+		ItemListNode.Alignment = FlowContainer.AlignmentMode.Begin;
 		ItemListNode.LastWrapAlignment = FlowContainer.LastWrapAlignmentMode.Begin;
 
 		// 由点开它的人决定内容：卡包磁贴的「详情」按钮会把卡包名放进 Payload
@@ -87,8 +86,8 @@ public partial class CardPackDetail : SubMenuScene
 		{
 			var groupName = group["Name"]?.GetValue<string>();
             CardBar newPanel = GD.Load<PackedScene>("res://场景(C#)/卡包/横幅.tscn").Instantiate<CardBar>();
-			newPanel.IntroduceLabel.Text = groupName;
 			ItemListNode.AddChild(newPanel);
+			newPanel.IntroduceLabel.Text = groupName ?? "";
 
 
             var cards = group["Cards"]?.AsArray();
@@ -108,40 +107,21 @@ public partial class CardPackDetail : SubMenuScene
 				ItemListNode.AddChild(cell);
 
 				NodeCard card = await NodeCard.DisplayCardAt(model, Vector2.Zero, cell, CardView.Collection, fit);
-				card.PivotOffset = Vector2.Zero;   // 以左上角为缩放基准，避免缩放后偏移
-				_cards.Add(card);
 
-				// 点卡时手动把这张卡顶到最上层（原因见 RaiseCardOnClick 的注释）
-				Button hit = card.GetNodeOrNull<Button>("碰撞");
-				if (hit != null) hit.GuiInput += (ev) => RaiseCardOnClick(card, ev);
+				// 点击动画以卡牌“中心”为缩放基准。
+				// 注意：Godot 4.7 里实际 pivot = PivotOffset + Size × PivotOffsetRatio（两者相加），
+				// 卡牌.tscn 根节点本来就有 pivot_offset=(128,96.5)，所以必须先把 PivotOffset 清零，
+				// 否则会和 ratio 叠加成 (255.5,193)（跑到右边界外），缩放位置就偏一倍。
+				card.PivotOffset = Vector2.Zero;
+				card.PivotOffsetRatio = new Vector2(0.5f, 0.5f);
+
+				// 位置补偿：以中心缩放会把卡牌视觉左上角往右下推 pivot×(1-scale)，
+				// 这里把 Position 反向偏移同样的距离，保证静止时卡牌的左上角仍贴在格子左上角。
+				Vector2 cardSize = card.GetCombinedMinimumSize();
+				card.Position = -cardSize * 0.5f * (1f - fit);
+				card.AllowExpand = false;
 			}
 		}
-	}
-
-	/// <summary>
-	/// 点卡时把这它顶到最上面。<br/>
-	/// 两个原因：<br/>
-	/// 1. 卡牌现在各自套在一个格子 Control 里，NodeCard 自带的 BringToFront() 是按"同一父节点下的卡"
-	///    算 ZIndex 的，它们的父级都是各自的格子、互相看不到，算出来的层级不可靠；<br/>
-	/// 2. OnCardClick 里还会 ResetAllZIndex()，把所有卡压到 -4000 —— 详情界面的卡在遮罩面板下面，
-	///    负的 ZIndex 会直接被遮罩盖住，表现就是"点一下卡全不见了"。<br/>
-	/// 所以这里在点击后把其它卡恢复成 0、被点的卡设 4000（比遮罩高，展开的信息背景才看得见）。
-	/// 用 CallDeferred 保证在 NodeCard 自己的 OnCardClick / ResetAllZIndex 之后再执行。
-	/// </summary>
-	private void RaiseCardOnClick(NodeCard card, InputEvent ev)
-	{
-		if (ev is not InputEventMouseButton mb || mb.ButtonIndex != MouseButton.Left) return;
-		FixCardZ(card);
-		Callable.From(() => FixCardZ(card)).CallDeferred();
-	}
-
-	private void FixCardZ(NodeCard top)
-	{
-		foreach (NodeCard other in _cards)
-			if (GodotObject.IsInstanceValid(other) && other != top)
-				other.ZIndex = 0;
-		if (GodotObject.IsInstanceValid(top))
-			top.ZIndex = 4000;
 	}
 
 	public override void _ExitTree()

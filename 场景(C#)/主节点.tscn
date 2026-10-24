@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="5_2lx20"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_1cjfr"]
 [ext_resource type="PackedScene" uid="uid://b5x4veawhq8g4" path="res://场景(C#)/主界面按钮/僵尸任务.tscn" id="14_2lx20"]
+[ext_resource type="PackedScene" uid="uid://btfi7ovrmvcct" path="res://场景(C#)/主界面按钮/设置按钮.tscn" id="15_00smb"]
 [ext_resource type="PackedScene" uid="uid://dy7pegrhba8bu" path="res://场景(C#)/主界面按钮/每日挑战.tscn" id="15_1cjfr"]
 [ext_resource type="PackedScene" uid="uid://b82k587le8ukv" path="res://场景(C#)/主界面按钮/对战.tscn" id="18_1pb50"]
 [ext_resource type="PackedScene" uid="uid://d4jtuyxkgf5da" path="res://场景(C#)/主界面按钮/植物任务.tscn" id="19_quj4d"]
@@ -157,6 +158,14 @@ offset_bottom = -711.0
 scale = Vector2(1.25, 1.25)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
+
+[node name="设置按钮" parent="Scene/ButtomScene" unique_id=181554448 instance=ExtResource("15_00smb")]
+offset_left = 657.0
+offset_top = 1.0
+offset_right = 657.0
+offset_bottom = 1.0
+scale = Vector2(0.5, 0.5)
+metadata/_edit_lock_ = true
 
 [node name="SubScene" type="CanvasLayer" parent="Scene" unique_id=454554130]
 unique_name_in_owner = true

@@ -21,7 +21,7 @@
 		],
 		"group": [
 			{
-				"Name": "group1",
+				"Name": "罕见",
 				"Cards": [
 					"Peashooter",
 					"SunFlower",
@@ -32,7 +32,7 @@
 				"UltimateRate": 0
 			},
 			{
-				"Name": "group2",
+				"Name": "稀有",
 				"Cards": [
 					"HailACopter"
 				],
@@ -41,7 +41,7 @@
 				"UltimateRate": 0.5
 			},
 			{
-				"Name": "group3",
+				"Name": "超稀有",
 				"Cards": [
 					"FinalMission"
 				],
