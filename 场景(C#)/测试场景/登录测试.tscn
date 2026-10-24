@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://脚本(C#)/网络/LoginTest.cs" id="1_login"]
+
+[node name="登录测试" type="Node2D"]
+script = ExtResource("1_login")
+
+[node name="背景" type="ColorRect" parent="."]
+offset_right = 720.0
+offset_bottom = 1280.0
+color = Color(0.101960786, 0.12156863, 0.16078432, 1)
+
+[node name="UI" type="VBoxContainer" parent="."]
+offset_left = 60.0
+offset_top = 100.0
+offset_right = 660.0
+offset_bottom = 900.0
+theme_override_constants/separation = 20
+
+[node name="标题" type="Label" parent="UI"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "登录测试"
+
+[node name="提示" type="Label" parent="UI"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.7, 0.78, 1)
+theme_override_font_sizes/font_size = 22
+text = "服务端：http://127.0.0.1:5065（admin / 123456）"
+autowrap_mode = 3
+
+[node name="账号" type="LineEdit" parent="UI"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+placeholder_text = "账号"
+
+[node name="密码" type="LineEdit" parent="UI"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+placeholder_text = "密码"
+secret = true
+
+[node name="登录按钮" type="Button" parent="UI"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+text = "登录"
+
+[node name="结果" type="Label" parent="UI"]
+custom_minimum_size = Vector2(0, 240)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "等待登录…"
+autowrap_mode = 3

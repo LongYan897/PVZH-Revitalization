@@ -61,6 +61,9 @@ public partial class CardTilesControl : SubMenuScene
 	/// </summary>
 	private async void PlayOutro()
 	{
+		// 详情之类的子层盖在上面时，本层的返回按钮不该有反应：
+		// 否则会先把本层面板滑走，然后被弹掉的是上层，留下"主界面看得见却点不动"的状态。
+		if (!SceneManager.IsCurrent(this)) return;
 		if (_closing || Container == null) return;
 		_closing = true;
 
@@ -83,7 +86,7 @@ public partial class CardTilesControl : SubMenuScene
 	/// </summary>
 	protected virtual void OnOutroFinished()
 	{
-		SceneManager.ReturnToSub();
+		SceneManager.ReturnToSub(this);
 	}
 	private Tween QuickTween()
 	{

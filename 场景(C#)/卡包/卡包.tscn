@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://b6nuesl42eyfl" path="res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png" id="5_tcq48"]
 [ext_resource type="PackedScene" uid="uid://duu5k5sihgqo7" path="res://场景(C#)/卡包/购买按钮槽.tscn" id="8_bhvu4"]
 [ext_resource type="Texture2D" uid="uid://ob1rea3ewoip" path="res://素材(C#)/卡包/infobutton.png" id="9_3ydqm"]
-[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="9_4xl43"]
+[ext_resource type="Script" uid="uid://bffnop0s4ain1" path="res://脚本(C#)/卡牌/卡包/CardPackDetailButton.cs" id="9_4xl43"]
 [ext_resource type="Script" uid="uid://c0kn17ynwxpil" path="res://addons/ExtraNode/AutoFitHBoxContainer/AutoFitHBoxContainer.gd" id="11_auto_fit_hbox"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_h8wgi"]
@@ -172,9 +172,12 @@ metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="底版/详情按钮" unique_id=506049850]
 layout_mode = 0
-offset_right = 126.0
-offset_bottom = 126.0
+offset_left = -41.999996
+offset_top = -43.0
+offset_right = 92.0
+offset_bottom = 91.0
 scale = Vector2(0.4, 0.4)
+pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 1
 icon = ExtResource("9_3ydqm")
 flat = true

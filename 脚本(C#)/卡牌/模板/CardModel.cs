@@ -28,6 +28,11 @@ public class CardModel
     public Player Player => PlayerManager.GetPlayer(Camp);
     private static readonly Dictionary<string, CardModel> TemplateEntries = new();
     /// <summary>
+    /// 按卡牌“类名”（cards.json 里键的前缀，如 Peashooter）索引的模板。<br/>
+    /// cardPack.json 的 group.Cards 用的是类名而不是中文标题，所以需要这张表。
+    /// </summary>
+    private static readonly Dictionary<string, CardModel> ClassEntries = new();
+    /// <summary>
     /// 获取卡牌已有的变量
     /// </summary>
     /// <param name="sign">变量名称</param>
@@ -90,6 +95,17 @@ public class CardModel
     }
 
     /// <summary>
+    /// 按卡牌类名（cards.json 里键的前缀，如 Peashooter）获取卡牌模板。<br/>
+    /// 卡包数据(cardPack.json 的 group.Cards)里存的就是类名。
+    /// </summary>
+    public static CardModel GetTemplateByClassName(string className)
+    {
+        if (!string.IsNullOrEmpty(className) && ClassEntries.TryGetValue(className, out var template))
+            return template.Clone();
+        return null;
+    }
+
+    /// <summary>
     /// 从id获取卡牌
     /// </summary>
     /// <param name="id">卡牌的ID</param>
@@ -139,6 +155,7 @@ public class CardModel
                 var model = (CardModel)generic.Invoke(null, new object[] { cardString });
                 if (!string.IsNullOrEmpty(model.Title))
                     TemplateEntries[model.Title] = model;
+                ClassEntries[type.Name] = model;
             }
             catch (Exception ex)
             {

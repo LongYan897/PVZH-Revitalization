@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b1ishkytvhyfj"]
+
+[ext_resource type="Script" uid="uid://bo6ebxybbmiaa" path="res://脚本(C#)/玩家/NetworkTest.cs" id="1_rjnme"]
+
+[node name="Node2D" type="Node2D" unique_id=1796944932]
+script = ExtResource("1_rjnme")

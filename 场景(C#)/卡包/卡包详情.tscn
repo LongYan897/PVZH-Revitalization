@@ -5,10 +5,7 @@
 [ext_resource type="FontFile" uid="uid://rm3h54fev3jd" path="res://素材/字体/拙黑拼贴体.ttf" id="3_5rmop"]
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="4_pjijr"]
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="5_h4gj4"]
-[ext_resource type="Script" uid="uid://c0kn17ynwxpil" path="res://addons/ExtraNode/AutoFitHBoxContainer/AutoFitHBoxContainer.gd" id="6_dbew2"]
-[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="6_pjijr"]
-[ext_resource type="PackedScene" uid="uid://26tnjhis0xxj" path="res://场景(C#)/卡牌.tscn" id="7_5hjap"]
-[ext_resource type="Script" path="res://脚本(C#)/卡牌/卡包/CardPackDetail.cs" id="8_detail"]
+[ext_resource type="Script" uid="uid://badpswj0licdl" path="res://脚本(C#)/卡牌/卡包/CardPackDetail.cs" id="8_detail"]
 
 [sub_resource type="Resource" id="Resource_igqou"]
 script = ExtResource("1_3ages")
@@ -69,23 +66,16 @@ script = ExtResource("5_h4gj4")
 [sub_resource type="Resource" id="Resource_r3ypi"]
 script = ExtResource("5_h4gj4")
 
-[sub_resource type="StyleBox" id="StyleBox_abi3o"]
-resource_local_to_scene = false
-resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
-script = ExtResource("2_aicpp")
-color = Color(0.11, 0.11, 0.11, 0.74509805)
-metadata/_custom_type_script = "uid://bkl6g25jwb47h"
-
 [node name="卡包详情" type="Node2D" unique_id=169154790]
 script = ExtResource("8_detail")
 
+[node name="底版" type="Panel" parent="." unique_id=1745072844]
+offset_right = 720.0
+offset_bottom = 1280.0
+
 [node name="遮罩" type="Panel" parent="." unique_id=489960263]
 clip_contents = true
-offset_top = 165.0
+offset_top = 88.0
 offset_right = 720.0
 offset_bottom = 1280.0
 theme_override_styles/panel = SubResource("StyleBox_wvhbo")
@@ -120,73 +110,6 @@ allow_horizontal_scroll = false
 auto_allow_scroll = false
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="遮罩/滚动条" unique_id=2002458895]
+[node name="FlowContainer" type="HFlowContainer" parent="遮罩/滚动条" unique_id=395214776]
 layout_mode = 2
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="横幅" type="Panel" parent="遮罩/滚动条/VBoxContainer" unique_id=1112553280]
-custom_minimum_size = Vector2(720, 50)
-layout_mode = 2
-mouse_filter = 1
-theme_override_styles/panel = SubResource("StyleBox_abi3o")
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="介绍文本" type="Label" parent="遮罩/滚动条/VBoxContainer/横幅" unique_id=616546193]
-layout_mode = 0
-offset_left = 21.0
-offset_right = 716.0
-offset_bottom = 50.0
-mouse_filter = 1
-theme_override_fonts/font = ExtResource("6_pjijr")
-theme_override_font_sizes/font_size = 32
-text = "组名字"
-vertical_alignment = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Control3" type="Control" parent="遮罩/滚动条/VBoxContainer" unique_id=1024928139]
-custom_minimum_size = Vector2(720, 130)
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="AutoFitHBoxContainer" type="Control" parent="遮罩/滚动条/VBoxContainer/Control3" unique_id=1002373078]
-anchors_preset = 0
-offset_right = 720.0
-offset_bottom = 130.0
-mouse_filter = 1
-script = ExtResource("6_dbew2")
-separation = 0.0
-metadata/_custom_type_script = "uid://c0kn17ynwxpil"
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="卡牌" parent="遮罩/滚动条/VBoxContainer/Control3/AutoFitHBoxContainer" unique_id=1520879097 instance=ExtResource("7_5hjap")]
-layout_mode = 0
-offset_left = 16.476685
-offset_right = 271.47668
-scale = Vector2(0.6735751, 0.6735751)
-pivot_offset = Vector2(0, 0)
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="卡牌2" parent="遮罩/滚动条/VBoxContainer/Control3/AutoFitHBoxContainer" unique_id=2068856838 instance=ExtResource("7_5hjap")]
-layout_mode = 0
-offset_left = 188.23834
-offset_right = 443.23834
-scale = Vector2(0.6735751, 0.6735751)
-pivot_offset = Vector2(0, 0)
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="卡牌3" parent="遮罩/滚动条/VBoxContainer/Control3/AutoFitHBoxContainer" unique_id=637355252 instance=ExtResource("7_5hjap")]
-layout_mode = 0
-offset_left = 360.0
-offset_right = 615.0
-scale = Vector2(0.6735751, 0.6735751)
-pivot_offset = Vector2(0, 0)
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="卡牌4" parent="遮罩/滚动条/VBoxContainer/Control3/AutoFitHBoxContainer" unique_id=1916068007 instance=ExtResource("7_5hjap")]
-layout_mode = 0
-offset_left = 531.76166
-offset_right = 786.76166
-scale = Vector2(0.6735751, 0.6735751)
-pivot_offset = Vector2(0, 0)
 metadata/_smooth_scroll_default_mouse_filter_set = true

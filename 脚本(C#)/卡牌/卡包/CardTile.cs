@@ -1,5 +1,6 @@
 using FileExtension;
 using Godot;
+using Scene;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
@@ -58,6 +59,14 @@ public partial class CardTile : CenterContainer
 			GD.PushError($"[CardTile] 场景中缺少 底版/购买按钮组，请检查 卡包.tscn。当前场景：{SceneFilePath}");
 			return;
 		}
+
+		// ---- 2.5 把"当前是哪个卡包"挂到详情按钮上 ----
+		// 点详情时 SceneManager 会把这个值塞进卡包详情场景的 Payload，详情场景在 _Load 里读它决定显示什么。
+		SubMenu detailButton = GetNodeOrNull<SubMenu>("底版/详情按钮");
+		if (detailButton != null)
+			detailButton.Payload = PackName;
+		else
+			GD.PushWarning("[CardTile] 场景中缺少 底版/详情按钮");
 
 		// ---- 3. 把数值写进界面 ----
 		if (PackNameLabel != null) PackNameLabel.Text = PackTitle;

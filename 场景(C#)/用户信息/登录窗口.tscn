@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://脚本(C#)/网络/LoginWindow.cs" id="1_login"]
+
+[node name="登录窗口" type="Window"]
+title = "登录"
+size = Vector2i(420, 340)
+unresizable = false
+script = ExtResource("1_login")
+
+[node name="UI" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="VBox" type="VBoxContainer" parent="UI"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="标题" type="Label" parent="UI/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "账号登录"
+
+[node name="账号" type="LineEdit" parent="UI/VBox"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+placeholder_text = "账号"
+
+[node name="密码" type="LineEdit" parent="UI/VBox"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+placeholder_text = "密码"
+secret = true
+
+[node name="登录按钮" type="Button" parent="UI/VBox"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+text = "登录"
+
+[node name="提示" type="Label" parent="UI/VBox"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "请输入账号密码"
+autowrap_mode = 3

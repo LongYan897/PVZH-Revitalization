@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://co5gx6jje8wgx"]
+
+[ext_resource type="Script" uid="uid://cjmmhbp1b5312" path="res://addons/StyleboxFancy/StyleBorder.gd" id="1_28h2c"]
+[ext_resource type="Script" uid="uid://c1oek6owawwtx" path="res://脚本(C#)/网络/LoadScene.cs" id="1_jfa25"]
+[ext_resource type="Script" uid="uid://bkl6g25jwb47h" path="res://addons/StyleboxFancy/StyleBoxFancy.gd" id="2_jfa25"]
+
+[sub_resource type="StyleBox" id="StyleBox_wvhbo"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_jfa25")
+color = Color(0.11999182, 0.3744082, 0.32211146, 1)
+metadata/_custom_type_script = "uid://bkl6g25jwb47h"
+
+[sub_resource type="Gradient" id="Gradient_g482g"]
+colors = PackedColorArray(0.36847892, 0.36847895, 0.36847892, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jrdhs"]
+gradient = SubResource("Gradient_g482g")
+
+[sub_resource type="StyleBox" id="StyleBox_ifow5"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_jfa25")
+color = Color(0, 0.3736667, 0.59, 1)
+texture = SubResource("GradientTexture2D_jrdhs")
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+metadata/_custom_type_script = "uid://bkl6g25jwb47h"
+
+[node name="加载界面" type="Node2D" unique_id=1779233937]
+script = ExtResource("1_jfa25")
+
+[node name="Panel" type="Panel" parent="." unique_id=342188164]
+offset_right = 720.0
+offset_bottom = 1280.0
+theme_override_styles/panel = SubResource("StyleBox_wvhbo")
+
+[node name="CenterContainer" type="CenterContainer" parent="Panel" unique_id=1026738831]
+layout_mode = 0
+offset_top = 90.0
+offset_right = 720.0
+offset_bottom = 247.0
+
+[node name="Panel" type="Panel" parent="Panel/CenterContainer" unique_id=1145926053]
+custom_minimum_size = Vector2(400, 75)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_ifow5")
+
+[node name="Label" type="Label" parent="Panel/CenterContainer/Panel" unique_id=1408795796]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 75.0
+theme_override_colors/font_shadow_color = Color(0, 0.2135267, 0.40377098, 1)
+theme_override_constants/shadow_offset_x = 8
+theme_override_constants/shadow_offset_y = 8
+theme_override_font_sizes/font_size = 48
+text = "加载界面"
+horizontal_alignment = 1
+vertical_alignment = 1
