@@ -10,12 +10,19 @@ public partial class SubMenu : Control
 	public string SubScene { get; set; }
 	/// <summary>
 	/// 打开这个菜单时是否显示加载界面。<br/>
-	/// 盖在主界面上的二级面板（如卡包列表）保持 false；整屏切换的场景（如对战、图鉴）勾上 true。
 	/// </summary>
 	[Export]
 	public bool ShowLoading { get; set; } = true;
+    /// <summary>
+    /// 是否控制中心为 0.5,0.5
+    /// </summary>
     [Export]
     public bool CenterPivot { get; set; } = false;
+    /// <summary>
+    /// 是否是常驻按钮(不会取消可以点按)
+    /// </summary>
+    [Export]
+    public bool IsConstant { get; set; } = false;
 	private SubMenuScene SubmenuScene;
 	private float InitScale;
     public void ResetPress() => canPress = true;
@@ -43,7 +50,8 @@ public partial class SubMenu : Control
 	private async void Enter()
 	{
 		if (!canPress) return;
-		canPress = false;
+        if (!IsConstant)
+		    canPress = false;
 		Tween tween = CreateTween();
 		tween.TweenProperty(this, "scale", (InitScale - 0.05f) * new Vector2(1, 1), 0.1f);
 		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);

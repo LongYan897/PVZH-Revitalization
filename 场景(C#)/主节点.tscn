@@ -58,36 +58,6 @@ metadata/_custom_type_script = "uid://c4d6enygyoawb"
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="钻石" type="Panel" parent="Scene/ButtomScene" unique_id=702204985]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -150.0
-offset_top = 33.0
-offset_right = 150.0
-offset_bottom = 93.0
-grow_horizontal = 2
-pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/panel = SubResource("StyleBoxFlat_00smb")
-
-[node name="钻石" type="TextureRect" parent="Scene/ButtomScene/钻石" unique_id=1533700988]
-layout_mode = 0
-offset_left = -22.000004
-offset_right = 88.4762
-offset_bottom = 114.53037
-scale = Vector2(0.525, 0.525)
-texture = ExtResource("5_2lx20")
-
-[node name="钻石数量" type="Label" parent="Scene/ButtomScene/钻石" unique_id=1178692357]
-layout_mode = 0
-offset_right = 300.0
-offset_bottom = 60.0
-theme_override_fonts/font = ExtResource("6_1cjfr")
-theme_override_font_sizes/font_size = 54
-text = "100"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
 offset_left = 364.0
 offset_top = 846.0
@@ -95,6 +65,7 @@ offset_right = -47.000244
 offset_bottom = 750.0
 scale = Vector2(0.5, 0.5)
 metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="卡包" parent="Scene/ButtomScene" unique_id=1529838576 instance=ExtResource("22_sjdq6")]
 offset_left = 447.0
@@ -160,15 +131,6 @@ scale = Vector2(1.25, 1.25)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="设置按钮" parent="Scene/ButtomScene" unique_id=181554448 instance=ExtResource("15_00smb")]
-offset_left = 657.0
-offset_top = 1.0
-offset_right = 657.0
-offset_bottom = 1.0
-scale = Vector2(0.5, 0.5)
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
-
 [node name="SubScene" type="CanvasLayer" parent="Scene" unique_id=454554130]
 unique_name_in_owner = true
 layer = 3
@@ -181,7 +143,51 @@ follow_viewport_enabled = true
 [node name="Button" type="CanvasLayer" parent="Scene" unique_id=948884562]
 layer = 80
 
-[node name="返回按钮" parent="Scene/Button" unique_id=68017161 instance=ExtResource("21_otykl")]
+[node name="钻石" type="Panel" parent="Scene/Button" unique_id=285240468]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -55.0
+offset_top = 3.0
+offset_right = 245.0
+offset_bottom = 63.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_00smb")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="钻石" type="TextureRect" parent="Scene/Button/钻石" unique_id=120779262]
+layout_mode = 0
+offset_left = -22.000004
+offset_right = 88.4762
+offset_bottom = 114.53037
+scale = Vector2(0.525, 0.525)
+texture = ExtResource("5_2lx20")
+
+[node name="钻石数量" type="Label" parent="Scene/Button/钻石" unique_id=1557627473]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 60.0
+theme_override_fonts/font = ExtResource("6_1cjfr")
+theme_override_font_sizes/font_size = 54
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="设置按钮" parent="Scene/Button" unique_id=181554448 instance=ExtResource("15_00smb")]
+offset_left = 657.0
+offset_top = 1.0
+offset_right = 657.0
+offset_bottom = 1.0
+scale = Vector2(0.5, 0.5)
+IsConstant = true
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Return" type="CanvasLayer" parent="Scene" unique_id=139761091]
+
+[node name="返回按钮" parent="Scene/Return" unique_id=68017161 instance=ExtResource("21_otykl")]
 unique_name_in_owner = true
 offset_left = -112.0
 offset_right = -720.0
