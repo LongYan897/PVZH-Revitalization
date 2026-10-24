@@ -11,8 +11,6 @@ public partial class UserInfo : SubMenuScene
 {
 	public override Task _Load()
 	{
-		// 需要初始化界面就在这里 GetNode / 填数据；
-		// 此时子节点的 _Ready 还没跑，不能依赖它们 _Ready 里缓存的字段。
 		return Task.CompletedTask;
 	}
 }

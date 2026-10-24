@@ -13,6 +13,8 @@ public partial class SubMenu : Control
 	/// </summary>
 	[Export]
 	public bool ShowLoading { get; set; } = true;
+	[Export]
+	public bool CenterPivot { get; set; } = false;
 
 	private SubMenuScene SubmenuScene;
 	private float InitScale;
@@ -20,6 +22,11 @@ public partial class SubMenu : Control
 	public sealed override void _Ready()
 	{
 		InitScale = Scale.X;
+		// 默认 pivot 在控件左上角，按下去的缩放动画会"往左上角缩"；
+		// 场景里没显式设 pivot 的按钮，这里统一改成以自身中心为缩放基准。
+		// 注意 Godot 4.7 里实际 pivot = PivotOffset + Size × PivotOffsetRatio，两者都为零才算没设。
+		if (PivotOffset == Vector2.Zero && PivotOffsetRatio == Vector2.Zero && CenterPivot)
+			PivotOffsetRatio = new Vector2(0.5f, 0.5f);
 		GetNode<Button>("Button").Pressed += Enter;
 		ReadyField();
 	}

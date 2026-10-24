@@ -89,13 +89,12 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
-offset_left = 360.0
-offset_top = 838.0
-offset_right = -51.000244
-offset_bottom = 742.0
+offset_left = 364.0
+offset_top = 846.0
+offset_right = -47.000244
+offset_bottom = 750.0
 scale = Vector2(0.5, 0.5)
 metadata/_edit_group_ = true
-metadata/_edit_lock_ = true
 
 [node name="卡包" parent="Scene/ButtomScene" unique_id=1529838576 instance=ExtResource("22_sjdq6")]
 offset_left = 447.0
@@ -166,6 +165,7 @@ offset_right = 657.0
 offset_bottom = 1.0
 scale = Vector2(0.5, 0.5)
 metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="SubScene" type="CanvasLayer" parent="Scene" unique_id=454554130]
 unique_name_in_owner = true

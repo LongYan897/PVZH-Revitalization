@@ -179,6 +179,69 @@ public static class SceneManager
 	}
 
 	/// <summary>
+	/// 直接回到主界面：把菜单栈里的所有层一次性回收（登录成功、退出账号之后用）。<br/>
+	/// 和连按返回不同：这里先从上往下播完每一层的 Outro()，再统一清场、播主界面按钮动画，
+	/// 中间不会出现"退到一半停在中间层"的状态。
+	/// </summary>
+	public static async void ReturnToMain()
+	{
+		if (Menus.Count == 0)
+		{
+			// 本来就在主界面
+			BackButton.JoinScene(true);
+			EnableSubmenu();
+			return;
+		}
+		if (_changing) return;
+		_changing = true;
+
+		// 进入第一层时如果走过加载界面，回主界面也补一次，视觉上首尾一致
+		bool showLoading = Menus[0].ShowLoading;
+		var layers = new List<SubMenu>(Menus);
+		Menus.Clear();
+
+		try
+		{
+			// 从上往下播离场动画（当前层先滑走）
+			for (int i = layers.Count - 1; i >= 0; i--)
+			{
+				SubMenuScene scene = layers[i].GetScene();
+				if (scene == null || !GodotObject.IsInstanceValid(scene)) continue;
+				try
+				{
+					await scene.Outro();
+				}
+				catch (Exception e)
+				{
+					GD.PushError($"[SceneManager] 子场景离场动画出错：{e}");
+				}
+			}
+
+			if (showLoading) await Load();
+			await Clear();
+
+			// 统一回收所有层（Destory 会播按钮动画并释放场景）
+			foreach (SubMenu menu in layers)
+			{
+				if (menu != null && GodotObject.IsInstanceValid(menu)) menu.Destory();
+			}
+
+			BackButton.JoinScene(true); // 主界面不需要全局返回按钮
+			if (showLoading) await LoadEnd();
+			EnableSubmenu();
+		}
+		catch (Exception e)
+		{
+			GD.PushError($"[SceneManager] 返回主界面失败：{e}");
+			EnableSubmenu();
+		}
+		finally
+		{
+			_changing = false;
+		}
+	}
+
+	/// <summary>
 	/// 关闭当前层的子目录（出栈）：先播当前层的离场动画，再释放它；
 	/// 回到上一层时上一层场景原样露出，不再重新实例化。
 	/// </summary>

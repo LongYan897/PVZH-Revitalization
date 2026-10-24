@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="5_xduk6"]
 [ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="7_m25tm"]
 [ext_resource type="Shader" uid="uid://y1plojh1vvla" path="res://着色器/渐变.gdshader" id="8_xduk6"]
+[ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="9_jlbdc"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="9_rcgsu"]
 
 [sub_resource type="StyleBox" id="StyleBox_f61mq"]
 resource_local_to_scene = false
@@ -202,6 +204,67 @@ theme_override_constants/shadow_offset_y = 6
 theme_override_fonts/font = ExtResource("4_jq4gk")
 theme_override_font_sizes/font_size = 32
 text = "警告，不要把该界面展示给陌生人"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="SubMenu" type="Control" parent="遮罩" unique_id=495703864]
+custom_minimum_size = Vector2(267, 110)
+anchors_preset = 0
+offset_left = 225.0
+offset_top = 1100.0
+offset_right = 492.0
+offset_bottom = 1210.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+script = ExtResource("9_rcgsu")
+SubScene = "res://场景(C#)/用户信息/加载界面.tscn"
+ShowLoading = false
+CenterPivot = true
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="遮罩/SubMenu" unique_id=911191171]
+layout_mode = 0
+offset_right = 269.0
+offset_bottom = 106.0
+flat = true
+
+[node name="退出登录按钮" type="NinePatchRect" parent="遮罩/SubMenu/Button" unique_id=962415577]
+self_modulate = Color(1, 0, 0, 1)
+custom_minimum_size = Vector2(532.5, 220)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -134.5
+offset_top = -106.0
+offset_right = 398.0
+offset_bottom = 114.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("9_jlbdc")
+region_rect = Rect2(0, 0, 255, 250)
+patch_margin_left = 32
+patch_margin_top = 34
+patch_margin_right = 32
+patch_margin_bottom = 42
+
+[node name="CenterContainer" type="CenterContainer" parent="遮罩/SubMenu/Button/退出登录按钮" unique_id=1159452672]
+layout_mode = 0
+offset_right = 532.49994
+offset_bottom = 212.49994
+
+[node name="按钮文本" type="Label" parent="遮罩/SubMenu/Button/退出登录按钮/CenterContainer" unique_id=1869675324]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_fonts/font = ExtResource("4_jq4gk")
+theme_override_font_sizes/font_size = 96
+text = "退出登录"
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_smooth_scroll_default_mouse_filter_set = true
