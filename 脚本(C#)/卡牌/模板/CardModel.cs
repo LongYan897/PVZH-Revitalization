@@ -182,30 +182,29 @@ public class CardModel
         string v = "";
         if (this is FighterCardModel fighter)
         {
+            var addition = new List<string>();
             if (fighter.CardTag.HasFlag(CardTag.Amphibious))
             {
-                v += "_两栖_";
-                v += " ";
+                addition.Add("_两栖_");
             }
             if (!string.IsNullOrEmpty(fighter.AtkType.Current.ExLabel))
             {
-                v += fighter.AtkType.Current.ExLabel;
-                v += " ";
+                addition.Add(fighter.AtkType.Current.ExLabel);
             }
             if (!string.IsNullOrEmpty(fighter.HpType.Current.ExLabel))
             {
-                v += fighter.HpType.Current.ExLabel;
-                v += " ";
+                addition.Add(fighter.HpType.Current.ExLabel);
             }
             if (fighter.CardTag.HasFlag(CardTag.GraveStone))
             {
-                v += "_墓碑_";
-                v += " ";
+                addition.Add("_墓碑_");
             }
             if (fighter.CardTag.HasFlag(CardTag.Coop))
             {
-                v += "_组队_";
+                addition.Add("_组队_");
             }
+            if (addition.Count > 0)
+                v += string.Join("，", addition);
             if (!string.IsNullOrEmpty(v))
             {
                 v += "\n";

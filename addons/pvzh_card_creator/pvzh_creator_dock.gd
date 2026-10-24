@@ -47,7 +47,7 @@ const RARITIES := ["基础", "普通", "罕见", "稀有", "超稀有", "传说"
 const CATEGORIES_PLANT := ["猛长", "光能", "守卫", "爆花", "聪明"]
 const CATEGORIES_ZOMBIE := ["有脑", "疯狂", "狡猾", "野兽", "健壮"]
 const HP_TYPES := ["普通"]
-const ATK_TYPES := ["普通"]
+const ATK_TYPES := ["普通","追踪"]
 const STAR_TYPES := ["星星"]
 
 func _ready() -> void:
@@ -356,7 +356,7 @@ func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 		entry["\"%s.Pack\"" % clean] = pack_edit.text
 	entry["\"%s.Flavor\"" % clean] = flavor_edit.text
 
-	entry["\"%s.Id\"" % clean] = id_edit.text
+	entry["\"%s.Id\"" % clean] = id_edit.text.to_int()
 
 	print("===== cards.json ：" + clean + " =====")
 	for k in entry.keys():

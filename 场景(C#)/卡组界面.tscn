@@ -189,6 +189,12 @@ script = ExtResource("3_yg71g")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
+[node name="占位符2" type="Control" parent="Midd/图鉴信息/容器" unique_id=1766709395]
+custom_minimum_size = Vector2(1152, 200)
+layout_mode = 2
+mouse_filter = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
 [node name="Fore" type="CanvasLayer" parent="." unique_id=925622240]
 layer = 0
 
