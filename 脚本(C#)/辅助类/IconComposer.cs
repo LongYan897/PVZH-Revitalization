@@ -45,7 +45,7 @@ public partial class IconComposer : Node
     Color? color = null,
     Color? outlineColor = null,
     int outlineSize = 0,
-    int size = 40)
+    int size = 42)
     {
         string key = $"{iconPath}#{text}#{color}#{outlineColor}#{outlineSize}#{size}";
         if (_cache.TryGetValue(key, out var cached))

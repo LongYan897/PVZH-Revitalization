@@ -38,7 +38,7 @@ public partial class CardDes : Control
     /// <summary>卡牌描述字号</summary>
     private const int DesFontSize = 28;
     /// <summary>描述图标尺寸</summary>
-    private const int IconSize = 40;
+    private const int IconSize = 42;
     /// <summary>
     /// 创建卡牌的描述
     /// </summary>
