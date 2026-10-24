@@ -24,6 +24,7 @@ public partial class DeckSubMenuScene : SubMenuScene
 	private HFlowContainer CardInformation; //卡牌列表
 	private NButton Search; //搜索
 	private ColorRect SearchRect; //搜索框
+	private Label Amount; //数量
 	private PackedScene classScene;
 	private List<Node> CurrentInformation = new List<Node>();
 	private Dictionary<Class, List<CardModel>> CurrentClassCards = new Dictionary<Class, List<CardModel>>();
@@ -54,6 +55,7 @@ public partial class DeckSubMenuScene : SubMenuScene
 		CardInformation = GetNode<HFlowContainer>("%卡牌列表");
 		Search = GetNode<NButton>("%搜索");
 		SearchRect = GetNode<ColorRect>("%搜索框");
+		Amount = GetNode<Label>("%数量");
 		classScene = ResourceLoader.Load<PackedScene>("res://场景(C#)/派系条.tscn");
 		Plant.Pressed += OnPlantPressed;
 		Zombie.Pressed += OnZombiePressed;
@@ -203,7 +205,9 @@ public partial class DeckSubMenuScene : SubMenuScene
 		List<Class> classes = sortClassFromCamp(camp);
 		SortCards(cm => cm.Camp.ToName() == camp && cm.Rarity != Rarity.Token, classes);
 		await CreateCurrentCards();
-	}
+        Amount.Text = AllNodeCards.Count.ToString();
+		SelectDeck.CurrentCamp = CurrentCamp;
+    }
 	private Control CreateClassSprite(Class c)
 	{
 		Control classI = classScene.Instantiate<MinimumHFlowContainer>();

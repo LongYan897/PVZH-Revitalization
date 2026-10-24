@@ -175,6 +175,17 @@ theme_override_font_sizes/font_size = 32
 text = "卡牌"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
+[node name="数量" type="Label" parent="Midd/图鉴信息/容器/卡牌标志" unique_id=1092654327]
+unique_name_in_owner = true
+layout_mode = 1
+offset_right = 720.0
+offset_bottom = 56.0
+scale = Vector2(1.6, 1.6)
+theme = SubResource("Theme_gvd7m")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
 [node name="占位符" type="Control" parent="Midd/图鉴信息/容器" unique_id=204688436]
 custom_minimum_size = Vector2(1152, 32)
 layout_mode = 2
@@ -379,6 +390,8 @@ scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(260, 125)
 mouse_filter = 1
 script = ExtResource("17_5056d")
+SubScene = "res://场景(C#)/选择卡组.tscn"
+ShowLoading = false
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="Fore/牌组" unique_id=1016321351]
