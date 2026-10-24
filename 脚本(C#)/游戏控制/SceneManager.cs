@@ -78,7 +78,10 @@ public static class SceneManager
 		bool inTree = scene != null && GodotObject.IsInstanceValid(scene);
 		foreach (var subMenu in AllMenus)
 			subMenu.Function(inTree && scene.IsAncestorOf(subMenu));
-	}
+        bool persistNess = inTree && Menus.Count > 0 && Menus[^1].IsPersistNess;
+        Control diamond = Main.SceneContainer.GetNodeOrNull<Control>("%钻石");
+        diamond.Visible = !persistNess;
+    }
 
 	private static async Task Load()
 	{
@@ -121,7 +124,7 @@ public static class SceneManager
 	}
 
 	/// <summary>
-	/// 打开一个子目录（压栈）。
+	/// 打开一个子目录。
 	/// </summary>
 	/// <param name="subMenu">子目录按钮</param>
 	public static async void JumpToSub(SubMenu subMenu)

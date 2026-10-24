@@ -23,7 +23,12 @@ public partial class SubMenu : Control
     /// </summary>
     [Export]
     public bool IsConstant { get; set; } = false;
-	private SubMenuScene SubmenuScene;
+    /// <summary>
+    /// 是否点击后只保留好友和设置按钮
+    /// </summary>
+    [Export]
+    public bool IsPersistNess { get; set; } = false;
+    private SubMenuScene SubmenuScene;
 	private float InitScale;
     public void ResetPress() => canPress = true;
     public object Payload { get; set; }
