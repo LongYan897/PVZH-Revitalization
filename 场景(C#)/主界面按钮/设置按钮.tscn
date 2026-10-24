@@ -20,22 +20,8 @@ corner_radius_bottom_right = 32
 corner_radius_bottom_left = 32
 metadata/_custom_type_script = "uid://bkl6g25jwb47h"
 
-[sub_resource type="StyleBox" id="StyleBox_ifow5"]
-resource_local_to_scene = false
-resource_name = ""
-content_margin_left = -1.0
-content_margin_top = -1.0
-content_margin_right = -1.0
-content_margin_bottom = -1.0
-script = ExtResource("3_fn077")
-color = Color(0, 0, 0, 0.48235294)
-corner_radius_top_left = 32
-corner_radius_top_right = 32
-corner_radius_bottom_right = 32
-corner_radius_bottom_left = 32
-metadata/_custom_type_script = "uid://bkl6g25jwb47h"
-
 [node name="设置按钮" type="Control" unique_id=181554448]
+custom_minimum_size = Vector2(125, 127)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_f61mq")
@@ -51,9 +37,8 @@ theme_override_styles/panel = SubResource("StyleBox_wvhbo")
 
 [node name="Button" type="Button" parent="." unique_id=1454515024]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_right = 133.0
+offset_bottom = 135.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_styles/normal = SubResource("StyleBox_ifow5")
 icon = ExtResource("4_1aldt")
 flat = true
