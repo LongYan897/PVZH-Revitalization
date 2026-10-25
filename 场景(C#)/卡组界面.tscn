@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="7_vq737"]
 [ext_resource type="Texture2D" uid="uid://bcrfkx13cuj2e" path="res://素材/ui/界面ui/plantsymbol.png" id="8_p80pg"]
 [ext_resource type="Texture2D" uid="uid://dr1bhytmibhrm" path="res://素材/ui/界面ui/zombiesymbol.png" id="9_5056d"]
+[ext_resource type="Script" uid="uid://dbtxgv64h27bx" path="res://脚本(C#)/场景/CampButton.cs" id="9_yld3k"]
 [ext_resource type="Texture2D" uid="uid://b8vvyueyk4rr2" path="res://素材/ui/界面ui/button_arrow.png" id="10_loyiy"]
 [ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="12_o1djq"]
 [ext_resource type="Texture2D" uid="uid://d4l7h6voxbdxg" path="res://素材/ui/界面ui/searchicon_inactive.png" id="13_mem38"]
@@ -221,7 +222,7 @@ position = Vector2(359.75, 67.875)
 scale = Vector2(0.35961914, 0.07043456)
 texture = ExtResource("4_5hsp2")
 
-[node name="植物按钮" type="TextureButton" parent="Fore" unique_id=1054874319]
+[node name="植物按钮" type="TextureButton" parent="Fore" unique_id=404029135]
 self_modulate = Color(0.3882353, 0.8980392, 0.24313726, 1)
 z_index = 30
 anchors_preset = 8
@@ -238,8 +239,9 @@ grow_vertical = 2
 scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(127.5, 122.5)
 texture_normal = ExtResource("7_vq737")
-script = ExtResource("6_mem38")
-metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+script = ExtResource("9_yld3k")
+Campite = "P"
+metadata/_custom_type_script = "uid://dbtxgv64h27bx"
 
 [node name="Sprite2D" type="Sprite2D" parent="Fore/植物按钮" unique_id=452713059]
 position = Vector2(128.7143, 117.28572)
@@ -269,7 +271,7 @@ grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("10_loyiy")
 
-[node name="僵尸按钮" type="TextureButton" parent="Fore" unique_id=464158968]
+[node name="僵尸按钮" type="TextureButton" parent="Fore" unique_id=704216351]
 self_modulate = Color(0.87058824, 0.42745098, 0.93333334, 1)
 z_index = 30
 offset_left = 17.0
@@ -279,8 +281,9 @@ offset_bottom = 277.0
 scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(127.5, 122.5)
 texture_normal = ExtResource("7_vq737")
-script = ExtResource("6_mem38")
-metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+script = ExtResource("9_yld3k")
+Campite = "Z"
+metadata/_custom_type_script = "uid://dbtxgv64h27bx"
 
 [node name="高亮" type="TextureRect" parent="Fore/僵尸按钮" unique_id=236817591]
 layout_mode = 1
@@ -392,6 +395,7 @@ mouse_filter = 1
 script = ExtResource("17_5056d")
 SubScene = "res://场景(C#)/选择卡组.tscn"
 ShowLoading = false
+IsPersistNess = true
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="Fore/牌组" unique_id=1016321351]

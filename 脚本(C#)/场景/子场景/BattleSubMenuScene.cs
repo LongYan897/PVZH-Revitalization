@@ -133,7 +133,98 @@ public partial class BattleSubMenuScene : SubMenuScene
         await t2.ToTask();
         SceneManager.ReturnToSub();
     }
+    public static async Task Hint(Phrase phrase)
+    {
 
+        var tex = instance.GetNode<TextureRect>("%投影");
+        var shadTex = tex.Material as ShaderMaterial;
+        var TurnMain = instance.GetNode<Label>("%回合提示");
+        var TurnSec = instance.GetNode<Label>("%回合提示2");
+        var shad = TurnMain.Material as ShaderMaterial;
+        var shadSec = TurnSec.Material as ShaderMaterial;
+        TurnMain.Text = phrase switch
+        {
+            Phrase.Plant => "植物",
+            Phrase.Zombie => "僵尸",
+            Phrase.Trick => "僵尸",
+            Phrase.Fight => "战斗！",
+            _ => ""
+        };
+        TurnSec.Text = phrase switch
+        {
+            Phrase.Plant => "出牌",
+            Phrase.Zombie => "出牌",
+            Phrase.Trick => "锦囊牌",
+            Phrase.Fight => "",
+            _ => ""
+        };
+        var color = phrase switch
+        {
+            Phrase.Plant => new Color("00ff1e"),
+            Phrase.Zombie => new Color("d000ff"),
+            Phrase.Trick => new Color("8000ff"),
+            Phrase.Fight => new Color("ff6600"),
+            _ => new Color()
+        }; 
+        var colorBtn = phrase switch
+        {
+            Phrase.Plant => new Color("007e85"),
+            Phrase.Zombie => new Color("850037"),
+            Phrase.Trick => new Color("370085"),
+            Phrase.Fight => new Color("850000"),
+            _ => new Color()
+        };
+        var colorOtl = phrase switch
+        {
+            Phrase.Plant => new Color("01802374"),
+            Phrase.Zombie => new Color("4f018074"),
+            Phrase.Trick => new Color("4f018074"),
+            Phrase.Fight => new Color("6c0c1974"),
+            _ => new Color()
+        };
+        var colorTex = phrase switch
+        {
+            Phrase.Plant => new Color("17ff2693"),
+            Phrase.Zombie => new Color("7c17ff93"),
+            Phrase.Trick => new Color("7c17ff93"),
+            Phrase.Fight => new Color("ff6c1793"),
+            _ => new Color()
+        };
+        shadTex.SetShaderParameter("color",colorTex);
+        shad.SetShaderParameter("top_color",color);
+        shad.SetShaderParameter("bottom_color", colorBtn);
+        shadSec.SetShaderParameter("top_color", color);
+        shadSec.SetShaderParameter("bottom_color", colorBtn);
+        TurnMain.AddThemeColorOverride("font_outline_color",colorOtl);
+        TurnSec.AddThemeColorOverride("font_outline_color", colorOtl);
+        var tex2 = instance.GetNode<TextureRect>("%阶段投影");
+        tex2.Texture = (phrase switch 
+        {
+            Phrase.Plant => "res://素材/对象高亮框/植物投影.png",
+            Phrase.Zombie => "res://素材/对象高亮框/僵尸投影.png",
+            Phrase.Trick => "res://素材/对象高亮框/锦囊牌投影.png",
+            Phrase.Fight => "res://素材/对象高亮框/战斗投影.png",
+            _ => ""
+        }).Load<Texture2D>();
+        tex.Visible = true;
+        tex2.Visible = true;
+        tex2.Modulate = new(1, 1, 1, 0);
+        Tween tween = instance.CreateTween();
+        tex.Scale = new();
+        tween.TweenProperty(tex,"scale",new Vector2(1.73f,1.73f) * 1.1f,0.3f).SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(tex, "scale", new Vector2(1.73f, 1.73f), 0.2f).SetEase(Tween.EaseType.In);
+        Tween tween1 = instance.CreateTween();
+        tween1.TweenProperty(tex2, "modulate", new Color(1,1,1,1), 0.3f).SetEase(Tween.EaseType.Out);
+        await tween.ToTask();
+        tween = instance.CreateTween();
+        tween.TweenProperty(tex, "scale", new Vector2(1.73f, 1.73f) * 1.1f, 0.1f).SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(tex, "scale", new Vector2(1.73f, 1.73f) * 0f, 0.2f).SetEase(Tween.EaseType.In);
+        tween1 = instance.CreateTween();
+        tween1.TweenProperty(tex2, "modulate", new Color(1, 1, 1, 0), 0.3f).SetEase(Tween.EaseType.Out);
+        await tween.ToTask();
+        tex.Visible = false;
+        tex2.Visible = false;
+    }
     private static async Task WaitForClick()
     {
         await instance.ToSignal(instance.GetTree(), SceneTree.SignalName.ProcessFrame);

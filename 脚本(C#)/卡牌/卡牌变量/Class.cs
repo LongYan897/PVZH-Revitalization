@@ -6,7 +6,6 @@ namespace Card;
 /// <summary>
 /// 派系
 /// </summary>
-[Flags]
 public enum Class
 {
     /// <summary>猛长</summary>

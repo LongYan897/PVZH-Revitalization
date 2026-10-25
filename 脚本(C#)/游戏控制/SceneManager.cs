@@ -5,6 +5,7 @@ using Hero;
 using Scene;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Controller;
@@ -59,7 +60,7 @@ public static class SceneManager
 	private static void UnableSubmenu()
 	{
 		PruneMenus();
-		foreach (var subMenu in AllMenus) subMenu.Function(false);
+		foreach (var subMenu in AllMenus.Where(m=>!m.IsConstant)) subMenu.Function(false);
 	}
 
 	private static void EnableSubmenu()
@@ -68,6 +69,11 @@ public static class SceneManager
 		foreach (var subMenu in AllMenus) subMenu.Function(true);
 	}
 
+	private static void ShowNess(bool isShow)
+	{
+		var node = Main.SceneContainer;
+		node.GetNode<Control>("%钻石").Visible = isShow;
+	}
 	/// <summary>
 	/// 只启用"当前层场景内部"的菜单按钮；被盖住的主界面按钮保持禁用，
 	/// 否则场景没盖到的区域还能点到主界面。
@@ -158,7 +164,7 @@ public static class SceneManager
 				Menus[^1].Reparent(Main.SceneContainer.GetNode<CanvasLayer>("%SubScene"));
 			Menus.Add(subMenu);
 			pushed = true;
-
+			ShowNess(!subMenu.IsPersistNess);
 			await LoadTask;
 			scene.Visible = true;
 			if (showLoading) await LoadEnd();
@@ -283,7 +289,8 @@ public static class SceneManager
 				if (parentScene != null && GodotObject.IsInstanceValid(parentScene) && parentScene.Visible)
 				{
 					BackButton.JoinScene(parentScene.HideReturnButton);
-					parentMenu.Reparent(Main.SceneContainer.GetNode<CanvasLayer>("%UponScene"));
+                    ShowNess(!parentMenu.IsPersistNess);
+                    parentMenu.Reparent(Main.SceneContainer.GetNode<CanvasLayer>("%UponScene"));
 					EnableMenusIn(parentScene);
 				}
 				else

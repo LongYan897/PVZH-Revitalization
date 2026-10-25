@@ -5,6 +5,7 @@ using Godot;
 using Logger;
 using Pack;
 using Play;
+using Scene;
 using Spine;
 using System;
 using System.Collections.Generic;
@@ -111,7 +112,6 @@ public static class PhraseManager
 
         if (!IsInBattle) return;
         CardCmd.PushStop();
-        PushProcessing();
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
         var entr = plantSide ? "plant" : "zombie";
         await CardCmd.TimingOnCards(null, Timing.BeforePhraseEnd, Phrase);
@@ -129,14 +129,14 @@ public static class PhraseManager
             Phrase += 1;
         }
         string ext = myTurn ? !isTurnCostNotEnough ? "Yellow" : "Green" : "";
-        await spine.SetAnimationTask(0, isBattle ? $"{entr}BackCardTurn" : Phrase switch
+        await Task.WhenAll( spine.SetAnimationTask(0, isBattle ? $"{entr}BackCardTurn" : Phrase switch
         {
             Phrase.Plant => $"{entr}{ext}MovePlantTurn",
             Phrase.Trick => $"{entr}{ext}MoveTrickTurn",
             Phrase.Fight => $"{entr}{ext}MoveAttackTurn",
             Phrase.Zombie => $"{entr}StartZombieTurn",
             _ => ""
-        });
+        }),BattleSubMenuScene.Hint(Phrase));
         if (Phrase == Phrase.Zombie && isAuto)
         {
             isTurnCostNotEnough = false;
@@ -167,14 +167,16 @@ public static class PhraseManager
                 );
             _turn++;
         }
-        PopProcessing();
-        turnFirst = true;
         CardCmd.PopStop();
         if (Phrase == Phrase.Fight)
             await NextPhrase(true);
+        if (PlayerManager.HostPlayer.Status.HandCards.All(c => c.Cost.Current > PlayerManager.HostPlayer.Status.Hero.Cost.Current))
+        {
+            await HintCost();
+        }
         await HintAi();
+
     }
-    private static bool turnFirst = true;
     private static bool isTurnCostNotEnough = false;
     /// <summary>
     /// 获得当前回合的玩家
@@ -201,14 +203,24 @@ public static class PhraseManager
     /// 手牌没有卡牌可以打出时
     /// </summary>
     /// <returns></returns>
-    public static async Task HintCostNotEnough()
+    public static async Task HintCost()
     {
         if (!IsInBattle) return;
-        if (!turnFirst) return;
-        PushProcessing();
         CardCmd.PushStop();
-        turnFirst = false;
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
+        var exc = plantSide ? Phrase switch
+        {
+            Phrase.Plant => "plantChangeColorPlantTurn",
+            _ => ""
+        } : Phrase switch 
+        {
+            Phrase.Trick => "zombieChangeColorTrickTurn",
+            Phrase.Zombie => "zombieChangeColorZombieTurn",
+            _ => ""
+        };
+
+        if (spine.HasAnimation(exc))
+            await spine.SetAnimationTask(0, exc, false);
         var loop = plantSide ? Phrase switch
         {
             Phrase.Plant => "plantTurnProcessing",
@@ -223,7 +235,6 @@ public static class PhraseManager
         if (spine.HasAnimation(loop))
             await spine.SetAnimationTask(0, loop, true);
         CardCmd.PopStop();
-        PopProcessing();
     }
     private static async void PressedNextPhrase(Button button)
     {
@@ -292,11 +303,13 @@ public static class PhraseManager
     public static async Task StartBattle()
     {
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
+        Phrase = Phrase.Zombie;
         await Task.WhenAll(
         PlayerManager.HostPlayer.Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null),
         (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant)).Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null)
         );
 
+        await BattleSubMenuScene.Hint(Phrase.Zombie);
         await HintAi();
     }
 

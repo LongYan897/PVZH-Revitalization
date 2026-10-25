@@ -31,6 +31,7 @@ public static class CardCmd
         lock(stopLock)
         {
             _stopCount++;
+            PhraseManager.PushProcessing();
             if (_stopCount == 1)
             {
                 JustFreshAllCards();
@@ -46,6 +47,7 @@ public static class CardCmd
         lock (stepLock)
         {
             _stopCount = Math.Max(0, _stopCount - 1);
+            PhraseManager.PopProcessing();
             if (_stopCount == 0)
             {
                 JustFreshAllCards();
@@ -107,7 +109,7 @@ public static class CardCmd
             PopStop();
             if (!CardInstances.Any(c => PhraseManager.CurrentTurnPlayer != null && PhraseManager.CurrentTurnPlayer.Status.Hero.Camp == c.Camp && c.CanPlay()))
             {
-                await PhraseManager.HintCostNotEnough();
+                await PhraseManager.HintCost();
             }
         }
     }
@@ -147,7 +149,6 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
     {
-        PhraseManager.PushProcessing();
         foreach (var card in CardInstances.ToList())
         {
             if (card != cardModel)
@@ -168,7 +169,6 @@ public static class CardCmd
             if (fighter.Model != cardModel && !CardInstances.Contains(fighter.Model))
                 await fighter.Model.FireTiming(timing, paramters);
         }
-        PhraseManager.PopProcessing();
     }
 
     private static int LocationPriority(Location location) => location switch

@@ -65,6 +65,7 @@ public class Road
     {
         IsBattling = true;
         var bol = stks == null;
+        await NodeRoad.GetNode(this).Invoke(true);
         if (bol)
         {
             await CardCmd.TimingOnCards(null, Timing.BeforeLaneStart, this);
@@ -155,6 +156,8 @@ public class Road
         if (bol)
         {
             await CardCmd.TimingOnCards(null, Timing.BeforeLaneEnd, this);
+
+            await NodeRoad.GetNode(this).Invoke(false);
 
             await CardCmd.TimingOnCards(null, Timing.AfterLaneEnd, this);
 

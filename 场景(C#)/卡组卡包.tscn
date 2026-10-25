@@ -1,47 +1,77 @@
 [gd_scene format=3 uid="uid://c4icmkp4q7ssv"]
 
 [ext_resource type="Texture2D" uid="uid://bp5vn1thny1lr" path="res://素材(C#)/卡包/卡套/deckCustomBackground.png" id="1_4qsqk"]
+[ext_resource type="Script" uid="uid://cknnxeoyp5li8" path="res://脚本(C#)/卡牌/卡包/CardDeck.cs" id="1_56yx6"]
 [ext_resource type="Texture2D" uid="uid://tcpwwtsahhjf" path="res://素材(C#)/卡包/卡套/deckCustomSashGrayscale.png" id="2_ix31a"]
 [ext_resource type="Texture2D" uid="uid://dlpr0abpr6kt6" path="res://素材/英雄素材/绿影侠/Deck_GreenShadow.png" id="3_6n3n6"]
 [ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="4_lm4i2"]
-[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="5_wefbc"]
-[ext_resource type="Texture2D" uid="uid://drug7js2jfb4v" path="res://素材(C#)/文本图片/inhnd_sun_gb.png" id="6_56yx6"]
+[ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="6_wefbc"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="7_56yx6"]
 
 [sub_resource type="FontVariation" id="FontVariation_6n3n6"]
 base_font = ExtResource("4_lm4i2")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_uhrkk"]
-shader = ExtResource("5_wefbc")
-shader_parameter/color = Color(0, 0, 0, 0.5803922)
-shader_parameter/strength = 1.0
-shader_parameter/brightness = -1.0
-shader_parameter/saturation = 1.4790000702525
-shader_parameter/contrast = 1.0
+[sub_resource type="Shader" id="Shader_yam0n"]
+code = "shader_type canvas_item;
 
-[node name="卡组卡包" type="Control" unique_id=969405171]
+uniform float contrast : hint_range(0.0, 2.0) = 1.0;
+
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+
+	vec3 result = (tex.rgb - 0.5) * contrast + 0.5;
+	result = clamp(result, 0.0, 1.0);
+
+	COLOR.rgb = result * COLOR.rgb;
+	COLOR.a   = tex.a * COLOR.a;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_56yx6"]
+shader = SubResource("Shader_yam0n")
+shader_parameter/contrast = 1.75600008341
+
+[node name="卡组卡包" type="Control" unique_id=1494845629]
+custom_minimum_size = Vector2(214, 256)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -720.0
-offset_bottom = -1280.0
+offset_left = -107.0
+offset_top = -128.0
+offset_right = -613.0
+offset_bottom = -1152.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+script = ExtResource("1_56yx6")
+metadata/_custom_type_script = "uid://cknnxeoyp5li8"
+
+[node name="Button" type="Button" parent="." unique_id=5252678]
+layout_mode = 0
+offset_right = 214.0
+offset_bottom = 256.0
+flat = true
 
 [node name="背景" type="Sprite2D" parent="." unique_id=1756481635]
+unique_name_in_owner = true
+position = Vector2(107, 128)
 texture = ExtResource("1_4qsqk")
 
-[node name="封皮" type="Sprite2D" parent="." unique_id=869614436]
+[node name="表层" type="Node2D" parent="背景" unique_id=1770742341]
+unique_name_in_owner = true
+
+[node name="封皮" type="Sprite2D" parent="背景/表层" unique_id=869614436]
+unique_name_in_owner = true
 position = Vector2(-5, -51)
 texture = ExtResource("3_6n3n6")
 
-[node name="卡套" type="Sprite2D" parent="." unique_id=101791880]
+[node name="卡套" type="Sprite2D" parent="背景/表层" unique_id=101791880]
+unique_name_in_owner = true
 modulate = Color(0.11339999, 0.39779997, 0.54, 1)
 position = Vector2(5, 45)
 texture = ExtResource("2_ix31a")
 
-[node name="Label" type="Label" parent="." unique_id=1843997838]
-layout_mode = 0
+[node name="Label" type="Label" parent="背景/表层" unique_id=1843997838]
 offset_left = -99.0
 offset_top = -27.0
 offset_right = 90.0
@@ -52,43 +82,137 @@ text = "豆豆"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Cost" type="HBoxContainer" parent="." unique_id=1155841597]
-visible = false
-layout_mode = 0
+[node name="Cost" type="HBoxContainer" parent="背景/表层" unique_id=1155841597]
+unique_name_in_owner = true
 offset_left = -95.0
 offset_top = -34.0
 offset_right = 46.0
 offset_bottom = -8.0
 mouse_filter = 2
 
-[node name="C1" type="Control" parent="Cost" unique_id=704861953]
+[node name="内层" type="Node2D" parent="背景" unique_id=1239994802]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(25, 25)
-layout_mode = 2
-mouse_filter = 2
 
-[node name="花费" type="Sprite2D" parent="Cost/C1" unique_id=1457208778]
-material = SubResource("ShaderMaterial_uhrkk")
-position = Vector2(14, 15.000001)
-scale = Vector2(0.20901638, 0.20901632)
-texture = ExtResource("6_56yx6")
+[node name="按钮" type="VBoxContainer" parent="背景/内层" unique_id=1038759587]
+offset_left = -88.0
+offset_top = -107.0
+offset_right = 352.0
+offset_bottom = 427.0
+scale = Vector2(0.4, 0.4)
 
-[node name="InhndSunGb" type="Sprite2D" parent="Cost/C1/花费" unique_id=902440190]
-position = Vector2(-4.784314, -9.56864)
-texture = ExtResource("6_56yx6")
-
-[node name="C2" type="Control" parent="Cost" unique_id=186960904]
+[node name="操作按钮" type="NinePatchRect" parent="背景/内层/按钮" unique_id=985357725]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(25, 25)
+self_modulate = Color(0.083333254, 1, 0, 1)
+material = SubResource("ShaderMaterial_56yx6")
+custom_minimum_size = Vector2(440, 265)
 layout_mode = 2
-mouse_filter = 2
+mouse_filter = 0
+texture = ExtResource("6_wefbc")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
 
-[node name="花费" type="Sprite2D" parent="Cost/C2" unique_id=1842633777]
-material = SubResource("ShaderMaterial_uhrkk")
-position = Vector2(14, 15.000001)
-scale = Vector2(0.20901638, 0.20901632)
-texture = ExtResource("6_56yx6")
+[node name="Label" type="Label" parent="背景/内层/按钮/操作按钮" unique_id=1096078089]
+layout_mode = 0
+offset_left = 96.667
+offset_top = 20.0
+offset_right = 336.667
+offset_bottom = 185.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 120
+text = "选择"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="InhndSunGb" type="Sprite2D" parent="Cost/C2/花费" unique_id=1099056654]
-position = Vector2(-4.784314, -9.56864)
-texture = ExtResource("6_56yx6")
+[node name="信息" type="Control" parent="背景/内层/按钮" unique_id=1963662846]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(440, 265)
+layout_mode = 2
+script = ExtResource("7_56yx6")
+CenterPivot = true
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="背景/内层/按钮/信息" unique_id=460640981]
+layout_mode = 0
+offset_right = 442.85712
+offset_bottom = 256.71426
+flat = true
+
+[node name="信息按钮" type="NinePatchRect" parent="背景/内层/按钮/信息" unique_id=920313375]
+unique_name_in_owner = true
+self_modulate = Color(0, 0.75, 1, 1)
+material = SubResource("ShaderMaterial_56yx6")
+custom_minimum_size = Vector2(440, 265)
+layout_mode = 0
+offset_right = 440.0
+offset_bottom = 265.0
+texture = ExtResource("6_wefbc")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="Label" type="Label" parent="背景/内层/按钮/信息/信息按钮" unique_id=415526682]
+layout_mode = 0
+offset_left = 96.667
+offset_top = 20.0
+offset_right = 336.667
+offset_bottom = 185.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 120
+text = "信息"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="编辑" type="Control" parent="背景/内层/按钮" unique_id=759575792]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(440, 265)
+layout_mode = 2
+script = ExtResource("7_56yx6")
+CenterPivot = true
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="背景/内层/按钮/编辑" unique_id=402391992]
+layout_mode = 0
+offset_right = 442.85712
+offset_bottom = 256.71426
+flat = true
+
+[node name="编辑按钮" type="NinePatchRect" parent="背景/内层/按钮/编辑" unique_id=1579867831]
+unique_name_in_owner = true
+self_modulate = Color(0, 0.75, 1, 1)
+material = SubResource("ShaderMaterial_56yx6")
+custom_minimum_size = Vector2(440, 265)
+layout_mode = 0
+offset_right = 440.0
+offset_bottom = 265.0
+texture = ExtResource("6_wefbc")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="Label" type="Label" parent="背景/内层/按钮/编辑/编辑按钮" unique_id=598130168]
+layout_mode = 0
+offset_left = 96.667
+offset_top = 20.0
+offset_right = 336.667
+offset_bottom = 185.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 120
+text = "编辑"
+horizontal_alignment = 1
+vertical_alignment = 1

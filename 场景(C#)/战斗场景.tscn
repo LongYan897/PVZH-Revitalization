@@ -10,11 +10,17 @@
 [ext_resource type="Texture2D" uid="uid://ckxhau2bavsol" path="res://素材/地图/迪斯科/迪斯科底部.png" id="7_pqs4j"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="9_p8b7g"]
 [ext_resource type="PackedScene" uid="uid://cdxmokqpcghjn" path="res://场景(C#)/英雄血量.tscn" id="10_4cdlk"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://cuc5c5fmbam5o" path="res://素材/ui/轮盘动画/轮盘动画.tres" id="10_41p5g"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://cdhaasd1rs772" path="res://数据资源/杂项/费用动画.tres" id="10_k7al5"]
 [ext_resource type="Texture2D" uid="uid://bb25m6pbnymyl" path="res://素材/卡牌属性图片/inhnd_sun_gb.png" id="11_f1tyx"]
+[ext_resource type="Texture2D" uid="uid://dxtxh1sjybtto" path="res://素材/对象高亮框/阶段投影.png" id="11_f3g53"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="11_y1gsq"]
 [ext_resource type="Texture2D" uid="uid://ds0t6j23ru4m4" path="res://素材/卡牌属性图片/UI_sun_glow.png" id="12_52n4m"]
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="12_clb5w"]
+[ext_resource type="FontFile" uid="uid://rm3h54fev3jd" path="res://素材/字体/拙黑拼贴体.ttf" id="12_cu1cr"]
 [ext_resource type="Texture2D" uid="uid://0v2jwbq7klbe" path="res://素材/卡牌属性图片/inhnd_brains.png" id="13_f1tyx"]
+[ext_resource type="Texture2D" uid="uid://bqkand82moshg" path="res://素材/对象高亮框/僵尸投影.png" id="13_jis5k"]
+[ext_resource type="Shader" uid="uid://ctimnulvc2pax" path="res://着色器/渐变艺术字.gdshader" id="13_pqs4j"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://38rw6wkfuuf6" path="res://素材/ui/护盾/动画/护盾动画.tres" id="14_vw8as"]
 [ext_resource type="PackedScene" uid="uid://cqnmj7yrerbhj" path="res://场景(C#)/重新选卡.tscn" id="16_4cdlk"]
 [ext_resource type="PackedScene" uid="uid://odbebjsvylb2" path="res://场景(C#)/战斗胜利.tscn" id="18_bggyq"]
@@ -22,71 +28,102 @@
 [sub_resource type="FontVariation" id="FontVariation_tkg4x"]
 base_font = ExtResource("12_clb5w")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y1gsq"]
+shader = ExtResource("11_y1gsq")
+shader_parameter/color = Color(1, 0.42366666, 0.089999974, 0.5764706)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cu1cr"]
+shader = ExtResource("13_pqs4j")
+shader_parameter/top_color = Color(0, 1, 0.116666794, 1)
+shader_parameter/bottom_color = Color(0, 0.49400002, 0.52, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_f3g53"]
+base_font = ExtResource("12_cu1cr")
+variation_transform = Transform2D(1, 0.3, 0, 1, 0, 0)
+
 [node name="战斗场景" type="Node2D" unique_id=1988450632]
 script = ExtResource("1_ma3su")
 metadata/_custom_type_script = "uid://cyd56foe8cq4n"
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="顶部" type="Sprite2D" parent="." unique_id=313599328]
 unique_name_in_owner = true
 z_index = -8
 position = Vector2(360, 155)
 texture = ExtResource("2_bggyq")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="客方" type="Sprite2D" parent="." unique_id=1531739339]
 unique_name_in_owner = true
 z_index = -2
 position = Vector2(340, 301)
 texture = ExtResource("3_41p5g")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="主机" type="Sprite2D" parent="." unique_id=1554391998]
 unique_name_in_owner = true
 z_index = 6
 position = Vector2(360, 850)
 texture = ExtResource("4_f3g53")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="左边" type="Sprite2D" parent="." unique_id=1919804875]
 unique_name_in_owner = true
 z_index = 6
 position = Vector2(80, 535)
 texture = ExtResource("5_cu1cr")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="右边" type="Sprite2D" parent="." unique_id=80064574]
 unique_name_in_owner = true
 z_index = 6
 position = Vector2(630, 541)
 texture = ExtResource("6_y1gsq")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="底部" type="Sprite2D" parent="." unique_id=1587575397]
 unique_name_in_owner = true
 z_index = 12
 position = Vector2(360, 1038)
 texture = ExtResource("7_pqs4j")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="道路层" parent="." unique_id=1692843012 instance=ExtResource("7_21f3a")]
 z_index = 2
 position = Vector2(0, -39)
-
-[node name="阶段" type="Node2D" parent="." unique_id=1016573463]
-unique_name_in_owner = true
-z_index = 100
-position = Vector2(580, 865)
-scale = Vector2(0.9, 0.9)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="动画" parent="阶段" unique_id=922182681 instance=ExtResource("9_p8b7g")]
-unique_name_in_owner = true
+[node name="1" parent="道路层" index="0" unique_id=1720357688]
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="Button" type="Button" parent="阶段" unique_id=421639317]
-unique_name_in_owner = true
-z_index = 24
-offset_left = -64.44446
-offset_top = -40.0
-offset_right = 63.333374
-offset_bottom = 87.77777
-flat = true
+[node name="2" parent="道路层" index="1" unique_id=1066117273]
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="3" parent="道路层" index="2" unique_id=2563964]
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="4" parent="道路层" index="3" unique_id=159569896]
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="5" parent="道路层" index="4" unique_id=481194125]
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="费用容器" type="CanvasLayer" parent="." unique_id=521051514]
 layer = 42
@@ -341,10 +378,14 @@ vertical_alignment = 1
 [node name="副玩家" type="Marker2D" parent="." unique_id=773997479]
 unique_name_in_owner = true
 position = Vector2(348, 230)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="主玩家" type="Marker2D" parent="." unique_id=2106473752]
 unique_name_in_owner = true
 position = Vector2(357, 874)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="护盾" parent="." unique_id=1138820925 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
@@ -353,6 +394,8 @@ modulate = Color(0.9533334, 0.3, 1, 1)
 z_index = 25
 position = Vector2(360, 758)
 scale = Vector2(0.5, 0.5)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="护盾2" parent="." unique_id=2083661993 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
@@ -361,6 +404,8 @@ modulate = Color(0.0333333, 1, 0, 1)
 z_index = 25
 position = Vector2(360, 234)
 scale = Vector2(0.5, 0.5)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="SpineNode" parent="护盾2" index="0" unique_id=273388558]
 skeleton_data_res = ExtResource("14_vw8as")
@@ -388,10 +433,14 @@ scale = Vector2(0.6, 0.6)
 [node name="卡牌组中心2" type="Marker2D" parent="." unique_id=671542422]
 unique_name_in_owner = true
 position = Vector2(80, 140)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="卡牌组中心" type="Marker2D" parent="." unique_id=220082344]
 unique_name_in_owner = true
 position = Vector2(80, 1025)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="重新选卡层" type="CanvasLayer" parent="." unique_id=1559340914]
 layer = 49
@@ -401,14 +450,112 @@ follow_viewport_enabled = true
 unique_name_in_owner = true
 visible = false
 z_index = 175
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="抽卡位置2" type="Marker2D" parent="." unique_id=361908283]
 unique_name_in_owner = true
 position = Vector2(360, 420)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="抽卡位置" type="Marker2D" parent="." unique_id=1158534064]
 unique_name_in_owner = true
 position = Vector2(360, 560)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="战斗阶段" type="CanvasLayer" parent="." unique_id=34903559]
+layer = 45
+
+[node name="阶段" type="Node2D" parent="战斗阶段" unique_id=1016573463]
+unique_name_in_owner = true
+z_index = 100
+position = Vector2(580, 865)
+scale = Vector2(0.9, 0.9)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="动画" parent="战斗阶段/阶段" unique_id=922182681 instance=ExtResource("9_p8b7g")]
+unique_name_in_owner = true
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="SpineNode" parent="战斗阶段/阶段/动画" index="0" unique_id=273388558]
+skeleton_data_res = ExtResource("10_41p5g")
+preview_skin = "Default"
+preview_animation = "plantChangeColorPlantTurn"
+preview_frame = false
+preview_time = 0.0
+
+[node name="Button" type="Button" parent="战斗阶段/阶段" unique_id=421639317]
+unique_name_in_owner = true
+z_index = 24
+offset_left = -64.44446
+offset_top = -40.0
+offset_right = 63.333374
+offset_bottom = 87.77777
+flat = true
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="阶段投影" type="TextureRect" parent="战斗阶段/阶段" unique_id=1859134767]
+unique_name_in_owner = true
+visible = false
+offset_left = -241.1111
+offset_top = -328.8889
+offset_right = 73.33336
+offset_bottom = -1.5492554
+rotation = 0.050411366
+pivot_offset_ratio = Vector2(0.8, 0.8)
+texture = ExtResource("13_jis5k")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="投影" type="TextureRect" parent="战斗阶段/阶段" unique_id=840892191]
+unique_name_in_owner = true
+visible = false
+self_modulate = Color(1, 1, 1, 0.7019608)
+material = SubResource("ShaderMaterial_y1gsq")
+offset_left = -131.1111
+offset_top = -148.88892
+offset_right = 13.888901
+offset_bottom = -9.888916
+scale = Vector2(1.731015, 1.731015)
+pivot_offset_ratio = Vector2(0.8, 0.9)
+texture = ExtResource("11_f3g53")
+
+[node name="回合提示" type="Label" parent="战斗阶段/阶段/投影" unique_id=939766451]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_cu1cr")
+layout_mode = 0
+offset_left = 22.721092
+offset_top = -4.204365
+offset_right = 150.7211
+offset_bottom = 85.12897
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.42352942)
+theme_override_colors/font_outline_color = Color(0.31025004, 0.004999995, 0.5, 0.45490196)
+theme_override_constants/shadow_offset_y = 12
+theme_override_constants/outline_size = 24
+theme_override_fonts/font = SubResource("FontVariation_f3g53")
+theme_override_font_sizes/font_size = 48
+text = "植物"
+
+[node name="回合提示2" type="Label" parent="战斗阶段/阶段/投影" unique_id=584466773]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_cu1cr")
+layout_mode = 0
+offset_left = 12.45092
+offset_top = 32.383007
+offset_right = 140.45093
+offset_bottom = 121.716354
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.42352942)
+theme_override_colors/font_outline_color = Color(0.004999995, 0.5, 0.137, 0.45490196)
+theme_override_constants/shadow_offset_y = 12
+theme_override_constants/outline_size = 24
+theme_override_fonts/font = SubResource("FontVariation_f3g53")
+theme_override_font_sizes/font_size = 48
+text = "出牌"
 
 [node name="战斗胜利层" type="CanvasLayer" parent="." unique_id=602986266]
 layer = 75
@@ -416,11 +563,13 @@ layer = 75
 [node name="战斗胜利" parent="战斗胜利层" unique_id=346782537 instance=ExtResource("18_bggyq")]
 unique_name_in_owner = true
 visible = false
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [editable path="道路层"]
-[editable path="阶段/动画"]
 [editable path="费用容器/费用/费用特效动画"]
 [editable path="费用容器/费用2/费用特效动画2"]
 [editable path="护盾"]
 [editable path="护盾2"]
 [editable path="重新选卡层/重新选卡"]
+[editable path="战斗阶段/阶段/动画"]

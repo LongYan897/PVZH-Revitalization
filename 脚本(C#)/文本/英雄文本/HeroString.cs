@@ -38,6 +38,10 @@ public class HeroString
     /// 获胜图标
     /// </summary>
     public string WinningIcon { get; private set; }
+    /// <summary>
+    /// 卡组图
+    /// </summary>
+    public string DeckIcon { get; private set; }
     ///<summary>
     ///派系
     ///</summary>
@@ -117,6 +121,10 @@ public class HeroString
         if (GetData(heroTitle, "Winning").VariantType != Variant.Type.Nil)
         {
             heroString.WinningIcon = GetData(heroTitle, "Winning").AsString();
+        }
+        if (GetData(heroTitle, "Deck").VariantType != Variant.Type.Nil)
+        {
+            heroString.DeckIcon = GetData(heroTitle, "Deck").AsString();
         }
         if (GetData(heroTitle, "Camp").VariantType != Variant.Type.Nil)
         {

@@ -27,7 +27,8 @@ public class PlayerBox
     {
         battleRng = new();
         Player = player;
-        Hero = hero;
+        if (!hero.IsIdentity)
+            Hero = hero;
         _deckCards = cards;
         _handCards = new();
     }

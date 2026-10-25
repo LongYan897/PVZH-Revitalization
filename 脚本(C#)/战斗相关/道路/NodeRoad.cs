@@ -36,6 +36,25 @@ public partial class NodeRoad : Control, ITarget
         TargetRegistry.Unregister(this);
         Instances.Remove(this);
     }
+    public async Task Invoke(bool Start)
+    {
+        var highlight = GetNode<Sprite2D>("%战斗高亮");
+        highlight.Visible = Start;
+        Tween tween = CreateTween();
+        if (Start)
+        {
+            highlight.Scale = new(0, 1.206f);
+            tween.TweenProperty(highlight,"scale", new Vector2(1.3f,1.206f),0.1f).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(highlight, "scale", new Vector2(0.957f, 1.206f), 0.1f).SetEase(Tween.EaseType.In);
+        }
+        else
+        {
+            highlight.Scale = new(0.957f, 1.206f);
+            tween.TweenProperty(highlight, "scale", new Vector2(1.3f, 1.206f), 0.1f).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(highlight, "scale", new Vector2(0f, 1.206f), 0.1f).SetEase(Tween.EaseType.In);
+        }
+        await tween.ToTask();
+    }
     /// <summary>
     /// 绑定道路数据
     /// </summary>

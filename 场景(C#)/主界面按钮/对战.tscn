@@ -176,6 +176,7 @@ scale = Vector2(3.05, 2.7)
 texture = ExtResource("5_p6jnt")
 
 [node name="卡牌2" type="Sprite2D" parent="Frame" unique_id=2082412175]
+visible = false
 self_modulate = Color(0.26339912, 3.880542e-07, 7.219613e-08, 1)
 clip_children = 2
 material = SubResource("ShaderMaterial_setff")
@@ -186,8 +187,8 @@ texture = ExtResource("5_p6jnt")
 [node name="卡牌" type="Sprite2D" parent="Frame" unique_id=423790578]
 self_modulate = Color(0.97, 0.8742934, 0.2522, 1)
 clip_children = 2
-position = Vector2(511, 571)
-scale = Vector2(3, 2.5)
+position = Vector2(511, 559.75)
+scale = Vector2(3, 2.6584506)
 texture = ExtResource("5_p6jnt")
 
 [node name="紫色渐变" type="Sprite2D" parent="Frame/卡牌" unique_id=294127909]

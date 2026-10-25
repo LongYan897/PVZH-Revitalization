@@ -18,6 +18,21 @@ namespace Hero.Model;
 public abstract class HeroModel
 {
     /// <summary>
+    /// 是否是英雄实例 , 用于区分是局内使用的英雄还是英雄的身份
+    /// </summary>
+    public bool IsIdentity { get; private set; } = false;
+    /// <summary>
+    /// 获取英雄的身份
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static HeroModel Identity<T>() where T : HeroModel,new()
+    {
+        var hero = Load<T>();
+        hero.IsIdentity = true;
+        return hero;
+    }
+    /// <summary>
     /// 是否已经死亡 
     /// </summary>
     public bool IsDie => Health.Current <= 0;
@@ -194,5 +209,22 @@ public abstract class HeroModel
             }
         }
         return heroModels;
+    }
+    /// <summary>
+    /// 通过英雄类名获取英雄的身份
+    /// </summary>
+    /// <param name="typeName">英雄类名</param>
+    /// <returns>英雄身份实例</returns>
+    public static HeroModel Identity(string typeName)
+    {
+        var type = Assembly.GetExecutingAssembly().GetTypes()
+            .FirstOrDefault(t => t.IsSubclassOf(typeof(HeroModel))
+                              && (t.FullName == typeName || t.Name == typeName));
+
+        var method = typeof(HeroModel)
+            .GetMethod(nameof(Identity), BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null)
+            .MakeGenericMethod(type);
+
+        return (HeroModel)method.Invoke(null, null);
     }
 }

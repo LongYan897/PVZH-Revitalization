@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://bx8ygbqjvcufr"]
+
+[ext_resource type="Script" uid="uid://ccahviel8ug80" path="res://脚本(C#)/场景/HeroFlow.cs" id="1_xoxtp"]
+[ext_resource type="Texture2D" uid="uid://dm6vx61ctijj6" path="res://素材/ui/英雄图片/cornerimage_greenshadow.png" id="2_6daig"]
+[ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="3_qtiwq"]
+[ext_resource type="Texture2D" uid="uid://cttsnfkdqyst1" path="res://素材/ui/界面ui/聪明.png" id="3_uap3w"]
+[ext_resource type="Texture2D" uid="uid://doe447rq6ihmp" path="res://素材/ui/界面ui/猛长.png" id="4_oxa5p"]
+[ext_resource type="Shader" uid="uid://ctimnulvc2pax" path="res://着色器/渐变艺术字.gdshader" id="6_oxa5p"]
+[ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="7_xoxtp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uap3w"]
+shader = ExtResource("6_oxa5p")
+shader_parameter/top_color = Color(1, 1, 1, 1)
+shader_parameter/bottom_color = Color(0, 0.6765001, 0.99, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_oxa5p"]
+base_font = ExtResource("7_xoxtp")
+spacing_glyph = 1
+
+[node name="英雄卡组" type="HFlowContainer" unique_id=1926791101]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = 4.0
+offset_bottom = -1188.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 34
+script = ExtResource("1_xoxtp")
+metadata/_custom_type_script = "uid://ccahviel8ug80"
+
+[node name="介绍" type="Control" parent="." unique_id=1531435705]
+custom_minimum_size = Vector2(720, 92)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Button" type="Button" parent="介绍" unique_id=225429886]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 7.0
+offset_top = 15.0
+offset_right = 690.0
+offset_bottom = 78.0
+flat = true
+
+[node name="图标" type="Sprite2D" parent="介绍" unique_id=1148012983]
+unique_name_in_owner = true
+z_index = 15
+position = Vector2(41.4, 46)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_6daig")
+
+[node name="属性" type="Sprite2D" parent="介绍" unique_id=621317425]
+unique_name_in_owner = true
+z_index = 14
+position = Vector2(120.6, 44.75751)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("3_uap3w")
+
+[node name="属性2" type="Sprite2D" parent="介绍" unique_id=1992597735]
+unique_name_in_owner = true
+z_index = 14
+position = Vector2(169, 44.75751)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("4_oxa5p")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="介绍" unique_id=712583696]
+self_modulate = Color(0.0775, 0.21312504, 0.31, 1)
+layout_mode = 0
+offset_left = 32.399998
+offset_top = 13.999999
+offset_right = 3322.3997
+offset_bottom = 333.99997
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_qtiwq")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="名称" type="Label" parent="介绍" unique_id=1838475490]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_uap3w")
+layout_mode = 0
+offset_left = 194.0
+offset_top = 15.0
+offset_right = 320.0
+offset_bottom = 72.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.75686276)
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("FontVariation_oxa5p")
+theme_override_font_sizes/font_size = 42
+text = "绿影侠"
+vertical_alignment = 1
