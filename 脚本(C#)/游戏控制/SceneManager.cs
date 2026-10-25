@@ -154,6 +154,8 @@ public static class SceneManager
 
 			_LoadTask = new TaskCompletionSource<bool>();
 			Main.SceneContainer.GetNode<CanvasLayer>("%UponScene").AddChild(scene);
+			if (Menus.Count > 0)
+				Menus[^1].Reparent(Main.SceneContainer.GetNode<CanvasLayer>("%SubScene"));
 			Menus.Add(subMenu);
 			pushed = true;
 
@@ -281,6 +283,7 @@ public static class SceneManager
 				if (parentScene != null && GodotObject.IsInstanceValid(parentScene) && parentScene.Visible)
 				{
 					BackButton.JoinScene(parentScene.HideReturnButton);
+					parentMenu.Reparent(Main.SceneContainer.GetNode<CanvasLayer>("%UponScene"));
 					EnableMenusIn(parentScene);
 				}
 				else

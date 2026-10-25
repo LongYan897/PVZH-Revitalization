@@ -8,6 +8,8 @@ public static class CardRegistryField
     [URL]
     public static string 消灭 => "使单位立即死亡。";
     [URL]
+    public static string 被消灭 => "单位死亡时。";
+    [URL]
     public static string 弹射 => "使单位移回其所有者的手牌。";
     [URL]
     public static string 现身 => "僵尸从墓碑中显现时。";

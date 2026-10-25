@@ -4,9 +4,19 @@
 [ext_resource type="Texture2D" uid="uid://tcpwwtsahhjf" path="res://素材(C#)/卡包/卡套/deckCustomSashGrayscale.png" id="2_ix31a"]
 [ext_resource type="Texture2D" uid="uid://dlpr0abpr6kt6" path="res://素材/英雄素材/绿影侠/Deck_GreenShadow.png" id="3_6n3n6"]
 [ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="4_lm4i2"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="5_wefbc"]
+[ext_resource type="Texture2D" uid="uid://drug7js2jfb4v" path="res://素材(C#)/文本图片/inhnd_sun_gb.png" id="6_56yx6"]
 
 [sub_resource type="FontVariation" id="FontVariation_6n3n6"]
 base_font = ExtResource("4_lm4i2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uhrkk"]
+shader = ExtResource("5_wefbc")
+shader_parameter/color = Color(0, 0, 0, 0.5803922)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = -1.0
+shader_parameter/saturation = 1.4790000702525
+shader_parameter/contrast = 1.0
 
 [node name="卡组卡包" type="Control" unique_id=969405171]
 layout_mode = 3
@@ -41,3 +51,44 @@ theme_override_font_sizes/font_size = 32
 text = "豆豆"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Cost" type="HBoxContainer" parent="." unique_id=1155841597]
+visible = false
+layout_mode = 0
+offset_left = -95.0
+offset_top = -34.0
+offset_right = 46.0
+offset_bottom = -8.0
+mouse_filter = 2
+
+[node name="C1" type="Control" parent="Cost" unique_id=704861953]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="花费" type="Sprite2D" parent="Cost/C1" unique_id=1457208778]
+material = SubResource("ShaderMaterial_uhrkk")
+position = Vector2(14, 15.000001)
+scale = Vector2(0.20901638, 0.20901632)
+texture = ExtResource("6_56yx6")
+
+[node name="InhndSunGb" type="Sprite2D" parent="Cost/C1/花费" unique_id=902440190]
+position = Vector2(-4.784314, -9.56864)
+texture = ExtResource("6_56yx6")
+
+[node name="C2" type="Control" parent="Cost" unique_id=186960904]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="花费" type="Sprite2D" parent="Cost/C2" unique_id=1842633777]
+material = SubResource("ShaderMaterial_uhrkk")
+position = Vector2(14, 15.000001)
+scale = Vector2(0.20901638, 0.20901632)
+texture = ExtResource("6_56yx6")
+
+[node name="InhndSunGb" type="Sprite2D" parent="Cost/C2/花费" unique_id=1099056654]
+position = Vector2(-4.784314, -9.56864)
+texture = ExtResource("6_56yx6")

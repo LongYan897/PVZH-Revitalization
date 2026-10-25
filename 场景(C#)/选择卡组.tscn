@@ -44,7 +44,7 @@ script = ExtResource("1_j6ymc")
 custom_minimum_size = Vector2(720, 1280)
 offset_right = 40.0
 offset_bottom = 40.0
-color = Color(0, 0, 0, 0.7882353)
+color = Color(0, 0, 0, 0.8156863)
 
 [node name="主容器" type="VBoxContainer" parent="." unique_id=78342785]
 offset_right = 720.0
