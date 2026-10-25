@@ -1,0 +1,14 @@
+{
+  "AllPea.Name": "唯一爱豆",
+  "AllPea.Hero": "绿影侠",
+  "AllPea.Des": "释放豌豆的力量！前期用火炬树桩和豌豆教父化解僵尸的疯狂进攻，后期靠豌豆射手和机枪射手的额外攻击，干干脆脆地终结他们。",
+  "AllPea.Frame": "res://素材(C#)/卡包/官方卡组封面/Recipe_GreenShadow_R1.png",
+  "AllPea.Rarity": "Init",
+  "AllPea.Cards": [ { "豌豆射手": 4 },{ "火炬树桩" :  4} ],
+  "AllDancer.Name": "舞动全场",
+  "AllDancer.Hero": "超尸",
+  "AllDancer.Des": "舞池已就位，音乐别停！用跳舞僵尸把场面跳热，舞王僵尸跟上把节奏推到最高，然后在对手反应过来之前，踩着鼓点干脆收场。",
+  "AllDancer.Frame": "res://素材(C#)/卡包/官方卡组封面/Recipe_ElectricBoogaloo_R1.png",
+  "AllDancer.Rarity": "Init",
+  "AllDancer.Cards": [ { "伴舞僵尸": 4 } ]
+}

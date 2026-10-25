@@ -1,0 +1,342 @@
+[gd_scene format=3 uid="uid://mvajna8tnbkg"]
+
+[ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="1_f3gl7"]
+[ext_resource type="Script" uid="uid://ca24wyikub1oi" path="res://脚本(C#)/场景/子场景/DeckPreviewSubMenuScene.cs" id="1_y2wi4"]
+[ext_resource type="Texture2D" uid="uid://cxos0nmi1e3gs" path="res://素材(C#)/卡包/卡套/deckRecipeR1Background.png" id="2_kxr4r"]
+[ext_resource type="Texture2D" uid="uid://ploc4ewq718e" path="res://素材(C#)/卡包/官方卡组封面/Recipe_GreenShadow_R1.png" id="3_kxr4r"]
+[ext_resource type="Texture2D" uid="uid://khktwt11mst3" path="res://素材(C#)/卡包/卡套/deckRecipeR1Sash.png" id="4_kxr4r"]
+[ext_resource type="Texture2D" uid="uid://bob3erj2o5iik" path="res://素材(C#)/卡包/官方卡组封面/superpower_glow_rays.png" id="5_7k45c"]
+[ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="6_36ay7"]
+[ext_resource type="Shader" uid="uid://ctimnulvc2pax" path="res://着色器/渐变艺术字.gdshader" id="6_pyxdw"]
+[ext_resource type="Script" uid="uid://djw2uav0wcgkd" path="res://脚本(C#)/辅助类/MinimumHFlowContainer.cs" id="6_xd0pl"]
+[ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="7_kxr4r"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="10_e5qfm"]
+[ext_resource type="Texture2D" uid="uid://crfe3ux7wei31" path="res://素材(C#)/卡包/卡包主体/stickerpack_hero_premium_greenshadow.png" id="10_pyxdw"]
+[ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="12_mrg3f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7k45c"]
+shader = ExtResource("6_pyxdw")
+shader_parameter/top_color = Color(1, 1, 1, 1)
+shader_parameter/bottom_color = Color(0.45999998, 0.9910001, 1, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_pyxdw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u7fqt"]
+bg_color = Color(0.0627451, 0.078431375, 0.10980392, 1)
+border_width_left = 32
+border_width_top = 32
+border_width_right = 32
+border_width_bottom = 32
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 36
+corner_radius_top_right = 36
+corner_radius_bottom_right = 36
+corner_radius_bottom_left = 36
+
+[sub_resource type="Resource" id="Resource_7k45c"]
+script = ExtResource("7_kxr4r")
+
+[sub_resource type="Resource" id="Resource_pyxdw"]
+script = ExtResource("7_kxr4r")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7k45c"]
+bg_color = Color(0, 0, 0, 0.50980395)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="FontVariation" id="FontVariation_mrg3f"]
+base_font = ExtResource("10_e5qfm")
+spacing_glyph = 3
+
+[node name="官方卡组" type="Node2D" unique_id=1959979971]
+script = ExtResource("1_y2wi4")
+metadata/_custom_type_script = "uid://ca24wyikub1oi"
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1505623329]
+offset_left = -24.0
+offset_top = -44.0
+offset_right = 769.0
+offset_bottom = 1351.0
+color = Color(0, 0, 0, 0.63529414)
+
+[node name="背板" type="NinePatchRect" parent="." unique_id=69936354]
+self_modulate = Color(0.1122, 0.20658003, 0.33, 1)
+z_index = -50
+offset_top = 110.0
+offset_right = 1800.0
+offset_bottom = 3114.167
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_f3gl7")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="副板" type="Node2D" parent="." unique_id=489754991]
+
+[node name="卡牌组" type="Sprite2D" parent="副板" unique_id=2004808634]
+unique_name_in_owner = true
+position = Vector2(128.5, 239.41982)
+scale = Vector2(0.9481132, 0.9481131)
+texture = ExtResource("2_kxr4r")
+
+[node name="封皮" type="Sprite2D" parent="副板/卡牌组" unique_id=1164379714]
+unique_name_in_owner = true
+position = Vector2(3.6915383, -55.28856)
+texture = ExtResource("3_kxr4r")
+
+[node name="卡套" type="Sprite2D" parent="副板/卡牌组" unique_id=1513470542]
+unique_name_in_owner = true
+position = Vector2(-1.7189102, 69.16916)
+scale = Vector2(1.063386, 1.0345814)
+texture = ExtResource("4_kxr4r")
+
+[node name="发光" type="Sprite2D" parent="副板/卡牌组" unique_id=1285596292]
+modulate = Color(0.29239997, 0.7181, 0.86, 0.3647059)
+z_index = -2
+position = Vector2(-8.965176, 9.049754)
+scale = Vector2(2.939356, 2.9393563)
+texture = ExtResource("5_7k45c")
+
+[node name="名称" type="Label" parent="副板" unique_id=1405738507]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_7k45c")
+offset_left = 262.0
+offset_top = 123.0
+offset_right = 680.0
+offset_bottom = 212.33334
+theme_override_fonts/font = SubResource("FontVariation_pyxdw")
+theme_override_font_sizes/font_size = 56
+text = "小菜一碟"
+horizontal_alignment = 1
+
+[node name="主板" type="NinePatchRect" parent="." unique_id=1329189641]
+self_modulate = Color(0.08627451, 0.13333334, 0.19215687, 1)
+offset_top = 277.0
+offset_right = 1800.0
+offset_bottom = 2863.667
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_f3gl7")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="描述" type="Label" parent="主板" unique_id=1198461251]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1692.5, 424)
+layout_mode = 0
+offset_left = 52.5
+offset_top = 42.499996
+offset_right = 1745.0
+offset_bottom = 477.49994
+theme_override_font_sizes/font_size = 76
+text = "释放豌豆的力量！前期用火炬树桩和豌豆教父化解僵尸的疯狂进攻，后期靠豌豆射手和机枪射手的额外攻击，干干脆脆地终结他们。"
+autowrap_mode = 2
+clip_text = true
+
+[node name="Panel" type="Panel" parent="主板" unique_id=1228036146]
+clip_contents = true
+layout_mode = 0
+offset_left = 37.5
+offset_top = 499.99994
+offset_right = 1754.9999
+offset_bottom = 1262.4998
+theme_override_styles/panel = SubResource("StyleBoxFlat_u7fqt")
+
+[node name="滑动" type="ScrollContainer" parent="主板/Panel" unique_id=630813011]
+layout_mode = 0
+offset_left = 40.0
+offset_top = -2.4999962
+offset_right = 1003.23517
+offset_bottom = 466.6176
+scale = Vector2(1.7, 1.7)
+follow_focus = true
+script = ExtResource("6_36ay7")
+wheel_scroll_damper = SubResource("Resource_7k45c")
+dragging_scroll_damper = SubResource("Resource_pyxdw")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="条" type="HFlowContainer" parent="主板/Panel/滑动" unique_id=1751976408]
+custom_minimum_size = Vector2(1717.5, 0)
+layout_mode = 2
+script = ExtResource("6_xd0pl")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="卡牌" type="HFlowContainer" parent="主板/Panel/滑动/条" unique_id=182508791]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("6_xd0pl")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="横条" type="Panel" parent="主板/Panel/滑动/条/卡牌" unique_id=1513062284]
+custom_minimum_size = Vector2(1000, 55)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_7k45c")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="文字" type="Label" parent="主板/Panel/滑动/条/卡牌/横条" unique_id=1746662040]
+layout_mode = 0
+offset_left = 10.29412
+offset_right = 290.29413
+offset_bottom = 55.833332
+theme_override_font_sizes/font_size = 40
+text = "已经拥有的卡牌"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="卡牌2" type="HFlowContainer" parent="主板/Panel/滑动/条" unique_id=562264831]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("6_xd0pl")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="横条2" type="Panel" parent="主板/Panel/滑动/条/卡牌2" unique_id=841799147]
+custom_minimum_size = Vector2(1641.482, 55)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_7k45c")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="文字" type="Label" parent="主板/Panel/滑动/条/卡牌2/横条2" unique_id=1408740520]
+layout_mode = 0
+offset_left = 10.29412
+offset_right = 458.29413
+offset_bottom = 86.0
+theme_override_font_sizes/font_size = 40
+text = "尚未找到的牌"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="获得组合包" type="NinePatchRect" parent="主板" unique_id=1382383544]
+self_modulate = Color(0, 1, 0.23333335, 1)
+layout_mode = 0
+offset_left = 97.5
+offset_top = 1425.0001
+offset_right = 932.49994
+offset_bottom = 1699.9999
+texture = ExtResource("1_f3gl7")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="卡包" type="TextureRect" parent="主板/获得组合包" unique_id=1251719552]
+layout_mode = 0
+offset_left = -69.99999
+offset_top = -102.500145
+offset_right = 234.0
+offset_bottom = 372.49985
+rotation = -0.09196705
+texture = ExtResource("10_pyxdw")
+
+[node name="文字" type="Label" parent="主板/获得组合包" unique_id=2090385346]
+layout_mode = 0
+offset_left = 264.99994
+offset_top = 62.499756
+offset_right = 755.0
+offset_bottom = 199.29143
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.61960787)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 8
+theme_override_font_sizes/font_size = 98
+text = "获得组合包"
+
+[node name="文字2" type="Label" parent="主板" unique_id=2085892603]
+layout_mode = 0
+offset_left = 347.49994
+offset_top = 1357.4998
+offset_right = 923.49994
+offset_bottom = 1424.4998
+theme_override_colors/font_color = Color(0.5319234, 0.89, 0.2581, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.81960785)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 8
+theme_override_font_sizes/font_size = 48
+text = "获得组合包来取得这位英雄"
+
+[node name="获得组合包2" type="NinePatchRect" parent="主板" unique_id=892682156]
+self_modulate = Color(0, 1, 0.23333335, 1)
+layout_mode = 0
+offset_left = 995.0
+offset_top = 1425.0001
+offset_right = 1709.9998
+offset_bottom = 1699.9999
+texture = ExtResource("1_f3gl7")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="Sprite2D" type="Sprite2D" parent="主板/获得组合包2" unique_id=1369169214]
+position = Vector2(209.99998, 129.99983)
+texture = ExtResource("12_mrg3f")
+
+[node name="文字4" type="Label" parent="主板/获得组合包2" unique_id=1497301870]
+layout_mode = 0
+offset_left = 284.99988
+offset_top = 57.499756
+offset_right = 774.9999
+offset_bottom = 197.49976
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.83137256)
+theme_override_constants/shadow_offset_x = 8
+theme_override_constants/shadow_offset_y = 12
+theme_override_fonts/font = SubResource("FontVariation_mrg3f")
+theme_override_font_sizes/font_size = 124
+text = "9,999"
+
+[node name="文字3" type="Label" parent="主板" unique_id=1103685803]
+layout_mode = 0
+offset_left = 1069.9999
+offset_top = 1344.9998
+offset_right = 1645.9999
+offset_bottom = 1423.1664
+theme_override_colors/font_color = Color(0.5319234, 0.89, 0.2581, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.81960785)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 8
+theme_override_font_sizes/font_size = 56
+text = "立刻拥有完整战略卡组"
+
+[node name="获得组合包3" type="NinePatchRect" parent="主板" unique_id=1268530740]
+self_modulate = Color(0, 0.8833332, 1, 1)
+layout_mode = 0
+offset_left = 557.5
+offset_top = 1730.0
+offset_right = 1352.5
+offset_bottom = 1937.5
+texture = ExtResource("1_f3gl7")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="文字6" type="Label" parent="主板/获得组合包3" unique_id=114889052]
+layout_mode = 0
+offset_left = 205.0
+offset_top = 22.499756
+offset_right = 701.0
+offset_bottom = 195.58301
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.83137256)
+theme_override_constants/shadow_offset_x = 8
+theme_override_constants/shadow_offset_y = 12
+theme_override_font_sizes/font_size = 100
+text = "定制牌组"
+
+[node name="文字5" type="Label" parent="主板" unique_id=1626385700]
+layout_mode = 0
+offset_left = 677.5
+offset_top = 1932.4998
+offset_right = 1253.5
+offset_bottom = 2021.8331
+theme_override_colors/font_color = Color(0.62640005, 0.67105997, 0.87, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8745098)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 12
+theme_override_font_sizes/font_size = 64
+text = "替代已经拥有的卡牌"

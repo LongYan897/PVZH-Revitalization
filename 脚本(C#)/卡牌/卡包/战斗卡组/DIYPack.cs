@@ -15,6 +15,5 @@ public class DIYPack : PresetPack
     {
         this.Hero = HeroModel.Identity<Hero>();
     }
-    protected sealed override DeckRarity Rarity => DeckRarity.None;
     protected sealed override IReadOnlyList<CardModel> DeckCards => [];
 }

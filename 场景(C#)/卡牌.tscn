@@ -6,15 +6,17 @@
 [ext_resource type="Texture2D" uid="uid://b8cjw4esrxadc" path="res://素材/牌背、卡面/背景底版1.png" id="2_a5s0q"]
 [ext_resource type="Texture2D" uid="uid://c5aq4onpg077v" path="res://素材/牌背、卡面/SEEDPACKET_BACK.png" id="2_md00x"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_fsyp8"]
-[ext_resource type="Texture2D" uid="uid://bwh5g6h8sriwy" path="res://素材(C#)/卡牌属性/SEEDPACKET_FRONT.png" id="6_yam0n"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="7_ia5uq"]
+[ext_resource type="Texture2D" uid="uid://bwlw1ccu613hc" path="res://素材(C#)/卡牌属性/SEEDPACKET_Event.png" id="8_t66oa"]
+[ext_resource type="Texture2D" uid="uid://o6par5jw3pih" path="res://素材(C#)/卡牌属性/heart.png" id="9_t66oa"]
+[ext_resource type="Texture2D" uid="uid://cptanfofcbmbu" path="res://素材/卡牌属性图片/attack.png" id="10_fp1j7"]
 [ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="11_yam0n"]
 [ext_resource type="Texture2D" uid="uid://84nyu8lu0ied" path="res://素材/牌背、卡面/cardback_plants.png" id="12_5lf5m"]
 [ext_resource type="Texture2D" uid="uid://5tg3kror454m" path="res://素材(C#)/文本图片/inhnd_brains.png" id="12_ia5uq"]
 [ext_resource type="Texture2D" uid="uid://nvma3q7pcegf" path="res://素材/抽卡特效/refresh_card_spin.png" id="13_t66oa"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t66oa"]
-bg_color = Color(0, 0, 0, 0.41960785)
+bg_color = Color(0, 0, 0, 0.70980394)
 corner_radius_top_right = 32
 
 [sub_resource type="FontVariation" id="FontVariation_2sttn"]
@@ -32,7 +34,7 @@ corner_radius_top_right = 24
 corner_radius_bottom_right = 24
 corner_radius_bottom_left = 24
 
-[sub_resource type="Shader" id="Shader_yam0n"]
+[sub_resource type="Shader" id="Shader_5lf5m"]
 code = "shader_type canvas_item;
 
 uniform float contrast : hint_range(0.0, 2.0) = 1.0;
@@ -48,7 +50,7 @@ void fragment() {
 }"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yam0n"]
-shader = SubResource("Shader_yam0n")
+shader = SubResource("Shader_5lf5m")
 shader_parameter/contrast = 1.75600008341
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fp1j7"]
@@ -97,11 +99,9 @@ metadata/_edit_horizontal_guides_ = [-83.0]
 
 [node name="非战斗" type="Node2D" parent="." unique_id=6007071]
 unique_name_in_owner = true
-visible = false
 
 [node name="卡牌数量" type="Panel" parent="非战斗" unique_id=1907090524]
 unique_name_in_owner = true
-visible = false
 z_index = 15
 offset_left = 6.0
 offset_top = 103.0
@@ -277,7 +277,7 @@ grow_horizontal = 0
 grow_vertical = 0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
-texture = ExtResource("6_yam0n")
+texture = ExtResource("8_t66oa")
 stretch_mode = 3
 
 [node name="卡面容器" type="Node2D" parent="正面卡牌" unique_id=346698980]
@@ -287,9 +287,11 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 z_index = 2
 
-[node name="血量动画" parent="正面卡牌/生命值容器" unique_id=823167992 instance=ExtResource("7_ia5uq")]
+[node name="血量动画" type="Sprite2D" parent="正面卡牌/生命值容器" unique_id=1594517514]
 unique_name_in_owner = true
-position = Vector2(224, 157.5)
+position = Vector2(223, 156)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("9_t66oa")
 
 [node name="血量数值" type="RichTextLabel" parent="正面卡牌/生命值容器" unique_id=507951206]
 unique_name_in_owner = true
@@ -314,9 +316,11 @@ unique_name_in_owner = true
 z_index = 2
 position = Vector2(7, 0)
 
-[node name="伤害动画" parent="正面卡牌/攻击力容器" unique_id=808255837 instance=ExtResource("7_ia5uq")]
+[node name="伤害动画" type="Sprite2D" parent="正面卡牌/攻击力容器" unique_id=915152527]
 unique_name_in_owner = true
-position = Vector2(135, 157.5)
+position = Vector2(133, 155)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("10_fp1j7")
 
 [node name="伤害数值" type="RichTextLabel" parent="正面卡牌/攻击力容器" unique_id=967735247]
 unique_name_in_owner = true

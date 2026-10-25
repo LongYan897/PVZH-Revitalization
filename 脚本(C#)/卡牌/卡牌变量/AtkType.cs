@@ -1,3 +1,5 @@
+using Godot;
+using Pack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +22,15 @@ public class GAtkTypeAttribute : Attribute
 /// </summary>
 public abstract class AtkType
 {
+    public Texture2D Icon => IconPath != null ? IconPath.Load<Texture2D>() : null;
+    /// <summary>
+    /// 攻击力动画图标
+    /// </summary>
+    public abstract string IconSkelPath { get; }
     /// <summary>
     /// 攻击力图标
     /// </summary>
-    public abstract string IconSkelPath { get; }
+    public abstract string IconPath { get; }
     /// <summary>
     /// 攻击力额外标签(显示在卡牌的描述上,支持所有CardString描述的语法)
     /// </summary>
@@ -146,4 +153,6 @@ public sealed class MergedAtkType(IEnumerable<AtkType> types) : AtkType
 
     public override Buff Buff =>
         _types.Select(t => t.Buff).FirstOrDefault(b => b != null);
+
+    public override string IconPath => null;
 }

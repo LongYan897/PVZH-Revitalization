@@ -221,5 +221,23 @@
   "Cattail.Atk": 3,
   "Cattail.AtkType": "追踪",
   "Cattail.Flavor": "我的秘密武器？就是这顶可爱的小帽子！",
-  "Cattail.Id": 12
+  "Cattail.Id": 12,
+
+  "TorchWood.Title": "火炬树桩",
+  "TorchWood.Des": "位于身后的$豌豆$植物获得=Strength={+2}",
+  "TorchWood.Cost": 1,
+  "TorchWood.Camp": "植物",
+  "TorchWood.Type": "单位",
+  "TorchWood.Rarity": "基础",
+  "TorchWood.Category": "猛长",
+  "TorchWood.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
+  "TorchWood.Icon": "res://场景(C#)/卡面/torchWood.tscn",
+  "TorchWood.Label": [ "树木" ],
+  "TorchWood.Tag": [ "组队" ],
+  "TorchWood.Hp": 3,
+  "TorchWood.HpType": "普通",
+  "TorchWood.Atk": 0,
+  "TorchWood.AtkType": "普通",
+  "TorchWood.Flavor": "\"听我号令，烧个精光！\"",
+  "TorchWood.Id": 13
 }

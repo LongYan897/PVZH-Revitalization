@@ -1,16 +1,22 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pack;
 
 public static class StringExtension
 {
+    private static readonly Dictionary<string, GodotObject> _cache = new();
+
     public static T Load<T>(this string path) where T : GodotObject
     {
-        return GD.Load<T>(path);
+        if (string.IsNullOrEmpty(path)) return null;
+
+        if (_cache.TryGetValue(path, out var cached) && cached is T typed && GodotObject.IsInstanceValid(typed))
+            return typed;
+
+        var res = GD.Load<T>(path);
+        if (res != null)
+            _cache[path] = res;
+        return res;
     }
 }

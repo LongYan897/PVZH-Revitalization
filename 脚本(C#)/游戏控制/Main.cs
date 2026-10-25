@@ -41,7 +41,8 @@ public partial class Main : Node
 		AtkType.Init();
 		Icon.Init();
 		CardModel.Init();
-		SceneAnimaActor.Init(this);
+        PresetPack.Init();
+        SceneAnimaActor.Init(this);
 		SpineHandler.Init("res://数据资源");
 		//初始化容器
 		Animator = GetNode<CanvasLayer>("Animators");
@@ -65,8 +66,8 @@ public partial class Main : Node
 		//
 		var p1 = new Player("MME");
 		var p2 = new AiPlayer("Ai");
-		p2.PrefABox<SuperZombie>(new AllDancer());
-		p1.PrefABox<Penelopea>(new AllPea());
+		p2.PrefABox<SuperZombie>(PresetPack.Load<AllDancer>());
+		p1.PrefABox<Penelopea>(PresetPack.Load<AllPea>());
 		PlayerManager.Hosting(p1);
 		PlayerManager.FillPlayer(PlayerManager.HostPlayer, p2);
 	}

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bbgp6j52lxntq"]
+
+[ext_resource type="Texture2D" uid="uid://iumoq8o21vnr" path="res://场景/植物卡组/火炬树桩植物/2e4ae395-c3e2-4447-a28c-6d67c18c4f61.png" id="1_62v1f"]
+
+[node name="卡面" type="Control" unique_id=887634131]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1628033139]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 9.0
+offset_right = 195.0
+offset_bottom = 193.0
+texture = ExtResource("1_62v1f")
+expand_mode = 1
+stretch_mode = 3

@@ -14,6 +14,7 @@ public class NormalHpType : HpType
     [IconText("ffffff", "91001b", 3)]
     public const string Health = "res://素材(C#)/文本图片/heart.png";
     public override string IconSkelPath => "res://数据资源/属性动画/血量动画.tres";
+    public override string IconPath => "res://素材(C#)/卡牌属性/heart.png";
     public override string ExLabel => "";
     public override Buff Buff => null;
 }

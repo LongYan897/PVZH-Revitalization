@@ -19,7 +19,7 @@ public class TrackAtkType : AtkType
     }
 
     public override string IconSkelPath => "res://数据资源/属性动画/攻击动画.tres";
-
+    public override string IconPath => "res://素材(C#)/文本图片/Track.png";
     public override string ExLabel => "=Track=_追踪_";
 
     [IconText("ffffff")]

@@ -1,6 +1,7 @@
 using Battle;
 using Card;
 using Card.Cmd;
+using Godot;
 using Hero.String;
 using Play;
 using Scene;
@@ -211,15 +212,32 @@ public abstract class HeroModel
         return heroModels;
     }
     /// <summary>
-    /// 通过英雄类名获取英雄的身份
+    /// 通过英雄类名或中文名获取英雄的身份
     /// </summary>
-    /// <param name="typeName">英雄类名</param>
-    /// <returns>英雄身份实例</returns>
     public static HeroModel Identity(string typeName)
     {
-        var type = Assembly.GetExecutingAssembly().GetTypes()
-            .FirstOrDefault(t => t.IsSubclassOf(typeof(HeroModel))
-                              && (t.FullName == typeName || t.Name == typeName));
+        if (string.IsNullOrEmpty(typeName)) return null;
+
+        var types = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => t.IsSubclassOf(typeof(HeroModel)) && !t.IsAbstract)
+            .ToList();
+
+        var type = types.FirstOrDefault(t => t.FullName == typeName || t.Name == typeName);
+
+        if (type == null)
+        {
+            type = types.FirstOrDefault(t =>
+            {
+                var title = HeroString.GetData(t.Name, "Title").AsString();
+                return title == typeName;
+            });
+        }
+
+        if (type == null)
+        {
+            GD.PushWarning($"HeroModel.Identity 未找到英雄: {typeName}");
+            return null;
+        }
 
         var method = typeof(HeroModel)
             .GetMethod(nameof(Identity), BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null)

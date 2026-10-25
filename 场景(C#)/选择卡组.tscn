@@ -107,6 +107,10 @@ layout_mode = 2
 script = ExtResource("3_gtcvs")
 wheel_scroll_damper = SubResource("Resource_gtcvs")
 dragging_scroll_damper = SubResource("Resource_r31cl")
+hide_scrollbar_over_time = true
+scrollbar_hide_time = 0.0
+scrollbar_fade_in_time = 0.0
+scrollbar_fade_out_time = 0.0
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="卡组框" type="HFlowContainer" parent="主容器/卡组" unique_id=2102661173]
