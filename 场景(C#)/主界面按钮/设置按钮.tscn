@@ -24,6 +24,8 @@ metadata/_custom_type_script = "uid://bkl6g25jwb47h"
 custom_minimum_size = Vector2(125, 127)
 layout_mode = 3
 anchors_preset = 0
+offset_right = 131.0
+offset_bottom = 130.0
 script = ExtResource("1_f61mq")
 SubScene = "res://场景(C#)/用户信息/个人信息.tscn"
 ShowLoading = false
@@ -31,8 +33,8 @@ metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Panel" type="Panel" parent="." unique_id=474563092]
 layout_mode = 0
-offset_right = 125.0
-offset_bottom = 127.0
+offset_right = 131.0
+offset_bottom = 130.0
 theme_override_styles/panel = SubResource("StyleBox_wvhbo")
 
 [node name="Button" type="Button" parent="." unique_id=1454515024]

@@ -165,6 +165,7 @@ offset_left = 625.0
 offset_top = 5.0
 offset_right = 625.0
 offset_bottom = 5.0
+mouse_filter = 1
 script = ExtResource("9_4xl43")
 SubScene = "res://场景(C#)/卡包/卡包详情.tscn"
 ShowLoading = false

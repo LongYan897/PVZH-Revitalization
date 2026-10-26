@@ -141,22 +141,23 @@ layer = 5
 follow_viewport_enabled = true
 
 [node name="Button" type="CanvasLayer" parent="Scene" unique_id=948884562]
-layer = 80
+layer = 4
 
 [node name="钻石" type="Panel" parent="Scene/Button" unique_id=285240468]
 unique_name_in_owner = true
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -55.0
+offset_left = -149.0
 offset_top = 3.0
-offset_right = 245.0
+offset_right = 151.0
 offset_bottom = 63.0
 grow_horizontal = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
+size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_00smb")
-metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="钻石" type="TextureRect" parent="Scene/Button/钻石" unique_id=120779262]
 layout_mode = 0
@@ -183,8 +184,6 @@ offset_top = 1.0
 offset_right = 657.0
 offset_bottom = 1.0
 scale = Vector2(0.5, 0.5)
-IsConstant = true
-IsPersistNess = true
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
