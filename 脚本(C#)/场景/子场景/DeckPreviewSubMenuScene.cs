@@ -34,12 +34,12 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
 
         if (ownedContainer != null)
         {
-            foreach (var child in ownedContainer.GetChildren())
+            foreach (var child in ownedContainer.GetChildren().OfType<NodeCard>())
                 child.QueueFree();
         }
         if (unownedContainer != null)
         {
-            foreach (var child in unownedContainer.GetChildren())
+            foreach (var child in unownedContainer.GetChildren().OfType<NodeCard>())
                 child.QueueFree();
         }
 
@@ -55,9 +55,12 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
         {
             var template = group.First();
             int deckCount = group.Count();
-            int owned = Mathf.Min(asset.GetAmount(template.Title), deckCount);
+            int playerHas = asset.GetAmount(template.Title);
 
-            if (owned > 0 && ownedContainer != null)
+            int showOwned = Math.Min(playerHas, deckCount);
+            int showMissing = deckCount - playerHas;
+
+            if (showOwned > 0 && ownedContainer != null)
             {
                 var node = await NodeCard.CreateCard(
                     template.Clone(),
@@ -65,17 +68,14 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
                     CardView.Collection,
                     ownedContainer,
                     drawAnimation: false,
-                    1.5f);
+                    1f);
                 node.AllowExpand = false;
                 node.ForceShowAmount = true;
-                node.ForcedAmount = owned;
+                node.ForcedAmount = showOwned;
                 node.Fresh();
             }
 
-            if (owned >= 4 || owned >= deckCount) continue;
-
-            int missing = deckCount - owned;
-            if (missing > 0 && unownedContainer != null)
+            if (showMissing > 0 && unownedContainer != null)
             {
                 var node = await NodeCard.CreateCard(
                     template.Clone(),
@@ -83,10 +83,10 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
                     CardView.Collection,
                     unownedContainer,
                     drawAnimation: false,
-                    1.5f);
+                    1f);
                 node.AllowExpand = false;
                 node.ForceShowAmount = true;
-                node.ForcedAmount = missing;
+                node.ForcedAmount = showMissing;
                 node.Fresh();
             }
         }

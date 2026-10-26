@@ -44,6 +44,15 @@ public class FighterCardModel : CardModel
         if (IsPlaced)
             await func(Fighter.GetNode(this).AnimationNode);
     }
+    protected sealed override void AfterClone()
+    {
+        base.AfterClone();
+        Atk = new(this, "Attack", Atk.Current);
+        Hp = new(this, "Health", Hp.Current);
+        MaxHp = new(this, "HealthMax", MaxHp.Current);
+        AtkType = new(this, "AttackType", AtkType.Current);
+        HpType = new(this, "HealthType", HpType.Current);
+    }
     /// <summary>
     /// 修改单位的动画节点,改变单位颜色
     /// </summary>
@@ -567,11 +576,14 @@ public class FighterCardModel : CardModel
             }
             if (CanEvolution(fighter))
             {
-                await CardCmd.Evolve(this, fighter);
                 Overlay(fighter, null);
             }
             await CardCmd.FighterGenerate(this, fighter.Road, fighter.Location);
             AddGroup(fighter);
+            if (CanEvolution(fighter))
+            {
+                await CardCmd.Evolve(this, fighter);
+            }
             return;
         }
     }

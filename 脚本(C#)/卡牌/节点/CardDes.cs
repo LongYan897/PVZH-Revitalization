@@ -36,9 +36,9 @@ public partial class CardDes : Control
     private CardModel Model;
     public static CardDes instance { get; private set; }
     /// <summary>卡牌描述字号</summary>
-    private const int DesFontSize = 28;
+    private const int DesFontSize = 24;
     /// <summary>描述图标尺寸</summary>
-    private const int IconSize = 42;
+    private const int IconSize = 36;
     /// <summary>
     /// 创建卡牌的描述
     /// </summary>

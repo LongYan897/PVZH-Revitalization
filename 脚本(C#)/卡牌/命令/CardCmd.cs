@@ -459,4 +459,22 @@ public static class CardCmd
         await TimingOnCards(evolver, Timing.WhenFuse, evolved, evolver);
         PopStop();
     }
+    /// <summary>
+    /// 检查是否能生成某个单位
+    /// </summary>
+    /// <typeparam name="T">要生成单位的类</typeparam>
+    /// <returns></returns>
+    public static bool CanGenerate<T>() where T : FighterCardModel
+    {
+        return AnyTarget(t => t.CanBeRoad(out var road) && Fighter.CanGenerate(CardModel.GetTemplate<T>() as T, road));
+    }
+    /// <summary>
+    /// 检查某条线是否能生成某个单位
+    /// </summary>
+    /// <typeparam name="T">要生成单位的类</typeparam>
+    /// <returns></returns>
+    public static bool CanGenerate<T>(Road road) where T : FighterCardModel
+    {
+        return Fighter.CanGenerate(CardModel.GetTemplate<T>() as T, road);
+    }
 }

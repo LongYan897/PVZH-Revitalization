@@ -86,15 +86,17 @@ public class Road
             var plantf = fighters.FirstOrDefault(f => f.Plant1);
             var plant = fighters.FirstOrDefault(f => f.Plant2);
             var bothppf = plantf != null && plant != null;
+            var cannonical = 0;
             if (plantf != null)
             {
                 var stk = new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current);
+                cannonical = plantf.Model.Atk.Current;
                 await plantf?.Model?.Battle(stk);
                 stks.Add(stk);
             }
             if (plant != null)
             {
-                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current) { IgnoreShield = bothppf };
+                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current) { IgnoreShield = bothppf && plantf != null && cannonical > 0 };
                 await plant?.Model?.Battle(stk);
                 stks.Add(stk);
             }
@@ -118,8 +120,10 @@ public class Road
             var plantf = fighters.FirstOrDefault(f => f.Plant1);
             var plant = fighters.FirstOrDefault(f => f.Plant2);
             var bothppf = plantf != null && plant != null;
+            var cannonical = 0;
             if (plantf != null)
             {
+                cannonical = plantf.Model.Atk.Current;
                 if (stks.Any(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0))
                 {
                     var stk = stks.FirstOrDefault(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0);
@@ -134,7 +138,7 @@ public class Road
                 {
                     var stk = stks.FirstOrDefault(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0);
                     stk.ExtraAttacks -= 1;
-                    stk.IgnoreShield = bothppf;
+                    stk.IgnoreShield = bothppf && plantf != null && cannonical > 0;
                     await plant.Model.Battle(stk);
 
                 }
@@ -218,7 +222,7 @@ public class Road
     public async Task AddFighter(CardModel cardModel, Fighter fighter)
     {
         await cardModel.FireTiming(Timing.OnFighterEnter, this, fighter.Model);
-        await CardCmd.TimingOnCards(cardModel, Timing.OnFighterEnter, this, fighter);
+        await CardCmd.TimingOnCards(cardModel, Timing.OnFighterEnter, this, fighter.Model);
         fighters.Add(fighter);
         await cardModel.FireTiming(Timing.AfterRoadChanged, this);
         await CardCmd.TimingOnCards(cardModel, Timing.AfterRoadChanged, this);

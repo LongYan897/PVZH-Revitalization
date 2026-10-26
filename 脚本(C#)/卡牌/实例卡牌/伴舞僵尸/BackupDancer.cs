@@ -1,16 +1,19 @@
+using Battle.Entity;
 using Card.Cmd;
+using Logger;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Target;
 
 namespace Card.Dance;
 
 public class BackupDancer : FighterCardModel
 {
-    private class BackupDancerBuff(BackupDancer bind) : Buff
+    private class BackupDancerBuff : Buff
     {
         public override Timing[] Timings => [Timing.OnFighterExit, Timing.AfterPlay];
-        private BackupDancer model = bind;
         private FighterCardModel target;
         private Func<Task> redo;
         public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
@@ -19,16 +22,16 @@ public class BackupDancer : FighterCardModel
             {
                 if (card is FighterCardModel fighterCard)
                 {
-                    if (fighterCard == model)
+                    if (CardCmd.AnyZombie(z => z.HasLabel("跳舞")))
                     {
-                        if (CardCmd.AnyZombie(z => z.HasLabel("跳舞")))
+                        FighterCardModel fighter = await CardCmd.PlayerChoiceZombie(null, card, true, (z) => z.HasLabel("跳舞"));
+                        target = fighter;
+                        if (target != null)
                         {
-                            FighterCardModel fighter = await CardCmd.PlayerChoiceZombie(null, card, true, (z) => z.HasLabel("跳舞"));
-                            target = fighter;
                             await fighterCard.PlayFighterAnimationTask("attack");
-                            if (target != null)
-                                redo = await fighter.Atk.Gain(model.GetSignInt("Strength"), Variable.VariableReason.Zombie | Variable.VariableReason.Self);
+                            redo = await fighter.Atk.Gain(card.GetSignInt("Strength"), Variable.VariableReason.Zombie | Variable.VariableReason.Self);
                         }
+
                     }
                 }
             }
@@ -36,7 +39,7 @@ public class BackupDancer : FighterCardModel
             {
                 if (card is FighterCardModel fighterCard)
                 {
-                    if (parameters[1] == model || parameters[1] == target)
+                    if (parameters[1] == fighterCard || parameters[1] == target)
                     {
                         if (redo != null) 
                             await redo();
@@ -47,6 +50,6 @@ public class BackupDancer : FighterCardModel
     }
     public override bool FriendTarget => true;
     protected override List<Buff> InitBuffs => [
-        new BackupDancerBuff(this)
+        new BackupDancerBuff()
         ];
 }

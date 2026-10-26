@@ -129,7 +129,7 @@ public class PresetPack : CardPack
         {
             if (card == null) continue;
             if (CountByTitle(card.Title) >= 4) continue;
-            cards.Add(card);
+            cards.Add(card.Clone());
         }
     }
 

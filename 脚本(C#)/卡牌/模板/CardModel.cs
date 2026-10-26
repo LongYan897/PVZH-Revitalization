@@ -159,7 +159,7 @@ public class CardModel
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message + ex.StackTrace);
+                Log.Error($"[CardModel.Init] Failed on type: {type.Name}, msg: {ex.Message}\n{ex.StackTrace}");
             }
         }
     }
@@ -169,9 +169,19 @@ public class CardModel
     /// </summary>
     public void Fresh()
     {
-        NodeCard.GetNode(this)?.Fresh();
+        var cardNode = NodeCard.GetNode(this);
+        cardNode?.Fresh();
+
         if (this is FighterCardModel fighter)
-            Fighter.GetNode(fighter)?.CardTryFresh(this);
+        {
+            var fighterNode = Fighter.GetNode(fighter);
+
+            if (fighterNode != null)
+            {
+                fighterNode.CardTryFresh(this);
+            }
+        }
+
         CardDes.instance?.CardTryFresh(this);
     }
     /// <summary>
@@ -322,7 +332,7 @@ public class CardModel
         card.AnimationPath = cardString.AnimationPath;
         card.AnimationScenePath = cardString.AnimationScenePath;
         card.ParseDescriptionVariables(cardString.Description);
-        card.Icon = GD.Load<PackedScene>(cardString.IconPath);
+        card.Icon = cardString.IconPath.Load<PackedScene>();
         card.Id = cardString.Id;
         card.Labels = new CardVariable<List<string>>(card, "Labels", cardString.Labels);
         return (T)card.LoadData(cardString);
@@ -462,7 +472,10 @@ public class CardModel
     public CardModel Clone()
     {
         CardModel card = MemberwiseClone() as CardModel;
+        card.Cost = new CardIntVariable(card, "Cost", Cost.Current);
+        card.Labels = new CardVariable<List<string>>(card, "Labels", new List<string>(Labels.Current));
         card.AfterClone();
+        CardCmd.Add(card);
         return card;
     }
     private static readonly Regex DescriptionVarRegex =

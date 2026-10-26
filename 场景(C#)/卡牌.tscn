@@ -97,10 +97,11 @@ script = ExtResource("1_yam0n")
 metadata/_custom_type_script = "uid://doml84h3u12nd"
 metadata/_edit_horizontal_guides_ = [-83.0]
 
-[node name="非战斗" type="Node2D" parent="." unique_id=6007071]
+[node name="卡牌数容器" type="Node2D" parent="." unique_id=1686228166]
 unique_name_in_owner = true
+visible = false
 
-[node name="卡牌数量" type="Panel" parent="非战斗" unique_id=1907090524]
+[node name="卡牌数量" type="Panel" parent="卡牌数容器" unique_id=1907090524]
 unique_name_in_owner = true
 z_index = 15
 offset_left = 6.0
@@ -109,7 +110,7 @@ offset_right = 86.0
 offset_bottom = 183.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_t66oa")
 
-[node name="数量" type="Label" parent="非战斗/卡牌数量" unique_id=1708795389]
+[node name="数量" type="Label" parent="卡牌数容器/卡牌数量" unique_id=1708795389]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 3.0
@@ -121,6 +122,9 @@ theme_override_font_sizes/font_size = 56
 text = "x1"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="非战斗" type="Node2D" parent="." unique_id=6007071]
+unique_name_in_owner = true
 
 [node name="信息背景" type="Panel" parent="非战斗" unique_id=1871479733]
 unique_name_in_owner = true
@@ -228,6 +232,7 @@ unique_name_in_owner = true
 
 [node name="卡牌发光背景" type="TextureRect" parent="正面卡牌/背景容器" unique_id=513921698]
 unique_name_in_owner = true
+visible = false
 modulate = Color(0.1254902, 1, 0.02745098, 1)
 z_index = -4
 offset_left = -37.0
@@ -241,6 +246,7 @@ expand_mode = 1
 
 [node name="粒子特效" type="GPUParticles2D" parent="正面卡牌/背景容器" unique_id=331906399]
 unique_name_in_owner = true
+visible = false
 z_index = -5
 material = SubResource("CanvasItemMaterial_tquox")
 position = Vector2(119.999985, 82.99999)
@@ -287,11 +293,16 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 z_index = 2
 
-[node name="血量动画" type="Sprite2D" parent="正面卡牌/生命值容器" unique_id=1594517514]
+[node name="血量动画" type="TextureRect" parent="正面卡牌/生命值容器" unique_id=1052394698]
 unique_name_in_owner = true
-position = Vector2(223, 156)
+offset_left = 172.00002
+offset_top = 112.00001
+offset_right = 285.0
+offset_bottom = 214.0
 scale = Vector2(0.9, 0.9)
+mouse_filter = 2
 texture = ExtResource("9_t66oa")
+expand_mode = 1
 
 [node name="血量数值" type="RichTextLabel" parent="正面卡牌/生命值容器" unique_id=507951206]
 unique_name_in_owner = true
@@ -316,11 +327,16 @@ unique_name_in_owner = true
 z_index = 2
 position = Vector2(7, 0)
 
-[node name="伤害动画" type="Sprite2D" parent="正面卡牌/攻击力容器" unique_id=915152527]
+[node name="伤害动画" type="TextureRect" parent="正面卡牌/攻击力容器" unique_id=756055208]
 unique_name_in_owner = true
-position = Vector2(133, 155)
+offset_left = 83.0
+offset_top = 107.0
+offset_right = 199.0
+offset_bottom = 215.0
 scale = Vector2(0.9, 0.9)
+mouse_filter = 2
 texture = ExtResource("10_fp1j7")
+expand_mode = 1
 
 [node name="伤害数值" type="RichTextLabel" parent="正面卡牌/攻击力容器" unique_id=967735247]
 unique_name_in_owner = true

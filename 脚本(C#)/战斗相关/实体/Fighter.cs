@@ -109,7 +109,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             return b;
         };
 
-    public static async Task<Fighter> Generate(FighterCardModel model, Road road, Location index, Node parent = null)
+    public static async Task Generate(FighterCardModel model, Road road, Location index, Node parent = null)
     {
         parent ??= road.IsUp switch
         {
@@ -153,21 +153,19 @@ public partial class Fighter : Control, ITarget, IAttackable
         model.Road = road;
         model.Location = index;
         TargetRegistry.Register(fighter);
-        await road.AddFighter(model, fighter);
         if (model.CardTag.HasFlag(CardTag.GraveStone))
         {
             fighter.Fresh();
             fighter.Visible = true;
             await fighter.HideToGrave();
-            return fighter;
         }
         else
         {
             fighter.Fresh();
             fighter.ToVisible();
             fighter.Visible = true;
-            return fighter;
         }
+        await road.AddFighter(model, fighter);
     }
 
     public static bool CanGenerate(FighterCardModel model, Road road)
@@ -547,9 +545,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     public async void BoostAtk()
     {
         GetNode<SpineHandler>("%加成动画").Visible = true;
-
         BoostAtkAnim();
-
         await GetNode<SpineHandler>("%加成动画").SetAnimationTask(0, "intro", false);
         GetNode<SpineHandler>("%加成动画").Visible = false;
     }

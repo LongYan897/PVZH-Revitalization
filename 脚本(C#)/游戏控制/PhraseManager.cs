@@ -302,6 +302,7 @@ public static class PhraseManager
     }
     public static async Task StartBattle()
     {
+        _turn = 0;
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
         Phrase = Phrase.Zombie;
         await Task.WhenAll(

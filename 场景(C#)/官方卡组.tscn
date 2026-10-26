@@ -151,17 +151,18 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_u7fqt")
 layout_mode = 0
 offset_left = 40.0
 offset_top = -2.4999962
-offset_right = 1003.23517
-offset_bottom = 466.6176
-scale = Vector2(1.7, 1.7)
+offset_right = 1130.0
+offset_bottom = 514.1667
+scale = Vector2(1.5, 1.5)
 follow_focus = true
 script = ExtResource("6_36ay7")
 wheel_scroll_damper = SubResource("Resource_7k45c")
 dragging_scroll_damper = SubResource("Resource_pyxdw")
+allow_horizontal_scroll = false
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="条" type="HFlowContainer" parent="主板/Panel/滑动" unique_id=1751976408]
-custom_minimum_size = Vector2(1717.5, 0)
+custom_minimum_size = Vector2(1090, 110)
 layout_mode = 2
 script = ExtResource("6_xd0pl")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
@@ -169,13 +170,14 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="卡牌" type="HFlowContainer" parent="主板/Panel/滑动/条" unique_id=182508791]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(1090, 55)
 layout_mode = 2
 script = ExtResource("6_xd0pl")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="横条" type="Panel" parent="主板/Panel/滑动/条/卡牌" unique_id=1513062284]
-custom_minimum_size = Vector2(1000, 55)
+custom_minimum_size = Vector2(1090, 55)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_7k45c")
@@ -192,6 +194,7 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="卡牌2" type="HFlowContainer" parent="主板/Panel/滑动/条" unique_id=562264831]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(1090, 55)
 layout_mode = 2
 script = ExtResource("6_xd0pl")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"

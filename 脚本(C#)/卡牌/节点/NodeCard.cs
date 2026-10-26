@@ -7,6 +7,7 @@ using Godot.Collections;
 using Hero;
 using Logger;
 using Pack;
+using Phrases;
 using Play;
 using Spine;
 using System;
@@ -112,6 +113,7 @@ public partial class NodeCard : Control
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
             node.Scale = node._baseScale;
             node.CardViewMode = cardView;
+            node.Visible = false;
             parent.AddChild(node);
             instances.Add(node, cardModel);
             node.BringToFront();
@@ -134,6 +136,7 @@ public partial class NodeCard : Control
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
             node.Scale = node._baseScale;
             node.CardViewMode = cardView;
+            node.Visible = false;
             instances[node] = cardModel;
             node.BringToFront();
             node.GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
@@ -347,13 +350,15 @@ public partial class NodeCard : Control
     {
         var drawFrame = GetNode<Sprite2D>("%特效");
         drawFrame.Visible = true;
-        Fresh();
+        Fresh(true);
         DarkenLight();
         GetNode<Node2D>("正面卡牌").Visible = false;
         GetNode<TextureRect>("%牌背").Visible = false;
         drawFrame.Modulate = new Color(0, 0, 0, 0);
         drawFrame.Rotation = 0;
         drawFrame.Scale = new Vector2(1.5f, 1.5f);
+
+        Visible = true;
 
         var tween = drawFrame.CreateTween();
         var tween1 = drawFrame.CreateTween();
@@ -1071,7 +1076,7 @@ public partial class NodeCard : Control
     /// <summary>
     /// 每次修改卡牌时调用 用于刷新卡牌属性
     /// </summary>
-    public void Fresh()
+    public void Fresh(bool anim = false)
     {
         try
         {
@@ -1291,8 +1296,8 @@ public partial class NodeCard : Control
                         GetNode<Node2D>("%等级").Visible = true;
                         atks.GetNode<RichTextLabel>("%伤害数值").Text = $"[center]{fighter.Atk.Current}[/center]";
                         hps.GetNode<RichTextLabel>("%血量数值").Text = $"[center]{fighter.Hp.Current}[/center]";
-                        GetNode<Sprite2D>("%伤害动画").Texture = fighter.AtkType.Current.Icon;
-                        GetNode<Sprite2D>("%血量动画").Texture = fighter.HpType.Current.Icon;
+                        GetNode<TextureRect>("%伤害动画").Texture = fighter.AtkType.Current.Icon;
+                        GetNode<TextureRect>("%血量动画").Texture = fighter.HpType.Current.Icon;
                         if (fighter.StarType != null)
                         {
                             GetNode<SpineHandler>("%等级").LoadSkeletonData(fighter.StarType.IconSkelPath);
@@ -1334,7 +1339,6 @@ public partial class NodeCard : Control
                         GetNode<Node2D>("%等级").Visible = false;
                     }
                     JustFresh();
-                    FreshAmount();
                 }
                 else if (Model.Status == Status.FaceDown)
                 {
@@ -1362,6 +1366,7 @@ public partial class NodeCard : Control
                         }
                     };
                 }
+                Visible = !anim;
             }
         }
         catch (Exception ex)
@@ -1382,6 +1387,7 @@ public partial class NodeCard : Control
         }
         if (CardViewMode == CardView.Battle)
         {
+            FreshAmount();
             if (Model.CanPlay())
                 Darken();
             else
@@ -1396,6 +1402,7 @@ public partial class NodeCard : Control
                 Darkest();
             else
                 DarkenLight();
+            FreshAmount();
         }
     }
     public override void _ExitTree()
@@ -1432,12 +1439,12 @@ public partial class NodeCard : Control
     /// </summary>
     private void FreshAmount()
     {
-        var amountNode = GetNodeOrNull<Control>("%卡牌数量");
+        var amountRoot = GetNodeOrNull<CanvasItem>("%卡牌数容器");
         var amountLabel = GetNodeOrNull<Label>("%数量");
 
         if (CardViewMode == CardView.Battle || Model == null)
         {
-            if (amountNode != null) amountNode.Visible = false;
+            if (amountRoot != null) amountRoot.Visible = false;
             SetGray(false);
             return;
         }
@@ -1455,8 +1462,8 @@ public partial class NodeCard : Control
 
         if (amountLabel != null)
             amountLabel.Text = $"x{amount}";
-        if (amountNode != null)
-            amountNode.Visible = amount > 0;
+        if (amountRoot != null)
+            amountRoot.Visible = amount > 0;
 
         SetGray(amount == 0 || ForceShowAmount);
     }
@@ -1513,23 +1520,38 @@ public partial class NodeCard : Control
 
     private void SetGray(bool on)
     {
-        EnsureGrayMaterials();
+        if (on)
+            EnsureGrayMaterials();
 
-        SetSaturationFor("%卡框", on ? FrameGraySaturation : 1.0f);
+        SetMaterial("%卡框", on, FrameGraySaturation);
 
         foreach (var path in GrayNodePaths)
-            SetSaturationFor(path, on ? NormalGraySaturation : 1.0f);
+            SetMaterial(path, on, NormalGraySaturation);
 
         SetCardFaceGray(on);
     }
 
-    private void SetSaturationFor(string path, float saturation)
+    private void SetMaterial(string path, bool on, float graySaturation)
     {
         var node = GetNodeOrNull<CanvasItem>(path);
         if (node == null) return;
 
+        if (!on)
+        {
+            node.Material = null;
+            return;
+        }
+
         if (_grayMaterials.TryGetValue(node, out var sm) && IsInstanceValid(sm))
-            sm.SetShaderParameter("saturation", saturation);
+        {
+            sm.SetShaderParameter("saturation", graySaturation);
+            return;
+        }
+
+        sm = new ShaderMaterial { Shader = DesaturateShader };
+        sm.SetShaderParameter("saturation", graySaturation);
+        node.Material = sm;
+        _grayMaterials[node] = sm;
     }
 
     private void SetCardFaceGray(bool on)
@@ -1540,14 +1562,22 @@ public partial class NodeCard : Control
         var tex = FindDeepestTextureRect(container);
         if (tex == null) return;
 
-        if (!_grayMaterials.TryGetValue(tex, out var sm) || !IsInstanceValid(sm))
+        if (!on)
         {
-            sm = new ShaderMaterial { Shader = DesaturateShader };
-            tex.Material = sm;
-            _grayMaterials[tex] = sm;
+            tex.Material = null;
+            return;
         }
 
-        sm.SetShaderParameter("saturation", on ? NormalGraySaturation : 1.0f);
+        if (_grayMaterials.TryGetValue(tex, out var sm) && IsInstanceValid(sm))
+        {
+            sm.SetShaderParameter("saturation", NormalGraySaturation);
+            return;
+        }
+
+        sm = new ShaderMaterial { Shader = DesaturateShader };
+        sm.SetShaderParameter("saturation", NormalGraySaturation);
+        tex.Material = sm;
+        _grayMaterials[tex] = sm;
     }
 
     private static TextureRect FindDeepestTextureRect(Node node)
