@@ -201,7 +201,7 @@ metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="横条2" type="Panel" parent="主板/Panel/滑动/条/卡牌2" unique_id=841799147]
-custom_minimum_size = Vector2(1641.482, 55)
+custom_minimum_size = Vector2(1090, 55)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_7k45c")

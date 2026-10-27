@@ -27,6 +27,29 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
             await CreateDeckCards();
         }
     }
+
+    private static List<Class> GetClassOrder(Camp camp)
+    {
+        return camp switch
+        {
+            Camp.Plant => [
+                Class.MegaGrow,
+                Class.Guardian,
+                Class.Kabloom,
+                Class.Smarty,
+                Class.Solar
+            ],
+            Camp.Zombie => [
+                Class.Sneaky,
+                Class.Hearty,
+                Class.Crazy,
+                Class.Brainy,
+                Class.Beastly,
+            ],
+            _ => []
+        };
+    }
+
     private async Task CreateDeckCards()
     {
         var ownedContainer = GetNodeOrNull<Control>("%卡牌");
@@ -46,15 +69,23 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
         var asset = PlayerManager.HostPlayer?.Asset;
         if (asset == null) return;
 
+        var camp = CurrentPack.Hero?.Camp ?? Camp.Plant;
+        var classOrder = GetClassOrder(camp);
+        var classRank = new Dictionary<Class, int>();
+        for (int i = 0; i < classOrder.Count; i++)
+            classRank[classOrder[i]] = i;
+
         var grouped = CurrentPack.Cards
             .Where(c => c != null && !string.IsNullOrEmpty(c.Title))
             .GroupBy(c => c.Title)
+            .Select(g => (template: g.First(), deckCount: g.Count()))
+            .OrderBy(x => classRank.TryGetValue(x.template.Class, out var rank) ? rank : int.MaxValue)
+            .ThenBy(x => x.template.Cost.Current)
+            .ThenBy(x => x.template.Title, StringComparer.Ordinal)
             .ToList();
 
-        foreach (var group in grouped)
+        foreach (var (template, deckCount) in grouped)
         {
-            var template = group.First();
-            int deckCount = group.Count();
             int playerHas = asset.GetAmount(template.Title);
 
             int showOwned = Math.Min(playerHas, deckCount);

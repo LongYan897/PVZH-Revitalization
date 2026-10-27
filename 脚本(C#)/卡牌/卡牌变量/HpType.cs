@@ -39,6 +39,10 @@ public abstract class HpType
     /// </summary>
     public abstract Buff Buff { get; }
     /// <summary>
+    /// 生命值类型的执行优先级，数值越大越先执行
+    /// </summary>
+    public virtual int Priority => Buff?.Priority ?? int.MinValue;
+    /// <summary>
     /// 附加到战斗卡牌时用于增加过滤条件
     /// 比如锦囊免疫等效果
     /// </summary>
@@ -64,6 +68,7 @@ public abstract class HpType
             .Where(t => t != null)
             .SelectMany(t => t.Flatten())
             .Distinct()
+            .OrderByDescending(t => t.Priority)
             .ToList();
 
         return flat.Count switch
@@ -141,17 +146,19 @@ public abstract class HpType
 /// </summary>
 public sealed class MergedHpType(IEnumerable<HpType> types) : HpType
 {
-    /// <summary>
-    /// 合并后统一使用的生命图标
-    /// </summary>
     public const string MergedIconSkelPath = "res://icons/hp_merged.tres";
 
-    private readonly List<HpType> _types = types?.Where(t => t != null).ToList() ?? new List<HpType>();
+    private readonly List<HpType> _types = types?
+        .Where(t => t != null)
+        .OrderByDescending(t => t.Priority)
+        .ToList() ?? new List<HpType>();
 
     /// <summary>包含的子生命值类型</summary>
     public IReadOnlyList<HpType> HpTypes => _types;
 
     public override bool IsMerged => true;
+
+    public override int Priority => _types.Count > 0 ? _types[0].Priority : int.MinValue;
 
     public override IReadOnlyList<HpType> Flatten()
         => _types.SelectMany(t => t.Flatten()).Distinct().ToList();
@@ -168,9 +175,4 @@ public sealed class MergedHpType(IEnumerable<HpType> types) : HpType
 
     public override bool ExtraFilter(CardModel card)
         => _types.All(t => t.ExtraFilter(card));
-}
-
-public static class MergedHpFactory
-{
-    public static MergedHpType Merge(this HpType hpType, params HpType[] types) => new([hpType, .. types]);
 }

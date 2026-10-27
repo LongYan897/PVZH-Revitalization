@@ -38,10 +38,16 @@ public partial class BattleSubMenuScene : SubMenuScene
     {
         instance.GetNode<Node2D>("%重新选卡").Visible = true;
         freshAwaiters = new(false);
-        await DeckCmd.HintFresh();
-        UnableFresh();
-        await DeckCmd.HintFreshEnd();
-        freshAwaiters = null;
+        try
+        {
+            await DeckCmd.HintFresh();
+            UnableFresh();
+            await DeckCmd.HintFreshEnd();
+        }
+        finally
+        {
+            freshAwaiters = null;
+        }
     }
     public static async Task Win(Player player)
     {

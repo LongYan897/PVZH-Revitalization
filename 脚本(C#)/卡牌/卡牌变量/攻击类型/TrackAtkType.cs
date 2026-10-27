@@ -25,26 +25,24 @@ public class TrackAtkType : AtkType
     [IconText("ffffff")]
     public const string Track = "res://素材(C#)/文本图片/Track.png";
     [URL]
-    public static string 追踪 => "攻击最左侧的僵尸。";
-    private static Task Target(Timing timing,CardModel card,params object[] objects)
+    public static string 追踪 => "攻击最左侧的僵尸。"; private static Task Target(Timing timing, CardModel card, params object[] objects)
     {
-        if (card is FighterCardModel fighter)
+        if (card is not FighterCardModel fighter) return Task.CompletedTask;
+        if (objects is not [AtkStack stack, ..]) return Task.CompletedTask;
+        if (stack.Attacker != fighter) return Task.CompletedTask;
+
+        if (timing == Timing.ModifyTarget)
         {
-            var atkStack = objects[0];
-            if (atkStack is AtkStack stack)
-            {
-                if (stack.Attacker == fighter)
-                {
-                    var target = CardCmd.GetFirstZombie();
-                    if (target == null) return Task.CompletedTask;
-                    if (!target.IsDie)
-                    {
-                        stack.Targeting(target.Attacking());
-                    }
-                }
-            }
+            stack.Pierce = false;
+            stack.TargetsRedirected = true;
+            var target = CardCmd.GetFirstZombie();
+            if (target == null || target.IsDie) return Task.CompletedTask;
+            if (target.Attacking() is not { } attacking) return Task.CompletedTask;
+            stack.ReplaceTarget(attacking);
         }
+
         return Task.CompletedTask;
     }
-    public override Buff Buff => new CustomBuff([Timing.ModifyTarget],Target);
+
+    public override Buff Buff => new CustomBuff([Timing.ModifyTarget], Target, -100) ;
 }

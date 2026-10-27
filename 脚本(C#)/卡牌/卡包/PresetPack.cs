@@ -69,7 +69,7 @@ public class PresetPack : CardPack
     /// <summary>
     /// 卡牌
     /// </summary>
-    protected readonly List<CardModel> cards = new();
+    protected readonly HashSet<CardModel> cards = new();
 
     private bool _filled;
 
@@ -87,7 +87,7 @@ public class PresetPack : CardPack
         get
         {
             EnsureFilled();
-            return cards;
+            return [..cards];
         }
     }
 

@@ -13,9 +13,11 @@ namespace Card.Cmd;
 /// <summary>
 /// 管理卡组的命令
 /// </summary>
+
 public static class DeckCmd
 {
-    private static readonly Dictionary<int, (CardModel cannioncial,NodeCard node,CardModel replacement)> freshedCards = new();
+    private static readonly Dictionary<int, (CardModel cannioncial, NodeCard node, CardModel replacement, bool refreshed)> freshedCards = new();
+
     public static async Task HintFresh()
     {
         CardCmd.PushStop();
@@ -23,61 +25,92 @@ public static class DeckCmd
         var player = PlayerManager.HostPlayer;
         if (PhraseManager.IsInBattle)
         {
-            if (player == null) return;
+            if (player?.Status == null) return;
             var initCards = player.Status.DrawCard(4);
             var prepareCards = player.Status.DrawCard(4);
             var loc = BattleSubMenuScene.GetFreshLocation();
 
-            var tasks = new List<Task<NodeCard>>();
-            for (int i = 1; i < initCards.Count + 1; i++)
+            var pending = new List<(int index, CardModel card, Task<NodeCard> task)>();
+            var count = Math.Min(initCards.Count, prepareCards.Count);
+            for (int i = 0; i < count; i++)
             {
-                var task = NodeCard.DrawACard(initCards[i - 1], loc[i], CardView.Battle);
-                tasks.Add(task);
+                if (!loc.TryGetValue(i + 1, out var position))
+                {
+                    player.Status.InputCard(initCards[i]);
+                    player.Status.InputCard(prepareCards[i]);
+                    continue;
+                }
+                pending.Add((i + 1, initCards[i], NodeCard.DrawACard(initCards[i], position, CardView.Battle)));
             }
 
-            var nodes = await Task.WhenAll(tasks);
-            for (int i = 1; i < initCards.Count + 1; i++)
+            for (int i = count; i < initCards.Count; i++)
+                player.Status.InputCard(initCards[i]);
+            for (int i = count; i < prepareCards.Count; i++)
+                player.Status.InputCard(prepareCards[i]);
+
+            var nodes = await Task.WhenAll(pending.Select(p => p.task));
+            for (int i = 0; i < nodes.Length; i++)
             {
-                nodes[i - 1].SetToBright();
-                freshedCards[i] = (initCards[i - 1], nodes[i - 1], prepareCards[i - 1]);
+                var node = nodes[i];
+                if (node == null) continue;
+                node.SetToBright();
+                freshedCards[pending[i].index] = (pending[i].card, node, prepareCards[pending[i].index - 1], false);
             }
         }
         await BattleSubMenuScene.GetFreshTask();
     }
+
     public static async Task FreshIndex(int index)
     {
-        if (freshedCards.Count == 0) return;
+        if (!freshedCards.ContainsKey(index)) return;
         var p = freshedCards[index];
+        if (p.refreshed) return;
+        if (p.node == null) return;
         await p.node.RedrawCard(p.replacement);
-        var player = PlayerManager.HostPlayer;
-        player.Status.HandAddCard(p.replacement);
-        player.Status.InputCard(p.cannioncial);
-        p.replacement = null;
-        freshedCards[index] = p;
+        freshedCards[index] = (p.cannioncial, p.node, p.replacement, true);
     }
+
     public static async Task HintFreshEnd()
     {
-        var player = PlayerManager.HostPlayer;
-        foreach (var p in freshedCards)
+        try
         {
-            if (p.Value.replacement == null)
+            var player = PlayerManager.HostPlayer;
+            if (player?.Status == null)
             {
-                player.Status.InputCard(p.Value.cannioncial);
+                freshedCards.Clear();
+                return;
             }
-            else
+
+            foreach (var entry in freshedCards)
             {
-                player.Status.InputCard(p.Value.replacement);
+                var (cannioncial, node, replacement, refreshed) = entry.Value;
+                if (cannioncial == null || replacement == null) continue;
+                if (refreshed)
+                {
+                    player.Status.HandAddCard(replacement);
+                    player.Status.InputCard(cannioncial);
+                }
+                else
+                {
+                    player.Status.HandAddCard(cannioncial);
+                    player.Status.InputCard(replacement);
+                }
             }
-            p.Value.node.BindOrigin();
+
+            var plantSide = player == PlayerManager.GetPlayer(Camp.Plant);
+            var player2 = plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant);
+            if (PhraseManager.IsInBattle)
+            {
+                if (player2?.Status != null)
+                    await player2.Status.PlayCardAndDraw(4);
+            }
+            PlayerBox.StuffCard();
         }
-        var plantSide = player == PlayerManager.GetPlayer(Camp.Plant);
-        var player2 = (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant));
-        if (PhraseManager.IsInBattle)
+        finally
         {
-            if (player2 == null) return;
-            await player2.Status.PlayCardAndDraw(4);
+            freshedCards.Clear();
+            CardCmd.PopStop();
         }
-        PlayerBox.StuffCard();
-        CardCmd.PopStop();
     }
 }
+

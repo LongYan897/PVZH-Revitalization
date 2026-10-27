@@ -247,7 +247,7 @@
   "GatlingPea.Camp": "植物",
   "GatlingPea.Type": "单位",
   "GatlingPea.Rarity": "传说",
-  "GatlingPea.Pack" : "高级",
+  "GatlingPea.Pack": "高级",
   "GatlingPea.Category": "猛长",
   "GatlingPea.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
   "GatlingPea.Icon": "res://场景(C#)/卡面/gatlingPea.tscn",
@@ -276,5 +276,23 @@
   "DiscoZombie.Atk": 3,
   "DiscoZombie.AtkType": "普通",
   "DiscoZombie.Flavor": "迪斯科不死！",
-  "DiscoZombie.Id": 15
+  "DiscoZombie.Id": 15,
+
+  "ThreePeater.Title": "三重射手",
+  "ThreePeater.Des": "这株植物会攻击自己和相邻线上的僵尸。",
+  "ThreePeater.Cost": 5,
+  "ThreePeater.Camp": "植物",
+  "ThreePeater.Type": "单位",
+  "ThreePeater.Rarity": "基础",
+  "ThreePeater.Category": "聪明",
+  "ThreePeater.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
+  "ThreePeater.Icon": "res://场景(C#)/卡面/threePeater.tscn",
+  "ThreePeater.Label": [ "豌豆" ],
+  "ThreePeater.Tag": [],
+  "ThreePeater.Hp": 5,
+  "ThreePeater.HpType": "普通",
+  "ThreePeater.Atk": 1,
+  "ThreePeater.AtkType": "普通",
+  "ThreePeater.Flavor": "”我最喜欢的数字是5。“",
+  "ThreePeater.Id": 16
 }

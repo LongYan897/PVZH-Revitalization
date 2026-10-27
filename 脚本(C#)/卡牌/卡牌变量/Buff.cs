@@ -18,6 +18,10 @@ public abstract class Buff
     /// </summary>
     public bool OnlyPlaced { get; init; } = false;
     /// <summary>
+    /// 优先级
+    /// </summary>
+    public virtual int Priority { get; } = 1;
+    /// <summary>
     /// 关心的时点
     /// </summary>
     public abstract Timing[] Timings { get; }
@@ -37,12 +41,15 @@ public class CustomBuff : Buff
 {
     private readonly Timing[] _timings;
     private readonly Func<Timing, CardModel, object[], Task> _callback;
-
-    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback)
+    private readonly int _priority;
+    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback,int priority = 1)
     {
         _timings = timings ?? Array.Empty<Timing>();
         _callback = callback;
+        _priority = priority;
     }
+
+    public override int Priority => _priority;
 
     public override Timing[] Timings => _timings;
 

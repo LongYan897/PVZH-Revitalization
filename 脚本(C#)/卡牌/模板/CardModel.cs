@@ -575,22 +575,18 @@ public class CardModel
     /// </summary>
     public async Task FireTiming(Timing timing, params object[] parameters)
     {
-        foreach (var buff in BuffList.ToList())
+        var fired = new List<Buff>();
+
+        foreach (var buff in BuffList)
         {
             if (this is FighterCardModel fighterCard && !fighterCard.IsPlaced && buff.OnlyPlaced) continue;
-            if (buff.Timings.Contains(timing))
-                await buff.OnTiming(timing, this, parameters);
+            if (!buff.Timings.Contains(timing)) continue;
+            fired.Add(buff);
         }
-        if (this is FighterCardModel fighter && fighter.IsPlaced)
+
+        foreach (var buff in fired.OrderByDescending(b => b.Priority))
         {
-            if (fighter.HpType.Current.Buff != null)
-            {
-                await fighter.HpType.Current.Buff.OnTiming(timing, this, parameters);
-            }
-            if (fighter.AtkType.Current.Buff != null)
-            {
-                await fighter.AtkType.Current.Buff.OnTiming(timing, this, parameters);
-            }
+            await buff.OnTiming(timing, this, parameters);
         }
     }
 

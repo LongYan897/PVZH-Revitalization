@@ -801,16 +801,35 @@ public partial class NodeCard : Control
         TargetRegistry.DeleteTargeted(Model.TargetType);
         ClearTarget(true);
         if (savedTarget == null)
+        {
             ReturnToOrigin();
+        }
         else
         {
-            PlayerManager.GetPlayer(Model.Camp).Status.HandRemoveCard(Model);
+            var playedModel = Model;
+            if (playedModel != null)
+                PlayerManager.GetPlayer(playedModel.Camp)?.Status?.HandRemoveCard(playedModel);
+            Model = null;
+            Visible = false;
             PlayerBox.StuffCard();
             await DiscallDragging();
-            Visible = false;
-            GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
-            await CardCmd.PlayedCard(Model, savedTarget);
-            await Model.DestroyMe();
+            if (GodotObject.IsInstanceValid(this) && HasNode("碰撞"))
+                GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+            try
+            {
+                if (playedModel != null)
+                {
+                    await CardCmd.PlayedCard(playedModel, savedTarget);
+                    await playedModel.DestroyMe();
+                }
+            }
+            finally
+            {
+                instances.Remove(this);
+                _isOpen = false;
+                if (GodotObject.IsInstanceValid(this))
+                    QueueFree();
+            }
         }
     }
 
@@ -841,7 +860,6 @@ public partial class NodeCard : Control
         if (CardViewMode != CardView.Battle) return;
         if (Model == null)
         {
-            Log.Error("NullCard");
             return;
         }
         if (!Model.CanPlay()) return;

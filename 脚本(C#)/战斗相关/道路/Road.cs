@@ -1,6 +1,8 @@
 using Battle.Entity;
 using Card;
 using Card.Cmd;
+using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,17 +71,12 @@ public class Road
         if (bol)
         {
             await CardCmd.TimingOnCards(null, Timing.BeforeLaneStart, this);
-
-            foreach (var fighter in fighters.ToList())
-            {
-                await fighter.BeforeAtk(new AtkStack(null, [], this, 0));
-            }
             stks = new List<AtkStack>();
             await CardCmd.TimingOnCards(null, Timing.AfterLaneStart, this);
             var zombie = fighters.FirstOrDefault(f => f.Zombie);
             if (zombie != null)
             {
-                var stk = new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current);
+                var stk = new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current,true);
                 await zombie.Model.Battle(stk);
                 stks.Add(stk);
             }
@@ -89,24 +86,20 @@ public class Road
             var cannonical = 0;
             if (plantf != null)
             {
-                var stk = new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current);
+                var stk = new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current, true);
                 cannonical = plantf.Model.Atk.Current;
                 await plantf?.Model?.Battle(stk);
                 stks.Add(stk);
             }
             if (plant != null)
             {
-                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current) { IgnoreShield = bothppf && plantf != null && cannonical > 0 };
+                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current, true) { IgnoreShield = bothppf && plantf != null && cannonical > 0 };
                 await plant?.Model?.Battle(stk);
                 stks.Add(stk);
             }
         }
         else
         {
-            foreach (var fighter in fighters.ToList())
-            {
-                await fighter.BeforeAtk(new AtkStack(null, [], this, 0));
-            }
             var zombie = fighters.FirstOrDefault(f => f.Zombie);
             if (zombie != null)
             {
@@ -143,11 +136,6 @@ public class Road
 
                 }
             }
-        }
-
-        foreach (var fighter in fighters.ToList())
-        {
-            await fighter.AfterAtk(new AtkStack(null, [], this, 0));
         }
 
         await ResolveDeaths(stks);

@@ -17,7 +17,7 @@ namespace Card.Cmd;
 /// </summary>
 public static class CardCmd
 {
-    private static List<CardModel> CardInstances = new List<CardModel>();
+    private static HashSet<CardModel> CardInstances = new();
 
     private static int _stopCount;
     /// <summary>
@@ -91,6 +91,24 @@ public static class CardCmd
     }
 
     /// <summary>
+    /// 获取相邻线
+    /// </summary>
+    /// <param name="road">所处的线</param>
+    /// <returns></returns>
+    public static IEnumerable<Road> GetBehindRoad(Road road)
+    {
+        var Index = road.Index;
+        if (Index == 1)
+            return [PhraseManager.GetRoad(Index + 1)];
+        else if (Index == 5)
+            return [PhraseManager.GetRoad(Index - 1)];
+        else if (Index > 1 && Index < 5)
+            return [PhraseManager.GetRoad(Index + 1),PhraseManager.GetRoad(Index-1)];
+        else
+            return null;
+    }
+
+    /// <summary>
     /// 打出卡牌后执行所有卡牌打出卡牌的逻辑
     /// </summary>
     /// <param name="cardModel">打出的卡牌</param>
@@ -149,7 +167,7 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
     {
-        foreach (var card in CardInstances.ToList())
+        foreach (var card in CardInstances.Where(c=> PlayerManager.GetPlayer(c.Camp).Status.HandCards.Contains(c)).ToList())
         {
             if (card != cardModel)
                 await card.FireTiming(timing, paramters);

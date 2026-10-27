@@ -1,5 +1,6 @@
 using Battle;
 using Card.Cmd;
+using Logger;
 using Pack;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ public class DoubleAtkType : AtkType
                 var atkStack = objects[0];
                 if (atkStack is AtkStack stack)
                 {
+                    if (!stack.RoadBattle) return Task.CompletedTask;
                     if (stack.Attacker == fighter)
                     {
                         stack.ExtraAttacks++;
@@ -50,5 +52,5 @@ public class DoubleAtkType : AtkType
 
         return Task.CompletedTask;
     }
-    public override Buff Buff => new CustomBuff([Timing.AfterAttack,Timing.AfterLaneStart], Target);
+    public override Buff Buff => new CustomBuff([Timing.AfterAttack,Timing.BeforeLaneStart], Target);
 }

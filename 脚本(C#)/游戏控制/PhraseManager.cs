@@ -302,11 +302,11 @@ public static class PhraseManager
     }
     public static async Task StartBattle()
     {
-        _turn = 0;
+        _turn = 1;
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
         Phrase = Phrase.Zombie;
         await Task.WhenAll(
-        PlayerManager.HostPlayer.Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null),
+        PlayerManager.HostPlayer.Status.Hero.Cost.Gain(_turn + 99, Variable.VariableReason.Self, null),
         (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant)).Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null)
         );
 

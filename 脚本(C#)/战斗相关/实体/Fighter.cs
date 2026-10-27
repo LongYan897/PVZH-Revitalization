@@ -356,10 +356,12 @@ public partial class Fighter : Control, ITarget, IAttackable
     /// <summary>
     /// 播放攻击动画（表现层）
     /// </summary>
-    /// <param name="target">目标</param>
+    /// <param name="shots">子弹路径表：目标 → 若干条路径</param>
     /// <param name="isInstantAmmo">是否是立刻到达目标的子弹</param>
-    public async Task Battle(List<IAttackable> target, bool isInstantAmmo)
+    public async Task Battle(IReadOnlyDictionary<IAttackable, List<AtkStack.ShotCurve>> shots, bool isInstantAmmo)
     {
+        if (shots == null || shots.Count == 0) return;
+
         _busy = true;
         var spine = GetNode<SpineHandler>("%动画");
         spine.ZIndex += 999;
@@ -372,7 +374,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         var eventWait = spine.WaitForAnimEvent("attack");
 
         Task animTask;
-        if (key.Any(k =>spine.HasAnimation(k)))
+        if (key.Any(k => spine.HasAnimation(k)))
             animTask = PlayAnimation(key, true);
         else
             animTask = PlayAnimation("attack", true);
@@ -382,31 +384,49 @@ public partial class Fighter : Control, ITarget, IAttackable
         if (Model.AmmoPath != null)
         {
             float remaining = await eventWait;
-            Vector2 firePoint = spine.GetBoneWorldPos("FirePoint");
+            Vector2 defaultFirePoint = spine.GetBoneWorldPos("FirePoint");
 
-            foreach (var attackable in target)
+            foreach (var kv in shots)
             {
-                if (attackable is Fighter fighter)
-                {
-                    Vector2 targetPos = fighter.GlobalPosition;
+                var hit = kv.Key;
+                var curves = kv.Value;
+                if (hit == null) continue;
 
-                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
-                        ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
-                    else if (spine.HasAnimation("attackEffect"))
-                        AnimaActor.PlayInstantAnimationAmmo(Model.AnimationPath, targetPos, "attackEffect");
-                    else
-                        AnimaActor.PlayInstantAnimationAmmo(Model.AmmoPath, targetPos, "");
+                bool hasValidCurve = false;
+
+                if (curves != null)
+                {
+                    foreach (var sc in curves)
+                    {
+                        if (sc?.Curve == null || sc.Curve.PointCount == 0) continue;
+                        hasValidCurve = true;
+
+                        Vector2 firePoint = GetFirePoint(spine, sc.FirePointBone, defaultFirePoint);
+                        var full = new Curve2D();
+                        full.AddPoint(firePoint);
+                        for (int i = 0; i < sc.Curve.PointCount; i++)
+                            full.AddPoint(sc.Curve.GetPointPosition(i));
+
+                        if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                            ammoTasks.Add(CreateAmmonAlongCurve(texture, full, remaining));
+                    }
                 }
-                else if (attackable is HeroInstance hero)
+
+                if (!hasValidCurve)
                 {
-                    Vector2 targetPos = NodeRoad.GetNode(Road).GetHeroLocation(PlayerManager.GetFromHero(hero.Hero));
+                    Vector2 endPos = hit switch
+                    {
+                        Fighter f => f.GlobalPosition,
+                        HeroInstance h => NodeRoad.GetNode(Road).GetHeroLocation(PlayerManager.GetFromHero(h.Hero)),
+                        _ => Vector2.Zero
+                    };
 
                     if (GD.Load(Model.AmmoPath) is Texture2D texture)
-                        ammoTasks.Add(CreateAmmon(texture, firePoint, targetPos, remaining));
+                        ammoTasks.Add(CreateAmmon(texture, defaultFirePoint, endPos, remaining));
                     else if (spine.HasAnimation("attackEffect"))
-                        AnimaActor.PlayInstantAnimationAmmo(Model.AnimationPath, targetPos, "attackEffect");
+                        AnimaActor.PlayInstantAnimationAmmo(Model.AnimationPath, endPos, "attackEffect");
                     else
-                        AnimaActor.PlayInstantAnimationAmmo(Model.AmmoPath, targetPos, "");
+                        AnimaActor.PlayInstantAnimationAmmo(Model.AmmoPath, endPos, "");
                 }
             }
         }
@@ -416,6 +436,53 @@ public partial class Fighter : Control, ITarget, IAttackable
         _busy = false;
         if (Visible && !IsHiding && Model != null)
             _ = PlayAnimation("idle", false);
+    }
+
+    /// <summary>
+    /// 获取指定名称的发射骨骼世界坐标，骨骼为空或不存在时回落到默认骨骼
+    /// </summary>
+    /// <param name="spine">动画节点</param>
+    /// <param name="bone">骨骼名</param>
+    /// <param name="fallback">默认坐标</param>
+    private static Vector2 GetFirePoint(SpineHandler spine, string bone, Vector2 fallback)
+    {
+        if (string.IsNullOrEmpty(bone)) return fallback;
+        try
+        {
+            var pos = spine.GetBoneWorldPos(bone);
+            if (pos != Vector2.Zero) return pos;
+        }
+        catch { }
+        return fallback;
+    }
+    public async Task CreateAmmonAlongCurve(Texture2D texture, Curve2D curve, float duration)
+    {
+        var textureR = new TextureRect
+        {
+            Texture = texture,
+            Visible = true
+        };
+        var size = textureR.Size;
+
+        var path = new Path2D { Curve = curve };
+        var follower = new PathFollow2D { Loop = false, Rotates = false };
+        path.AddChild(follower);
+        follower.AddChild(textureR);
+        textureR.Position = -size / 2;
+
+        if (Model != null && Model.ArrowAmmo)
+        {
+            textureR.PivotOffset = size / 2;
+            follower.Rotates = true;
+        }
+
+        Main.AmmoAnimator.AddChild(path);
+
+        Tween tween = CreateTween();
+        tween.TweenProperty(follower, "progress_ratio", 1f, duration);
+        await ToSignal(tween, Tween.SignalName.Finished);
+
+        path.QueueFree();
     }
 
     public async Task CreateAmmon(Texture2D texture, Vector2 from, Vector2 to, float duration)
@@ -443,16 +510,6 @@ public partial class Fighter : Control, ITarget, IAttackable
         await ToSignal(tween, Tween.SignalName.Finished);
 
         textureR.QueueFree();
-    }
-
-    public async Task BeforeAtk(AtkStack atkStack)
-    {
-        await Model.FireTiming(Timing.BeforeAttack, atkStack);
-    }
-
-    public async Task AfterAtk(AtkStack atkStack)
-    {
-        await Model.FireTiming(Timing.AfterAttack, atkStack);
     }
 
     private async Task GraveIn()

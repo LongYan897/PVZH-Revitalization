@@ -122,7 +122,7 @@ public abstract class HeroModel
         int shield = random.Next(1, 4);
         if (!isShieldGain) shield = 0;
         Variable<bool> stop = new("HeroDamaged", false);
-        stack ??= new(null, [Targeted()], null, amount);
+        stack ??= new(null, [Targeted()], null, amount,false);
         await CardCmd.TimingOnCards(null, Timing.TryStopHeroTakeDamage, stop, this);
         PlayAnimation("hit", true);
         if (amount > Health.Current)

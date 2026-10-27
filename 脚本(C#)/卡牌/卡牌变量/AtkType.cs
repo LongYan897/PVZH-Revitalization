@@ -39,6 +39,10 @@ public abstract class AtkType
     /// 攻击类型赋予的效果
     /// </summary>
     public abstract Buff Buff { get; }
+    /// <summary>
+    /// 攻击类型的执行优先级，数值越大越先执行
+    /// </summary>
+    public virtual int Priority => Buff?.Priority ?? int.MinValue;
 
     public virtual bool IsMerged => false;
 
@@ -55,6 +59,7 @@ public abstract class AtkType
             .Where(t => t != null)
             .SelectMany(t => t.Flatten())
             .Distinct()
+            .OrderByDescending(t => t.Priority)
             .ToList();
 
         return flat.Count switch
@@ -131,17 +136,19 @@ public abstract class AtkType
 /// </summary>
 public sealed class MergedAtkType(IEnumerable<AtkType> types) : AtkType
 {
-    /// <summary>
-    /// 合并后统一使用的攻击力图标
-    /// </summary>
     public const string MergedIconSkelPath = "res://icons/atk_merged.tres";
 
-    private readonly List<AtkType> _types = types?.Where(t => t != null).ToList() ?? new List<AtkType>();
+    private readonly List<AtkType> _types = types?
+        .Where(t => t != null)
+        .OrderByDescending(t => t.Priority)
+        .ToList() ?? new List<AtkType>();
 
     /// <summary>包含的子攻击类型</summary>
     public IReadOnlyList<AtkType> AtkTypes => _types;
 
     public override bool IsMerged => true;
+
+    public override int Priority => _types.Count > 0 ? _types[0].Priority : int.MinValue;
 
     public override IReadOnlyList<AtkType> Flatten()
         => _types.SelectMany(t => t.Flatten()).Distinct().ToList();
