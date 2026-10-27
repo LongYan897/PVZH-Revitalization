@@ -846,7 +846,8 @@ public partial class CardDes : Control
             };
             var sprite = GetNode<SpineHandler>("%动画");
             sprite.LoadSkeletonData(Model.AnimationPath);
-            sprite.SetAnimation(0, "intro", false);
+            if (sprite.HasAnimation("intro"))
+                sprite.SetAnimation(0, "intro", false);
             if (!Model.CardType.HasFlag(CardType.Trick))
                 sprite.AddAnimation(0, "idle", true);
 

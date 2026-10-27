@@ -308,10 +308,24 @@
   "PodFather.Label": [ "豌豆" ],
   "PodFather.Tag": [],
   "PodFather.Hp": 2,
+  "PodFather.Pack": "高级",
   "PodFather.HpType": "普通",
   "PodFather.Atk": 2,
   "PodFather.AtkType": "普通",
   "PodFather.Flavor": "”维持豆子家族和和睦睦，可不容易啊。“",
-  "PodFather.Id": 17
+  "PodFather.Id": 17,
 
+  "Flourish.Title": "枝繁叶茂",
+  "Flourish.Des": "抽两张牌。",
+  "Flourish.Cost": 3,
+  "Flourish.Camp": "植物",
+  "Flourish.Type": "锦囊",
+  "Flourish.Rarity": "基础",
+  "Flourish.Category": "猛长",
+  "Flourish.Animation": "res://数据资源/植物动画/枝繁叶茂.tres",
+  "Flourish.Icon": "res://场景(C#)/卡面/flourish.tscn",
+  "Flourish.Label": [ "花朵" ],
+  "Flourish.Tag": [],
+  "Flourish.Flavor": "这就叫”急速增长“。",
+  "Flourish.Id": 18
 }

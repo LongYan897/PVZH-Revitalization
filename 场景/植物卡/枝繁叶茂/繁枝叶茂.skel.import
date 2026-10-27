@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://bmerajj1v3du"
+path="res://.godot/imported/繁枝叶茂.skel-0e3c635e18462fb854768d7c27151d68.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/枝繁叶茂/繁枝叶茂.skel"
+dest_files=["res://.godot/imported/繁枝叶茂.skel-0e3c635e18462fb854768d7c27151d68.spskel"]
+
+[params]
+

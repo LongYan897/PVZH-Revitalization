@@ -19,6 +19,7 @@ public class PodFather : FighterCardModel
             {
                 if (parameters[1] is FighterCardModel fighter1)
                 {
+                    if (fighter == fighter1) return;
                     if (fighter1.HasLabel("豌豆"))
                     {
                         await Task.WhenAll(
