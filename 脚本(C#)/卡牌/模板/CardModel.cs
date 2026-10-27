@@ -506,8 +506,7 @@ public class CardModel
     /// <summary>
     /// 子类重置卡牌数值的逻辑
     /// </summary>
-    protected virtual void ResetData()
-    { }
+    protected virtual Task ResetData() => Task.CompletedTask;
     /// <summary>
     /// 重置卡牌的数值
     /// </summary>
@@ -516,7 +515,7 @@ public class CardModel
         await Cost.Reset();
         await Labels.Reset();
         ExDescription = null;
-        ResetData();
+        await ResetData();
     }
     /// <summary>
     /// 修改这张卡牌时
@@ -525,7 +524,7 @@ public class CardModel
     /// <param name="valueAfter">修改之前的值</param>
     /// <param name="valueBefore">修改之后的值</param>
     /// <returns></returns>
-    public virtual Task Changed<T>(string key, T valueAfter, T valueBefore)
+    public virtual Task Changed<T>(string key, T valueAfter, T valueBefore,VariableReason reason)
     {
         return Task.CompletedTask;
     }

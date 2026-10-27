@@ -86,7 +86,7 @@ public static class CardCmd
     public static async Task ChangedCard<T>(CardModel cardModel, string key, T before, T after, VariableReason variableReason)
     {
         cardModel.Fresh();
-        await cardModel.Changed<T>(key, after, before);
+        await cardModel.Changed(key, after, before,variableReason);
         await TimingOnCards(null, Timing.OnVariableChanged, key,  after, before, variableReason);
     }
 

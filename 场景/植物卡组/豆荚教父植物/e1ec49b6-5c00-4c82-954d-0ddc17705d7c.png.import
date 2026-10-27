@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bvwa1y6aww27t"
-path="res://.godot/imported/e1ec49b6-5c00-4c82-954d-0ddc17705d7c.png-395deae9b4d0db941e19b8f6f6be8a2b.ctex"
+path="res://.godot/imported/e1ec49b6-5c00-4c82-954d-0ddc17705d7c.png-604c59cb8026f91b0e2cf458264f4945.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://场景/植物卡组/豌豆教父植物/e1ec49b6-5c00-4c82-954d-0ddc17705d7c.png"
-dest_files=["res://.godot/imported/e1ec49b6-5c00-4c82-954d-0ddc17705d7c.png-395deae9b4d0db941e19b8f6f6be8a2b.ctex"]
+source_file="res://场景/植物卡组/豆荚教父植物/e1ec49b6-5c00-4c82-954d-0ddc17705d7c.png"
+dest_files=["res://.godot/imported/e1ec49b6-5c00-4c82-954d-0ddc17705d7c.png-604c59cb8026f91b0e2cf458264f4945.ctex"]
 
 [params]
 

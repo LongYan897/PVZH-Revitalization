@@ -51,7 +51,25 @@ public partial class NodeCard : Control
     /// 强制显示的卡牌数量。
     /// </summary>
     public int ForcedAmount { get; set; } = 0;
+    /// <summary>
+    /// 是否禁止卡牌被置灰。
+    /// 置为 true 会立即清除已应用的灰度；置回 false 会按当前数量重新判断。
+    /// </summary>
+    public bool PreventGray
+    {
+        get => _preventGray;
+        set
+        {
+            if (_preventGray == value) return;
+            _preventGray = value;
 
+            if (_preventGray)
+                SetGray(false);
+            else if (Model != null && CardViewMode != CardView.Battle)
+                FreshAmount();
+        }
+    }
+    private bool _preventGray;
     public static void Clear()
     {
         foreach (var inst in instances.ToList())

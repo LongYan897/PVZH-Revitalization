@@ -92,7 +92,7 @@ public partial class CardDeck : Control
         GetNode<SubMenu>("%信息").Visible = preset is not DIYPack;
         GetNode<SubMenu>("%编辑").Function(preset is DIYPack);
         GetNode<SubMenu>("%信息").Function(preset is not DIYPack);
-
+        GetNode<Label>("%Label").Text = preset.PackName;
         RegisterInner("%操作按钮");
         RegisterInner("%信息");
         RegisterInner("%编辑");

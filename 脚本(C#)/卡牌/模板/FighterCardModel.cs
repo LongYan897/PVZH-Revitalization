@@ -146,6 +146,7 @@ public class FighterCardModel : CardModel
         if (IsPlaced)
         {
             await Fighter.GetNode(this).ReturnCard();
+            await Reset();
         }
     }
     protected sealed override CardModel LoadData(CardString cardString)
@@ -606,8 +607,9 @@ public class FighterCardModel : CardModel
     {
         await PlayFighterAnimationTask("intro");
     }
-    public sealed override Task Changed<T>(string key, T valueAfter, T valueBefore)
+    public sealed override Task Changed<T>(string key, T valueAfter, T valueBefore,VariableReason reason)
     {
+        if (reason.HasFlag(VariableReason.Reset)) return Task.CompletedTask;
         if (IsPlaced)
         {
             if (key == "Health" || key == "MaxHealth")
@@ -631,7 +633,7 @@ public class FighterCardModel : CardModel
                 }
             }
         }
-        return base.Changed(key, valueAfter, valueBefore);
+        return Task.CompletedTask;
     }
     public sealed override TargetType TargetType
     {
@@ -756,5 +758,11 @@ public class FighterCardModel : CardModel
         {
             await Fighter.GetNode(this).Die();
         }
+    }
+
+    protected override async Task ResetData()
+    {
+        await Hp.Reset();
+        await Atk.Reset();
     }
 }

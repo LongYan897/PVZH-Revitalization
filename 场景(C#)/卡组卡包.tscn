@@ -79,6 +79,7 @@ position = Vector2(5, 45)
 texture = ExtResource("2_ix31a")
 
 [node name="Label" type="Label" parent="背景/表层" unique_id=1843997838]
+unique_name_in_owner = true
 offset_left = -99.0
 offset_top = -27.0
 offset_right = 90.0

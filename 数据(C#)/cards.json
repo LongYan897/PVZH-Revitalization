@@ -294,5 +294,24 @@
   "ThreePeater.Atk": 1,
   "ThreePeater.AtkType": "普通",
   "ThreePeater.Flavor": "”我最喜欢的数字是5。“",
-  "ThreePeater.Id": 16
+  "ThreePeater.Id": 16,
+
+  "PodFather.Title": "豆荚教父",
+  "PodFather.Des": "当你_打出_$豌豆$时：那株$豌豆$获得=Strength={+2}/=Health={+2}。",
+  "PodFather.Cost": 3,
+  "PodFather.Camp": "植物",
+  "PodFather.Type": "单位",
+  "PodFather.Rarity": "稀有",
+  "PodFather.Category": "猛长",
+  "PodFather.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
+  "PodFather.Icon": "res://场景(C#)/卡面/podFather.tscn",
+  "PodFather.Label": [ "豌豆" ],
+  "PodFather.Tag": [],
+  "PodFather.Hp": 2,
+  "PodFather.HpType": "普通",
+  "PodFather.Atk": 2,
+  "PodFather.AtkType": "普通",
+  "PodFather.Flavor": "”维持豆子家族和和睦睦，可不容易啊。“",
+  "PodFather.Id": 17
+
 }
