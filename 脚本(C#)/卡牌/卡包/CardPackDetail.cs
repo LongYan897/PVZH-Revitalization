@@ -120,6 +120,7 @@ public partial class CardPackDetail : SubMenuScene
 				Vector2 cardSize = card.GetCombinedMinimumSize();
 				card.Position = -cardSize * 0.5f * (1f - fit);
 				card.AllowExpand = false;
+				card.PreventGray = true;
 			}
 		}
 	}
