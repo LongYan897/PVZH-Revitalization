@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://6yfr567eir7"]
+
+[ext_resource type="Texture2D" uid="uid://bmut8he5fnc8v" path="res://素材(C#)/卡包/PackOpening_BG.png" id="1_2gbyw"]
+[ext_resource type="Script" uid="uid://baps5p40jcbpv" path="res://脚本(C#)/卡牌/卡包/OpenCardControl.cs" id="1_j1k31"]
+[ext_resource type="PackedScene" uid="uid://cmdyidqweavdi" path="res://场景(C#)/卡包/3d卡包.tscn" id="3_pdgjl"]
+
+[node name="开包界面" type="Node2D" unique_id=926333971]
+script = ExtResource("1_j1k31")
+
+[node name="底版" type="Sprite2D" parent="." unique_id=1798261576]
+position = Vector2(427.80457, 669.12506)
+scale = Vector2(2.7842054, 2.7842052)
+texture = ExtResource("1_2gbyw")
+
+[node name="3D卡包" parent="." unique_id=1847822201 instance=ExtResource("3_pdgjl")]
+visible = false
+position = Vector2(422, 681)

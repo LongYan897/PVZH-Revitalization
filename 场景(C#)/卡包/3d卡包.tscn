@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://cmdyidqweavdi"]
+
+[ext_resource type="Shader" uid="uid://ktcg70ailu8t" path="res://着色器/卡包扭曲.gdshader" id="1_jjyx2"]
+[ext_resource type="Texture2D" uid="uid://c72cqmc515f2p" path="res://素材(C#)/卡包/卡包主体/set2_premium_pack.png" id="2_ev7dr"]
+[ext_resource type="Script" uid="uid://s5acp6nvei0d" path="res://脚本(C#)/卡牌/卡包/Card3D.cs" id="3_card3d"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pdgjl"]
+shader = ExtResource("1_jjyx2")
+shader_parameter/perspective = 0.22
+shader_parameter/y_squash = 0.34
+shader_parameter/bend = 16.0
+shader_parameter/tilt = 0.0
+shader_parameter/bottom_lock = 0.0
+shader_parameter/thickness = 24.0
+shader_parameter/bottom_shade = 0.25
+shader_parameter/wave_amp = 0.0
+shader_parameter/wave_freq = 2.0
+shader_parameter/wave_speed = 1.5
+
+[node name="CardOpening" type="Sprite2D" unique_id=1847822201]
+material = SubResource("ShaderMaterial_pdgjl")
+texture = ExtResource("2_ev7dr")
+script = ExtResource("3_card3d")

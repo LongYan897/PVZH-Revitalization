@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://hqbtlc5rqx57"]
+
+[ext_resource type="Script" uid="uid://b35oq3827v54p" path="res://场景(C#)/卡包/OpeningCardList.cs" id="1_cc15e"]
+[ext_resource type="Script" uid="uid://cjmmhbp1b5312" path="res://addons/StyleboxFancy/StyleBorder.gd" id="1_sj74l"]
+[ext_resource type="Script" uid="uid://bkl6g25jwb47h" path="res://addons/StyleboxFancy/StyleBoxFancy.gd" id="2_hsdfc"]
+[ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="4_b74bw"]
+[ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="5_11an8"]
+
+[sub_resource type="StyleBox" id="StyleBox_wvhbo"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("2_hsdfc")
+color = Color(0, 0.18666671, 0.32, 0.5529412)
+metadata/_custom_type_script = "uid://bkl6g25jwb47h"
+
+[sub_resource type="Resource" id="Resource_6scuq"]
+script = ExtResource("5_11an8")
+
+[sub_resource type="Resource" id="Resource_x8rc4"]
+script = ExtResource("5_11an8")
+
+[node name="卡包开出列表" type="Node2D" unique_id=545980619]
+script = ExtResource("1_cc15e")
+
+[node name="底版" type="Panel" parent="." unique_id=2121451272]
+offset_right = 720.0
+offset_bottom = 1280.0
+theme_override_styles/panel = SubResource("StyleBox_wvhbo")
+
+[node name="SmoothScrollContainer" type="ScrollContainer" parent="底版" unique_id=1869650847]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_b74bw")
+wheel_scroll_damper = SubResource("Resource_6scuq")
+dragging_scroll_damper = SubResource("Resource_x8rc4")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="HFlowContainer" type="HFlowContainer" parent="底版/SmoothScrollContainer" unique_id=826687488]
+layout_mode = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true

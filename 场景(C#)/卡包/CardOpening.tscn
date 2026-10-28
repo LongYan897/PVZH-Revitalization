@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://b4ml2lx1mru40"]
+
+[ext_resource type="Script" uid="uid://cjto4xm2xett2" path="res://脚本(C#)/卡牌/卡包/CardOpening.cs" id="1_u6lsr"]
+[ext_resource type="Texture2D" uid="uid://c72cqmc515f2p" path="res://素材(C#)/卡包/卡包主体/set2_premium_pack.png" id="2_vyrwl"]
+[ext_resource type="Texture2D" uid="uid://b3nu02rrw1jh6" path="res://素材(C#)/卡包/tear.png" id="3_d1oqa"]
+[ext_resource type="Texture2D" uid="uid://bgpmxo1beya67" path="res://素材(C#)/卡包/tearGlow.png" id="4_igb60"]
+[ext_resource type="Texture2D" uid="uid://dy1s4nje475d0" path="res://素材(C#)/卡包/packopening_openglow_Big.png" id="5_l5l5d"]
+
+[node name="卡包2D" type="Node2D" unique_id=1275130164]
+script = ExtResource("1_u6lsr")
+
+[node name="卡包" type="TextureRect" parent="." unique_id=705261256]
+offset_left = -153.0
+offset_top = -226.0
+offset_right = 151.0
+offset_bottom = 249.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("2_vyrwl")
+metadata/_edit_lock_ = true
+
+[node name="裂缝" type="Control" parent="卡包" unique_id=1678548135]
+anchors_preset = 0
+offset_right = 304.0
+offset_bottom = 475.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="裂缝本体" type="TextureRect" parent="卡包/裂缝" unique_id=234964924]
+layout_mode = 0
+offset_left = -10.999998
+offset_top = 208.0
+offset_right = 241.909
+offset_bottom = 281.27277
+scale = Vector2(1.2419355, 1.2419355)
+pivot_offset_ratio = Vector2(0, 0.5)
+texture = ExtResource("3_d1oqa")
+
+[node name="裂缝发光" type="TextureRect" parent="卡包/裂缝" unique_id=1690889293]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 20.0
+offset_top = 19.0
+offset_right = 272.90894
+offset_bottom = 448.0
+rotation = 4.712389
+scale = Vector2(0.95, -0.95)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("4_igb60")
+
+[node name="爆炸特效" type="Control" parent="卡包" unique_id=570925612]
+anchors_preset = 0
+offset_right = 304.0
+offset_bottom = 475.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="爆炸特效" type="TextureRect" parent="卡包/爆炸特效" unique_id=994745429]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 288.0
+offset_bottom = 405.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("5_l5l5d")
