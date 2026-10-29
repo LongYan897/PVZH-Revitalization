@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://boou7atah0s5n"
+path="res://.godot/imported/罕见.skel-d1e630a6543c528ef6d65cf50a79fc74.spskel"
+
+[deps]
+
+source_file="res://素材(C#)/卡包/开卡特效/罕见/罕见.skel"
+dest_files=["res://.godot/imported/罕见.skel-d1e630a6543c528ef6d65cf50a79fc74.spskel"]
+
+[params]
+

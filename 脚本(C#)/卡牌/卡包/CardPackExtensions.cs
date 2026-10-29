@@ -49,8 +49,7 @@ public partial class CardPackExtensions
 			if (!i.ContainsKey("UltimateRate")) throw new FormatException("文件没有UltimateRate");
 
 			int remainCount = 0;
-			int maxCount = i["MaxCount"]?.GetValue<int>()
-						   ?? throw new FormatException("MaxCount 缺失或不是整数");
+			int maxCount = JsonInt(i["MaxCount"]);
 			bool hasMax = maxCount != 0;
 			if (i["Cards"] is JsonArray cards && hasMax)
 			{
@@ -68,8 +67,8 @@ public partial class CardPackExtensions
 		for (int index = 0; index < packs.Count; index++)
 		{
 			var cardName = packRemains[index].Name;
-			double baseRate = packs[index]["BaseRate"].GetValue<double>();
-			double utRate = packs[index]["UltimateRate"].GetValue<double>();
+			double baseRate = JsonDouble(packs[index]["BaseRate"]);
+			double utRate = JsonDouble(packs[index]["UltimateRate"]);
 			BasePackRates.Add((cardName,
 				packRemains[index].Count == 0
 				? 0
@@ -128,7 +127,7 @@ public partial class CardPackExtensions
 			List<(int Index, int Count)> cardsCount = new();
 			//初始化列表
 			int index = -1;
-			var maxCount = group["MaxCount"].GetValue<int>();
+			var maxCount = JsonInt(group["MaxCount"]);
 			foreach (var card in group["Cards"] as JsonArray)
 			{
 				index++;
@@ -239,5 +238,27 @@ public partial class CardPackExtensions
 			reallist[index] = (i.Rate * (1 - player.Lucky.Current) + i.UtRate * player.Lucky.Current);
 		}
 		return reallist;
+	}
+
+	/// <summary>
+	/// 读数字字段：兼容 JSON 里写成数字或字符串（比如 UltimateRate 被写成 "0" 或 "0.70"）。
+	/// 直接 GetValue&lt;double&gt;() 时，只要数据里是字符串就会抛
+	/// "An element of type 'String' cannot be converted to a 'System.Double'"。
+	/// </summary>
+	private static double JsonDouble(JsonNode node)
+	{
+		if (node is not JsonValue value) return 0;
+		if (value.TryGetValue<double>(out var d)) return d;
+		return double.TryParse(value.ToString(), System.Globalization.NumberStyles.Float,
+			System.Globalization.CultureInfo.InvariantCulture, out var parsed) ? parsed : 0;
+	}
+
+	/// <summary>读整数字段，同样兼容字符串写法</summary>
+	private static int JsonInt(JsonNode node)
+	{
+		if (node is not JsonValue value) return 0;
+		if (value.TryGetValue<int>(out var i)) return i;
+		return double.TryParse(value.ToString(), System.Globalization.NumberStyles.Float,
+			System.Globalization.CultureInfo.InvariantCulture, out var parsed) ? (int)parsed : 0;
 	}
 }

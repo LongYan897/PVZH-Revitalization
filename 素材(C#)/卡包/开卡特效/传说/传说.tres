@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://d2a302gitrovg"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://4trmtm7ek0or" path="res://素材(C#)/卡包/开卡特效/传说/传说.atlas" id="1_aopdb"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://diqlyj1i1ctyd" path="res://素材(C#)/卡包/开卡特效/传说/传说.skel" id="2_up16y"]
+
+[resource]
+atlas_res = ExtResource("1_aopdb")
+skeleton_file_res = ExtResource("2_up16y")

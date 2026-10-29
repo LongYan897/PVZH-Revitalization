@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://4trmtm7ek0or"
+path="res://.godot/imported/传说.atlas-4ca790fa42fe7d11a6d4e94b842b9abc.spatlas"
+
+[deps]
+
+source_file="res://素材(C#)/卡包/开卡特效/传说/传说.atlas"
+dest_files=["res://.godot/imported/传说.atlas-4ca790fa42fe7d11a6d4e94b842b9abc.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

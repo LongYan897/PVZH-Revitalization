@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://diqlyj1i1ctyd"
+path="res://.godot/imported/传说.skel-8886d3d794200d027892177f7f0a5f2c.spskel"
+
+[deps]
+
+source_file="res://素材(C#)/卡包/开卡特效/传说/传说.skel"
+dest_files=["res://.godot/imported/传说.skel-8886d3d794200d027892177f7f0a5f2c.spskel"]
+
+[params]
+

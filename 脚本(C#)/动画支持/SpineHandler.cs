@@ -55,17 +55,53 @@ public partial class SpineHandler : Node2D
 	/// </summary>
 	public void LoadSkeletonData(string tresPath)
 	{
-		if (SpineSprite == null)
-		{
-			return;
-		}
-		Resource data = ResourceLoader.Load(tresPath);
-		if (data == null)
+		LoadSkeletonData(GetSkeletonData(tresPath));
+	}
+
+	/// <summary>加载已经读好的 skeleton data（配合 <see cref="GetSkeletonData"/> 使用，避免重复读盘）</summary>
+	public void LoadSkeletonData(Resource data)
+	{
+		if (SpineSprite == null || data == null)
 		{
 			return;
 		}
 		SpineSprite.Set("skeleton_data_res", data);
 		SetTimeScale();
+	}
+
+	private static readonly System.Collections.Generic.Dictionary<string, Resource> SkeletonDataCache = new();
+
+	/// <summary>
+	/// 读取并缓存 skeleton data（.tres）。<br/>
+	/// 同一个特效每次开包都重复 ResourceLoader.Load 会同步读盘，容易造成"顿一下"，
+	/// 走这个缓存后同一条特效资源只读一次。
+	/// </summary>
+	public static Resource GetSkeletonData(string tresPath)
+	{
+		if (string.IsNullOrWhiteSpace(tresPath)) return null;
+		if (SkeletonDataCache.TryGetValue(tresPath, out var cached) && GodotObject.IsInstanceValid(cached))
+			return cached;
+
+		Resource data = ResourceLoader.Load(tresPath);
+		if (data != null) SkeletonDataCache[tresPath] = data;
+		return data;
+	}
+
+	/// <summary>
+	/// 等待当前轨道的动画播放结束（不重新设置动画，用于"已经 SetAnimation 过、只想等它播完"的场景）。
+	/// </summary>
+	public async Task WaitAnimationCompleteTask()
+	{
+		if (SpineSprite == null) return;
+
+		var tcs = new TaskCompletionSource<bool>();
+		Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
+			(sprite, state, entry) => tcs.TrySetResult(true));
+
+		SpineSprite.Connect("animation_completed", callable,
+			(uint)GodotObject.ConnectFlags.OneShot);
+
+		await tcs.Task;
 	}
 
 	public void SetTimeScale(float timeScale = 1.25f)

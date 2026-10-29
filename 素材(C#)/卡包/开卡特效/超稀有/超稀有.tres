@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://5iqy7cam5ruc"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://bgwvh8wfg0o48" path="res://素材(C#)/卡包/开卡特效/超稀有/超稀有.atlas" id="1_4eony"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://qpj3bili1fgp" path="res://素材(C#)/卡包/开卡特效/超稀有/超稀有.skel" id="2_v2rnk"]
+
+[resource]
+atlas_res = ExtResource("1_4eony")
+skeleton_file_res = ExtResource("2_v2rnk")

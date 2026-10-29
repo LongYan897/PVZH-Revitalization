@@ -43,7 +43,9 @@ public enum CardView
 public partial class NodeCard : Control
 {
     /// <summary>
-    /// 是否强制显示卡牌数量。
+    /// 是否强制显示卡牌数量。<br/>
+    /// 注意：这是普通属性，赋值不会自动刷新界面，需要调用 <see cref="RefreshAmount"/>，
+    /// 或者在 <see cref="NodeCard.DisplayCardAt"/> 之前设置好。
     /// </summary>
     public bool ForceShowAmount { get; set; } = false;
 
@@ -51,6 +53,23 @@ public partial class NodeCard : Control
     /// 强制显示的卡牌数量。
     /// </summary>
     public int ForcedAmount { get; set; } = 0;
+
+    /// <summary>
+    /// 强制显示数量并立即刷新界面（推荐用这个，而不是直接改上面两个属性）。
+    /// </summary>
+    public void SetAmount(int amount)
+    {
+        ForcedAmount = amount;
+        ForceShowAmount = true;
+        RefreshAmount();
+    }
+
+    /// <summary>立即按当前 ForceShowAmount / ForcedAmount 刷新数量显示</summary>
+    public void RefreshAmount()
+    {
+        if (!IsInsideTree()) return;
+        FreshAmount();
+    }
     /// <summary>
     /// 是否禁止卡牌被置灰。
     /// 置为 true 会立即清除已应用的灰度；置回 false 会按当前数量重新判断。
@@ -1501,7 +1520,8 @@ public partial class NodeCard : Control
         if (amountRoot != null)
             amountRoot.Visible = amount > 0;
 
-        SetGray(amount == 0 || ForceShowAmount);
+        // PreventGray = true 时不要置灰（例如开包结果里"强制显示数量"的卡牌仍要保持彩色）
+        SetGray(!_preventGray && (amount == 0 || ForceShowAmount));
     }
     private static readonly string[] GrayNodePaths =
     [

@@ -34,6 +34,9 @@ public partial class Main : Node
 	public static Node SceneContainer { get; private set; }
 	public static Node SubSceneContainer { get; private set; }
 	public static Loading Load { get; private set; }
+	public static Player Player1 { get;private set; }
+	public static Player Player2 { get;private set; }
+	public static PlayerAsset Asset { get;private set; }
 	public override async void _Ready()
 	{
 		//初始化各各组件
@@ -64,12 +67,12 @@ public partial class Main : Node
 		WavPlayer.SetBgMusic<MainMenuWav>();
 		TextureBag.SetCurrent<DiscoBag>();
 		//
-		var p1 = new Player("MME");
-		var p2 = new AiPlayer("Ai");
-		p2.PrefABox<SuperZombie>(PresetPack.Load<AllDancer>());
-		p1.PrefABox<Penelopea>(PresetPack.Load<AllPea>());
-		PlayerManager.Hosting(p1);
-		PlayerManager.FillPlayer(PlayerManager.HostPlayer, p2);
+		Player1 = new Player("MME");
+		Player2 = new AiPlayer("Ai");
+        Player2.PrefABox<SuperZombie>(PresetPack.Load<AllDancer>());
+        Player1.PrefABox<Penelopea>(PresetPack.Load<AllPea>());
+		PlayerManager.Hosting(Player1);
+		PlayerManager.FillPlayer(PlayerManager.HostPlayer, Player2);
 	}
 
 	public void Clear()
