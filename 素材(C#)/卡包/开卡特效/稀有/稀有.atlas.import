@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dingge8jfj1we"
+path="res://.godot/imported/稀有.atlas-a49fc019ddef73af0ec0d76e103c656d.spatlas"
+
+[deps]
+
+source_file="res://素材(C#)/卡包/开卡特效/稀有/稀有.atlas"
+dest_files=["res://.godot/imported/稀有.atlas-a49fc019ddef73af0ec0d76e103c656d.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

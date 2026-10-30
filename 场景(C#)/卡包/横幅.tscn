@@ -18,6 +18,7 @@ metadata/_custom_type_script = "uid://bkl6g25jwb47h"
 
 [node name="横幅" type="Panel" unique_id=1137179811]
 custom_minimum_size = Vector2(720, 50)
+pivot_offset_ratio = Vector2(0, 0.5)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_abi3o")
 script = ExtResource("3_5iy0u")

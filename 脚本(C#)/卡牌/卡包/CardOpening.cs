@@ -69,7 +69,6 @@ public partial class CardOpening : Node2D
                 .SetEase(Tween.EaseType.InOut);
             _ = Blink();
             await CrackAndExplodeAn();
-            Finished?.Invoke();
 
         }
     }
@@ -95,6 +94,7 @@ public partial class CardOpening : Node2D
                 .SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.InOut);
         await this.Wait(1f);
+        Finished?.Invoke();
         Tween tween1 = CreateTween();
         tween1.TweenProperty(CardNode, "scale", new Vector2(1.5f, 1.5f), 0.5f)
                 .SetTrans(Tween.TransitionType.Quad)

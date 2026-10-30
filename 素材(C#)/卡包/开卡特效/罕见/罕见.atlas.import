@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://debbutfisawl1"
+path="res://.godot/imported/罕见.atlas-4450fc929ad5390533756c5180eba02e.spatlas"
+
+[deps]
+
+source_file="res://素材(C#)/卡包/开卡特效/罕见/罕见.atlas"
+dest_files=["res://.godot/imported/罕见.atlas-4450fc929ad5390533756c5180eba02e.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

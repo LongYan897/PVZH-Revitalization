@@ -28,7 +28,7 @@
 					"BackupDancer"
 				],
 				"MaxCount": 0,
-				"BaseRate": 0.70,
+				"BaseRate": 0.25,
 				"UltimateRate": 0
 			},
 			{
@@ -38,7 +38,7 @@
 				],
 				"MaxCount": 0,
 				"BaseRate": 0.25,
-				"UltimateRate": 0.5
+				"UltimateRate": 0
 			},
 			{
 				"Name": "超稀有",
@@ -46,7 +46,16 @@
 					"FinalMission"
 				],
 				"MaxCount": 0,
-				"BaseRate": 0.05,
+				"BaseRate": 0.25,
+				"UltimateRate": 0.5
+			},
+			{
+				"Name": "传说",
+				"Cards": [
+					"FinalMission"
+				],
+				"MaxCount": 0,
+				"BaseRate": 0.25,
 				"UltimateRate": 0.5
 			}
 		]

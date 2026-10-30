@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://hqbtlc5rqx57"]
 
-[ext_resource type="Script" uid="uid://b35oq3827v54p" path="res://场景(C#)/卡包/OpeningCardList.cs" id="1_cc15e"]
+[ext_resource type="Script" uid="uid://b35oq3827v54p" path="res://脚本(C#)/卡牌/卡包/OpeningCardList.cs" id="1_cc15e"]
 [ext_resource type="Script" uid="uid://cjmmhbp1b5312" path="res://addons/StyleboxFancy/StyleBorder.gd" id="1_sj74l"]
 [ext_resource type="Script" uid="uid://bkl6g25jwb47h" path="res://addons/StyleboxFancy/StyleBoxFancy.gd" id="2_hsdfc"]
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="4_b74bw"]
@@ -33,11 +33,14 @@ theme_override_styles/panel = SubResource("StyleBox_wvhbo")
 
 [node name="SmoothScrollContainer" type="ScrollContainer" parent="底版" unique_id=1869650847]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_top = 96.0
+offset_right = 720.0
+offset_bottom = 1280.0
 script = ExtResource("4_b74bw")
 wheel_scroll_damper = SubResource("Resource_6scuq")
 dragging_scroll_damper = SubResource("Resource_x8rc4")
+allow_horizontal_scroll = false
+auto_allow_scroll = false
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="HFlowContainer" type="HFlowContainer" parent="底版/SmoothScrollContainer" unique_id=826687488]
