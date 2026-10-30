@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using Play;
 
 namespace Card;
 
@@ -234,11 +235,13 @@ public partial class OpenCardControl : Node2D
 		// 必须调 SetAmount（内部会 ForceShowAmount=true + ForcedAmount=count + 立即刷新）
 		card.SetAmount(count);
 
-		// 弹出动画：必须先把初始 scale 设成 0，再 tween 到 1。
-		// （原来没设初始值，从 (1,1) tween 到 (1,1) = 什么都不动，所以"没有动画"）
-		cell1.Scale = Vector2.Zero;
+		// 弹出动画：只缩放"卡牌自己"，不要动 cell1。
+		// cell1 里还挂着开卡特效（SpineHandler 子节点），缩放 cell1 会把特效一起缩一下
+		// （表现就是"加载卡牌的时候特效突然小一下"）。
+		// 卡牌初始 scale 是 fit，所以从 0 补间到 fit。
+		card.Scale = Vector2.Zero;
 		var tween = CreateTween();
-		tween.TweenProperty(cell1, "scale", Vector2.One, 0.5f)
+		tween.TweenProperty(card, "scale", Vector2.One * fit, 0.5f)
 			.SetTrans(Tween.TransitionType.Back)
 			.SetEase(Tween.EaseType.Out);
 		await ToSignal(tween, Tween.SignalName.Finished);
@@ -296,17 +299,24 @@ public partial class OpenCardControl : Node2D
 
 		effect.Scale = Vector2.One * 1.25f;
 		effect.LoadSkeletonData(SpineHandler.GetSkeletonData(path));
-		effect.Position = new Vector2(75, 50);
+		effect.Position = new Vector2(75, 45);
 
 		effect.ClearTracks();
-		effect.SetAnimation(10, "intro", false);
+		var animationCompleteTask = effect.WaitAnimationCompleteTask();
+		var finishedTask = effect.SetAnimationAndWaitEvent(10, "intro", "finished", false);
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		effect.Modulate = Colors.White;
 
-		await effect.WaitAnimationCompleteTask();
-		if (GodotObject.IsInstanceValid(effect))
-			effect.QueueFree();
+		await finishedTask;
+
+		Func<Task> freeAfterAnimation = async () =>
+		{
+			await animationCompleteTask;
+			if (GodotObject.IsInstanceValid(effect))
+				effect.QueueFree();
+		};
+		_ = freeAfterAnimation();
 	}
 
 	/// <summary>
@@ -315,6 +325,6 @@ public partial class OpenCardControl : Node2D
 	public List<(string Card, int Count)> CalculateCards()
 	{
 		CardPackExtensions c1 = new();
-		return c1.DrawCard(PackName, CardCounts, Main.Asset);
+		return c1.DrawCard(PackName, CardCounts,PlayerManager.HostPlayer.Asset);
 	}
 }

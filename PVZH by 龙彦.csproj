@@ -9,6 +9,14 @@
 		<None Include="**\*.png;**\*.jpg;**\*.json" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Remove=".godot\**" />
+	  <Compile Remove=".vs\**" />
+	  <EmbeddedResource Remove=".godot\**" />
+	  <EmbeddedResource Remove=".vs\**" />
+	  <None Remove=".godot\**" />
+	  <None Remove=".vs\**" />
+	</ItemGroup>
+	<ItemGroup>
 	  <Content Include="数据%28C#%29\playerAsset.json" />
 	</ItemGroup>
 	<ItemGroup>

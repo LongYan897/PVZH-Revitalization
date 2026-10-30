@@ -1,13 +1,18 @@
-class_name ScrollInputHandler
+﻿class_name ScrollInputHandler
 extends RefCounted
+const ScrollLayoutScript = preload("res://addons/SmoothScroll/helpers/scroll_layout.gd")
 ## 处理 SmoothScrollContainer 的所有输入事件。
 ##
 ## 处理鼠标滚轮、拖拽（鼠标/触摸）、手势以及滚动条交互。
 
 
+# 与 SmoothScrollContainer.SCROLL_TYPE 顺序保持一致（WHEEL=0, BAR=1, DRAG=2）
+# 这里本地定义一份，避免依赖全局类名
+enum SCROLL_TYPE { WHEEL, BAR, DRAG }
+
 #region Variables
 ## 对父级滚动容器的引用
-var _container: SmoothScrollContainer = null
+var _container = null
 ## 鼠标滚轮滚动速度倍率
 var speed: float = 1000.0
 ## 允许使用鼠标拖拽
@@ -38,7 +43,7 @@ var _last_drag_relative: Vector2 = Vector2.ZERO
 
 
 ## 使用对 [param container] 的引用初始化输入处理器。
-func _init(container: SmoothScrollContainer) -> void:
+func _init(container) -> void:
 	_container = container
 
 
@@ -104,14 +109,14 @@ func any_scrollbar_dragging() -> bool:
 
 ## 使用当前位置与各边界距离初始化拖拽临时数据。
 func init_drag_temp_data() -> void:
-	var spare_size: Vector2 = ScrollLayout.get_spare_size(_container, _container.content_margins)
-	var content_node_size_diff: Vector2 = ScrollLayout.get_child_size_diff(
+	var spare_size: Vector2 = ScrollLayoutScript.get_spare_size(_container, _container.content_margins)
+	var content_node_size_diff: Vector2 = ScrollLayoutScript.get_child_size_diff(
 		_container.content_node,
 		spare_size,
 		true,
 		true
 	)
-	var content_node_boundary_dist: Vector4 = ScrollLayout.get_boundary_dist(
+	var content_node_boundary_dist: Vector4 = ScrollLayoutScript.get_boundary_dist(
 		_container.pos,
 		content_node_size_diff
 	)
@@ -152,7 +157,7 @@ func _process_mouse_button(event: InputEventMouseButton) -> void:
 ## 处理来自 [param event] 的鼠标滚轮滚动。[br]
 ## 在指定轴（[param is_vertical]）上沿 [param positive] 方向（上/左或下/右）滚动。
 func _handle_wheel_scroll(event: InputEventMouseButton, positive: bool, is_vertical: bool) -> void:
-	_container.last_scroll_type = SmoothScrollContainer.SCROLL_TYPE.WHEEL
+	_container.last_scroll_type = SCROLL_TYPE.WHEEL
 	_container.scroll_damper = _container.wheel_scroll_damper
 	_container.scrollbar_animator.kill_scroll_tweens()
 	
@@ -182,7 +187,7 @@ func _start_content_drag() -> void:
 	content_dragging = true
 	is_in_deadzone = true
 	_container.scroll_damper = _container.dragging_scroll_damper
-	_container.last_scroll_type = SmoothScrollContainer.SCROLL_TYPE.DRAG
+	_container.last_scroll_type = SCROLL_TYPE.DRAG
 	init_drag_temp_data()
 	_container.scrollbar_animator.kill_scroll_tweens()
 
@@ -258,7 +263,7 @@ func _process_screen_touch(event: InputEventScreenTouch) -> void:
 		content_dragging = true
 		is_in_deadzone = true
 		_container.scroll_damper = _container.dragging_scroll_damper
-		_container.last_scroll_type = SmoothScrollContainer.SCROLL_TYPE.DRAG
+		_container.last_scroll_type = SCROLL_TYPE.DRAG
 		init_drag_temp_data()
 		_container.scrollbar_animator.kill_scroll_tweens()
 	else:
@@ -278,7 +283,7 @@ func _handle_scrollbar_drag_button(event: InputEventMouseButton, vertical: bool)
 			v_scrollbar_dragging = true
 		else:
 			h_scrollbar_dragging = true
-		_container.last_scroll_type = SmoothScrollContainer.SCROLL_TYPE.BAR
+		_container.last_scroll_type = SCROLL_TYPE.BAR
 		_container.scrollbar_animator.kill_scroll_tweens()
 	else:
 		if vertical:
@@ -295,7 +300,7 @@ func _handle_scrollbar_touch(event: InputEventScreenTouch, vertical: bool) -> vo
 			v_scrollbar_dragging = true
 		else:
 			h_scrollbar_dragging = true
-		_container.last_scroll_type = SmoothScrollContainer.SCROLL_TYPE.BAR
+		_container.last_scroll_type = SCROLL_TYPE.BAR
 		_container.scrollbar_animator.kill_scroll_tweens()
 	else:
 		if vertical:

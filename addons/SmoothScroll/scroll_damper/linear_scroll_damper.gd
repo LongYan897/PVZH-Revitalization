@@ -1,5 +1,5 @@
-class_name LinearScrollDamper
-extends ScrollDamper
+﻿class_name LinearScrollDamper
+extends "res://addons/SmoothScroll/scroll_damper/scroll_damper.gd"
 ## 线性滚动阻尼。
 ##
 ## 以恒定速率减速。属于匀减速，没有缓动曲线。

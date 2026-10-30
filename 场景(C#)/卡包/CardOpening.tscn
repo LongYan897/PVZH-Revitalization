@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b3nu02rrw1jh6" path="res://素材(C#)/卡包/tear.png" id="3_d1oqa"]
 [ext_resource type="Texture2D" uid="uid://bgpmxo1beya67" path="res://素材(C#)/卡包/tearGlow.png" id="4_igb60"]
 [ext_resource type="Texture2D" uid="uid://dy1s4nje475d0" path="res://素材(C#)/卡包/packopening_openglow_Big.png" id="5_l5l5d"]
+[ext_resource type="Texture2D" uid="uid://d3cuo48n70tog" path="res://素材(C#)/卡包/高亮.png" id="6_h6xgn"]
 
 [node name="卡包2D" type="Node2D" unique_id=1275130164]
 script = ExtResource("1_u6lsr")
@@ -60,3 +61,13 @@ offset_bottom = 405.0
 scale = Vector2(1e-05, 1e-05)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("5_l5l5d")
+
+[node name="高亮" type="TextureRect" parent="卡包" unique_id=583479684]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = -72.0
+offset_top = -70.0
+offset_right = 372.0
+offset_bottom = 549.0
+texture = ExtResource("6_h6xgn")
+metadata/_edit_lock_ = true

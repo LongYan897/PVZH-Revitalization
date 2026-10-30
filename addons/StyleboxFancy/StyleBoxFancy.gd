@@ -3,6 +3,13 @@
 extends StyleBox
 class_name StyleBoxFancy
 
+# 用 preload 常量代替全局类名 StyleBorder：
+# 全局 class_name 依赖 .godot/global_script_class_cache.cfg，如果编辑器刚重扫/缓存还没写好
+# （比如改完 C# 重新编译后第一次运行），直接写 StyleBorder 会报
+# "Parse Error: Could not find type StyleBorder in the current scope"，导致整个样式脚本解析失败。
+# preload 按路径加载，不依赖全局类缓存，任何时候都能解析。
+const StyleBorderScript = preload("res://addons/StyleboxFancy/StyleBorder.gd")
+
 ## An advanced [StyleBox] which supports textures, multiple borders and corner
 ## shapes.
 
@@ -78,7 +85,7 @@ var _corner_geometry: Array[PackedVector2Array]
 
 ## An array of [StyleBorder]s, each border will be drawn one inside of the other
 ## from top to bottom unless [member StyleBorder.ignore_stack] is enabled.
-@export var borders: Array[StyleBorder]:
+@export var borders: Array[StyleBorderScript]:
 	set(v):
 		borders = v
 		for border in borders:
@@ -559,7 +566,7 @@ func _draw_rect(
 			[rect_color]
 		)
 
-func _draw_border(to_canvas_item: RID, rect: Rect2, border: StyleBorder, corner_radius: Vector4, aa: float) -> void:
+func _draw_border(to_canvas_item: RID, rect: Rect2, border: StyleBorderScript, corner_radius: Vector4, aa: float) -> void:
 	# NOTE: In StyleBoxFlat the border gives a margin to the corner radius so it doesn't
 	# overlap with itself, however it gives the border a different corner radius than the
 	# underlying center panel.
@@ -991,7 +998,7 @@ func _draw(to_canvas_item: RID, rect: Rect2) -> void:
 		var border_rect: Rect2 = rect
 		var border_corner_radii: Vector4 = _fit_corner_radius_in_rect(corner_radii, rect)
 
-		for border: StyleBorder in borders:
+		for border: StyleBorderScript in borders:
 			if border == null: continue
 
 			if border.ignore_stack:

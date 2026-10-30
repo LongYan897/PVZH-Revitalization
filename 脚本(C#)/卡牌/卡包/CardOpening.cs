@@ -10,6 +10,7 @@ public partial class CardOpening : Node2D
 	public TextureRect CrackBlur { get; set; }
 	public TextureRect ExplodeEffect { get; set; }
     public TextureRect CardNode { get; set; }
+    public TextureRect Highlight { get; set; }
     //属性
     public Vector2 UltimatePos { get; set; }
     public float MoveHeight { get; set; } = -1200f;
@@ -24,6 +25,7 @@ public partial class CardOpening : Node2D
         CrackBlur = GetNode<TextureRect>("卡包/裂缝/裂缝发光");
         ExplodeEffect = GetNode<TextureRect>("卡包/爆炸特效/爆炸特效");
         CardNode = GetNode<TextureRect>("卡包");
+        Highlight = GetNode<TextureRect>("卡包/高亮");
         UltimatePos = GetViewportRect().Size / 2 - new Vector2(0,100);
         Crack.Scale = new Vector2(0, 1.242f);
         await IntroAn();
@@ -100,6 +102,7 @@ public partial class CardOpening : Node2D
                 .SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.InOut);
         tween1.Parallel().TweenProperty(CardNode, "modulate", new Color(1, 1, 1, 0), 0.5f);
+        tween1.Parallel().TweenProperty(Highlight, "self_modulate", new Color(1, 1, 1, 1), 0.5f);
         await ToSignal(tween1, Tween.SignalName.Finished);
     }
     public Tween QuickTween()
