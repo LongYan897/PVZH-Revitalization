@@ -1,0 +1,14 @@
+skeleton.png
+size:187,265
+filter:Linear,Linear
+BananaPeel_PEEL_LEFT
+bounds:102,32,64,77
+rotate:90
+BananaPeel_PEEL_RIGHT
+bounds:2,9,98,87
+BananaPeel_PEEL_back-LEFT
+bounds:145,6,37,24
+BananaPeel_PEEL_back-RIGHT
+bounds:102,2,41,28
+death_poof_burst
+bounds:2,98,183,165

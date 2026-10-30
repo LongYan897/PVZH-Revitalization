@@ -2,14 +2,30 @@
 
 [ext_resource type="Texture2D" uid="uid://bp5vn1thny1lr" path="res://素材(C#)/卡包/卡套/deckCustomBackground.png" id="1_4qsqk"]
 [ext_resource type="Script" uid="uid://cknnxeoyp5li8" path="res://脚本(C#)/卡牌/卡包/CardDeck.cs" id="1_56yx6"]
-[ext_resource type="Texture2D" uid="uid://tcpwwtsahhjf" path="res://素材(C#)/卡包/卡套/deckCustomSashGrayscale.png" id="2_ix31a"]
 [ext_resource type="Texture2D" uid="uid://dlpr0abpr6kt6" path="res://素材/英雄素材/绿影侠/Deck_GreenShadow.png" id="3_6n3n6"]
+[ext_resource type="Texture2D" uid="uid://khktwt11mst3" path="res://素材(C#)/卡包/卡套/deckRecipeR1Sash.png" id="4_56yx6"]
 [ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="4_lm4i2"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="6_e4h0y"]
 [ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="6_wefbc"]
 [ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="7_56yx6"]
 
 [sub_resource type="FontVariation" id="FontVariation_6n3n6"]
 base_font = ExtResource("4_lm4i2")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e4h0y"]
+bg_color = Color(0.054399993, 0.108959995, 0.16, 1)
+border_width_left = 2
+border_width_top = 4
+border_color = Color(0, 0, 0, 0.7254902)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_56yx6"]
+bg_color = Color(0, 0.48, 0.03999996, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5iah"]
+bg_color = Color(0, 0.85, 0.070833266, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_56yx6"]
+base_font = ExtResource("6_e4h0y")
 
 [sub_resource type="Shader" id="Shader_yam0n"]
 code = "shader_type canvas_item;
@@ -74,19 +90,18 @@ stretch_mode = 3
 
 [node name="卡套" type="Sprite2D" parent="背景/表层" unique_id=101791880]
 unique_name_in_owner = true
-modulate = Color(0.11339999, 0.39779997, 0.54, 1)
 position = Vector2(5, 45)
-texture = ExtResource("2_ix31a")
+texture = ExtResource("4_56yx6")
 
 [node name="Label" type="Label" parent="背景/表层" unique_id=1843997838]
 unique_name_in_owner = true
 offset_left = -99.0
-offset_top = -27.0
+offset_top = -32.0
 offset_right = 90.0
-offset_bottom = 102.0
+offset_bottom = 97.0
 theme_override_fonts/font = SubResource("FontVariation_6n3n6")
 theme_override_font_sizes/font_size = 32
-text = "豆豆"
+text = "小菜一碟"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -97,6 +112,86 @@ offset_top = -34.0
 offset_right = 46.0
 offset_bottom = -8.0
 mouse_filter = 2
+
+[node name="进度" type="Node2D" parent="背景/表层" unique_id=1842779543]
+unique_name_in_owner = true
+position = Vector2(0, -7.000001)
+scale = Vector2(1.05, 1.05)
+
+[node name="进度条" type="Panel" parent="背景/表层/进度" unique_id=1882140315]
+offset_left = -77.14285
+offset_top = 64.76191
+offset_right = 52.099396
+offset_bottom = 117.4678
+scale = Vector2(1.1838235, 0.53125)
+theme_override_styles/panel = SubResource("StyleBoxFlat_e4h0y")
+
+[node name="进度绿色条" type="Panel" parent="背景/表层/进度/进度条" unique_id=2008084585]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 126.0
+offset_bottom = 49.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_56yx6")
+
+[node name="进度绿色亮条" type="Panel" parent="背景/表层/进度/进度条/进度绿色条" unique_id=1295069814]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.5
+offset_right = 121.0
+offset_bottom = 21.5
+theme_override_styles/panel = SubResource("StyleBoxFlat_k5iah")
+
+[node name="进度数字" type="Label" parent="背景/表层/进度" unique_id=6802250]
+unique_name_in_owner = true
+offset_left = -91.42857
+offset_top = 16.190477
+offset_right = 608.5714
+offset_bottom = 643.1905
+scale = Vector2(0.2, 0.2)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 12
+theme_override_constants/shadow_offset_y = 12
+theme_override_fonts/font = SubResource("FontVariation_56yx6")
+theme_override_font_sizes/font_size = 140
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="进度横杠" type="Label" parent="背景/表层/进度" unique_id=1566720760]
+offset_left = -71.42857
+offset_top = 16.190477
+offset_right = 628.5714
+offset_bottom = 643.1905
+scale = Vector2(0.2, 0.2)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 12
+theme_override_constants/shadow_offset_y = 12
+theme_override_fonts/font = SubResource("FontVariation_56yx6")
+theme_override_font_sizes/font_size = 140
+text = "/"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="进度总" type="Label" parent="背景/表层/进度" unique_id=1766939375]
+offset_left = -50.428574
+offset_top = 16.190477
+offset_right = 649.5714
+offset_bottom = 643.1905
+scale = Vector2(0.2, 0.2)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 12
+theme_override_constants/shadow_offset_y = 12
+theme_override_fonts/font = SubResource("FontVariation_56yx6")
+theme_override_font_sizes/font_size = 140
+text = "40"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
 
 [node name="内层" type="Node2D" parent="背景" unique_id=1239994802]
 unique_name_in_owner = true
@@ -189,7 +284,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(440, 265)
 layout_mode = 2
 script = ExtResource("7_56yx6")
-ShowLoading = false
+SubScene = "res://场景(C#)/定制卡组.tscn"
 CenterPivot = true
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 

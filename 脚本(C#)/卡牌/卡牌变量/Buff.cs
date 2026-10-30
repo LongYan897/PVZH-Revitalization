@@ -16,7 +16,7 @@ public abstract class Buff
     /// <summary>
     /// 是否只有在卡牌以单位形式存在时才调用
     /// </summary>
-    public bool OnlyPlaced { get; init; } = false;
+    public bool OnlyPlaced { get; init; } = true;
     /// <summary>
     /// 优先级
     /// </summary>
@@ -66,6 +66,11 @@ public class CustomBuff : Buff
 /// </summary>
 public enum Timing
 {
+    /// <summary>
+    /// 当单位被移动时
+    /// 参数：[0] Road 移到的路线 [1] FighterCardModel 移动的卡牌
+    /// </summary>
+    WhenMoved,
     /// <summary>
     /// 当僵尸现身时
     /// 参数：[0] FighterCardModel 现身的卡牌 [1] bool 是否是强迫(死亡)现身

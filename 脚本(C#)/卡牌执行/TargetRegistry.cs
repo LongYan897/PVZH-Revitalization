@@ -48,12 +48,12 @@ public static class TargetRegistry
         return targets;
     }
 
-    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff)
+    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff,Camp? camp)
     {
-        CallTargeted(card, type, fromBuff, card.TargetFilter);
+        CallTargeted(card, type, fromBuff, card.TargetFilter,camp);
     }
 
-    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff, Func<ITarget, bool> filter)
+    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff, Func<ITarget, bool> filter,Camp? camp)
     {
         if (card == null) return;
         filter ??= (tg) => true;
@@ -61,16 +61,16 @@ public static class TargetRegistry
         {
             if ((t.TargetType & type) == 0) continue;
             if (!t.CanBeTarget(card, filter, fromBuff)) continue;
-            t.OnCallTargeted(type,card);
+            t.OnCallTargeted(type,card,camp);
         }
     }
 
-    public static void DeleteTargeted(TargetType type)
+    public static void DeleteTargeted(TargetType type, Camp? camp)
     {
         foreach (var t in _targets.ToList())
         {
             if ((t.TargetType & type) == 0) continue;
-            t.OnDeleteTargeted(type);
+            t.OnDeleteTargeted(type,camp);
         }
     }
 }

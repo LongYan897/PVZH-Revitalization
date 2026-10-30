@@ -20,6 +20,7 @@ public partial class BattleSubMenuScene : SubMenuScene
 {
     public override bool HideReturnButton => true;
     private static BattleSubMenuScene instance;
+    public static Vector2 Center => instance?.GetNode<Node2D>("%Center").Position ?? new();
     public override async Task _Load()
     {
         instance = this;
@@ -300,6 +301,8 @@ public partial class BattleSubMenuScene : SubMenuScene
         {
             if (refButton.Name.ToString().Contains("刷新卡牌"))
             {
+                refButton.MouseFilter = Control.MouseFilterEnum.Pass;
+                refButton.GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
                 refButton.GetNode<Button>("碰撞").Pressed += () => BattleSubFreshButton(refButton, refButton.Name.ToString().Replace("刷新卡牌","").ToInt());
             }
         }
@@ -330,6 +333,7 @@ public partial class BattleSubMenuScene : SubMenuScene
         return dict;
     }
     private static TaskCompletionSource<bool> freshAwaiters;
+    private static readonly List<Task> freshTasks = new();
     public static async Task GetFreshTask()
     {
         if (freshAwaiters == null) return;
@@ -338,12 +342,34 @@ public partial class BattleSubMenuScene : SubMenuScene
     private static async void BattleSubFreshButton(TextureRect textureRect,int index)
     {
         if (textureRect == null ||textureRect.Visible == false) return;
-        await DeckCmd.FreshIndex(index);
         textureRect.GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+        Tween tween = textureRect.CreateTween();
+        Tween tween1 = textureRect.CreateTween();
+        var canon = textureRect.Scale;
+        tween.TweenProperty(textureRect, "scale", canon * 1.3f, 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        tween.TweenProperty(textureRect, "scale", canon * 0f, 0.2f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+        tween1.TweenProperty(textureRect, "rotation", Math.PI * 2, 0.3f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        var task = Task.WhenAll(DeckCmd.FreshIndex(index),tween.ToTask());
+        lock (freshTasks) freshTasks.Add(task);
+        await task;
         textureRect.Visible = false;
     }
-    private static void BattleSubStartButton()
+    private static async void BattleSubStartButton()
     {
+        var startButton = instance.GetNode<Node2D>("%重新选卡")
+            .GetNode<NinePatchRect>("开始战斗")
+            .GetNode<Button>("碰撞");
+        if (startButton.MouseFilter == Control.MouseFilterEnum.Ignore) return;
+        startButton.MouseFilter = Control.MouseFilterEnum.Ignore;
+        Task[] snapshot;
+        lock (freshTasks)
+        {
+            if (freshTasks.Count > 0)
+                snapshot = freshTasks.ToArray();
+            else
+                snapshot = [];
+        }
+        await Task.WhenAll(snapshot);
         freshAwaiters?.SetResult(true);
     }
     public static async Task PlayHurt(Player player, int amount, int shieldAmount)

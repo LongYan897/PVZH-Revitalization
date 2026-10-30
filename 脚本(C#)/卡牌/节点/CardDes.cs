@@ -215,7 +215,7 @@ public partial class CardDes : Control
         }
     }
     private static readonly Regex IconRegex =
-    new Regex(@"=(\w+)=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
+    new Regex(@"=([^=#\s]+)(?:#([^#=\s]+)#)?=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
 
     private static readonly Regex UrlIconRegex =
         new Regex(@"==([^=]+?)(?:\{([^}]*)\})?==", RegexOptions.Compiled);
@@ -391,9 +391,9 @@ public partial class CardDes : Control
             }
             else
             {
-                string name = m.Groups[1].Value;
-                bool hasNum = m.Groups[2].Success;
-                string value = hasNum ? m.Groups[2].Value : null;
+                string name = m.Groups[1].Value; 
+                bool hasNum = m.Groups[3].Success;
+                string value = hasNum ? m.Groups[3].Value : null;
 
                 if (Icon.TryGet(name, out var path, out var attr))
                 {
@@ -848,7 +848,7 @@ public partial class CardDes : Control
             sprite.LoadSkeletonData(Model.AnimationPath);
             if (sprite.HasAnimation("intro"))
                 sprite.SetAnimation(0, "intro", false);
-            if (!Model.CardType.HasFlag(CardType.Trick))
+            if (sprite.HasAnimation("idle"))
                 sprite.AddAnimation(0, "idle", true);
 
             Visible = true;

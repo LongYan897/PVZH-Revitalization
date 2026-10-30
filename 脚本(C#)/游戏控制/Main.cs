@@ -70,6 +70,7 @@ public partial class Main : Node
 		p1.PrefABox<Penelopea>(PresetPack.Load<AllPea>());
 		PlayerManager.Hosting(p1);
 		PlayerManager.FillPlayer(PlayerManager.HostPlayer, p2);
+		p1.Asset.GainAllCards();
 	}
 
 	public void Clear()

@@ -6,6 +6,7 @@ using Play;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Target;
 using Variable;
@@ -55,8 +56,11 @@ public static class CardCmd
         }
     }
 
-    public static void Clear() => CardInstances.Clear();
-
+    public static void Clear()
+    {
+        Buffs.Clear();
+        CardInstances.Clear();
+    }
     /// <summary>
     /// 向Cmd添加卡牌
     /// </summary>
@@ -132,6 +136,19 @@ public static class CardCmd
         }
     }
 
+    /// <summary>
+    /// 让一位玩家抽牌
+    /// </summary>
+    /// <param name="player">要抽牌的玩家</param>
+    /// <param name="cardModel">索引的卡牌</param>
+    /// <param name="amount">抽牌的数量</param>
+    /// <returns></returns>
+    public static async Task Draw(Player player, CardModel cardModel,int amount = 1)
+    {
+        player ??= PlayerManager.GetPlayer(cardModel.Camp);
+        await player.Status.PlayCardAndDraw(amount);
+    }
+
     private static void JustFreshAllCards()
     {
         foreach (var card in CardInstances.ToList())
@@ -187,6 +204,15 @@ public static class CardCmd
             if (fighter.Model != cardModel && !CardInstances.Contains(fighter.Model))
                 await fighter.Model.FireTiming(timing, paramters);
         }
+
+        var fired = Buffs.Where(b => b.Timings.Contains(timing));
+        foreach (Buff buff in fired.OrderByDescending(b => b.Priority))
+        {
+            if (buff.Timings.Contains(timing))
+            {
+                await buff.OnTiming(timing,null,paramters);
+            }
+        }
     }
 
     private static int LocationPriority(Location location) => location switch
@@ -207,7 +233,7 @@ public static class CardCmd
     /// <param name="targetType">目标类型</param>
     /// <param name="filter">过滤器</param>
     /// <returns></returns>
-    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null)
+    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null,Camp? camp = null)
     {
         PushStop();
         player ??= PlayerManager.GetPlayer(cardModel.Camp);
@@ -221,12 +247,12 @@ public static class CardCmd
 
                 if (candidates.Count == 1) return candidates[0];
 
-                TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter);
+                TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter,camp);
 
                 _tcs = new TaskCompletionSource<ITarget>();
                 var result = await _tcs.Task;
 
-                TargetRegistry.DeleteTargeted(targetType);
+                TargetRegistry.DeleteTargeted(targetType,camp);
                 return result;
             }
             else
@@ -311,6 +337,28 @@ public static class CardCmd
     }
 
     /// <summary>
+    /// 让玩家选择一个格子(自定义过滤器)
+    /// </summary>
+    /// <param name="player">选中的玩家</param>
+    /// <param name="cardModel">是哪个卡牌调用的</param>
+    /// <param name="filter">过滤器</param>
+    /// <returns></returns>
+    public static async Task<(Road road,Location? location)> PlayerChoiceGrid(Player player, CardModel cardModel, bool fromBuff, Func<Road, bool> filter = null, Camp? camp = null)
+    {
+        filter ??= (f) => true;
+        Func<ITarget, bool> itgFilter = (itg) =>
+        {
+            return itg.CanBeRoad(out var r) && filter(r);
+        };
+        var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Grids, fromBuff, itgFilter,camp) as NodeRoad;
+        return (itg.CanBeRoad(out var road) ? road : null,road.LastTargetKind == RoadTargetKind.None ? null : road.LastTargetKind switch 
+        {
+            RoadTargetKind.Grid => itg.ClickedCamp == null ? null : itg.ClickedCamp is Camp camp1 && camp1.Plant() ? Location.Plant : Location.Zombie,
+            RoadTargetKind.CoopGrid => Location.PlantFront,
+            _ => null
+        });
+    }
+    /// <summary>
     /// 选中目标后调用此方法
     /// </summary>
     /// <param name="target"></param>
@@ -369,6 +417,29 @@ public static class CardCmd
             .ThenBy(f => LocationPriority(f.Model.Location))
             .Select(f => f.Model)
             .FirstOrDefault();
+    }
+
+    private static readonly List<Buff> Buffs = new();
+    /// <summary>
+    /// 向全局注册一个Buff，会持续监听时点
+    /// </summary>
+    /// <param name="buff">要添加的效果</param>
+    /// <returns>收回该Buff的函数</returns>
+    public static Action EnableBuff(Buff buff)
+    {
+        if (Buffs.Contains(buff)) return () => UnableBuff(buff);
+        Buffs.Add(buff);
+        return () => UnableBuff(buff);
+    }
+
+    /// <summary>
+    /// 把全局注册的Buff收回
+    /// </summary>
+    /// <param name="buff"></param>
+    public static void UnableBuff(Buff buff)
+    {
+        if (!Buffs.Contains(buff)) return;
+        Buffs.Remove(buff);
     }
 
     /// <summary>

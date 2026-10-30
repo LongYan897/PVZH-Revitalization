@@ -23,7 +23,7 @@ public class TorchWood : FighterCardModel
                 if (timing == Timing.AfterPlay)
                 {
                     var ft = CardCmd.GetFirstPlant(p => p.Road == fighter.Road && p.Location == Location.Plant);
-                    if (ft != null)
+                    if (ft != null && ft != fighter)
                     {
                         redo = await ft.Atk.Gain(card.GetSignInt("Strength"), Variable.VariableReason.Plant | Variable.VariableReason.Fighter);
                     }

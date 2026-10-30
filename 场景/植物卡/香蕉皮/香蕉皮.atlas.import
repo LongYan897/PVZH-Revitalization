@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://bufkq84hfhneq"
+path="res://.godot/imported/香蕉皮.atlas-89d1d78fbf8ef04d047de7718ce65ec9.spatlas"
+
+[deps]
+
+source_file="res://场景/植物卡/香蕉皮/香蕉皮.atlas"
+dest_files=["res://.godot/imported/香蕉皮.atlas-89d1d78fbf8ef04d047de7718ce65ec9.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

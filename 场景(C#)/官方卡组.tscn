@@ -13,6 +13,7 @@
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="10_e5qfm"]
 [ext_resource type="Texture2D" uid="uid://crfe3ux7wei31" path="res://素材(C#)/卡包/卡包主体/stickerpack_hero_premium_greenshadow.png" id="10_pyxdw"]
 [ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="12_mrg3f"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="14_yc3l1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7k45c"]
 shader = ExtResource("6_pyxdw")
@@ -20,6 +21,21 @@ shader_parameter/top_color = Color(1, 1, 1, 1)
 shader_parameter/bottom_color = Color(0.45999998, 0.9910001, 1, 1)
 
 [sub_resource type="FontVariation" id="FontVariation_pyxdw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yc3l1"]
+bg_color = Color(0.023799999, 0.04767, 0.07, 1)
+border_width_left = 2
+border_width_top = 4
+border_color = Color(0, 0, 0, 0.7254902)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mqqh2"]
+bg_color = Color(0, 0.48, 0.03999996, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_121iv"]
+bg_color = Color(0, 0.85, 0.070833266, 1)
+
+[sub_resource type="FontVariation" id="FontVariation_p8fwm"]
+base_font = ExtResource("10_e5qfm")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u7fqt"]
 bg_color = Color(0.0627451, 0.078431375, 0.10980392, 1)
@@ -95,7 +111,7 @@ scale = Vector2(1.063386, 1.0345814)
 texture = ExtResource("4_kxr4r")
 
 [node name="发光" type="Sprite2D" parent="副板/卡牌组" unique_id=1285596292]
-modulate = Color(0.29239997, 0.7181, 0.86, 0.3647059)
+modulate = Color(0.29239997, 0.7181, 0.86, 0.5019608)
 z_index = -2
 position = Vector2(-8.965176, 9.049754)
 scale = Vector2(2.939356, 2.9393563)
@@ -112,6 +128,86 @@ theme_override_fonts/font = SubResource("FontVariation_pyxdw")
 theme_override_font_sizes/font_size = 56
 text = "小菜一碟"
 horizontal_alignment = 1
+
+[node name="进度" type="Node2D" parent="副板" unique_id=1664433512]
+unique_name_in_owner = true
+position = Vector2(496.00006, 174)
+scale = Vector2(1.05, 1.05)
+
+[node name="进度条" type="Panel" parent="副板/进度" unique_id=1392440146]
+offset_left = -244.76198
+offset_top = 63.809505
+offset_right = 130.93755
+offset_bottom = 126.55463
+scale = Vector2(1.1838235, 0.53125)
+theme_override_styles/panel = SubResource("StyleBoxFlat_yc3l1")
+
+[node name="进度绿色条" type="Panel" parent="副板/进度/进度条" unique_id=1052791680]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 372.0
+offset_bottom = 53.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mqqh2")
+
+[node name="进度绿色亮条" type="Panel" parent="副板/进度/进度条/进度绿色条" unique_id=309610077]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.5
+offset_right = 367.0
+offset_bottom = 24.5
+theme_override_styles/panel = SubResource("StyleBoxFlat_121iv")
+
+[node name="进度数字" type="Label" parent="副板/进度" unique_id=1936290779]
+unique_name_in_owner = true
+offset_left = -73.33339
+offset_top = 64.761894
+offset_right = 79.66661
+offset_bottom = 166.7619
+scale = Vector2(0.3, 0.3)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_fonts/font = SubResource("FontVariation_p8fwm")
+theme_override_font_sizes/font_size = 90
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="进度横杠" type="Label" parent="副板/进度" unique_id=1190888994]
+offset_left = -52.381004
+offset_top = 64.761894
+offset_right = 100.618996
+offset_bottom = 166.7619
+scale = Vector2(0.3, 0.3)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_fonts/font = SubResource("FontVariation_p8fwm")
+theme_override_font_sizes/font_size = 90
+text = "/"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="进度总" type="Label" parent="副板/进度" unique_id=248889255]
+offset_left = -24.761972
+offset_top = 64.761894
+offset_right = 128.23802
+offset_bottom = 166.7619
+scale = Vector2(0.3, 0.3)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_fonts/font = SubResource("FontVariation_p8fwm")
+theme_override_font_sizes/font_size = 90
+text = "40"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
 
 [node name="主板" type="NinePatchRect" parent="." unique_id=1329189641]
 self_modulate = Color(0.08627451, 0.13333334, 0.19215687, 1)
@@ -155,6 +251,8 @@ offset_right = 1130.0
 offset_bottom = 514.1667
 scale = Vector2(1.5, 1.5)
 follow_focus = true
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 script = ExtResource("6_36ay7")
 wheel_scroll_damper = SubResource("Resource_7k45c")
 dragging_scroll_damper = SubResource("Resource_pyxdw")
@@ -172,6 +270,8 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1090, 55)
 layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
 script = ExtResource("6_xd0pl")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
@@ -196,6 +296,8 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1090, 55)
 layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
 script = ExtResource("6_xd0pl")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
@@ -263,7 +365,7 @@ theme_override_constants/shadow_offset_y = 8
 theme_override_font_sizes/font_size = 48
 text = "获得组合包来取得这位英雄"
 
-[node name="获得组合包2" type="NinePatchRect" parent="主板" unique_id=892682156]
+[node name="立刻拥有" type="NinePatchRect" parent="主板" unique_id=892682156]
 self_modulate = Color(0, 1, 0.23333335, 1)
 layout_mode = 0
 offset_left = 995.0
@@ -276,11 +378,11 @@ patch_margin_top = 40
 patch_margin_right = 40
 patch_margin_bottom = 40
 
-[node name="Sprite2D" type="Sprite2D" parent="主板/获得组合包2" unique_id=1369169214]
+[node name="Sprite2D" type="Sprite2D" parent="主板/立刻拥有" unique_id=1369169214]
 position = Vector2(209.99998, 129.99983)
 texture = ExtResource("12_mrg3f")
 
-[node name="文字4" type="Label" parent="主板/获得组合包2" unique_id=1497301870]
+[node name="文字4" type="Label" parent="主板/立刻拥有" unique_id=1497301870]
 layout_mode = 0
 offset_left = 284.99988
 offset_top = 57.499756
@@ -306,20 +408,33 @@ theme_override_constants/shadow_offset_y = 8
 theme_override_font_sizes/font_size = 56
 text = "立刻拥有完整战略卡组"
 
-[node name="获得组合包3" type="NinePatchRect" parent="主板" unique_id=1268530740]
+[node name="定制" type="Control" parent="主板" unique_id=680764534]
+anchors_preset = 0
+offset_left = 557.5
+offset_top = 1720.0
+offset_right = 1357.5
+offset_bottom = 1920.0
+script = ExtResource("14_yc3l1")
+CenterPivot = true
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="主板/定制" unique_id=834206063]
+layout_mode = 0
+offset_right = 797.49994
+offset_bottom = 202.5
+
+[node name="定制牌组" type="NinePatchRect" parent="主板/定制" unique_id=1268530740]
 self_modulate = Color(0, 0.8833332, 1, 1)
 layout_mode = 0
-offset_left = 557.5
-offset_top = 1730.0
-offset_right = 1352.5
-offset_bottom = 1937.5
+offset_right = 795.0
+offset_bottom = 207.5
 texture = ExtResource("1_f3gl7")
 patch_margin_left = 40
 patch_margin_top = 40
 patch_margin_right = 40
 patch_margin_bottom = 40
 
-[node name="文字6" type="Label" parent="主板/获得组合包3" unique_id=114889052]
+[node name="文字6" type="Label" parent="主板/定制/定制牌组" unique_id=114889052]
 layout_mode = 0
 offset_left = 205.0
 offset_top = 22.499756

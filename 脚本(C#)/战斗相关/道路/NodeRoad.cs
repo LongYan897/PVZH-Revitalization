@@ -96,8 +96,10 @@ public partial class NodeRoad : Control, ITarget
         GetNode<Node2D>("%植物_僵尸2").Visible = false;
         GetNode<Node2D>("%植物_3").Visible = false;
         GetNode<Button>("%碰撞").GuiInput += OnRoadGuiInput1;
-        GetNode<Button>("%碰撞2").GuiInput += OnRoadGuiInput2;
+        GetNode<Button>("%碰撞2").GuiInput += e => OnRoadGuiInput2(e,false);
         GetNode<Button>("%碰撞3").GuiInput += OnRoadGuiInput3;
+        GetNode<Button>("%碰撞5").GuiInput += e => OnRoadGuiInput2(e,true);
+        GetNode<Button>("%碰撞4").GuiInput += OnRoadGuiInput3;
     }
     private Vector2 _iColli1Scale;
     public static bool CanTargetedBy(CardModel card)
@@ -119,7 +121,7 @@ public partial class NodeRoad : Control, ITarget
         a = f?.Invoke(this);
         bool b = true;
         if (t is FighterCardModel fighter)
-            b = Fighter.CanGenerate(fighter, Model);
+            b = Fighter.CanGenerate(fighter, Model) || from;
         if (a != null)
             b = (bool)a && b;
         return b;
@@ -178,26 +180,27 @@ public partial class NodeRoad : Control, ITarget
     private static bool NeedG2(TargetType t) =>
         t.HasFlag(TargetType.CoopGrids);
 
-    public void OnCallTargeted(TargetType targetType,CardModel card)
+    public void OnCallTargeted(TargetType targetType,CardModel card,Camp? camp)
     {
         bool line = NeedLine(targetType);
         bool g1 = NeedG1(targetType);
-        bool g2 = (NeedG2(targetType) || (NeedG1(targetType) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant && p.Model.CardTag.HasFlag(CardTag.Coop)))) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant);
+        bool g2 = (camp == null || (camp is Camp camp1 && camp1.Plant())) && (NeedG2(targetType) || (NeedG1(targetType) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant && p.Model.CardTag.HasFlag(CardTag.Coop)))) && Model.GetFighters().Any(p => p.Model.Camp == Camp.Plant);
         g2 &= card is FighterCardModel fighter && fighter.Camp.Plant();
         if (!line && !g1) return;
 
         if (line) CallLineTargeted();
-        else if (g2) CallCoopGridTargeted();
-        else if (g1) CallGridTargeted();
+        else if (g2) CallCoopGridTargeted(camp);
+        else if (g1) CallGridTargeted(camp);
 
-        SetMonitoring(line, g1, g2);
+        SetMonitoring(line, g1, g2,camp);
     }
 
-    public async void OnDeleteTargeted(TargetType targetType)
+    public async void OnDeleteTargeted(TargetType targetType, Camp? camp)
     {
         if (NeedG1(targetType) || NeedG2(targetType) || NeedLine(targetType))
         {
-            await DeleteLineTargeted();
+            await DeleteLineTargeted(camp);
+            ClickedCamp = null;
         }
     }
 
@@ -218,11 +221,11 @@ public partial class NodeRoad : Control, ITarget
         {
             _tweenTargeted2.Kill();
         }
-        if (_tweenTargeted != null && _tweenTargeted.IsValid())
+        if (_tweenTargeted3 != null && _tweenTargeted3.IsValid())
         {
             _tweenTargeted3.Kill();
         }
-        if (_tweenTargeted2 != null && _tweenTargeted2.IsValid())
+        if (_tweenTargeted4 != null && _tweenTargeted4.IsValid())
         {
             _tweenTargeted4.Kill();
         }
@@ -250,12 +253,26 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted.TweenProperty(line, "scale", _iColli1Scale * new Vector2(1.01f, 1.01f), 0.7f);
         _tweenTargeted.TweenProperty(line, "scale", _iColli1Scale * new Vector2(0.99f, 0.99f), 0.7f);
     }
-    private async void CallGridTargeted()
+    private async void CallGridTargeted(Camp? camp)
     {
         KillTween();
         Calling = true;
 
-        var hl = GetNode<TextureRect>("%单位高亮");
+        TextureRect hl = null;
+        if (camp == Camp.Plant)
+        {
+            hl = !Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+        }
+        else if (camp == Camp.Zombie)
+        {
+            hl = Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+        }
+        else
+        {
+            CallGridTargeted(Camp.Plant);
+            CallGridTargeted(Camp.Zombie);
+            return;
+        }
         GetNode<Sprite2D>("%环境高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮2").Visible = false;
@@ -281,12 +298,26 @@ public partial class NodeRoad : Control, ITarget
                 Cannonical = f.Model.Location;
         }
     }
-    private async void CallCoopGridTargeted()
+    private async void CallCoopGridTargeted(Camp? camp)
     {
         KillTween();
         Calling = true;
 
-        var hl1 = GetNode<TextureRect>("%单位高亮");
+        TextureRect hl1 = null;
+        if (camp == Camp.Plant)
+        {
+            hl1 = !Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+        }
+        else if (camp == Camp.Zombie)
+        {
+            hl1 = Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+        }
+        else
+        {
+            CallGridTargeted(Camp.Plant);
+            CallGridTargeted(Camp.Zombie);
+            return;
+        }
         GetNode<Sprite2D>("%环境高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮").Visible = false;
         GetNode<TextureRect>("%单位高亮2").Visible = false;
@@ -300,8 +331,15 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted.TweenProperty(hl1, "scale", Vector2.One, 0.05f);
 
 
-        var hl2 = GetNode<TextureRect>("%单位高亮2");
-
+        TextureRect hl2 = null;
+        if (camp == Camp.Plant)
+        {
+            hl2 = !Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+        }
+        else if (camp == Camp.Zombie)
+        {
+            hl2 = Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+        }
         hl2.Modulate = _colortgBox.Default;
         hl2.Visible = true;
         hl2.Scale = new();
@@ -321,24 +359,52 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted2.TweenProperty(hl2, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted2.TweenProperty(hl2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
 
-        if (!Model.IsUp)
+        if (camp == Camp.Plant && !Model.IsUp)
         {
             var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
             Cannonical = f.Model.Location;
             _tweenTargeted4 = CreateTween().BindNode(f);
             _tweenTargeted4.TweenProperty(f, "position", GetNode<Node2D>("%Pos").GlobalPosition, 0.2f);
         }
+        else if (camp == Camp.Plant && Model.IsUp)
+        {
+            var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
+            Cannonical = f.Model.Location;
+            _tweenTargeted4 = CreateTween().BindNode(f);
+            _tweenTargeted4.TweenProperty(f, "position", GetNode<Node2D>("%Pos3").GlobalPosition, 0.2f);
+        }
     }
     private Location Cannonical = Location.Plant;
-    private async Task DeleteLineTargeted()
+    private async Task DeleteLineTargeted(Camp? camp)
     {
         KillTween();
         Calling = false;
 
         var line = GetNode<Sprite2D>("%环境高亮");
-        var hl1 = GetNode<TextureRect>("%单位高亮");
-        var hl2 = GetNode<TextureRect>("%单位高亮2");
-
+        TextureRect hl1 = null;
+        TextureRect hl2 = null;
+        if (camp == Camp.Plant)
+        {
+            hl1 = !Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+        }
+        else if (camp == Camp.Zombie)
+        {
+            hl1 = Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+        }
+        else
+        {
+            CallGridTargeted(Camp.Plant);
+            CallGridTargeted(Camp.Zombie);
+            return;
+        }
+        if (camp == Camp.Plant)
+        {
+            hl2 = !Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+        }
+        else if (camp == Camp.Zombie)
+        {
+            hl2 = Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+        }
         line.Scale = _iColli1Scale;
         hl1.Scale = Vector2.One;
         hl2.Scale = Vector2.One;
@@ -416,6 +482,8 @@ public partial class NodeRoad : Control, ITarget
         SetMonitoring(false, false, false);
     }
 
+    public Camp? ClickedCamp { get; private set; }
+
     public void OnTargeted(TargetContext ctx)
     {
         if (!Calling) return;
@@ -435,18 +503,42 @@ public partial class NodeRoad : Control, ITarget
         if (ctx.Grid)
         {
             var hl = GetNode<TextureRect>("%单位高亮");
+            var camp = ctx.Camp;
+            if (camp == Camp.Plant)
+            {
+                hl = !Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+            }
+            else if (camp == Camp.Zombie)
+            {
+                hl = Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+            }
+            else
+            {
+                CallGridTargeted(Camp.Plant);
+                CallGridTargeted(Camp.Zombie);
+                return;
+            }
+            var h2 = GetNode<TextureRect>("%单位高亮2");
+            if (camp == Camp.Plant)
+            {
+                h2 = !Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+            }
+            else if (camp == Camp.Zombie)
+            {
+                h2 = Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+            }
             _tweenTargeted = CreateTween().BindNode(hl);
             _tweenTargeted2 = CreateTween().BindNode(hl);
             hl.Visible = true;
             _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
             _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
             Model.LastTargetKind = RoadTargetKind.Grid;
-            var h2 = GetNode<TextureRect>("%单位高亮2");
             _tweenTargeted3 = CreateTween().BindNode(h2);
+            _tweenTargeted4 = CreateTween().BindNode(h2);
             h2.Visible = true;
             _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
             _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
-            _tweenTargeted3.TweenProperty(h2, "modulate", _colortgBox.Default, 0.2f);
+            _tweenTargeted4.TweenProperty(h2, "modulate", _colortgBox.Default, 0.2f);
             if (Model.GetFighters().Count(p => p.Model.Camp == Camp.Plant) == 1 && ctx.FighterCard.Camp == Camp.Plant)
             {
                 var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
@@ -454,24 +546,51 @@ public partial class NodeRoad : Control, ITarget
                 _tweenTargeted4.TweenProperty(f, "position", GetFighterLocation(Location.PlantFront), 0.2f);
                 lastCall = "Grids";
             }
-            TargetedGridArrow(ctx.FighterCard, false);
+
+            if (camp == Camp.Plant && !Model.IsUp)
+                TargetedGridArrow(ctx.FighterCard, false);
+            else if (camp == Camp.Zombie && Model.IsUp)
+                TargetedGridArrow(ctx.FighterCard, false);
         }
 
         if (ctx.CoopGrid)
         {
-            var hl = GetNode<TextureRect>("%单位高亮2");
+            var hl = GetNode<TextureRect>("%单位高亮");
+            var camp = ctx.Camp;
+            if (camp == Camp.Plant)
+            {
+                hl = !Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+            }
+            else if (camp == Camp.Zombie)
+            {
+                hl = Model.IsUp ? GetNode<TextureRect>("%单位高亮") : GetNode<TextureRect>("%单位高亮3");
+            }
+            else
+            {
+                CallGridTargeted(Camp.Plant);
+                CallGridTargeted(Camp.Zombie);
+                return;
+            }
             _tweenTargeted = CreateTween().BindNode(hl);
             _tweenTargeted2 = CreateTween().BindNode(hl);
             hl.Visible = true;
-            _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f), 0.2f);
-            _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.ColorA, 0.2f);
+            _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
+            _tweenTargeted.TweenProperty(hl, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
+            _tweenTargeted2.TweenProperty(hl, "modulate", _colortgBox.Default, 0.2f);
             Model.LastTargetKind = RoadTargetKind.CoopGrid;
-            var h2 = GetNode<TextureRect>("%单位高亮");
-            _tweenTargeted3 = CreateTween().BindNode(hl);
+            var h2 = GetNode<TextureRect>("%单位高亮2");
+            if (camp == Camp.Plant)
+            {
+                h2 = !Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+            }
+            else if (camp == Camp.Zombie)
+            {
+                h2 = Model.IsUp ? GetNode<TextureRect>("%单位高亮2") : GetNode<TextureRect>("%单位高亮4");
+            }
+            _tweenTargeted3 = CreateTween().BindNode(h2);
             h2.Visible = true;
-            _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
-            _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f) * new Vector2(0.98f, 0.98f), 0.7f);
-            _tweenTargeted3.TweenProperty(h2, "modulate", _colortgBox.Default, 0.2f);
+            _tweenTargeted3.TweenProperty(h2, "scale", new Vector2(1f, 1f), 0.2f);
+            _tweenTargeted3.TweenProperty(h2, "modulate", _colortgBox.ColorA, 0.2f);
 
             if (Model.GetFighters().Count(p => p.Model.Camp == Camp.Plant) == 1 && ctx.FighterCard.Camp == Camp.Plant)
             {
@@ -480,7 +599,11 @@ public partial class NodeRoad : Control, ITarget
                 _tweenTargeted4.TweenProperty(f, "position", GetFighterLocation(Location.Plant), 0.2f);
                 lastCall = "CoopGrids";
             }
-            TargetedGridArrow(ctx.FighterCard, true);
+
+            if (camp == Camp.Plant && !Model.IsUp)
+                TargetedGridArrow(ctx.FighterCard, true);
+            else if (camp == Camp.Zombie && Model.IsUp)
+                TargetedGridArrow(ctx.FighterCard, true);
         }
     }
     private string lastCall;
@@ -566,10 +689,15 @@ public partial class NodeRoad : Control, ITarget
         if (ctx.Line)
             await ReturnPulse("%环境高亮", _iColli1Scale);
         if (ctx.Grid)
+        {
             await ReturnPulse("%单位高亮", Vector2.One);
+            await ReturnPulse("%单位高亮3", Vector2.One);
+        }
         if (ctx.CoopGrid)
+        {
             await ReturnPulse("%单位高亮2", Vector2.One);
-
+            await ReturnPulse("%单位高亮4", Vector2.One);
+        }
     }
 
     private async Task ReturnPulse(string path, Vector2 baseScale)
@@ -611,7 +739,7 @@ public partial class NodeRoad : Control, ITarget
         CardCmd.SelectTarget(this);
     }
 
-    private void OnRoadGuiInput2(InputEvent @event)
+    private void OnRoadGuiInput2(InputEvent @event,bool far)
     {
         if (!Calling) return;
         if (@event is not InputEventMouseButton mb) return;
@@ -619,6 +747,10 @@ public partial class NodeRoad : Control, ITarget
         if (!_isGridOn1) return;
 
         Model.LastTargetKind = RoadTargetKind.Grid;
+        if (Model.IsUp)
+            ClickedCamp = far ? Camp.Plant : Camp.Zombie;
+        else
+            ClickedCamp = far ? Camp.Zombie : Camp.Plant;
         CardCmd.SelectTarget(this);
     }
 
@@ -632,20 +764,23 @@ public partial class NodeRoad : Control, ITarget
         Model.LastTargetKind = RoadTargetKind.CoopGrid;
         CardCmd.SelectTarget(this);
     }
-    public void SetMonitoring(bool roadOn, bool gridOn1, bool gridOn2)
+    public void SetMonitoring(bool roadOn, bool gridOn1, bool gridOn2, Camp? camp = null)
     {
         _isRoadOn = roadOn;
         _isGridOn1 = gridOn1;
         _isGridOn2 = gridOn2;
+        bool useSlot1 = Model.IsUp == (camp == Camp.Zombie);
+        GetNode<Node2D>("%植物_僵尸1").Visible = useSlot1 && gridOn1;
+        GetNode<Node2D>("%植物_2").Visible = useSlot1 && gridOn2;
+        GetNode<Node2D>("%植物_僵尸2").Visible = !useSlot1 && gridOn1;
+        GetNode<Node2D>("%植物_3").Visible = !useSlot1 && gridOn2;
+        GetNode<Node2D>("%环境高亮").Visible = roadOn;
         GetNode<Area2D>("%碰撞箱").Monitoring = roadOn;
         GetNode<Area2D>("%碰撞箱").Monitorable = roadOn;
-        GetNode<Node2D>("%环境高亮").Visible = roadOn;
         GetNode<Area2D>("%碰撞箱2").Monitoring = gridOn1;
         GetNode<Area2D>("%碰撞箱2").Monitorable = gridOn1;
-        GetNode<Node2D>("%植物_僵尸1").Visible = gridOn1;
         GetNode<Area2D>("%碰撞箱3").Monitoring = gridOn2;
         GetNode<Area2D>("%碰撞箱3").Monitorable = gridOn2;
-        GetNode<Node2D>("%植物_2").Visible = gridOn2;
         var box1 = GetNode<Area2D>("%碰撞箱");
         box1.Monitoring = roadOn;
         box1.Monitorable = roadOn;

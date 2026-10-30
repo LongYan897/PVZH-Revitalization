@@ -89,7 +89,7 @@ public partial class HeroInstance : Control, ITarget, IAttackable
             _tweenTargeted2.Kill();
     }
     private ColorBox _colortgBox = new ColorBox(new Color("ffffff"), new Color("37ff00"), default, default);
-    public void OnCallTargeted(TargetType type, CardModel card)
+    public void OnCallTargeted(TargetType type, CardModel card, Camp? camp)
     {
         if (!type.HasFlag(TargetType.Hero)) return;
         CallTargeted();
@@ -114,7 +114,7 @@ public partial class HeroInstance : Control, ITarget, IAttackable
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(1.02f, 1.02f), 0.7f);
         _tweenTargeted.TweenProperty(sp, "scale", 2.4f * new Vector2(0.98f, 0.98f), 0.7f);
     }
-    public void OnDeleteTargeted(TargetType type)
+    public void OnDeleteTargeted(TargetType type, Camp? camp)
     {
         if (!type.HasFlag(TargetType.Hero)) return;
         DeleteTargeted();

@@ -30,7 +30,6 @@ public class DoubleAtkType : AtkType
     {
         if (isTurnFirst && timing == Timing.AfterAttack)
         {
-            isTurnFirst = false;
             if (card is FighterCardModel fighter)
             {
                 var atkStack = objects[0];
@@ -39,6 +38,7 @@ public class DoubleAtkType : AtkType
                     if (!stack.RoadBattle) return Task.CompletedTask;
                     if (stack.Attacker == fighter)
                     {
+                        isTurnFirst = false;
                         stack.ExtraAttacks++;
                     }
                 }

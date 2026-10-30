@@ -2,6 +2,7 @@ using Card.Pack.String;
 using Godot;
 using Hero.Model;
 using Pack;
+using Play;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,9 +53,26 @@ public class PresetPack : CardPack
     public virtual HeroModel Hero { get; set; }
 
     /// <summary>
+    /// 已经拥有的卡牌数量
+    /// </summary>
+    public int LockedCard
+    {
+        get
+        {
+            if (this is DIYPack)
+                return 0;
+            else
+            {
+                var hash = Cards.Select(c => c.Title);
+                var haSet = hash.ToHashSet();
+                return haSet.Sum(c=>Math.Min(PlayerManager.HostPlayer.Asset.GetAmount(c),hash.Count(c1=>c1 == c)));
+            }
+        }
+    }
+    /// <summary>
     /// 是否已经获取
     /// </summary>
-    public virtual bool Gained { get; set; }
+    public virtual bool Gained => LockedCard == 40;
 
     /// <summary>
     /// 特殊的卡面

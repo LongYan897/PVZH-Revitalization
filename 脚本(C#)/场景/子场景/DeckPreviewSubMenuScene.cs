@@ -24,6 +24,9 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
             GetNode<Sprite2D>("%封皮").Texture = (CurrentPack.CustomFrame ?? CurrentPack.Hero.Data.DeckIcon).Load<Texture2D>();
             GetNode<Label>("%名称").Text = CurrentPack.PackName;
             GetNode<Label>("%描述").Text = CurrentPack.Description;
+            GetNode<Label>("%进度数字").Text = CurrentPack.LockedCard.ToString();
+            GetNode<Panel>("%进度绿色条").Size = new(CurrentPack.LockedCard * 368f / 40f, 45f);
+            GetNode<Panel>("%进度绿色亮条").Size = new(CurrentPack.LockedCard * 366f / 40f, 23f);
             await CreateDeckCards();
         }
     }
@@ -104,6 +107,7 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
                 node.ForceShowAmount = true;
                 node.ForcedAmount = showOwned;
                 node.Fresh();
+                node.PreventGray = true;
             }
 
             if (showMissing > 0 && unownedContainer != null)

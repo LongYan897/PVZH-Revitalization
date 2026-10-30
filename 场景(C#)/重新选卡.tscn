@@ -49,6 +49,8 @@ texture = ExtResource("2_wp0en")
 layout_mode = 0
 offset_right = 245.0
 offset_bottom = 245.0
+scale = Vector2(1.2, 1.2)
+pivot_offset_ratio = Vector2(0.5, 0.5)
 flat = true
 
 [node name="刷新卡牌2" type="TextureRect" parent="." unique_id=1660004938]
@@ -65,6 +67,8 @@ texture = ExtResource("2_wp0en")
 layout_mode = 0
 offset_right = 245.0
 offset_bottom = 245.0
+scale = Vector2(1.2, 1.2)
+pivot_offset_ratio = Vector2(0.5, 0.5)
 flat = true
 
 [node name="刷新卡牌3" type="TextureRect" parent="." unique_id=714018046]
@@ -81,6 +85,8 @@ texture = ExtResource("2_wp0en")
 layout_mode = 0
 offset_right = 245.0
 offset_bottom = 245.0
+scale = Vector2(1.2, 1.2)
+pivot_offset_ratio = Vector2(0.5, 0.5)
 flat = true
 
 [node name="刷新卡牌4" type="TextureRect" parent="." unique_id=121093812]
@@ -97,6 +103,8 @@ texture = ExtResource("2_wp0en")
 layout_mode = 0
 offset_right = 245.0
 offset_bottom = 245.0
+scale = Vector2(1.2, 1.2)
+pivot_offset_ratio = Vector2(0.5, 0.5)
 flat = true
 
 [node name="开始战斗" type="NinePatchRect" parent="." unique_id=1634395243]

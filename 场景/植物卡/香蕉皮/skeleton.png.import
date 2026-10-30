@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3ym64jfwevjd"
-path="res://.godot/imported/繁枝叶茂.png-e2d8ae0a64090317d911799e73efc733.ctex"
+uid="uid://q7klkp4vu7bs"
+path="res://.godot/imported/skeleton.png-67d368c690dbfc6491de47069c3b5c63.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://场景/植物卡/枝繁叶茂/繁枝叶茂.png"
-dest_files=["res://.godot/imported/繁枝叶茂.png-e2d8ae0a64090317d911799e73efc733.ctex"]
+source_file="res://场景/植物卡/香蕉皮/skeleton.png"
+dest_files=["res://.godot/imported/skeleton.png-67d368c690dbfc6491de47069c3b5c63.ctex"]
 
 [params]
 

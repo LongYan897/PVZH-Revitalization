@@ -309,9 +309,9 @@ texture = ExtResource("5_8r7al")
 [node name="故事标签" type="RichTextLabel" parent="." unique_id=1037280863]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = -270.0
+offset_left = -283.0
 offset_top = 316.0
-offset_right = 270.0
+offset_right = 283.0
 offset_bottom = 576.0
 pivot_offset_ratio = Vector2(0.5, 0)
 theme_override_colors/default_color = Color(1, 1, 1, 1)
@@ -327,8 +327,9 @@ theme_override_font_sizes/bold_italics_font_size = 38
 theme_override_font_sizes/italics_font_size = 38
 theme_override_font_sizes/mono_font_size = 38
 bbcode_enabled = true
-text = "个子越高，摔得越疼。
+text = "个子越高，摔得越疼。当然是这样的
 "
+scroll_active = false
 horizontal_alignment = 1
 
 [node name="基础信息" type="Node2D" parent="." unique_id=1001697755]

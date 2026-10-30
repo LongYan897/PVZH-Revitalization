@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dpqmhlv4g860a"]
+
+[ext_resource type="Texture2D" uid="uid://cvnlklgk31l7c" path="res://素材/ui/界面ui/frame_stroke #139990.png" id="1_coa38"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_setff"]
+
+[node name="定制卡组" type="Node2D" unique_id=361804895]
+
+[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=1827932582]
+modulate = Color(0, 0.9833336, 1, 1)
+material = SubResource("ShaderMaterial_setff")
+offset_left = -41.0
+offset_top = 257.0
+offset_right = 755.0
+offset_bottom = 337.0
+texture = ExtResource("1_coa38")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40

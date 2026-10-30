@@ -566,6 +566,10 @@ visible = false
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
+[node name="Center" type="Marker2D" parent="." unique_id=2047118299]
+unique_name_in_owner = true
+position = Vector2(360, 500)
+
 [editable path="道路层"]
 [editable path="费用容器/费用/费用特效动画"]
 [editable path="费用容器/费用2/费用特效动画2"]

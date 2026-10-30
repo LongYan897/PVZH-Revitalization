@@ -77,6 +77,7 @@ texture = ExtResource("3_x76yt")
 [node name="战斗高亮" type="Sprite2D" parent="." unique_id=1690327809]
 unique_name_in_owner = true
 visible = false
+z_index = 25
 material = SubResource("ShaderMaterial_o6ctq")
 position = Vector2(-1.66893e-06, -5)
 scale = Vector2(0.9565217, 1.2064632)
@@ -210,6 +211,10 @@ position = Vector2(0, -219)
 unique_name_in_owner = true
 position = Vector2(0, -118)
 
+[node name="Pos3" type="Marker2D" parent="." unique_id=1060324421]
+unique_name_in_owner = true
+position = Vector2(0, -167)
+
 [node name="Hero" type="Marker2D" parent="." unique_id=2103997853]
 unique_name_in_owner = true
 position = Vector2(0, 263)
@@ -235,6 +240,16 @@ texture = ExtResource("4_ewqbq")
 expand_mode = 1
 metadata/_edit_use_anchors_ = true
 
+[node name="碰撞4" type="Button" parent="植物_3" unique_id=109464427]
+unique_name_in_owner = true
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 100.0
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+flat = true
+metadata/_edit_use_anchors_ = true
+
 [node name="植物_僵尸2" type="Node2D" parent="." unique_id=2071820117]
 unique_name_in_owner = true
 visible = false
@@ -250,3 +265,13 @@ scale = Vector2(1.0000001, 1.0000001)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("4_ewqbq")
 expand_mode = 1
+
+[node name="碰撞5" type="Button" parent="植物_僵尸2" unique_id=1073585242]
+unique_name_in_owner = true
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 100.0
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+flat = true
+metadata/_edit_use_anchors_ = true

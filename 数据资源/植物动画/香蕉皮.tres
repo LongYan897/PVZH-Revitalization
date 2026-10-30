@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://rov1yso5kiiv"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://bufkq84hfhneq" path="res://场景/植物卡/香蕉皮/香蕉皮.atlas" id="1_dewln"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://crp82234ul3o3" path="res://场景/植物卡/香蕉皮/香蕉皮.skel" id="2_eq635"]
+
+[resource]
+atlas_res = ExtResource("1_dewln")
+skeleton_file_res = ExtResource("2_eq635")

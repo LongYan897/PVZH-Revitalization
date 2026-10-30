@@ -69,13 +69,14 @@ public partial class CardDeck : Control
         SetInnerMouseEnabled(false);
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
         if (@event is InputEventMouseButton mouseButton && mouseButton.Pressed)
         {
-            if (CurrentEnable != null)
+            if (CurrentEnable != this) return;
+            if (!new Rect2(Vector2.Zero, GetNode<Button>("Button").Size).HasPoint(GetNode<Button>("Button").GetLocalMousePosition()))
             {
-                CurrentEnable.UnPressed();
+                CurrentEnable?.UnPressed();
                 CurrentEnable = null;
             }
         }
@@ -93,10 +94,18 @@ public partial class CardDeck : Control
         GetNode<SubMenu>("%编辑").Function(preset is DIYPack);
         GetNode<SubMenu>("%信息").Function(preset is not DIYPack);
         GetNode<Label>("%Label").Text = preset.PackName;
+        GetNode<Node2D>("%进度").Visible = preset is not DIYPack;
         RegisterInner("%操作按钮");
         RegisterInner("%信息");
         RegisterInner("%编辑");
         SetInnerMouseEnabled(false);
+        if (preset is not DIYPack)
+        {
+            var progress = preset.LockedCard;
+            GetNode<Label>("%进度数字").Text = progress.ToString();
+            GetNode<Panel>("%进度绿色条").Size = new(progress * (122f / 40f),41f);
+            GetNode<Panel>("%进度绿色亮条").Size = new(progress * (120f / 40f), 20f);
+        }
     }
 
     private void RegisterInner(string path)

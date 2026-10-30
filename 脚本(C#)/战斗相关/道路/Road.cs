@@ -216,16 +216,30 @@ public class Road
         await CardCmd.TimingOnCards(cardModel, Timing.AfterRoadChanged, this);
     }
     /// <summary>
+    /// 添加战斗单位到该道路
+    /// </summary>
+    /// <param name="fighter">要添加的战斗单位</param>
+    public void AddFighter(Fighter fighter)
+    {
+        fighters.Add(fighter);
+    }
+    /// <summary>
     /// 移除战斗单位从该道路
     /// </summary>
     /// <param name="fighter">要移除的战斗单位</param>
-
-
     public async Task RemoveFighter(CardModel cardModel, Fighter fighter)
     {
         await cardModel.FireTiming(Timing.OnFighterExit, this, fighter.Model);
         fighters.Remove(fighter);
         await CardCmd.TimingOnCards(cardModel, Timing.AfterRoadChanged, this);
+    }
+    /// <summary>
+    /// 移除战斗单位从该道路
+    /// </summary>
+    /// <param name="fighter">要移除的战斗单位</param>
+    public void RemoveFighter(Fighter fighter)
+    {
+        fighters.Remove(fighter);
     }
     /// <summary>
     /// 获取该道路上的所有战斗单位
@@ -234,5 +248,14 @@ public class Road
     public List<Fighter> GetFighters()
     {
         return fighters;
+    }
+    /// <summary>
+    /// 检查是否能容纳某个单位
+    /// </summary>
+    /// <typeparam name="T">要生成单位的类</typeparam>
+    /// <returns></returns>
+    public bool Containable(FighterCardModel fighter)
+    {
+        return Fighter.CanGenerate(fighter,this);
     }
 }

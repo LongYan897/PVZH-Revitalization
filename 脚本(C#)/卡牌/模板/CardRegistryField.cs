@@ -12,6 +12,8 @@ public static class CardRegistryField
     [URL]
     public static string 弹射 => "使单位移回其所有者的手牌。";
     [URL]
+    public static string 移动 => "单位的位置切换到其他线。";
+    [URL]
     public static string 现身 => "僵尸从墓碑中显现时。";
     [URL]
     public static string 打出 => "单位被打出到场上时。";
@@ -33,4 +35,8 @@ public static class CardRegistryField
     public static string 组队 => "可在同一行与另一植物组队。";
     [URL]
     public static string 墓碑 => "躲在墓碑下，直到锦囊牌阶段。";
+    [URL]
+    public static string 本回合 => "直到战斗阶段结束。";
+    [URL]
+    public static string 下回合 => "直到僵尸出牌阶段开始。";
 }

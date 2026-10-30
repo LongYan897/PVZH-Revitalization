@@ -444,25 +444,25 @@ public partial class NodeCard : Control
         if (_baseScale == Vector2.Zero)
             _baseScale = Scale;
 
-        var hitBtn = GetNode<Button>("碰撞");
+        var hitBtn = GetNode<Button>("%碰撞");
         hitBtn.GuiInput += OnHitButtonGuiInput;
         GetNode<Area2D>("碰撞箱").AreaEntered += AreaEntered;
         GetNode<Area2D>("碰撞箱").AreaExited += AreaExited;
 
-        var infoBtn = GetNode<NinePatchRect>("%信息按钮");
+        var infoBtn = GetNode<InputNineRect>("%信息按钮");
         BindControlClickAnimation(infoBtn, OnInfoButtonPressed);
 
-        var opBtn = GetNode<NinePatchRect>("%操作按钮");
+        var opBtn = GetNode<InputNineRect>("%操作按钮");
         BindControlClickAnimation(opBtn);
     }
-    private void BindControlClickAnimation(Control control, System.Action onClick = null)
+    private void BindControlClickAnimation(InputNineRect control, System.Action onClick = null)
     {
         if (control == null) return;
         SetupPivot(control);
         var originScale = control.Scale;
         bool pressing = false;
 
-        control.GuiInput += (@event) =>
+        control.Input += (@event) =>
         {
             if (!control.Visible) return;
             if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
@@ -505,11 +505,26 @@ public partial class NodeCard : Control
 
         CardDes.DisplayDescription(Model);
     }
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
-        if (@event is not InputEventMouseButton mb) return;
-        if (_openedCard != null && _openedCard != this && IsInstanceValid(_openedCard))
-            _openedCard.CloseNonBattle();
+        if (_openedCard == this && IsInstanceValid(this))
+        {
+            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left && mb.Pressed)
+            {
+                var infoBg = GetNodeOrNull<Control>("%信息背景");
+                if (infoBg != null && infoBg.Visible)
+                {
+                    if (!new Rect2(Vector2.Zero, infoBg.Size).HasPoint(infoBg.GetLocalMousePosition()))
+                    {
+                        CloseNonBattle();
+                    }
+                }
+                else
+                {
+                    CloseNonBattle();
+                }
+            }
+        }
     }
 
     private async void OnHitButtonGuiInput(InputEvent @event)
@@ -614,7 +629,7 @@ public partial class NodeCard : Control
         GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
         GetNode<Node2D>("正面卡牌").Visible = false;
         GetNode<TextureRect>("牌背").Visible = false;
-        GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+        GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
         KillReturnTween();
         KillClickTween();
         _overlappingAreas.Clear();
@@ -626,7 +641,7 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
-        TargetRegistry.CallTargeted(Model, Model.TargetType, false);
+        TargetRegistry.CallTargeted(Model, Model.TargetType, false,Model.Camp);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
     {
@@ -816,7 +831,7 @@ public partial class NodeCard : Control
 
         var savedTarget = target;
         if (ChoiceCard == this) ChoiceCard = null;
-        TargetRegistry.DeleteTargeted(Model.TargetType);
+        TargetRegistry.DeleteTargeted(Model.TargetType,Model.Camp);
         ClearTarget(true);
         if (savedTarget == null)
         {
@@ -832,13 +847,13 @@ public partial class NodeCard : Control
             PlayerBox.StuffCard();
             await DiscallDragging();
             if (GodotObject.IsInstanceValid(this) && HasNode("碰撞"))
-                GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+                GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
             try
             {
                 if (playedModel != null)
                 {
-                    await CardCmd.PlayedCard(playedModel, savedTarget);
                     await playedModel.DestroyMe();
+                    await CardCmd.PlayedCard(playedModel, savedTarget);
                 }
             }
             finally
@@ -946,12 +961,14 @@ public partial class NodeCard : Control
             _currentTargetArea = bestArea;
 
             var kind = (string)bestArea.GetMeta("TargetType");
-            var fighter = Model as FighterCardModel;
+            FighterCardModel fighter = null;
+            if (Model is FighterCardModel fighterCard)
+                fighter = fighterCard;
             var ctx = kind switch
             {
-                "Road" => new TargetContext { Line = true, FighterCard = fighter },
-                "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
-                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+                "Road" => new TargetContext { Line = true, FighterCard = fighter ,Camp = Model.Camp },
+                "Grid" => new TargetContext { Grid = true, FighterCard = fighter, Camp = Model.Camp },
+                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter, Camp = Model.Camp },
                 _ => default
             };
 
@@ -964,15 +981,17 @@ public partial class NodeCard : Control
     {
         if (target == null) return;
 
-        var fighter = Model as FighterCardModel;
+        FighterCardModel fighter = null;
+        if (Model is FighterCardModel fighterCard)
+            fighter = fighterCard;
         if (_currentTargetArea != null && IsInstanceValid(_currentTargetArea))
         {
             var kind = (string)_currentTargetArea.GetMeta("TargetType");
             var ctx = kind switch
             {
-                "Road" => new TargetContext { Line = true, FighterCard = fighter },
-                "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
-                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+                "Road" => new TargetContext { Line = true, FighterCard = fighter, Camp = Model.Camp },
+                "Grid" => new TargetContext { Grid = true, FighterCard = fighter, Camp = Model.Camp },
+                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter, Camp = Model.Camp },
                 _ => default
             };
             if (!isPlayed)
@@ -1733,7 +1752,7 @@ public partial class NodeCard : Control
             PlayerBox.StuffCard();
             await DiscallDragging();
             Visible = false;
-            GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+            GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
             ctx.Target.AutoDistargeted(ctx2);
             await CardCmd.PlayedCard(Model, ctx.Target);
             await Model.DestroyMe();

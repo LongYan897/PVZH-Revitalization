@@ -23,8 +23,8 @@ public class PodFather : FighterCardModel
                     if (fighter1.HasLabel("豌豆"))
                     {
                         await Task.WhenAll(
-                            fighter1.Atk.Gain(card.GetSignInt("Attack"),Variable.VariableReason.Plant),
-                            fighter1.Hp.Gain(card.GetSignInt("Health"),Variable.VariableReason.Plant));
+                            fighter1.Atk.Gain(card.GetSignInt("Strength"),Variable.VariableReason.Plant),
+                            fighter1.GainHp(card.GetSignInt("Health"),Variable.VariableReason.Plant));
                     }
                 }
             }

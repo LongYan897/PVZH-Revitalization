@@ -8,6 +8,7 @@ using Logger;
 using Pack;
 using Phrases;
 using Play;
+using Scene;
 using Spine;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,15 @@ public class CardModel
     /// <param name="sign">变量名称</param>
     /// <returns></returns>
     public int GetSignInt(string sign)
-        => GetSignVariable(sign).AbsValue;
+        => GetSignVariable(sign)?.AbsValue ?? 0;
+
+    /// <summary>
+    /// 从描述中获取按名字 + 标签整数变量的值，
+    /// 等价于 GetSignInt($"{name}@{tag}")。
+    /// </summary>
+    public int GetSignInt(string name, string tag)
+        => GetSignVariable(name, tag)?.AbsValue ?? 0;
+
     /// <summary>
     /// 从描述中获取整数变量
     /// </summary>
@@ -70,6 +79,17 @@ public class CardModel
         }
         return null;
     }
+
+
+    /// <summary>
+    /// 从描述中获取按名字 + 标签整数变量的值，
+    /// 等价于 GetSignVariable($"{name}@{tag}")
+    /// </summary>
+    /// <param name="sign">变量名称</param>
+    /// <returns></returns>
+    public DescriptionVariable GetSignVariable(string sign, string tag)
+        => GetSignVariable(string.IsNullOrEmpty(tag) ? sign : $"{sign}@{tag}");
+
     /// <summary>
     /// 检测卡牌是否能打出
     /// </summary>
@@ -129,6 +149,13 @@ public class CardModel
     {
         return Load<T>();
     }
+
+    /// <summary>
+    /// 获取战斗的中心
+    /// </summary>
+    /// <returns></returns>
+    public static Vector2 CenterForCard() => BattleSubMenuScene.Center;
+
     /// <summary>
     /// 初始化卡牌基类
     /// </summary>
@@ -478,12 +505,17 @@ public class CardModel
         CardCmd.Add(card);
         return card;
     }
+
     private static readonly Regex DescriptionVarRegex =
     new(@"=([^=]+)=\{([+-]?)(\d+)\}", RegexOptions.Compiled);
 
+    private static readonly Regex TaggedKeyRegex =
+        new(@"^([^#]+)#([^#]+)#$", RegexOptions.Compiled);
+
     /// <summary>
     /// 从描述文本里解析 =XXX={+N} / =XXX={-N} / =XXX={N}，
-    /// 把数值按绝对值 + 方向存入 _variables
+    /// 把数值按绝对值 + 方向存入 _variables。<br/>
+    /// =Name#Tag#={N} 语法：内部 key 记为 "Name@Tag"<br/>
     /// </summary>
     private void ParseDescriptionVariables(string description)
     {
@@ -491,7 +523,7 @@ public class CardModel
 
         foreach (Match m in DescriptionVarRegex.Matches(description))
         {
-            string key = m.Groups[1].Value;
+            string rawKey = m.Groups[1].Value;
             string sign = m.Groups[2].Value;
             string numStr = m.Groups[3].Value;
 
@@ -499,6 +531,14 @@ public class CardModel
             if (absValue < 0) absValue = -absValue;
 
             bool isNegative = sign == "-";
+
+            string key = rawKey;
+            var tm = TaggedKeyRegex.Match(rawKey);
+            if (tm.Success)
+                key = $"{tm.Groups[1].Value}@{tm.Groups[2].Value}";
+
+            if (_variables.Any(v => v.Key == key))
+                continue;
 
             _variables.Add(new DescriptionVariable(key, absValue, isNegative));
         }

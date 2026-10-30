@@ -44,6 +44,20 @@ public class FighterCardModel : CardModel
         if (IsPlaced)
             await func(Fighter.GetNode(this).AnimationNode);
     }
+    /// <summary>
+    /// 移动到一条线上的位置
+    /// </summary>
+    /// <param name="road">移到的线路</param>
+    /// <param name="location">移动的位置</param>
+    /// <returns></returns>
+    public async Task MoveTo(Road road,Location location)
+    {
+        if (!IsPlaced) return;
+        await Fighter.MoveTo(this,road,location);
+        await FireTiming(Timing.WhenMoved, road, this);
+        await CardCmd.TimingOnCards(this, Timing.WhenMoved, road, this);
+    }
+
     protected sealed override void AfterClone()
     {
         base.AfterClone();

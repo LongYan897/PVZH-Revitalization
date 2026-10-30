@@ -76,7 +76,7 @@ public class PlayerAsset
     public int GetAmount(CardModel card)
     {
         if (card == null) return 0;
-        return _cards.Count(c => c == card);
+        return GetAmount(card.Title);
     }
 
     /// <summary>

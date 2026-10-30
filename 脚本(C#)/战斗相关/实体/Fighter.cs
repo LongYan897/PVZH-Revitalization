@@ -341,13 +341,13 @@ public partial class Fighter : Control, ITarget, IAttackable
         }
     }
 
-    public void OnCallTargeted(TargetType targetType, CardModel card)
+    public void OnCallTargeted(TargetType targetType, CardModel card,Camp? camp)
     {
         if (!targetType.HasFlag(TargetType.Fighters) && !targetType.HasFlag(TargetType.GraveStone)) return;
         CallTargeted();
     }
 
-    public void OnDeleteTargeted(TargetType targetType)
+    public void OnDeleteTargeted(TargetType targetType, Camp? camp)
     {
         if (targetType.HasFlag(TargetType.Fighters) || targetType.HasFlag(TargetType.GraveStone))
             DeleteTargeted();
@@ -918,6 +918,38 @@ public partial class Fighter : Control, ITarget, IAttackable
     {
         var f = GetNode(fighter);
         f.Invisible(resistIcon);
+    }
+
+    public static async Task MoveTo(FighterCardModel model,Road road,Location location)
+    {
+        var f = GetNode(model);
+        if (road == f.Road) return;
+        if (!CanGenerate(model, road)) return;
+        f.Road.RemoveFighter(f);
+        f.Road = road;
+        road.AddFighter(f);
+        var node = NodeRoad.GetNode(road);
+        Tween tween = f.CreateTween();
+        if (model.Camp.Zombie())
+            tween.TweenProperty(f,"position", node.GetFighterLocation(location) ,0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        else
+        {
+            var p = road.GetFighters().FirstOrDefault(f => f.Model.Location == location);
+            if (p != null)
+            {
+                if (location == Location.PlantFront)
+                {
+                    node.SwapForCoopGrid();
+                }
+                else
+                {
+                    node.SwapForGrid();
+                }
+            }
+            tween.TweenProperty(f, "position", node.GetFighterLocation(location), 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        }
+        await tween.ToTask();
+        await Task.WhenAll(f.PlayAnimation("intro",true),model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0,"intro") : Task.CompletedTask);
     }
 
     private void Fresh()
