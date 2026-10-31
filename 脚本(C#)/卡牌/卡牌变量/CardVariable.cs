@@ -1,4 +1,3 @@
-
 using Card.Cmd;
 using System;
 using System.Linq;
@@ -32,7 +31,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
     {
         var val = variable.Current;
         int v = variable.Set(value, reason);
-        await CardCmd.ChangedCard(card, sign, val, value, reason);
+        await NotifyChanged(val, value, reason);
         return v;
     }
     /// <summary>
@@ -46,7 +45,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
         var old = variable.Current;
         var value = history.Before;
         variable.Rewind(Index);
-        await CardCmd.ChangedCard(card, sign, old, value, VariableReason.Reset);
+        await NotifyChanged(old, value, VariableReason.Reset);
     }
     /// <summary>
     /// 回溯值(不清空历史)
@@ -60,7 +59,7 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
         var old = variable.Current;
         var value = history.Before;
         variable.RewindReasonable(Index, reason);
-        await CardCmd.ChangedCard(card, sign, old, value, reason);
+        await NotifyChanged(old, value, reason);
     }
 
     /// <summary>
@@ -71,7 +70,13 @@ public class CardVariable<T>(CardModel cardModel, string sign, T obj) : ICardVar
     {
         var old = variable.Current;
         variable.Reset();
-        await CardCmd.ChangedCard(card, sign, old, variable.Current, VariableReason.Reset);
+        await NotifyChanged(old, variable.Current, VariableReason.Reset);
+    }
+
+    private async Task NotifyChanged(T old, object value, VariableReason reason)
+    {
+        if (reason == VariableReason.Rule) return;
+        await CardCmd.ChangedCard(card, sign, old, (T)value, reason);
     }
 }
 
@@ -104,7 +109,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
     {
         var old = variable.Current;
         variable.Gain(value, reason);
-        await CardCmd.ChangedCard(card, sign, old, variable.Current, reason);
+        await NotifyChanged(old, variable.Current, reason);
 
         return async () =>
         {
@@ -113,7 +118,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
             if (!canNegative && o - v < 0)
                 v = o;
             variable.Lose(v, VariableReason.Reset);
-            await CardCmd.ChangedCard(card, sign, o, variable.Current, reason);
+            await NotifyChanged(o, variable.Current, reason);
         };
     }
 
@@ -129,13 +134,13 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
             value = before;
 
         variable.Lose(value, reason);
-        await CardCmd.ChangedCard(card, sign, before, variable.Current, reason);
+        await NotifyChanged(before, variable.Current, reason);
 
         return async () =>
         {
             var o = variable.Current;
             variable.Gain(value, VariableReason.Reset);
-            await CardCmd.ChangedCard(card, sign, o, variable.Current, reason);
+            await NotifyChanged(o, variable.Current, reason);
         };
     }
     /// <summary>
@@ -148,7 +153,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
     {
         var val = variable.Current;
         int v = variable.Set(value, reason);
-        await CardCmd.ChangedCard(card, sign, val, value, reason);
+        await NotifyChanged(val, value, reason);
         return v;
     }
 
@@ -163,7 +168,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
         var old = variable.Current;
         var value = history.Before;
         variable.Rewind(Index);
-        await CardCmd.ChangedCard(card, sign, old, value, VariableReason.Reset);
+        await NotifyChanged(old, value, VariableReason.Reset);
     }
 
     /// <summary>
@@ -178,7 +183,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
         var old = variable.Current;
         var value = history.Before;
         variable.RewindReasonable(Index, reason);
-        await CardCmd.ChangedCard(card, sign, old, value, reason);
+        await NotifyChanged(old, value, reason);
     }
     /// <summary>
     /// 重置值
@@ -188,7 +193,7 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
     {
         var old = variable.Current;
         variable.Reset();
-        await CardCmd.ChangedCard(card, sign, old, variable.Current, VariableReason.Reset);
+        await NotifyChanged(old, variable.Current, VariableReason.Reset);
     }
     /// <summary>
     /// 是否是相较于Base的值减少
@@ -198,6 +203,12 @@ public class CardIntVariable(CardModel cardModel, string sign, int baseValue, bo
     /// 是否是相较于Base的值增加
     /// </summary>
     public bool PositiveChanged => variable.PositiveChanged;
+
+    private async Task NotifyChanged(int old, object value, VariableReason reason)
+    {
+        if (reason == VariableReason.Rule) return;
+        await CardCmd.ChangedCard(card, sign, old, (int)value, reason);
+    }
 }
 
 /// <summary>

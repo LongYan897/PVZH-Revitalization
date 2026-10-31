@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dxn8voykbfwe4"]
+
+[ext_resource type="Texture2D" uid="uid://dyxcoc66d5ecv" path="res://场景/植物卡组/宇宙豌豆植物/Cosmic Pea.png" id="1_ny8xn"]
+
+[node name="卡面" type="Control" unique_id=1740826774]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1037796367]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 13.0
+offset_right = 272.0
+offset_bottom = 197.0
+texture = ExtResource("1_ny8xn")
+expand_mode = 1
+stretch_mode = 3

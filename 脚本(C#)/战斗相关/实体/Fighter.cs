@@ -238,6 +238,36 @@ public partial class Fighter : Control, ITarget, IAttackable
     }
 
     /// <summary>
+    /// 将当前战斗单位变化为另一个战斗单位
+    /// </summary>
+    /// <param name="newModel">变化后绑定的卡牌</param>
+    public async Task TransformTo(FighterCardModel newModel)
+    {
+        if (Model == null || Model.CardTag.HasFlag(CardTag.GraveStone)) return;
+        if (newModel == null || newModel == Model) return;
+        if (newModel.IsDie) return;
+
+        var oldModel = Model;
+        var road = Road;
+        var location = index;
+
+        await road.RemoveFighter(oldModel, this);
+
+        oldModel.Road = null;
+        oldModel.Location = default;
+
+        Model = newModel;
+        newModel.Road = road;
+        newModel.Location = location;
+
+        isFirstPlace = true;
+
+        Fresh();
+
+        await road.AddFighter(newModel, this);
+    }
+
+    /// <summary>
     /// 死亡表现
     /// </summary>
     public async Task Die()
@@ -925,9 +955,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         var f = GetNode(model);
         if (road == f.Road) return;
         if (!CanGenerate(model, road)) return;
-        f.Road.RemoveFighter(f);
-        f.Road = road;
-        road.AddFighter(f);
+        await f.Road.RemoveFighter(model, f);
         var node = NodeRoad.GetNode(road);
         Tween tween = f.CreateTween();
         if (model.Camp.Zombie())
@@ -950,6 +978,8 @@ public partial class Fighter : Control, ITarget, IAttackable
         }
         await tween.ToTask();
         await Task.WhenAll(f.PlayAnimation("intro",true),model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0,"intro") : Task.CompletedTask);
+        f.Road = road;
+        await road.AddFighter(model, f);
     }
 
     private void Fresh()

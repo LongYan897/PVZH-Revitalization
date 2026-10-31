@@ -12,7 +12,7 @@ public abstract class Buff
     /// <summary>
     /// 能否被转移到其他卡牌上
     /// </summary>
-    public virtual bool IsTransferable => true;
+    public virtual bool IsTransferable => false;
     /// <summary>
     /// 是否只有在卡牌以单位形式存在时才调用
     /// </summary>
@@ -42,16 +42,21 @@ public class CustomBuff : Buff
     private readonly Timing[] _timings;
     private readonly Func<Timing, CardModel, object[], Task> _callback;
     private readonly int _priority;
-    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback,int priority = 1)
+    private readonly bool _isTransferable;
+    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback,int priority = 1,bool isPlaced = true, bool isTransferable = false)
     {
         _timings = timings ?? Array.Empty<Timing>();
         _callback = callback;
         _priority = priority;
+        OnlyPlaced = isPlaced;
+        _isTransferable = isTransferable;
     }
 
     public override int Priority => _priority;
 
     public override Timing[] Timings => _timings;
+
+    public override bool IsTransferable => _isTransferable;
 
     public override Task OnTiming(Timing timing, CardModel card, params object[] parameters)
     {

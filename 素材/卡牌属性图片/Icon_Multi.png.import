@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3ym64jfwevjd"
-path="res://.godot/imported/skeleton.png-5ca70d4ac4b722e008ec3314734a6359.ctex"
+uid="uid://be7aibpnuddo3"
+path="res://.godot/imported/Icon_Multi.png-713b17bca48fff0d0c8b5afb5adcdca2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://场景/植物卡/枝繁叶茂/skeleton.png"
-dest_files=["res://.godot/imported/skeleton.png-5ca70d4ac4b722e008ec3314734a6359.ctex"]
+source_file="res://素材/卡牌属性图片/Icon_Multi.png"
+dest_files=["res://.godot/imported/Icon_Multi.png-713b17bca48fff0d0c8b5afb5adcdca2.ctex"]
 
 [params]
 

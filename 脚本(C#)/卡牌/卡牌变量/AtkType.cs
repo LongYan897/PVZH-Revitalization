@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Card;
 
@@ -130,18 +131,19 @@ public abstract class AtkType
         return null;
     }
 }
-
 /// <summary>
 /// 合并的攻击类型
 /// </summary>
 public sealed class MergedAtkType(IEnumerable<AtkType> types) : AtkType
 {
-    public const string MergedIconSkelPath = "res://icons/atk_merged.tres";
+    public const string MergedIconSkelPath = "res://素材(C#)/文本图片/Icon_Multi.png";
 
     private readonly List<AtkType> _types = types?
         .Where(t => t != null)
         .OrderByDescending(t => t.Priority)
         .ToList() ?? new List<AtkType>();
+
+    private Buff iBuff;
 
     /// <summary>包含的子攻击类型</summary>
     public IReadOnlyList<AtkType> AtkTypes => _types;
@@ -158,8 +160,22 @@ public sealed class MergedAtkType(IEnumerable<AtkType> types) : AtkType
     public override string ExLabel =>
         string.Join("，", _types.Select(t => t.ExLabel).Where(s => !string.IsNullOrEmpty(s)));
 
-    public override Buff Buff =>
-        _types.Select(t => t.Buff).FirstOrDefault(b => b != null);
+    public override Buff Buff => iBuff ??= BuildBuff(_types);
 
     public override string IconPath => null;
+
+    private static Buff BuildBuff(IReadOnlyList<AtkType> types)
+    {
+        var buffs = types
+            .Select(t => t.Buff)
+            .Where(b => b != null)
+            .ToList();
+
+        return buffs.Count switch
+        {
+            0 => null,
+            1 => buffs[0],
+            _ => new MergedBuff(buffs),
+        };
+    }
 }

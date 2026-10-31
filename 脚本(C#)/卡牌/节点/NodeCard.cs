@@ -444,7 +444,36 @@ public partial class NodeCard : Control
         this, "scale", cannonical * 1f, 0.05f);
         await ToSignal(tween3, Tween.SignalName.Finished);
     }
+    /// <summary>
+    /// 将该单位变化为另一个单位
+    /// </summary>
+    public async Task TransformTo(CardModel newModel)
+    {
+        if (newModel == null) return;
+        if (Model == null || Model == newModel) return;
+        if (newModel.Status == Status.FaceDown || Model.Status == Status.FaceDown) return;
 
+        Model = newModel;
+        instances[this] = newModel;
+        Fresh();
+
+        var cannonical = Scale;
+
+        var tween = CreateTween();
+        tween.TweenProperty(this, "scale", cannonical * 0.6f, 0.12f)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.In);
+        await ToSignal(tween, Tween.SignalName.Finished);
+
+        tween = CreateTween();
+        tween.TweenProperty(this, "scale", cannonical * 1.15f, 0.1f)
+            .SetTrans(Tween.TransitionType.Back)
+            .SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(this, "scale", cannonical, 0.1f)
+            .SetTrans(Tween.TransitionType.Back)
+            .SetEase(Tween.EaseType.Out);
+        await ToSignal(tween, Tween.SignalName.Finished);
+    }
     private bool _isDragging;
     private Vector2 _cardOriginPos;
     private Vector2 _mouseDownGlobal;

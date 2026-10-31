@@ -3,6 +3,7 @@ using Controller;
 using Extension;
 using FileExtension;
 using Godot;
+using Play;
 using Spine;
 using System;
 using System.Collections.Generic;
@@ -315,6 +316,6 @@ public partial class OpenCardControl : Node2D
 	public List<(string Card, int Count)> CalculateCards()
 	{
 		CardPackExtensions c1 = new();
-		return c1.DrawCard(PackName, CardCounts, Main.Asset);
+		return c1.DrawCard(PackName, CardCounts, PlayerManager.HostPlayer.Asset);
 	}
 }

@@ -75,12 +75,11 @@ public abstract class HeroModel
     /// <returns></returns>
     public async Task Changed(string sign, int before, int after, int delta, VariableReason reason, CardModel cardModel, params object[] objects)
     {
-        if (reason == VariableReason.None) return;
         if (sign == "MaxHealth")
         {
             if (Health.Current > after)
             {
-                await Health.Set(after, VariableReason.None, null);
+                await Health.Set(after, VariableReason.Rule, null);
             }
         }
         else if (sign == "Cost")

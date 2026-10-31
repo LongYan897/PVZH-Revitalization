@@ -50,5 +50,9 @@ public enum VariableReason
     /// <summary>
     /// 失去的
     /// </summary>
-    Loss = 1 << 11
+    Loss = 1 << 11,
+    /// <summary>
+    /// 来自规则的效果(不会触发时点)
+    /// </summary>
+    Rule = 1 << 12,
 }
