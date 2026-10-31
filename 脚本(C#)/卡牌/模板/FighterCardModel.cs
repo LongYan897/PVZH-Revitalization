@@ -79,12 +79,14 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
      
     protected sealed override void AfterClone()
     {
-        base.AfterClone();
         Atk = new(this, "Attack", Atk.Current);
         Hp = new(this, "Health", Hp.Current);
         MaxHp = new(this, "HealthMax", MaxHp.Current);
-        AtkType = new(this, "AttackType", AtkType.Current);
-        HpType = new(this, "HealthType", HpType.Current);
+        AtkType = new(this, "AttackType", AtkType.Current.Clone());
+        HpType = new(this, "HealthType", HpType.Current.Clone());
+        RegistBuff(new HpBuff());
+        RegistBuff(AtkType.Current.Buff);
+        RegistBuff(HpType.Current.Buff);
     }
 
     /// <summary>
@@ -260,12 +262,12 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
                 if (Camp == Camp.Zombie)
                 {
                     if (fighters.Count > 2)
-                        return f.Plant1 && f.Model.Camp == Camp.Plant;
+                        return !f.Model.IsDie && f.Plant1 && f.Model.Camp == Camp.Plant;
                     else
-                        return f.Model.Camp == Camp.Plant;
+                        return !f.Model.IsDie && f.Model.Camp == Camp.Plant;
                 }
                 else
-                    return f.Model.Camp == Camp.Zombie;
+                    return !f.Model.IsDie && f.Model.Camp == Camp.Zombie;
             }
             );
         target ??= PlayerManager.GetPlayer(Camp switch { Camp.Zombie => Camp.Plant, Camp.Plant => Camp.Zombie, _ => 0 })?.Status?.AtkMe();

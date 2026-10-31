@@ -21,7 +21,7 @@ namespace Battle.Entity;
 /// </summary>
 public partial class Fighter : Control, ITarget, IAttackable
 {
-    private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/战斗单位.tscn");
+    private static readonly PackedScene Scene = "res://场景(C#)/战斗单位.tscn".Load<PackedScene>();
     private static readonly List<Fighter> Instances = new();
     private const int maxInstance = 40;
     public static void ClearAll()
@@ -437,7 +437,7 @@ public partial class Fighter : Control, ITarget, IAttackable
                         for (int i = 0; i < sc.Curve.PointCount; i++)
                             full.AddPoint(sc.Curve.GetPointPosition(i));
 
-                        if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                        if (Model.AmmoPath.Load() is Texture2D texture)
                             ammoTasks.Add(CreateAmmonAlongCurve(texture, full, remaining));
                     }
                 }
@@ -451,7 +451,7 @@ public partial class Fighter : Control, ITarget, IAttackable
                         _ => Vector2.Zero
                     };
 
-                    if (GD.Load(Model.AmmoPath) is Texture2D texture)
+                    if (Model.AmmoPath.Load() is Texture2D texture)
                         ammoTasks.Add(CreateAmmon(texture, defaultFirePoint, endPos, remaining));
                     else if (spine.HasAnimation("attackEffect"))
                         AnimaActor.PlayInstantAnimationAmmo(Model.AnimationPath, endPos, "attackEffect");
@@ -993,7 +993,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             Scale = new(0.17f, 0.17f);
             if (Model.AnimationScenePath != null)
             {
-                var scene = GD.Load<PackedScene>(Model.AnimationScenePath).Instantiate<Node2D>();
+                var scene = Model.AnimationScenePath.Load<PackedScene>().Instantiate<Node2D>();
                 var col1 = scene.GetNode<Node2D>("Battle").Position;
                 var col2 = scene.GetNode<Node2D>("Battle2").Position;
                 var cols1 = scene.GetNode<Node2D>("Battle").Scale;

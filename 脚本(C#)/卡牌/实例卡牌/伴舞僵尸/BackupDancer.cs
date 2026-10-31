@@ -37,7 +37,7 @@ public class BackupDancer : FighterCardModel
             }
             if (timing == Timing.OnFighterExit)
             {
-                if (card is FighterCardModel fighterCard)
+                if (card is FighterCardModel fighterCard && fighterCard.IsDie)
                 {
                     if (parameters[1] == fighterCard || parameters[1] == target)
                     {

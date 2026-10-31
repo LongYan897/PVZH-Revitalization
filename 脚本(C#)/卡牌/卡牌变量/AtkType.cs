@@ -23,6 +23,7 @@ public class GAtkTypeAttribute : Attribute
 /// </summary>
 public abstract class AtkType
 {
+    public AtkType Clone() => MemberwiseClone() as AtkType;
     public Texture2D Icon => IconPath != null ? IconPath.Load<Texture2D>() : null;
     /// <summary>
     /// 攻击力动画图标

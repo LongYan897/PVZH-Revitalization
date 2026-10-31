@@ -152,7 +152,7 @@ public partial class CardDesPanel : Panel
 
 	public async Task SetContent(string desc)
 	{
-		await CardDes.AppendWithIcons(_rtl, desc, convertLinks: true);
+		await CardDes.AppendWithIcons(_rtl, desc, convertLinks: true,12f);
 		FitToContent();
 	}
 

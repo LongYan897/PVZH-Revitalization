@@ -513,8 +513,9 @@ public class CardModel
     public CardModel Clone()
     {
         CardModel card = MemberwiseClone() as CardModel;
+        card._buffs = [..InitBuffs];
         card.Cost = new CardIntVariable(card, "Cost", Cost.Current);
-        card.Labels = new CardVariable<List<string>>(card, "Labels", new List<string>(Labels.Current));
+        card.Labels = new CardVariable<List<string>>(card, "Labels", [.. Labels.Current]);
         card.AfterClone();
         CardCmd.Add(card);
         return card;

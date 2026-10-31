@@ -12,6 +12,23 @@ using System.Threading.Tasks;
 namespace Card;
 
 /// <summary>
+/// 用于给卡牌描述的URL提供自定义参数（仅支持 static 方法）<br/>
+/// 方法签名必须为：static string Xxx(CardModel model)<br/>
+/// 占位符 {#/&amp;:方法名} 会调用该方法，用返回值替换<br/>
+/// <para>AcceptEffects：</para>
+/// - true（默认）：接受 <c>#</c> / <c>&amp;</c> 带来的额外效果，<c>#</c> 会包成 <c>$值$</c>，<c>&amp;</c> 直接输出<br/>
+/// - false：忽略此效果，无论 <c>#</c> 还是 <c>&amp;</c> 都输出纯文本<br/>
+/// 无论哪种，占位符必须声明对应分隔符（如 <c>{#/&amp;:Camp}</c>）才会被替换<br/>
+/// 返回 null 时占位符原样保留；n / x 是保留字，不会被覆盖
+/// </summary>
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+public class UrlParamsAttribute : Attribute
+{
+    public bool AcceptEffects { get; }
+    public UrlParamsAttribute(bool acceptEffects = true) => AcceptEffects = acceptEffects;
+}
+
+/// <summary>
 /// 用于给卡牌描述的URL设置描述<br/>
 /// 比如<br/>
 /// 我希望给致命设置描述<br/>
@@ -214,6 +231,57 @@ public partial class CardDes : Control
             Fresh();
         }
     }
+    private static Dictionary<string, (MethodInfo method, bool acceptEffects)> _urlParamsCache;
+    private static readonly object _urlParamsCacheLock = new();
+
+    private static Dictionary<string, (MethodInfo method, bool acceptEffects)> GetUrlParamsCache()
+    {
+        if (_urlParamsCache != null) return _urlParamsCache;
+
+        lock (_urlParamsCacheLock)
+        {
+            if (_urlParamsCache != null) return _urlParamsCache;
+
+            var flags = BindingFlags.Public | BindingFlags.NonPublic
+                      | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+
+            var cache = new Dictionary<string, (MethodInfo, bool)>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var type in typeof(CardDes).Assembly.GetTypes())
+            {
+                foreach (var method in type.GetMethods(flags))
+                {
+                    if (!Attribute.IsDefined(method, typeof(UrlParamsAttribute))) continue;
+                    if (method.ReturnType != typeof(string)) continue;
+                    if (!method.IsStatic) continue;
+
+                    var ps = method.GetParameters();
+                    if (ps.Length != 1 || ps[0].ParameterType != typeof(CardModel)) continue;
+
+                    if (cache.ContainsKey(method.Name)) continue;
+
+                    var attr = (UrlParamsAttribute)Attribute.GetCustomAttribute(
+                        method, typeof(UrlParamsAttribute));
+                    cache[method.Name] = (method, attr.AcceptEffects);
+                }
+            }
+
+            _urlParamsCache = cache;
+            return _urlParamsCache;
+        }
+    }
+    private static (string value, bool acceptEffects) GetUrlParamValue(string key, CardModel model)
+    {
+        if (string.IsNullOrEmpty(key) || key == "n" || key == "x")
+            return (null, true);
+
+        var cache = GetUrlParamsCache();
+        if (!cache.TryGetValue(key, out var entry))
+            return (null, true);
+
+        var v = entry.method.Invoke(null, new object[] { model }) as string;
+        return (v, entry.acceptEffects);
+    }
     private static readonly Regex IconRegex =
     new Regex(@"=([^=#\s]+)(?:#([^#=\s]+)#)?=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
 
@@ -231,7 +299,8 @@ public partial class CardDes : Control
 
     private static readonly Regex ArgAfterRegex =
         new Regex(@"_([^&#_]+)([&#])([^&#_]+)\2_", RegexOptions.Compiled);
-
+    private static readonly Regex PlaceholderRegex =
+        new Regex(@"\{([#&/]+):(\w+)\}", RegexOptions.Compiled);
     private static string ConvertLabels(string text) =>
         LabelRegex.Replace(text,
             mm => $"[color=#b3ff30][u]{mm.Groups[1].Value}[/u][/color]");
@@ -301,30 +370,51 @@ public partial class CardDes : Control
         return false;
     }
 
-    private static readonly Regex PlaceholderRegex =
-    new Regex(@"\{([#&/]+):([nx])\}", RegexOptions.Compiled);
-
-    private static string ReplacePlaceholders(string rawDesc, string arg, char sep)
+    private static string ReplacePlaceholders(string rawDesc, string arg, char sep, CardModel model)
     {
-        if (arg == null) return rawDesc;
-
-        string nameInsert = sep == '#' ? $"${arg}$" : arg;
-        string numInsert = arg;
+        if (string.IsNullOrEmpty(rawDesc)) return rawDesc;
 
         return PlaceholderRegex.Replace(rawDesc, m =>
         {
             string allowed = m.Groups[1].Value;
             string kind = m.Groups[2].Value;
 
-            if (!allowed.Contains(sep)) return m.Value;
+            if (kind == "n")
+            {
+                if (arg == null || !allowed.Contains(sep)) return m.Value;
+                return sep == '#' ? $"${arg}$" : arg;
+            }
 
-            return kind == "x" ? numInsert : nameInsert;
+            if (kind == "x")
+            {
+                if (arg == null || !allowed.Contains(sep)) return m.Value;
+                return arg;
+            }
+
+            var (custom, acceptEffects) = GetUrlParamValue(kind, model);
+            if (custom == null) return m.Value;
+
+            char useSep = sep;
+            if (useSep == '\0')
+            {
+                if (allowed.Contains('#')) useSep = '#';
+                else if (allowed.Contains('&')) useSep = '&';
+                else return m.Value;
+            }
+            else if (!allowed.Contains(useSep))
+            {
+                return m.Value;
+            }
+
+            if (!acceptEffects) return custom;
+
+            return useSep == '#' ? $"${custom}$" : custom;
         });
     }
     /// <summary>
     /// 解析语法并写入。
     /// </summary>
-    public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks)
+    public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks,float extraSize = 0f)
     {
         label.Clear();
         label.BbcodeEnabled = true;
@@ -360,7 +450,7 @@ public partial class CardDes : Control
                 {
                     if (!string.IsNullOrEmpty(urlRaw) && TryExtractLinkMeta(urlRaw, out string meta, out string display))
                     {
-                        string inner = $"[img={IconSize}]{path}[/img]{ConvertLabels(display)}";
+                        string inner = $"[img={IconSize + extraSize}]{path}[/img]{ConvertLabels(display)}";
                         label.AppendText($"[color=#44ffff][url={meta}]{inner}[/url][/color]");
                     }
                     else
@@ -374,13 +464,13 @@ public partial class CardDes : Control
                                 path, meta2, attr.Color, attr.OutlineColor, attr.OutlineSize);
                             if (tex != null)
                             {
-                                float scale = (float)IconSize / tex.GetWidth();
+                                float scale = (float)(IconSize+extraSize) / tex.GetWidth();
                                 label.AddImage(tex, tex.GetWidth() * scale, tex.GetHeight() * scale);
                             }
                         }
                         else
                         {
-                            label.AppendText($"[color=#44ffff][url={meta2}][img={IconSize}]{path}[/img][/url][/color]");
+                            label.AppendText($"[color=#44ffff][url={meta2}][img={IconSize + extraSize}]{path}[/img][/url][/color]");
                         }
                     }
                 }
@@ -403,13 +493,13 @@ public partial class CardDes : Control
                             path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
                         if (tex != null)
                         {
-                            float scale = (float)IconSize / tex.GetWidth();
+                            float scale = (float)(IconSize + extraSize) / tex.GetWidth();
                             label.AddImage(tex, tex.GetWidth() * scale, tex.GetHeight() * scale);
                         }
                     }
                     else
                     {
-                        label.AppendText($"[img={IconSize}]{path}[/img]");
+                        label.AppendText($"[img={IconSize + extraSize}]{path}[/img]");
                     }
                 }
             }
@@ -503,10 +593,6 @@ public partial class CardDes : Control
     }
     private static Dictionary<string, PropertyInfo> _urlCache;
     private static readonly object _urlCacheLock = new();
-
-    /// <summary>
-    /// 扫描当前程序集，缓存所有带 [URL] 的静态属性：key -> PropertyInfo
-    /// </summary>
     private static Dictionary<string, PropertyInfo> GetURLCache()
     {
         if (_urlCache != null) return _urlCache;
@@ -557,7 +643,7 @@ public partial class CardDes : Control
             var prop = model.GetType().GetProperty(key, flags);
             if (TryGetFromProp(prop, model, out string rawDesc))
             {
-                desc = ReplacePlaceholders(rawDesc, arg, sep);
+                desc = ReplacePlaceholders(rawDesc, arg, sep,model);
                 return true;
             }
         }
@@ -566,7 +652,7 @@ public partial class CardDes : Control
         if (cache.TryGetValue(key, out var staticProp) &&
             TryGetFromProp(staticProp, null, out string staticDesc))
         {
-            desc = ReplacePlaceholders(staticDesc, arg, sep);
+            desc = ReplacePlaceholders(staticDesc, arg, sep, model);
             return true;
         }
 

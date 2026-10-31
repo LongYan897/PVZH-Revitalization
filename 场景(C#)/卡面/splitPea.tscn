@@ -2,18 +2,17 @@
 
 [ext_resource type="Texture2D" uid="uid://b4cgqavugyrsa" path="res://场景/植物卡组/裂荚射手植物/Split Pea.png" id="1_1ubrt"]
 
-[node name="卡面" type="Control" unique_id=2138245737]
+[node name="卡面" type="Control" unique_id=1232244158]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
 
-[node name="卡牌图标" type="TextureRect" parent="." unique_id=653260905]
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=74113400]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 27.0
-offset_right = 231.0
-offset_bottom = 208.0
-scale = Vector2(0.9, 0.9)
+offset_left = 2.0
+offset_top = 10.0
+offset_right = 209.0
+offset_bottom = 191.0
 texture = ExtResource("1_1ubrt")
 expand_mode = 1
 stretch_mode = 3

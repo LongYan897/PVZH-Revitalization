@@ -1,4 +1,5 @@
 using Godot;
+using Pack;
 using System;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace Spine;
 /// </summary>
 public partial class SpineHandler : Node2D
 {
-	private static PackedScene Scene => GD.Load<PackedScene>("res://场景(C#)/动画.tscn");
+	private static PackedScene Scene => "res://场景(C#)/动画.tscn".Load<PackedScene>();
 	private Node _spineSprite;
 
 	private Node SpineSprite
@@ -82,7 +83,7 @@ public partial class SpineHandler : Node2D
 		if (SkeletonDataCache.TryGetValue(tresPath, out var cached) && GodotObject.IsInstanceValid(cached))
 			return cached;
 
-		Resource data = ResourceLoader.Load(tresPath);
+		Resource data = tresPath.Load<Resource>();
 		if (data != null) SkeletonDataCache[tresPath] = data;
 		return data;
 	}
@@ -330,7 +331,7 @@ public partial class SpineHandler : Node2D
 				}
 				else if (fileName.EndsWith(".tres"))
 				{
-					var res = ResourceLoader.Load(fullPath);
+					var res = fullPath.Load<Resource>();
 				}
 			}
 			fileName = dir.GetNext();
