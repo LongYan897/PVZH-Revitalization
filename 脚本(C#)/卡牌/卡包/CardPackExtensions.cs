@@ -1,4 +1,4 @@
-using FileExtension;
+﻿using FileExtension;
 using Godot;
 using Play;
 using System;
@@ -26,10 +26,27 @@ public partial class CardPackExtensions
 		}
 		else _random = new(seed);
 	}
-	public List<(string Card, int Count)> DrawCard(string packName, int Count,PlayerAsset player = null, bool save = false)
+	/// <summary>
+	/// 抽卡结果。<br/>
+	/// <see cref="Merged"/> 是"按卡名合并"的结果（适合统计拥有数量）；<br/>
+	/// <see cref="ByGroup"/> 是"按组"的明细（适合开包结果展示——同一张卡如果被配在多个组里，
+	/// 合并后会把各组的数量加在一起，显示时会重复/数量对不上，用 ByGroup 就不会）。
+	/// </summary>
+	public sealed record PackDrawResult(
+		List<(string Card, int Count)> Merged,
+		List<(string Group, string Card, int Count)> ByGroup);
+
+	/// <summary>抽卡（只返回按卡名合并的结果，兼容旧调用）</summary>
+	public List<(string Card, int Count)> DrawCard(string packName, int Count, PlayerAsset player = null, bool save = false)
+		=> DrawPack(packName, Count, player, save).Merged;
+
+	/// <summary>抽卡，同时返回"按组"的明细（开包结果界面用这个）</summary>
+	public PackDrawResult DrawPack(string packName, int Count, PlayerAsset player = null, bool save = false)
 	{
 		player ??= new();
 		List<(string Card, int Count)> res = new();
+		// 按组记录：组名 + 卡名 + 这个组抽到几张
+		List<(string Group, string Card, int Count)> resByGroup = new();
 		FileJson file = new();
 		FileJson playerAssetFile = new();
 
@@ -123,6 +140,7 @@ public partial class CardPackExtensions
 		foreach (var group in packs)
 		{
 			groupIndex++;
+			string groupName = group["Name"]?.GetValue<string>() ?? "";
 			List<(string Name, int Count)> drawcards = new();
 			List<(int Index, int Count)> cardsCount = new();
 			//初始化列表
@@ -166,7 +184,8 @@ public partial class CardPackExtensions
 				int count = 0;
 				fileCardsCount.TryGetValue(cardName, out count);
 				fileCardsCount[cardName] = count + i.Count;
-				//返回结果
+				//返回结果（按组明细 + 按卡名合并，两份都记）
+				resByGroup.Add((groupName, cardName, i.Count));
 				int resultIndex = res.FindIndex(item => item.Card == cardName);
 				if (resultIndex >= 0)
 				{
@@ -197,7 +216,7 @@ public partial class CardPackExtensions
 		}
 		//file.SetVariable("group", packs);
 		//file.Save();
-		return res;
+		return new PackDrawResult(res, resByGroup);
 	}
 	/// <summary>
 	/// 将固定元组类型里的概率自动归一化处理

@@ -182,7 +182,13 @@ public partial class SpineHandler : Node2D
 		if (loop) return;
 
 		var callable = Callable.From<GodotObject, GodotObject, GodotObject>(
-			(sprite, state, entry) => CallDeferred(nameof(QueueFree)));
+			(sprite, state, entry) =>
+			{
+				// 注意：nameof(QueueFree) == "QueueFree" 是 C# 名字，
+				// 引擎按名字调用时只认原生方法名 "queue_free"，所以之前会报
+				// "Error calling deferred method: 'Node2D(SpineHandler.cs)::QueueFree': Method not found"。
+				Callable.From(QueueFree).CallDeferred();
+			});
 
 		SpineSprite.Connect("animation_completed", callable,
 			(uint)GodotObject.ConnectFlags.OneShot);

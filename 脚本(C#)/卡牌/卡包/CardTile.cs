@@ -16,7 +16,8 @@ public partial class CardTile : CenterContainer
 	private string PackName { get; set; } = "Pack1";
 	private string PackTitle { get; set; } = "测试卡包1";
 	private string IntroduceText { get; set; } = "这是卡包测试文本，限购4包！\n* 包含1张超稀有卡牌,\n* 3张稀有卡牌。";
-	private string CardTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
+	private string PackTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
+	private string PackOpenTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
 	private string MainColor { get; set; } = "477fff";
 	private string TopColor { get; set; } = "007190";
 	private List<CardTileOption> Options = new();
@@ -35,7 +36,8 @@ public partial class CardTile : CenterContainer
 		FileJson json = new FileJson().Open(PackDataPath).OpenObject(PackName);
 		PackTitle = json.GetVariable("PackName", PackTitle);
 		IntroduceText = json.GetVariable("IntroduceText", IntroduceText);
-		CardTexture = json.GetVariable("CardTexture", CardTexture);
+        PackTexture = json.GetVariable("PackTexture", PackTexture);
+        PackOpenTexture = json.GetVariable("PackOpenTexture", PackTexture);
 		MainColor = json.GetVariable("MainColor", MainColor);
 		TopColor = json.GetVariable("TopColor", TopColor);
 		Options = json.GetArray<JsonObject>("Options")
@@ -71,12 +73,12 @@ public partial class CardTile : CenterContainer
 		// ---- 3. 把数值写进界面 ----
 		if (PackNameLabel != null) PackNameLabel.Text = PackTitle;
 		if (IntroduceLabel != null) IntroduceLabel.Text = IntroduceText;
-		if (PackImage != null && !string.IsNullOrWhiteSpace(CardTexture))
+		if (PackImage != null && !string.IsNullOrWhiteSpace(PackTexture))
 		{
-			if (ResourceLoader.Exists(CardTexture))
-				PackImage.Texture = GD.Load<Texture2D>(CardTexture);
+			if (ResourceLoader.Exists(PackTexture))
+				PackImage.Texture = GD.Load<Texture2D>(PackTexture);
 			else
-				GD.PushWarning($"[CardTile] {PackName} 的 CardTexture 路径不存在：{CardTexture}");
+				GD.PushWarning($"[CardTile] {PackName} 的 PackTexture 路径不存在：{PackTexture}");
 		}
 		SetPanelColor(Board, MainColor);
 		SetPanelColor(TopBanner, TopColor);
@@ -102,6 +104,10 @@ public partial class CardTile : CenterContainer
 			// 此时它的 IntroduceLabel / PriceLabel 都是 null，直接 Setup() 会 NRE。
 			button.IntroduceText = Option.ButtonText;
 			button.PriceCount = Option.Price;
+			// 开包界面需要知道：开哪个卡包、这个档位抽几张、卡包封面图
+			button.PackName = PackName;
+			button.PullCount = Option.PullCount;
+			button.PackTexturePath = PackOpenTexture;
 			ButtonGroup.AddChild(button);
 			if (button.IsNodeReady())
 				button.Setup();                 // 已经 ready 的情况直接填

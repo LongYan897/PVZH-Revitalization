@@ -3,13 +3,14 @@ using Controller;
 using Extension;
 using FileExtension;
 using Godot;
+using Play;
+using Scene;
 using Spine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using Play;
 
 namespace Card;
 
@@ -18,9 +19,10 @@ namespace Card;
 /// 1) 生成若干"3D 卡包"，从屏幕下方依次飞入并竖直叠放；<br/>
 /// 2) 叠好后生成一个可点击撕开的卡包（<see cref="CardOpening"/>）；<br/>
 /// 3) 开包完成后滑入「卡包开出列表」，按 cardPack.json 的分组显示：
-///    每组一条组名横幅 + 该组的卡牌，一行最多 4 张（排版和卡包详情一致）。
+///    每组一条组名横幅 + 该组的卡牌，一行最多 4 张（排版和卡包详情一致）。<br/>
+/// 本类是 <see cref="SubMenuScene"/>，由 SceneManager 作为一层子场景打开（见 OptionSlot）。
 /// </summary>
-public partial class OpenCardControl : Node2D
+public partial class OpenCardControl : SubMenuScene
 {
 	/// <summary>生成几个卡包</summary>
 	[Export] public int CardCount { get; set; } = 10;
@@ -34,6 +36,12 @@ public partial class OpenCardControl : Node2D
 	/// <summary>时间间隔的动态比值</summary>
 	[Export(PropertyHint.Range, "0,1,0.1")] public float SineRatio = 0.6f;
 
+	/// <summary>收集后要返回的场景（预留；目前由「收集」按钮回主界面）</summary>
+	[Export] public string ReturnPath { get; set; }
+
+	/// <summary>3D 卡包用的封面图（由购买按钮根据卡包数据传入）</summary>
+	[Export] public string CardTexturePath { get; set; }
+
 	/// <summary>抽哪个卡包（cardPack.json 里的对象名）</summary>
 	public string PackName { get; set; } = "Pack1";
 
@@ -46,6 +54,7 @@ public partial class OpenCardControl : Node2D
 	private const string OpeningScenePath = "res://场景(C#)/卡包/CardOpening.tscn";
 	private const string ResultListScenePath = "res://场景(C#)/卡包/卡包开出列表.tscn";
 	private const string BannerScenePath = "res://场景(C#)/卡包/横幅.tscn";
+	private const string EndButtonScenePath = "res://场景(C#)/卡包/结束按钮.tscn";
 	private const string PackDataPath = "res://数据(C#)/cardPack.json";
 
 	/// <summary>结果列表的格子宽度（和卡包详情一致）</summary>
@@ -67,10 +76,34 @@ public partial class OpenCardControl : Node2D
 		["传说"] = "res://素材(C#)/卡包/开卡特效/传说/传说.tres",
 	};
 
-	public override async void _Ready()
+	/// <summary>开包界面没有全局返回按钮，结束由「收集」按钮负责</summary>
+	public override bool HideReturnButton => true;
+
+	public override Task _Load()
+	{
+		if (string.IsNullOrEmpty(ReturnPath)) ReturnPath = "res://场景(C#)/主节点.tscn";
+		if (string.IsNullOrEmpty(CardTexturePath)) CardTexturePath = "res://素材(C#)/卡包/卡包主体/set2_premium_pack.png";
+
+		// 购买按钮通过 SubMenu.Payload 传来的开包参数（哪个卡包、抽几张、显示哪张卡包图）
+		if (Payload is OpenPackPayload payload)
+		{
+			if (!string.IsNullOrEmpty(payload.PackName)) PackName = payload.PackName;
+			if (payload.PullCount > 0) CardCounts = payload.PullCount;
+			if (!string.IsNullOrEmpty(payload.CardTexturePath)) CardTexturePath = payload.CardTexturePath;
+		}
+
+		// 关键：开包是"长流程"（飞包 + 等玩家点击撕包 + 展示结果），不能 await 在这里。
+		// _Load() 被 SubMenuScene._EnterTree await，SceneManager 会等 LoadTask 完成才把这一层
+		// 设为 Visible —— 如果这里 await 整个开包流程，界面会一直不可见（看着像卡死）。
+		_ = RunOpening();
+		return Task.CompletedTask;
+	}
+
+	/// <summary>真正的开包流程（在 _Load 里后台启动，不阻塞 SceneManager 的加载流程）</summary>
+	private async Task RunOpening()
 	{
 		PreloadEffects();          // 先把 4 种开卡特效资源读进缓存，减少第一次播放时的卡顿
-		var cardList = CalculateCards();
+		var drawResult = CalculateCards();
 		PileCardCount = Math.Max(CardCount - 1, 0);
 
 		var packScene = GD.Load<PackedScene>(PackScenePath);
@@ -84,12 +117,17 @@ public partial class OpenCardControl : Node2D
 		float delay = 0f;
 		Random rand = new();
 		float baseRatio = 1f - SineRatio;
+		// 卡包封面图（按 Payload 里传的卡包换图，没有就用 3d卡包.tscn 自带的）
+		Texture2D packTexture = !string.IsNullOrEmpty(CardTexturePath) && ResourceLoader.Exists(CardTexturePath)
+			? GD.Load<Texture2D>(CardTexturePath)
+			: null;
 		List<Card3D> card3DList = new();
 		for (int i = 0; i < PileCardCount; i++)
 		{
 			Vector2 randomPos = new Vector2(rand.Next(-5, 5), 0);
 			Card3D card = packScene.Instantiate<Card3D>();
 			card3DList.Add(card);
+			if (packTexture != null) card.Texture = packTexture;
 			card.UltimatePos = center + randomPos + new Vector2(0, 300f - StackOffset * i);
 			float progress = PileCardCount > 1 ? (float)i / (PileCardCount - 1) : 0f;
 			float sinValue = Mathf.Sin(progress * Mathf.Pi);
@@ -102,8 +140,9 @@ public partial class OpenCardControl : Node2D
 		await this.Wait(delay + 1f);
 
 		var packOpening = GD.Load<PackedScene>(OpeningScenePath).Instantiate<CardOpening>();
-		AddChild(packOpening);
-		var tcs = new TaskCompletionSource<bool>();
+        AddChild(packOpening);
+        packOpening.CardNode.Texture = GD.Load<Texture2D>(CardTexturePath);
+        var tcs = new TaskCompletionSource<bool>();
 		Action onFinished = null;
 		onFinished = () =>
 		{
@@ -126,14 +165,31 @@ public partial class OpenCardControl : Node2D
 		await ToSignal(tween, Tween.SignalName.Finished);
 
 		// 动态添加卡牌（分组横幅 + 卡牌）
-		await FillResultCards(listScene, cardList);
+		await FillResultCards(listScene, drawResult.ByGroup);
+		await this.Wait(1f);
+
+		//添加结束按钮
+		var endButton = GD.Load<PackedScene>(EndButtonScenePath).Instantiate<EndButton>();
+		// 注意：这里不要设 endButton.Scale —— NodeList 是 HFlowContainer，
+		// 容器排版会把直接子节点的 scale 重置成 1，设了也没用。
+		// 弹出动画在 EndButton 内部的可视节点上做（见 EndButton.cs）。
+		var endPanel = new Panel()
+		{
+			CustomMinimumSize = new(0, 200)
+		};
+		listScene.NodeList.AddChild(endPanel);
+		listScene.NodeList.AddChild(endButton);
 	}
 
 	/// <summary>
 	/// 把抽到的卡按 cardPack.json 里的分组顺序排列：
-	/// 每组一条组名横幅，接着是该组抽到的卡；一行最多 4 张、靠左（和卡包详情一样）。
+	/// 每组一条组名横幅，接着是该组抽到的卡；一行最多 4 张、靠左（和卡包详情一样）。<br/>
+	/// 注意这里用的是 <see cref="CardPackExtensions.PackDrawResult.ByGroup"/>（按组明细），
+	/// 不能用按卡名合并的结果：同一张卡被配在多个组里时，合并后数量会累加，显示就对不上了。
 	/// </summary>
-	private async Task FillResultCards(OpeningCardList listScene, List<(string Card, int Count)> drawn)
+	private async Task FillResultCards(
+		OpeningCardList listScene,
+		List<(string Group, string Card, int Count)> drawnByGroup)
 	{
 		if (listScene == null || !GodotObject.IsInstanceValid(listScene))
 			return;
@@ -148,33 +204,29 @@ public partial class OpenCardControl : Node2D
 		float fit = CardCellWidth / CardNaturalWidth;
 		var cellSize = new Vector2(CardCellWidth, CardNaturalHeight * fit);
 
-		var groups = ReadGroups(PackName);
-		var usedCards = new HashSet<string>();
+		string currentGroup = null;
+		var shownCards = new HashSet<string>();
 
-		foreach (var (groupName, groupCards) in groups)
+		foreach (var (groupName, cardName, count) in drawnByGroup)
 		{
-			// 保持抽卡结果里的顺序
-			var inGroup = drawn.Where(d => groupCards.Contains(d.Card)).ToList();
-			if (inGroup.Count == 0) continue;
+			if (count <= 0) continue;
 
-            await AddGroupBar(list, groupName);
-
-			foreach (var (cardName, count) in inGroup)
+			if (groupName != currentGroup)
 			{
-				usedCards.Add(cardName);
-                await AddCardCell(list, cardName, groupName, cellSize, fit, Math.Max(count, 1));
+				currentGroup = groupName;
+				await AddGroupBar(list, string.IsNullOrEmpty(groupName) ? "其它" : groupName);
 			}
-		}
 
-		// 保险：抽到但没在分组里配到的卡也显示出来，避免"抽到了却看不到"
-		var rest = drawn.Where(d => !usedCards.Contains(d.Card)).ToList();
-		if (rest.Count > 0)
-		{
-			GD.PushWarning("[OpenCardControl] 有卡牌不在任何 group 里，已放进「其它」分组");
-			await AddGroupBar(list, "其它");
-			foreach (var (cardName, count) in rest)
-				for (int i = 0; i < Math.Max(count, 1); i++)
-					await AddCardCell(list, cardName, "其他", cellSize, fit);
+			// 数据检查：同一张卡被配在多个组里时，会在多个组下各显示一次，
+			// 这不是显示逻辑的问题，是 cardPack.json 的数据配置问题，打条警告方便发现。
+			if (!shownCards.Add(cardName))
+			{
+				GD.PushWarning(
+					$"[OpenCardControl] 卡牌 {cardName} 同时出现在多个分组里，开包结果会在多个组下重复显示，" +
+					"建议把 cardPack.json 里同一张卡只配在一个 group 中。");
+			}
+
+			await AddCardCell(list, cardName, groupName, cellSize, fit, count);
 		}
 	}
 
@@ -196,7 +248,7 @@ public partial class OpenCardControl : Node2D
 	}
 
 	/// <summary>加一张卡牌（外面套固定尺寸的格子，卡牌在格子里按比例缩放）</summary>
-	private async Task AddCardCell(FlowContainer list, string cardName,string groupName, Vector2 cellSize, float fit,int count = 1)
+	private async Task AddCardCell(FlowContainer list, string cardName, string groupName, Vector2 cellSize, float fit, int count = 1)
 	{
 		CardModel model = CardModel.GetTemplateByClassName(cardName);
 		if (model == null)
@@ -218,7 +270,7 @@ public partial class OpenCardControl : Node2D
 		//抽卡特效
 		await FillEffect(cell1, groupName);
 
-        NodeCard card = await NodeCard.DisplayCardAt(model, Vector2.Zero, cell1, CardView.Collection, fit);
+		NodeCard card = await NodeCard.DisplayCardAt(model, Vector2.Zero, cell1, CardView.Collection, fit);
 		card.PivotOffset = Vector2.Zero;
 		card.PivotOffsetRatio = new Vector2(0.5f, 0.5f);
 
@@ -245,7 +297,7 @@ public partial class OpenCardControl : Node2D
 			.SetTrans(Tween.TransitionType.Back)
 			.SetEase(Tween.EaseType.Out);
 		await ToSignal(tween, Tween.SignalName.Finished);
-    }
+	}
 
 	/// <summary>读 cardPack.json 里这个卡包的分组（组名 + 组内卡牌类名）</summary>
 	private static List<(string Name, HashSet<string> Cards)> ReadGroups(string packName)
@@ -275,9 +327,7 @@ public partial class OpenCardControl : Node2D
 		}
 		return groups;
 	}
-	/// <summary>
-	/// 创建抽卡特效
-	/// </summary>
+
 	/// <summary>预读 4 种稀有度的开卡特效资源（skeleton data），避免第一次播放时同步读盘卡顿</summary>
 	private static void PreloadEffects()
 	{
@@ -287,9 +337,37 @@ public partial class OpenCardControl : Node2D
 
 	/// <summary>
 	/// 在卡片格子上播开卡特效（按稀有度选 spine 动画），播完自动释放。<br/>
+	/// "第一帧是默认姿势"的原因：spine 在动画状态被 _process 更新之前，会先按 skeleton 的
+	/// setup 姿势渲染一帧。这里的做法是：先设成完全透明（但保持 visible，spine 才会正常更新），
+	/// 设好 skeleton data + 动画后等两帧让姿势走到 intro 第一帧，再显形，就不会闪默认姿势了。
 	/// </summary>
 	public async Task FillEffect(Control fatherNode, string groupName)
 	{
+		Vector2 offset = new(75, 50);
+
+
+		if (groupName == "超稀有")
+		{
+			Action backgroundAn = async () =>
+			{
+				var background = SpineHandler.Get();
+				background.Modulate = new Color(1, 1, 1, 0);
+				fatherNode.AddChild(background);
+
+				EffectPaths.TryGetValue("超稀有", out string path1);
+				background.LoadSkeletonData(SpineHandler.GetSkeletonData(path1));
+				background.Position = offset;
+				background.ZIndex = 0;
+				background.ClearTracks();
+				background.SetAnimationAndFreeOnEnd(10, "backgroud", false);
+
+				await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+				await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+				background.Modulate = Colors.White;
+			};
+			backgroundAn();
+		}
+
 		var effect = SpineHandler.Get();
 		effect.Modulate = new Color(1, 1, 1, 0);
 		fatherNode.AddChild(effect);
@@ -299,7 +377,11 @@ public partial class OpenCardControl : Node2D
 
 		effect.Scale = Vector2.One * 1.25f;
 		effect.LoadSkeletonData(SpineHandler.GetSkeletonData(path));
-		effect.Position = new Vector2(75, 45);
+		effect.Position = offset;
+
+		// 注意：Godot 的 z_index 上限是 4096，超过会被忽略（引擎会打 clamped 警告）；
+		if (groupName == "超稀有")
+			effect.ZIndex = 4080;
 
 		effect.ClearTracks();
 		var animationCompleteTask = effect.WaitAnimationCompleteTask();
@@ -320,11 +402,13 @@ public partial class OpenCardControl : Node2D
 	}
 
 	/// <summary>
-	/// 计算开出的卡牌，开包的一瞬间决定
+	/// 计算开出的卡牌，开包的一瞬间决定。<br/>
+	/// 用 DrawPack（带"按组"明细）：同一张卡如果被配在多个组里，
+	/// 按卡名合并会把各组数量加在一起，展示时就会"数量对不上"。
 	/// </summary>
-	public List<(string Card, int Count)> CalculateCards()
+	public CardPackExtensions.PackDrawResult CalculateCards()
 	{
 		CardPackExtensions c1 = new();
-		return c1.DrawCard(PackName, CardCounts,PlayerManager.HostPlayer.Asset);
+		return c1.DrawPack(PackName, CardCounts, PlayerManager.HostPlayer.Asset);
 	}
 }
