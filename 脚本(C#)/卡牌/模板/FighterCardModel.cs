@@ -19,7 +19,7 @@ namespace Card;
 /// <summary>
 /// 单位类型的卡牌
 /// </summary>
-public class FighterCardModel : CardModel
+public class FighterCardModel : CardModel,IDamageCard,IHealthCard
 {
     /// <summary>
     /// 僵尸是否隐藏在墓碑之中
@@ -58,6 +58,25 @@ public class FighterCardModel : CardModel
         await CardCmd.TimingOnCards(this, Timing.WhenMoved, road, this);
     }
 
+    /// <summary>
+    /// 把该单位变化为其他单位
+    /// </summary>
+    /// <param name="fighterCard"></param>
+    /// <returns></returns>
+    public async Task TransformMe(FighterCardModel fighterCard)
+    {
+        if (IsPlaced)
+        {
+            await Fighter.GetNode(this).TransformTo(fighterCard);
+            await FireTiming(Timing.WhenTransformed, this, fighterCard);
+            await CardCmd.TimingOnCards(this, Timing.WhenTransformed, this, fighterCard);
+        }
+        else
+        {
+            await TransformTo(fighterCard);
+        }
+    }
+     
     protected sealed override void AfterClone()
     {
         base.AfterClone();
@@ -67,6 +86,7 @@ public class FighterCardModel : CardModel
         AtkType = new(this, "AttackType", AtkType.Current);
         HpType = new(this, "HealthType", HpType.Current);
     }
+
     /// <summary>
     /// 修改单位的动画节点,改变单位颜色
     /// </summary>
@@ -198,7 +218,7 @@ public class FighterCardModel : CardModel
             }
 
             if (fighter.Hp.Current > fighter.MaxHp.Current)
-                await fighter.Hp.Set(fighter.MaxHp.Current, VariableReason.Reset);
+                await fighter.Hp.Set(fighter.MaxHp.Current, VariableReason.Rule);
         }
     }
     public ITarget Targeting() => Fighter.GetNode(this);
@@ -621,9 +641,29 @@ public class FighterCardModel : CardModel
     {
         await PlayFighterAnimationTask("intro");
     }
-    public sealed override Task Changed<T>(string key, T valueAfter, T valueBefore,VariableReason reason)
+    public sealed override async Task Changed<T>(string key, T valueAfter, T valueBefore,VariableReason reason)
     {
-        if (reason.HasFlag(VariableReason.Reset)) return Task.CompletedTask;
+        if (reason.HasFlag(VariableReason.Reset)) return;
+        if (key == "AttackType" && valueAfter is AtkType newAtk && valueBefore is AtkType oldAtk)
+        {
+            if (!ReferenceEquals(newAtk.Buff, oldAtk.Buff))
+            {
+                if (oldAtk.Buff != null && Buffs.Contains(oldAtk.Buff))
+                    await RemoveBuff(oldAtk.Buff, reason);
+                if (newAtk.Buff != null && !Buffs.Contains(newAtk.Buff))
+                    RegistBuff(newAtk.Buff);
+            }
+        }
+        else if (key == "HealthType" && valueAfter is HpType newHp && valueBefore is HpType oldHp)
+        {
+            if (!ReferenceEquals(newHp.Buff, oldHp.Buff))
+            {
+                if (oldHp.Buff != null && Buffs.Contains(oldHp.Buff))
+                    await RemoveBuff(oldHp.Buff, reason);
+                if (newHp.Buff != null && !Buffs.Contains(newHp.Buff))
+                    RegistBuff(newHp.Buff);
+            }
+        }
         if (IsPlaced)
         {
             if (key == "Health" || key == "MaxHealth")
@@ -647,7 +687,6 @@ public class FighterCardModel : CardModel
                 }
             }
         }
-        return Task.CompletedTask;
     }
     public sealed override TargetType TargetType
     {

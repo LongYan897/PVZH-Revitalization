@@ -153,6 +153,8 @@ public sealed class MergedHpType(IEnumerable<HpType> types) : HpType
         .OrderByDescending(t => t.Priority)
         .ToList() ?? new List<HpType>();
 
+    private Buff iBuff;
+
     /// <summary>包含的子生命值类型</summary>
     public IReadOnlyList<HpType> HpTypes => _types;
 
@@ -168,11 +170,25 @@ public sealed class MergedHpType(IEnumerable<HpType> types) : HpType
     public override string ExLabel =>
         string.Join("，", _types.Select(t => t.ExLabel).Where(s => !string.IsNullOrEmpty(s)));
 
-    public override Buff Buff =>
-        _types.Select(t => t.Buff).FirstOrDefault(b => b != null);
+    public override Buff Buff => iBuff ??= BuildBuff(_types);
 
     public override string IconPath => null;
 
     public override bool ExtraFilter(CardModel card)
         => _types.All(t => t.ExtraFilter(card));
+
+    private static Buff BuildBuff(IReadOnlyList<HpType> types)
+    {
+        var buffs = types
+            .Select(t => t.Buff)
+            .Where(b => b != null)
+            .ToList();
+
+        return buffs.Count switch
+        {
+            0 => null,
+            1 => buffs[0],
+            _ => new MergedBuff(buffs),
+        };
+    }
 }

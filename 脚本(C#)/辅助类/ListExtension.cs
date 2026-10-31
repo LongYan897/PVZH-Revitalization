@@ -2,6 +2,7 @@
 using Card;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pack;
 
@@ -71,5 +72,10 @@ public static class ListExtension
         }
         list.AddRange(values);
         return list;
+    }
+
+    public static async Task<T> First<T>(this Task<List<T>> list)
+    {
+        return (await list).First();
     }
 }

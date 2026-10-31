@@ -238,8 +238,150 @@ public class AiPlayer : Player
 
 		return Task.FromResult(candidates[ArgMax(scores)]);
 	}
+    private static (Road road, Location? loc) ParseGrid(ITarget t)
+    {
+        if (t is not NodeRoad nodeRoad || !nodeRoad.CanBeRoad(out var road))
+            return (null, null);
 
-	private struct Candidate
+        Location? loc = nodeRoad.LastTargetKind switch
+        {
+            RoadTargetKind.None => null,
+            RoadTargetKind.Grid => nodeRoad.ClickedCamp == null
+                ? null
+                : (nodeRoad.ClickedCamp is Camp c && c.Plant() ? Location.Plant : Location.Zombie),
+            RoadTargetKind.CoopGrid => Location.PlantFront,
+            _ => null
+        };
+        return (road, loc);
+    }
+
+    private static float EvaluatePlacement(Road road, Location? loc, CardModel card)
+    {
+        if (road == null || card == null) return 0f;
+
+        var myCamp = card.Camp;
+        bool isPlant = myCamp == Camp.Plant;
+        bool isZombie = myCamp == Camp.Zombie;
+        float score = 0f;
+
+        var roadUnits = TargetRegistry.All.OfType<Fighter>()
+            .Where(f => f.Model != null && !f.Model.IsDie
+                     && f.Road != null && f.Road.Index == road.Index)
+            .ToList();
+
+        Fighter occupant = null;
+        if (loc != null)
+            foreach (var f in roadUnits)
+                if (f.Model.Location == loc) { occupant = f; break; }
+
+        if (loc != null)
+        {
+            if (isPlant)
+            {
+                if (loc == Location.Plant) score += 0.6f;
+                else if (loc == Location.PlantFront) score += 0.4f;
+                else if (loc == Location.Zombie) score -= 0.6f;
+            }
+            else if (isZombie)
+            {
+                if (loc == Location.Zombie) score += 0.6f;
+                else if (loc == Location.PlantFront) score += 0.3f;
+                else if (loc == Location.Plant) score -= 0.6f;
+            }
+
+            if (occupant != null)
+            {
+                bool sameCamp = occupant.Model.Camp == myCamp;
+                score += sameCamp ? -1.5f : 0.2f;
+            }
+        }
+
+        float enemyPressure = 0f, friendPresence = 0f;
+        foreach (var f in roadUnits)
+        {
+            var m = f.Model;
+            float power = m.Atk.Current + m.Hp.Current * 0.5f;
+            if (m.Camp == myCamp) friendPresence += power;
+            else enemyPressure += power;
+        }
+
+        if (card is FighterCardModel fcard)
+        {
+            bool defensive = fcard.Atk.Current <= 0;
+
+            if (defensive)
+            {
+                score += MathF.Min(enemyPressure, 25f) * 0.04f;
+                if (loc == Location.Plant || loc == Location.Zombie) score += 0.15f;
+                if (enemyPressure == 0f) score -= 0.3f;
+            }
+            else
+            {
+                if (enemyPressure == 0f) score += 0.35f;
+                else
+                {
+                    score += MathF.Min(enemyPressure, 20f) * 0.02f;
+                    if (friendPresence > enemyPressure * 1.5f) score -= 0.2f;
+                }
+            }
+        }
+
+        return score;
+    }
+
+    public Task<(Road road, Location? location)> ChoiceGrid(
+    CardModel cardModel, bool fromBuff, Func<Road, bool> filter = null)
+    {
+        Func<ITarget, bool> itgFilter = itg =>
+            itg.CanBeRoad(out var r) && (filter == null || filter(r));
+
+        var candidates = CardCmd.GetTargets(cardModel, TargetType.Grids, fromBuff, itgFilter).ToList();
+        if (candidates.Count == 0) return Task.FromResult<(Road, Location?)>((null, null));
+
+        if (!InitDone) Init();
+        var s = Status;
+
+        var parsed = new (Road road, Location? loc)[candidates.Count];
+        for (int k = 0; k < candidates.Count; k++)
+            parsed[k] = ParseGrid(candidates[k]);
+
+        if (s == null)
+        {
+            int bestFb = 0;
+            float bestFbSc = float.NegativeInfinity;
+            for (int k = 0; k < candidates.Count; k++)
+            {
+                float sc = EvaluatePlacement(parsed[k].road, parsed[k].loc, cardModel);
+                if (sc > bestFbSc) { bestFbSc = sc; bestFb = k; }
+            }
+            return Task.FromResult(parsed[bestFb]);
+        }
+
+        Encode(s, xBuf);
+        ForwardTrunk(xBuf);
+
+        int handIdx = -1;
+        var hand = s.HandCards;
+        for (int k = 0; k < hand.Count && k < MaxHand; k++)
+            if (ReferenceEquals(hand[k], cardModel)) { handIdx = k; break; }
+
+        float[] netScores = handIdx >= 0
+            ? ScoreTargets(xBuf, handIdx, candidates)
+            : new float[candidates.Count];
+
+        var total = new float[candidates.Count];
+        for (int k = 0; k < candidates.Count; k++)
+        {
+            float net = netScores[k];
+            float bonus = 0.1f * GetActionBonus(cardModel, candidates[k]);
+            float place = EvaluatePlacement(parsed[k].road, parsed[k].loc, cardModel);
+            total[k] = 0.5f * net + bonus + place;
+        }
+
+        int best = ArgMax(total);
+        return Task.FromResult(parsed[best]);
+    }
+    private struct Candidate
 	{
 		public CardModel Card;
 		public ITarget Target;
@@ -336,39 +478,47 @@ public class AiPlayer : Player
 		}
 	}
 
-	private List<Candidate> BuildCandidates(PlayerBox s)
-	{
-		var list = new List<Candidate>();
-		Encode(s, xBuf);
-		ForwardTrunk(xBuf);
+    private List<Candidate> BuildCandidates(PlayerBox s)
+    {
+        var list = new List<Candidate>();
+        Encode(s, xBuf);
+        ForwardTrunk(xBuf);
 
-		int n = Math.Min(s.HandCards.Count, MaxHand);
-		for (int k = 0; k < n; k++)
-		{
-			var card = s.HandCards[k];
-			if (!card.CanPlay()) continue;
-			if (card.Cost.Current > s.Hero.Cost.Current) continue;
+        int n = Math.Min(s.HandCards.Count, MaxHand);
+        for (int k = 0; k < n; k++)
+        {
+            var card = s.HandCards[k];
+            if (!card.CanPlay()) continue;
+            if (card.Cost.Current > s.Hero.Cost.Current) continue;
 
-			var targets = CardCmd.GetTargets(card, card.TargetType, false).ToList();
-			if (targets.Count == 0) continue;
+            var targets = CardCmd.GetTargets(card, card.TargetType, false).ToList();
+            if (targets.Count == 0) continue;
 
-			var scores = ScoreTargets(xBuf, k, targets);
-			for (int t = 0; t < targets.Count; t++)
-				scores[t] += 0.1f * GetActionBonus(card, targets[t]);
+            var scores = ScoreTargets(xBuf, k, targets);
+            for (int t = 0; t < targets.Count; t++)
+            {
+                scores[t] += 0.1f * GetActionBonus(card, targets[t]);
 
-			int best = ArgMax(scores);
-			list.Add(new Candidate
-			{
-				Card = card,
-				Target = targets[best],
-				Score = scores[best],
-				Cost = card.Cost.Current
-			});
-		}
-		return list;
-	}
+                if (card.TargetType == TargetType.Grids && targets[t].CanBeRoad(out var r))
+                {
+                    var (_, loc) = ParseGrid(targets[t]);
+                    scores[t] += EvaluatePlacement(r, loc, card);
+                }
+            }
 
-	private void UpdateStep(float reward, bool terminal)
+            int best = ArgMax(scores);
+            list.Add(new Candidate
+            {
+                Card = card,
+                Target = targets[best],
+                Score = scores[best],
+                Cost = card.Cost.Current
+            });
+        }
+        return list;
+    }
+
+    private void UpdateStep(float reward, bool terminal)
 	{
 		if (!_hasPending) return;
 
@@ -658,13 +808,38 @@ public class AiPlayer : Player
 			v[3] = h.Hero.Camp == myCamp ? 1f : 0f;
 			v[7] = 1f;
 		}
-		else if (t.CanBeRoad(out var road))
-		{
-			v[4] = road.Index / 5f;
-			v[5] = (int)road.Type / 2f;
-			v[7] = 0.5f;
-		}
-		return v;
+        else if (t.CanBeRoad(out var road))
+        {
+            var (_, loc) = ParseGrid(t);
+
+            v[4] = road.Index / 5f;
+            v[5] = (int)road.Type / 2f;
+            v[7] = 0.5f;
+
+            v[6] = loc switch
+            {
+                Location.Plant => 1f,
+                Location.Zombie => -1f,
+                Location.PlantFront => 0.5f,
+                _ => 0f
+            };
+
+            var roadUnits = TargetRegistry.All.OfType<Fighter>()
+                .Where(f => f.Model != null && !f.Model.IsDie
+                         && f.Road != null && f.Road.Index == road.Index)
+                .ToList();
+
+            int occ = 0, friends = 0, enemies = 0;
+            foreach (var ft in roadUnits)
+            {
+                if (loc != null && ft.Model.Location == loc) occ++;
+                if (ft.Model.Camp == myCamp) friends++; else enemies++;
+            }
+            v[1] = occ > 0 ? 1f : 0f;
+            v[2] = friends / 5f;
+            v[3] = enemies / 5f;
+        }
+        return v;
 	}
 
 	private static int ArgMax(float[] arr)

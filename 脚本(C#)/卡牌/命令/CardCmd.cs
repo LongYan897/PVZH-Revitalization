@@ -60,6 +60,7 @@ public static class CardCmd
     {
         Buffs.Clear();
         CardInstances.Clear();
+        _cardHooks.Clear();
     }
     /// <summary>
     /// 向Cmd添加卡牌
@@ -67,8 +68,22 @@ public static class CardCmd
     /// <param name="cardModel"></param>
     public static void Add(CardModel cardModel)
     {
-        CardInstances.Add(cardModel);
+        if (cardModel == null) return;
+        if (!CardInstances.Add(cardModel)) return;
+
+        foreach (var (filter, action, applied) in _cardHooks.ToList())
+        {
+            if (applied.Contains(cardModel) || !filter(cardModel)) continue;
+            applied.Add(cardModel);
+            var func = (async () =>
+            {
+                try { await action(cardModel); }
+                catch (Exception ex) { Log.Error($"[ForCards] {cardModel.Title}: {ex}"); }
+            });
+            func();
+        }
     }
+
 
     /// <summary>
     /// 从Cmd删除卡牌
@@ -149,6 +164,73 @@ public static class CardCmd
         await player.Status.PlayCardAndDraw(amount);
     }
 
+    /// <summary>
+    /// 创建指定类型的卡牌并加入玩家手牌。
+    /// </summary>
+    /// <typeparam name="T">要创建的卡牌类型</typeparam>
+    /// <param name="player">目标玩家</param>
+    /// <param name="amount">创建数量</param>
+    /// <returns>创建并加入手牌的卡牌</returns>
+    public static async Task<List<CardModel>> Make<T>(Player player = null, int amount = 1) where T : CardModel
+    {
+        var cards = new List<CardModel>();
+        if (amount <= 0) return cards;
+
+        for (int i = 0; i < amount; i++)
+            cards.Add(CardModel.Load<T>());
+
+        player ??= PlayerManager.GetPlayer(cards[0].Camp);
+        await player.Status.PlayCardAndReturn(cards.ToArray());
+        return cards;
+    }
+
+    private static readonly Random _makeRng = new();
+
+    /// <summary>
+    /// 创建指定类型的卡牌并加入玩家手牌。
+    /// </summary>
+    /// <param name="player">目标玩家</param>
+    /// <param name="selectors">筛选器和数量</param>
+    /// <returns>创建并加入手牌的卡牌</returns>
+    public static async Task<List<CardModel>> MakeRandom(Player player, params (Func<CardModel, bool> Filter, int Amount)[] selectors)
+    {
+        var cards = new List<CardModel>();
+        if (selectors == null || selectors.Length == 0) return cards;
+
+        foreach (var (filter, amount) in selectors)
+        {
+            if (filter == null || amount <= 0) continue;
+
+            var matched = CardModel.AllCards.Where(filter).ToList();
+            if (matched.Count == 0) continue;
+
+            for (int i = 0; i < amount; i++)
+            {
+                var template = matched[_makeRng.Next(matched.Count)];
+                cards.Add(template.Clone());
+            }
+        }
+
+        if (cards.Count == 0) return cards;
+
+        player ??= PlayerManager.GetPlayer(cards[0].Camp);
+        await player.Status.PlayCardAndReturn(cards.ToArray());
+        return cards;
+    }
+
+    /// <summary>
+    /// 将指定卡牌加入玩家手牌。
+    /// </summary>
+    /// <param name="player">目标玩家</param>
+    /// <param name="cards">要加入手牌的卡牌</param>
+    public static async Task Make(Player player = null, params CardModel[] cards)
+    {
+        if (cards == null || cards.Length == 0) return;
+
+        player ??= PlayerManager.GetPlayer(cards[0].Camp);
+        await player.Status.PlayCardAndReturn(cards);
+    }
+
     private static void JustFreshAllCards()
     {
         foreach (var card in CardInstances.ToList())
@@ -157,7 +239,6 @@ public static class CardCmd
             node?.JustFresh();
         }
     }
-
     /// <summary>
     /// 改变玩家的阳光/脑子数
     /// </summary>
@@ -343,15 +424,21 @@ public static class CardCmd
     /// <param name="cardModel">是哪个卡牌调用的</param>
     /// <param name="filter">过滤器</param>
     /// <returns></returns>
-    public static async Task<(Road road,Location? location)> PlayerChoiceGrid(Player player, CardModel cardModel, bool fromBuff, Func<Road, bool> filter = null, Camp? camp = null)
+    public static async Task<(Road road, Location? location)> PlayerChoiceGrid(Player player, CardModel cardModel, bool fromBuff, Func<Road, bool> filter = null, Camp? camp = null)
     {
         filter ??= (f) => true;
+        player ??= PlayerManager.GetPlayer(cardModel.Camp);
+
+        if (player is AiPlayer ai)
+            return await ai.ChoiceGrid(cardModel, fromBuff, filter);
+
         Func<ITarget, bool> itgFilter = (itg) =>
         {
             return itg.CanBeRoad(out var r) && filter(r);
         };
-        var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Grids, fromBuff, itgFilter,camp) as NodeRoad;
-        return (itg.CanBeRoad(out var road) ? road : null,road.LastTargetKind == RoadTargetKind.None ? null : road.LastTargetKind switch 
+        var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Grids, fromBuff, itgFilter, camp) as NodeRoad;
+        if (itg == null || !itg.CanBeRoad(out var road)) return (null, null);
+        return (road, road.LastTargetKind == RoadTargetKind.None ? null : road.LastTargetKind switch
         {
             RoadTargetKind.Grid => itg.ClickedCamp == null ? null : itg.ClickedCamp is Camp camp1 && camp1.Plant() ? Location.Plant : Location.Zombie,
             RoadTargetKind.CoopGrid => Location.PlantFront,
@@ -418,7 +505,35 @@ public static class CardCmd
             .Select(f => f.Model)
             .FirstOrDefault();
     }
+    private static readonly List<(
+        Func<CardModel, bool> Filter,
+        Func<CardModel, Task> Action,
+        HashSet<CardModel> Applied)> _cardHooks = new();
+    /// <summary>
+    /// 对满足filter的卡牌进行操作
+    /// </summary>
+    public static async Task ForCards(Func<CardModel, bool> filter, Func<CardModel, Task> action)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
 
+        ArgumentNullException.ThrowIfNull(action);
+
+        var applied = new HashSet<CardModel>();
+        _cardHooks.Add((filter, action, applied));
+
+        var cards = CardInstances
+            .Concat(TargetRegistry.All.OfType<Fighter>().Select(f => f.Model))
+            .Where(c => c != null)
+            .Distinct()
+            .ToList();
+
+        foreach (var card in cards)
+        {
+            if (applied.Contains(card) || !filter(card)) continue;
+            applied.Add(card);
+            await action(card);
+        }
+    }
     private static readonly List<Buff> Buffs = new();
     /// <summary>
     /// 向全局注册一个Buff，会持续监听时点

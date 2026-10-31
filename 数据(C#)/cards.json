@@ -68,7 +68,7 @@
   "RollingStone.Id": 3,
 
   "HailACopter.Title": "召唤直升机",
-  "HailACopter.Des": "_召唤_一只=Strength={6}/=Health={5}的_直升机敢死队小鬼_。",
+  "HailACopter.Des": "在一条线_生成_一只=Strength={6}/=Health={5}的_直升机敢死队小鬼_。",
   "HailACopter.Cost": 6,
   "HailACopter.Camp": "僵尸",
   "HailACopter.Type": "锦囊",
@@ -261,7 +261,7 @@
   "GatlingPea.Id": 14,
 
   "DiscoZombie.Title": "迪斯科僵尸",
-  "DiscoZombie.Des": "_打出_：召唤一只=Health={1}/=Strength={1}的伴舞僵尸。",
+  "DiscoZombie.Des": "_打出_：在一条线_生成_一只=Health={1}/=Strength={1}的伴舞僵尸。",
   "DiscoZombie.Cost": 3,
   "DiscoZombie.Camp": "僵尸",
   "DiscoZombie.Type": "单位",
@@ -381,5 +381,24 @@
   "BananaPeel.Tag": [],
   "BananaPeel.Pack": "银河",
   "BananaPeel.Flavor": "“一种闹剧喜剧的经典桥段，但不知为何，僵尸们总是对此防不胜防。”",
-  "BananaPeel.Id": 21
+  "BananaPeel.Id": 21,
+
+  "CosmicPea.Title": "宇宙豌豆",
+  "CosmicPea.Des": "_打出_：_召唤_一株$豌豆$，那株$豌豆$获得_双重打击_。",
+  "CosmicPea.Cost": 3,
+  "CosmicPea.Camp": "植物",
+  "CosmicPea.Type": "单位",
+  "CosmicPea.Rarity": "稀有",
+  "CosmicPea.Category": "猛长",
+  "CosmicPea.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
+  "CosmicPea.Icon": "res://场景(C#)/卡面/cosmicPea.tscn",
+  "CosmicPea.Label": [ "豌豆" ],
+  "CosmicPea.Tag": [],
+  "CosmicPea.Hp": 1,
+  "CosmicPea.HpType": "普通",
+  "CosmicPea.Atk": 2,
+  "CosmicPea.AtkType": "双重打击",
+  "CosmicPea.Pack": "银河",
+  "CosmicPea.Flavor": "“宇宙如此浩瀚，而豌豆如此渺小。这种并置不禁让我陷入沉思，你懂的？”",
+  "CosmicPea.Id": 22
 }

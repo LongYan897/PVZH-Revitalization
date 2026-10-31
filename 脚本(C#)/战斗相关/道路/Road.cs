@@ -216,14 +216,6 @@ public class Road
         await CardCmd.TimingOnCards(cardModel, Timing.AfterRoadChanged, this);
     }
     /// <summary>
-    /// 添加战斗单位到该道路
-    /// </summary>
-    /// <param name="fighter">要添加的战斗单位</param>
-    public void AddFighter(Fighter fighter)
-    {
-        fighters.Add(fighter);
-    }
-    /// <summary>
     /// 移除战斗单位从该道路
     /// </summary>
     /// <param name="fighter">要移除的战斗单位</param>
@@ -232,14 +224,6 @@ public class Road
         await cardModel.FireTiming(Timing.OnFighterExit, this, fighter.Model);
         fighters.Remove(fighter);
         await CardCmd.TimingOnCards(cardModel, Timing.AfterRoadChanged, this);
-    }
-    /// <summary>
-    /// 移除战斗单位从该道路
-    /// </summary>
-    /// <param name="fighter">要移除的战斗单位</param>
-    public void RemoveFighter(Fighter fighter)
-    {
-        fighters.Remove(fighter);
     }
     /// <summary>
     /// 获取该道路上的所有战斗单位

@@ -272,6 +272,20 @@ public class CardModel
             };
         }
     }
+
+    /// <summary>
+    /// 变化卡牌
+    /// </summary>
+    /// <returns></returns>
+    public async Task TransformTo(CardModel cardModel)
+    {
+        Player.Status.HandRemoveCard(this);
+        Player.Status.HandAddCard(cardModel);
+        await NodeCard.GetNode(this).TransformTo(cardModel);
+        await TransferBuffsTo(cardModel);
+        await FireTiming(Timing.WhenTransformed, this, cardModel);
+        await CardCmd.TimingOnCards(this, Timing.WhenTransformed, this, cardModel);
+    }
     /// <summary>
     /// 播放一个即时的动画,如果玩家是HostPlayer播放up,反之down
     /// </summary>
