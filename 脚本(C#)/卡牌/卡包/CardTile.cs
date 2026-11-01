@@ -11,49 +11,12 @@ namespace Card;
 /// </summary>
 public partial class CardTile : CenterContainer
 {
-<<<<<<< HEAD
-	private const string PackDataPath = "res://数据(C#)/cardPack.json";
-	private string PackName { get; set; } = "Pack1";
-	private string PackTitle { get; set; } = "测试卡包1";
-	private string IntroduceText { get; set; } = "这是卡包测试文本，限购4包！\n* 包含1张超稀有卡牌,\n* 3张稀有卡牌。";
-	private string PackTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
-	private string PackOpenTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
-	private string MainColor { get; set; } = "477fff";
-	private string TopColor { get; set; } = "007190";
-	private List<CardTileOption> Options = new();
-	// 场景节点
-	private Label PackNameLabel;
-	private TextureRect PackImage;
-	private Label IntroduceLabel;
-	private Panel Board;
-	private Panel TopBanner;
-	private Control ButtonGroup;
-	public void LoadResource(string packName)
-	{
-		PackName = packName;
-
-		// ---- 1. 把 Pack1 / Pack2 这一层里的数值全部读出来 ----
-		FileJson json = new FileJson().Open(PackDataPath).OpenObject(PackName);
-		PackTitle = json.GetVariable("PackName", PackTitle);
-		IntroduceText = json.GetVariable("IntroduceText", IntroduceText);
-        PackTexture = json.GetVariable("PackTexture", PackTexture);
-        PackOpenTexture = json.GetVariable("PackOpenTexture", PackTexture);
-		MainColor = json.GetVariable("MainColor", MainColor);
-		TopColor = json.GetVariable("TopColor", TopColor);
-		Options = json.GetArray<JsonObject>("Options")
-			.Select(option => new CardTileOption
-			{
-				ButtonText = option["ButtonText"]?.GetValue<string>() ?? "1包",
-				PriceType = option["PriceType"]?.GetValue<string>() ?? "Gem",
-				Price = option["Price"]?.GetValue<int>() ?? 0,
-				PullCount = option["PullCount"]?.GetValue<int>() ?? 1
-			}).ToList();
-=======
     private const string PackDataPath = "res://数据(C#)/cardPack.json";
     private string PackName { get; set; } = "Pack1";
     private string PackTitle { get; set; } = "测试卡包1";
     private string IntroduceText { get; set; } = "这是卡包测试文本，限购4包！\n* 包含1张超稀有卡牌,\n* 3张稀有卡牌。";
-    private string CardTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
+    private string PackTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
+    private string PackOpenTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
     private string MainColor { get; set; } = "477fff";
     private string TopColor { get; set; } = "007190";
     private List<CardTileOption> Options = new();
@@ -72,7 +35,8 @@ public partial class CardTile : CenterContainer
         FileJson json = new FileJson().Open(PackDataPath).OpenObject(PackName);
         PackTitle = json.GetVariable("PackName", PackTitle);
         IntroduceText = json.GetVariable("IntroduceText", IntroduceText);
-        CardTexture = json.GetVariable("CardTexture", CardTexture);
+        PackTexture = json.GetVariable("PackTexture", PackTexture);
+        PackOpenTexture = json.GetVariable("PackOpenTexture", PackTexture);
         MainColor = json.GetVariable("MainColor", MainColor);
         TopColor = json.GetVariable("TopColor", TopColor);
         Options = json.GetArray<JsonObject>("Options")
@@ -83,7 +47,6 @@ public partial class CardTile : CenterContainer
                 Price = option["Price"]?.GetValue<int>() ?? 0,
                 PullCount = option["PullCount"]?.GetValue<int>() ?? 1
             }).ToList();
->>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
         // ---- 2. 取节点（底版/购买按钮组 是 Control，挂 AutoFitHBoxContainer.gd，不是 BoxContainer）----
         Board = GetNodeOrNull<Panel>("底版");
@@ -106,62 +69,15 @@ public partial class CardTile : CenterContainer
         else
             GD.PushWarning("[CardTile] 场景中缺少 底版/详情按钮");
 
-<<<<<<< HEAD
-		// ---- 3. 把数值写进界面 ----
-		if (PackNameLabel != null) PackNameLabel.Text = PackTitle;
-		if (IntroduceLabel != null) IntroduceLabel.Text = IntroduceText;
-		if (PackImage != null && !string.IsNullOrWhiteSpace(PackTexture))
-		{
-			if (ResourceLoader.Exists(PackTexture))
-				PackImage.Texture = GD.Load<Texture2D>(PackTexture);
-			else
-				GD.PushWarning($"[CardTile] {PackName} 的 PackTexture 路径不存在：{PackTexture}");
-		}
-		SetPanelColor(Board, MainColor);
-		SetPanelColor(TopBanner, TopColor);
-
-		// ---- 4. 按 Options 生成购买按钮 ----
-		foreach(var Child in ButtonGroup.GetChildren())
-		{
-			// 先摘出树再释放，避免本帧新旧按钮同时参与 AutoFit 布局
-			ButtonGroup.RemoveChild(Child);
-			Child.QueueFree();
-		}
-		var OptionSlot = GD.Load<PackedScene>("res://场景(C#)/卡包/购买按钮槽.tscn");
-		if (OptionSlot == null)
-		{
-			GD.PushError("[CardTile] 无法加载 res://场景(C#)/卡包/购买按钮槽.tscn");
-			return;
-		}
-		foreach (var Option in Options)
-		{
-			var button = OptionSlot.Instantiate<OptionSlot>();
-			// 先塞数据再 AddChild：这里是从 _Load() 里调过来的，整棵子树还在 _EnterTree 阶段，
-			// OptionSlot 的 _Ready 还没跑（Godot 会把 ready 推迟到子树全部进入之后），
-			// 此时它的 IntroduceLabel / PriceLabel 都是 null，直接 Setup() 会 NRE。
-			button.IntroduceText = Option.ButtonText;
-			button.PriceCount = Option.Price;
-			// 开包界面需要知道：开哪个卡包、这个档位抽几张、卡包封面图
-			button.PackName = PackName;
-			button.PullCount = Option.PullCount;
-			button.PackTexturePath = PackOpenTexture;
-			ButtonGroup.AddChild(button);
-			if (button.IsNodeReady())
-				button.Setup();                 // 已经 ready 的情况直接填
-			else
-				button.Ready += button.Setup;   // 等它的 _Ready 跑完（Label 取到了）再填文本
-		}
-	}
-=======
         // ---- 3. 把数值写进界面 ----
         if (PackNameLabel != null) PackNameLabel.Text = PackTitle;
         if (IntroduceLabel != null) IntroduceLabel.Text = IntroduceText;
-        if (PackImage != null && !string.IsNullOrWhiteSpace(CardTexture))
+        if (PackImage != null && !string.IsNullOrWhiteSpace(PackTexture))
         {
-            if (ResourceLoader.Exists(CardTexture))
-                PackImage.Texture = GD.Load<Texture2D>(CardTexture);
+            if (ResourceLoader.Exists(PackTexture))
+                PackImage.Texture = GD.Load<Texture2D>(PackTexture);
             else
-                GD.PushWarning($"[CardTile] {PackName} 的 CardTexture 路径不存在：{CardTexture}");
+                GD.PushWarning($"[CardTile] {PackName} 的 PackTexture 路径不存在：{PackTexture}");
         }
         SetPanelColor(Board, MainColor);
         SetPanelColor(TopBanner, TopColor);
@@ -187,6 +103,10 @@ public partial class CardTile : CenterContainer
             // 此时它的 IntroduceLabel / PriceLabel 都是 null，直接 Setup() 会 NRE。
             button.IntroduceText = Option.ButtonText;
             button.PriceCount = Option.Price;
+            // 开包界面需要知道：开哪个卡包、这个档位抽几张、卡包封面图
+            button.PackName = PackName;
+            button.PullCount = Option.PullCount;
+            button.PackTexturePath = PackOpenTexture;
             ButtonGroup.AddChild(button);
             if (button.IsNodeReady())
                 button.Setup();                 // 已经 ready 的情况直接填
@@ -194,7 +114,6 @@ public partial class CardTile : CenterContainer
                 button.Ready += button.Setup;   // 等它的 _Ready 跑完（Label 取到了）再填文本
         }
     }
->>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
     /// <summary>
     /// 把面板样式里的颜色换成 MainColor / TopColor。

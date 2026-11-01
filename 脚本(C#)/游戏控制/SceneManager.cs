@@ -182,66 +182,21 @@ public static class SceneManager
         }
     }
 
-<<<<<<< HEAD
-	/// <summary>
-	/// 直接回到主界面：把菜单栈里的所有层一次性回收（登录成功、退出账号之后用）。<br/>
-	/// 和连按返回不同：先从上往下播完每一层的 Outro()，再统一清场、播主界面按钮动画，
-	/// 中间不会出现"退到一半停在中间层"的状态。
-	/// </summary>
-	/// <param name="showLoading">
-	/// 自定义的加载动画设置：是否播放并等待游戏内的加载动画（<see cref="Load"/>/<see cref="LoadEnd"/>）。
-	/// </param>
-	/// <param name="forceReplace">
-	/// 是否强制用 <paramref name="showLoading"/> 替换原有设置。<br/>
-	/// false（默认，叠加/或门）：只要"场景自己的 ShowLoading"**或**"自定义 showLoading"任意一个为 true，
-	/// 就会播放加载动画；<br/>
-	/// true（强制替换）：完全按 <paramref name="showLoading"/> 来，忽略场景上的 ShowLoading。
-	/// </param>
-	public static async void ReturnToMain(bool showLoading = false, bool forceReplace = false)
-	{
-		if (Menus.Count == 0)
-		{
-			BackButton.JoinScene(true);
-			EnableSubmenu();
-			return;
-		}
-		if (_changing) return;
-		_changing = true;
-
-		var layers = new List<SubMenu>(Menus);
-		Menus.Clear();
-
-		// 或门：任意一层原本要加载 或 自定义要加载 → 都加载；
-		// 强制替换：只看自定义设置。
-		bool playLoading = forceReplace
-			? showLoading
-			: showLoading || layers.Any(m => m != null && GodotObject.IsInstanceValid(m) && m.ShowLoading);
-
-		try
-		{
-			for (int i = layers.Count - 1; i >= 0; i--)
-			{
-				SubMenuScene scene = layers[i].GetScene();
-				if (scene == null || !GodotObject.IsInstanceValid(scene)) continue;
-				try
-				{
-					await scene.Outro();
-				}
-				catch (Exception e)
-				{
-					GD.PushError($"[SceneManager] 子场景离场动画出错：{e}");
-				}
-			}
-
-			if (playLoading) await Load();
-			await Clear();
-=======
     /// <summary>
     /// 直接回到主界面：把菜单栈里的所有层一次性回收（登录成功、退出账号之后用）。<br/>
-    /// 和连按返回不同：这里先从上往下播完每一层的 Outro()，再统一清场、播主界面按钮动画，
+    /// 和连按返回不同：先从上往下播完每一层的 Outro()，再统一清场、播主界面按钮动画，
     /// 中间不会出现"退到一半停在中间层"的状态。
     /// </summary>
-    public static async void ReturnToMain()
+    /// <param name="showLoading">
+    /// 自定义的加载动画设置：是否播放并等待游戏内的加载动画（<see cref="Load"/>/<see cref="LoadEnd"/>）。
+    /// </param>
+    /// <param name="forceReplace">
+    /// 是否强制用 <paramref name="showLoading"/> 替换原有设置。<br/>
+    /// false（默认，叠加/或门）：只要"场景自己的 ShowLoading"**或**"自定义 showLoading"任意一个为 true，
+    /// 就会播放加载动画；<br/>
+    /// true（强制替换）：完全按 <paramref name="showLoading"/> 来，忽略场景上的 ShowLoading。
+    /// </param>
+    public static async void ReturnToMain(bool showLoading = false, bool forceReplace = false)
     {
         if (Menus.Count == 0)
         {
@@ -252,9 +207,14 @@ public static class SceneManager
         if (_changing) return;
         _changing = true;
 
-        bool showLoading = Menus[0].ShowLoading;
         var layers = new List<SubMenu>(Menus);
         Menus.Clear();
+
+        // 或门：任意一层原本要加载 或 自定义要加载 → 都加载；
+        // 强制替换：只看自定义设置。
+        bool playLoading = forceReplace
+            ? showLoading
+            : showLoading || layers.Any(m => m != null && GodotObject.IsInstanceValid(m) && m.ShowLoading);
 
         try
         {
@@ -272,57 +232,16 @@ public static class SceneManager
                 }
             }
 
-            if (showLoading) await Load();
+            if (playLoading) await Load();
             await Clear();
->>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
             foreach (SubMenu menu in layers)
             {
                 if (menu != null && GodotObject.IsInstanceValid(menu)) menu.Destory();
             }
 
-<<<<<<< HEAD
-			BackButton.JoinScene(true);
-			if (playLoading) await LoadEnd();
-			EnableSubmenu();
-		}
-		catch (Exception e)
-		{
-			GD.PushError($"[SceneManager] 返回主界面失败：{e}");
-			EnableSubmenu();
-		}
-		finally
-		{
-			_changing = false;
-		}
-	}
-
-	/// <summary>
-	/// 关闭当前层的子目录
-	/// </summary>
-	/// <param name="from">发起返回的当前层场景（防止下层误触发返回；传 null 表示不检查）</param>
-	/// <param name="showLoading">
-	/// 自定义的加载动画设置：是否播放并等待游戏内的加载动画（<see cref="Load"/>/<see cref="LoadEnd"/>）。<br/>
-	/// 退到主界面、以及退到上一层（中间层）都会生效。
-	/// </param>
-	/// <param name="forceReplace">
-	/// 是否强制用 <paramref name="showLoading"/> 替换原有设置。<br/>
-	/// false（默认，叠加/或门）：这一层场景自己的 ShowLoading **或** 自定义 showLoading
-	/// 任意一个为 true 就播放加载动画；<br/>
-	/// true（强制替换）：完全按 <paramref name="showLoading"/> 来，忽略场景上的 ShowLoading。
-	/// </param>
-	public static async void ReturnToSub(SubMenuScene from = null, bool showLoading = false, bool forceReplace = false)
-	{
-		if (Menus.Count == 0 || _changing) return;
-		if (from != null && !IsCurrent(from))
-		{
-			GD.PushWarning("[SceneManager] 忽略了非当前层的返回请求");
-			return;
-		}
-		_changing = true;
-=======
             BackButton.JoinScene(true);
-            if (showLoading) await LoadEnd();
+            if (playLoading) await LoadEnd();
             EnableSubmenu();
         }
         catch (Exception e)
@@ -339,7 +258,18 @@ public static class SceneManager
     /// <summary>
     /// 关闭当前层的子目录
     /// </summary>
-    public static async void ReturnToSub(SubMenuScene from = null)
+    /// <param name="from">发起返回的当前层场景（防止下层误触发返回；传 null 表示不检查）</param>
+    /// <param name="showLoading">
+    /// 自定义的加载动画设置：是否播放并等待游戏内的加载动画（<see cref="Load"/>/<see cref="LoadEnd"/>）。<br/>
+    /// 退到主界面、以及退到上一层（中间层）都会生效。
+    /// </param>
+    /// <param name="forceReplace">
+    /// 是否强制用 <paramref name="showLoading"/> 替换原有设置。<br/>
+    /// false（默认，叠加/或门）：这一层场景自己的 ShowLoading **或** 自定义 showLoading
+    /// 任意一个为 true 就播放加载动画；<br/>
+    /// true（强制替换）：完全按 <paramref name="showLoading"/> 来，忽略场景上的 ShowLoading。
+    /// </param>
+    public static async void ReturnToSub(SubMenuScene from = null, bool showLoading = false, bool forceReplace = false)
     {
         if (Menus.Count == 0 || _changing) return;
         if (from != null && !IsCurrent(from))
@@ -348,79 +278,17 @@ public static class SceneManager
             return;
         }
         _changing = true;
->>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
         SubMenu menu = Menus[^1];
         SubMenuScene scene = menu.GetScene();
         Menus.RemoveAt(Menus.Count - 1);
 
-<<<<<<< HEAD
-		// 或门：这一层原本要加载 或 自定义要加载 → 都加载；
-		// 强制替换：只看自定义设置。
-		bool playLoading = forceReplace
-			? showLoading
-			: showLoading || (menu != null && GodotObject.IsInstanceValid(menu) && menu.ShowLoading);
+        // 或门：这一层原本要加载 或 自定义要加载 → 都加载；
+        // 强制替换：只看自定义设置。
+        bool playLoading = forceReplace
+            ? showLoading
+            : showLoading || (menu != null && GodotObject.IsInstanceValid(menu) && menu.ShowLoading);
 
-		try
-		{
-			if (scene != null && GodotObject.IsInstanceValid(scene))
-				await scene.Outro();
-		}
-		catch (Exception e)
-		{
-			GD.PushError($"[SceneManager] 子场景离场动画出错：{e}");
-		}
-
-		try
-		{
-			if (Menus.Count == 0)
-			{
-				if (playLoading) await Load();
-				await Clear();
-				menu.Destory(); 
-				BackButton.JoinScene(true);
-				if (playLoading) await LoadEnd();
-				EnableSubmenu();
-			}
-			else
-			{
-				// 回到上一层：如果这一层要播加载动画，也用加载界面盖住这次切换。
-				if (playLoading) await Load();
-
-				menu.FreeScene();
-				menu.ResetPress();
-				SubMenu parentMenu = Menus[^1];
-				SubMenuScene parentScene = parentMenu.GetScene();
-				if (parentScene != null && GodotObject.IsInstanceValid(parentScene) && parentScene.Visible)
-				{
-					BackButton.JoinScene(parentScene.HideReturnButton);
-                    ShowNess(!parentMenu.IsPersistNess);
-                    parentMenu.Reparent(Main.SceneContainer.GetNode<CanvasLayer>("%UponScene"));
-					EnableMenusIn(parentScene);
-				}
-				else
-				{
-					GD.PushWarning("[SceneManager] 上一层场景不可用，已回收所有层并退回主界面");
-					foreach (var left in Menus) left.FreeScene();
-					Menus.Clear();
-					BackButton.JoinScene(true);
-					EnableSubmenu();
-				}
-
-				if (playLoading) await LoadEnd();
-			}
-		}
-		catch (Exception e)
-		{
-			GD.PushError($"[SceneManager] 返回子菜单失败：{e}");
-			EnableSubmenu();
-		}
-		finally
-		{
-			_changing = false;
-		}
-	}
-=======
         try
         {
             if (scene != null && GodotObject.IsInstanceValid(scene))
@@ -435,16 +303,18 @@ public static class SceneManager
         {
             if (Menus.Count == 0)
             {
-                bool showLoading = menu.ShowLoading;
-                if (showLoading) await Load();
+                if (playLoading) await Load();
                 await Clear();
                 menu.Destory();
                 BackButton.JoinScene(true);
-                if (showLoading) await LoadEnd();
+                if (playLoading) await LoadEnd();
                 EnableSubmenu();
             }
             else
             {
+                // 回到上一层：如果这一层要播加载动画，也用加载界面盖住这次切换。
+                if (playLoading) await Load();
+
                 menu.FreeScene();
                 menu.ResetPress();
                 SubMenu parentMenu = Menus[^1];
@@ -464,6 +334,8 @@ public static class SceneManager
                     BackButton.JoinScene(true);
                     EnableSubmenu();
                 }
+
+                if (playLoading) await LoadEnd();
             }
         }
         catch (Exception e)
@@ -476,5 +348,4 @@ public static class SceneManager
             _changing = false;
         }
     }
->>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 }

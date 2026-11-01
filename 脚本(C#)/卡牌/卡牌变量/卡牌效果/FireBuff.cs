@@ -15,7 +15,6 @@ public class FireBuff(int amount) : StackableBuff(amount)
             {
                 if (!fighter.IsDie)
                 {
-
                     await fighter.ApplyDamage(Stacks, Variable.VariableReason.Damaged | Variable.VariableReason.Diff);
                     await fighter.RemoveBuff(this, Variable.VariableReason.Diff,true);
                 }
@@ -25,7 +24,9 @@ public class FireBuff(int amount) : StackableBuff(amount)
             {
                 if (!fighter.IsDie)
                 {
-
+                    instance = FireRate.Create();
+                    await instance.Main().SetAnimationTask(0,"intro");
+                    instance.Main().AddAnimation(0, "idle",true);
                 }
             }
         }

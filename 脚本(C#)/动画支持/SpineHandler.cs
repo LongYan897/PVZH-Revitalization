@@ -157,17 +157,6 @@ public partial class SpineHandler : Node2D
     {
         SpineSprite.Call("add_animation", track, animName, loop, delay);
     }
-
-<<<<<<< HEAD
-		var callable = Callable.From<GodotObject, GodotObject, GodotObject>(
-			(sprite, state, entry) =>
-			{
-				// 注意：nameof(QueueFree) == "QueueFree" 是 C# 名字，
-				// 引擎按名字调用时只认原生方法名 "queue_free"，所以之前会报
-				// "Error calling deferred method: 'Node2D(SpineHandler.cs)::QueueFree': Method not found"。
-				Callable.From(QueueFree).CallDeferred();
-			});
-=======
     public void SetAttachment(string id, string attachment)
     {
         SpineSprite.Call("set_attachment", id, attachment);
@@ -176,7 +165,6 @@ public partial class SpineHandler : Node2D
     {
         SpineSprite.Call("set_skin", skinName);
     }
->>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
     public Vector2 GetBoneWorldScale(string boneName)
     {
