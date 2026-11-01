@@ -13,7 +13,7 @@ public static class DamageCardExtensions
     public static async Task MergeAtk(this IDamageCard card, params AtkType[] atkTypes)
     {
         var cur = card.AtkType.Current;
-        atkTypes = [.. atkTypes.Where(atk => atk is not MergedAtkType && ((cur is MergedAtkType merged && !merged.AtkTypes.Any(tp => tp.GetType() == atk.GetType())) || cur is not MergedAtkType))];
+        atkTypes = [.. atkTypes.Where(atk => atk is not MergedAtkType && ((cur is MergedAtkType merged && !merged.AtkTypes.Any(tp => tp.GetType() == atk.GetType())) || (cur is not MergedAtkType && atk.GetType() != cur.GetType())))];
         if (atkTypes.Length == 0) return;
         if (cur is NormalAtkType && atkTypes.Length == 1)
             await card.AtkType.Set(atkTypes[0], VariableReason.Self);

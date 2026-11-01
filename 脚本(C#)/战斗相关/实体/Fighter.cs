@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
+using static Godot.OpenXRCompositionLayer;
 
 namespace Battle.Entity;
 
@@ -150,6 +151,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         fighter.index = index;
         fighter.isFirstPlace = true;
         fighter.Road = road;
+        fighter.GetNode<Button>("%碰撞").MouseFilter = MouseFilterEnum.Stop;
         model.Road = road;
         model.Location = index;
         TargetRegistry.Register(fighter);
@@ -768,6 +770,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         GetNode<Area2D>("碰撞箱").SetMeta("TargetType", "Fighter");
         var hitBtn = GetNode<Button>("碰撞");
         hitBtn.GuiInput += OnHitButtonGuiInput;
+        hitBtn.MouseFilter = MouseFilterEnum.Stop;
         GetNode<SpineHandler>("%加成动画").LoadSkeletonData("res://数据资源/杂项/加成动画.tres");
         GetNode<SpineHandler>("%墓碑").LoadSkeletonData("res://素材/墓碑/墓碑.tres");
 
@@ -989,6 +992,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         if (road == f.Road) return;
         if (!CanGenerate(model, road)) return;
         await f.Road.RemoveFighter(model, f);
+        f.Road = road;
         var node = NodeRoad.GetNode(road);
         Tween tween = f.CreateTween();
         if (model.Camp.Zombie())
@@ -1010,9 +1014,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             tween.TweenProperty(f, "position", node.GetFighterLocation(location), 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         }
         await tween.ToTask();
-        await Task.WhenAll(f.PlayAnimation("intro", true), model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0, "intro") : Task.CompletedTask);
-        f.Road = road;
-        await road.AddFighter(model, f);
+        await Task.WhenAll(f.PlayAnimation("intro", true), model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0, "intro") : Task.CompletedTask,road.AddFighter(model, f));
     }
 
     private void Fresh()
@@ -1215,6 +1217,7 @@ public partial class Fighter : Control, ITarget, IAttackable
     private void Clear()
     {
         _busy = false;
+        GetNode<Button>("%碰撞").MouseFilter = MouseFilterEnum.Ignore;
         var sprite = GetNode<SpineHandler>("%动画");
         sprite.ClearTracks();
         sprite.Clear();
