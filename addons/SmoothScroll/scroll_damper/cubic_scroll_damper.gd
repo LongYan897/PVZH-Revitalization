@@ -1,5 +1,5 @@
-class_name CubicScrollDamper
-extends ScrollDamper
+﻿class_name CubicScrollDamper
+extends "res://addons/SmoothScroll/scroll_damper/scroll_damper.gd"
 ## 三次方滚动阻尼。
 ##
 ## 施加三次方减速曲线（x³）。相比二次方或指数曲线，它的

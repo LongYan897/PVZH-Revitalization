@@ -1,5 +1,6 @@
-class_name ScrollDebugger
+﻿class_name ScrollDebugger
 extends RefCounted
+const ScrollLayoutScript = preload("res://addons/SmoothScroll/helpers/scroll_layout.gd")
 ## 用于 [SmoothScrollContainer] 调试可视化的静态工具类。
 ##
 ## 该类为开发调试提供绘制调试图形的函数。
@@ -19,12 +20,12 @@ static func setup_debug_drawing() -> void:
 
 ## 为指定的 [param container] 绘制调试可视化。[br]
 ## 使用彩色线条显示过度拖拽距离与速度指示。
-static func draw_debug(container: SmoothScrollContainer) -> void:
+static func draw_debug(container) -> void:
 	if not container.content_node: return
 	
 	# 计算容器与 content_node 之间的大小差值
-	var spare_size: Vector2 = ScrollLayout.get_spare_size(container, container.content_margins)
-	var size_diff: Vector2 = ScrollLayout.get_child_size_diff(
+	var spare_size: Vector2 = ScrollLayoutScript.get_spare_size(container, container.content_margins)
+	var size_diff: Vector2 = ScrollLayoutScript.get_child_size_diff(
 		container.content_node,
 		spare_size,
 		false,
@@ -32,7 +33,7 @@ static func draw_debug(container: SmoothScrollContainer) -> void:
 	)
 	
 	# 计算到左、右、上、下的距离
-	var boundary_dist: Vector4 = ScrollLayout.get_boundary_dist(
+	var boundary_dist: Vector4 = ScrollLayoutScript.get_boundary_dist(
 		container.pos,
 		size_diff
 	)

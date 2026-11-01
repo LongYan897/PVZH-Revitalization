@@ -1,6 +1,17 @@
-@tool
+﻿@tool
 class_name SmoothScrollContainer
 extends ScrollContainer
+# ── 用 preload 常量代替全局 class_name ──
+# 全局类名依赖 .godot/global_script_class_cache.cfg；编辑器重建缓存时，
+# 游戏进程如果读到不完整的缓存，这些脚本会报 "Could not find type ... in the current scope"
+# 并导致整个脚本解析失败（滚动直接失效）。preload 按路径加载，不依赖全局类缓存。
+const ScrollDamperScript = preload("res://addons/SmoothScroll/scroll_damper/scroll_damper.gd")
+const ExpoScrollDamperScript = preload("res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd")
+const ScrollbarAnimatorScript = preload("res://addons/SmoothScroll/helpers/scrollbar_animator.gd")
+const ScrollInputHandlerScript = preload("res://addons/SmoothScroll/helpers/scroll_input_handler.gd")
+const ScrollLayoutScript = preload("res://addons/SmoothScroll/helpers/scroll_layout.gd")
+const ScrollPhysicsScript = preload("res://addons/SmoothScroll/helpers/scroll_physics.gd")
+const ScrollDebuggerScript = preload("res://addons/SmoothScroll/helpers/scroll_debugger.gd")
 ## 为 ScrollContainer 提供平滑滚动功能。
 ##
 ## 为 ScrollContainer 应用基于速度的惯性与“越界拖拽”
@@ -22,12 +33,12 @@ enum SCROLL_TYPE {
 @export_group("鼠标滚轮")
 ## 单次滚动输入的拖拽强度
 @export_range(0.0, 10.0, 0.01, "or_greater", "hide_slider") var speed: float = 1000.0
-## 滚轮滚动使用的 ScrollDamper
-@export var wheel_scroll_damper: ScrollDamper = ExpoScrollDamper.new()
+## 滚轮滚动使用的 ScrollDamperScript
+@export var wheel_scroll_damper: ScrollDamperScript = ExpoScrollDamperScript.new()
 
 @export_group("拖拽")
-## 拖拽使用的 ScrollDamper
-@export var dragging_scroll_damper: ScrollDamper = ExpoScrollDamper.new()
+## 拖拽使用的 ScrollDamperScript
+@export var dragging_scroll_damper: ScrollDamperScript = ExpoScrollDamperScript.new()
 ## 是否允许用鼠标拖拽
 @export var drag_with_mouse: bool = true
 ## 是否允许用触摸拖拽
@@ -84,8 +95,8 @@ var velocity := Vector2.ZERO
 var content_node: Control
 ## `content_node` 的当前位置
 var pos := Vector2(0, 0)
-## 根据最近一次输入类型确定当前使用的 ScrollDamper
-var scroll_damper: ScrollDamper
+## 根据最近一次输入类型确定当前使用的 ScrollDamperScript
+var scroll_damper: ScrollDamperScript
 ## 内容是否正在被滚动
 var is_scrolling: bool = false:
 	set(val):
@@ -111,9 +122,9 @@ var _startup_done: bool = false
 ## 若因处于隐藏状态而跳过初始外边距计算，则为 true
 var _initial_margins_skipped: bool = false
 ## 用于淡入淡出效果和滚动补间动画的滚动条动画器
-var scrollbar_animator: ScrollbarAnimator
+var scrollbar_animator: ScrollbarAnimatorScript
 ## 处理所有用户输入事件的输入处理器
-var input_handler: ScrollInputHandler
+var input_handler: ScrollInputHandlerScript
 ## 缓存 is_editor_hint() 的值以提升性能
 var _is_editor_hint = Engine.is_editor_hint()
 
@@ -134,17 +145,17 @@ var _ensure_stability_timer: Timer = null
 ## 当节点首次进入场景树时调用。[br]
 ## 初始化滚动条、计时器和初始配置。
 func _ready() -> void:
-	if not ScrollDebugger.debug_gradient: ScrollDebugger.setup_debug_drawing()
+	if not ScrollDebuggerScript.debug_gradient: ScrollDebuggerScript.setup_debug_drawing()
 	
 	# Initialize variables
 	scroll_damper = wheel_scroll_damper
-	scrollbar_animator = ScrollbarAnimator.new(self)
+	scrollbar_animator = ScrollbarAnimatorScript.new(self)
 	scrollbar_animator.hide_time = scrollbar_hide_time
 	scrollbar_animator.fade_in_time = scrollbar_fade_in_time
 	scrollbar_animator.fade_out_time = scrollbar_fade_out_time
 	
 	# Initialize input handler
-	input_handler = ScrollInputHandler.new(self)
+	input_handler = ScrollInputHandlerScript.new(self)
 	input_handler.speed = speed
 	input_handler.drag_with_mouse = drag_with_mouse
 	input_handler.drag_with_touch = drag_with_touch
@@ -231,7 +242,7 @@ func _on_focus_changed(control: Control) -> void:
 
 ## 启用调试模式时绘制调试信息。
 func _draw() -> void:
-	if debug_mode: ScrollDebugger.draw_debug(self)
+	if debug_mode: ScrollDebuggerScript.draw_debug(self)
 
 
 ## 判断某个子 Control 的 mouse_filter 是否应该被改成 [constant Control.MOUSE_FILTER_PASS]。[br]
@@ -268,10 +279,10 @@ func _update_content_margins() -> void:
 	set_process(true)
 	_initializing_margins = true
 	
-	content_margins = ScrollLayout.get_content_margins(self)
+	content_margins = ScrollLayoutScript.get_content_margins(self)
 	
 	if content_node:
-		_base_offset = ScrollLayout.calculate_base_offset(content_margins)
+		_base_offset = ScrollLayoutScript.calculate_base_offset(content_margins)
 		
 		if _initial_margins_skipped:
 			pos = Vector2.ZERO
@@ -372,10 +383,10 @@ func _set(property: StringName, value: Variant) -> bool:
 			scroll_horizontal = value
 			scrollbar_animator.kill_scroll_x_tween()
 			velocity.x = 0.0
-			var spare_size_x: float = ScrollLayout.get_spare_size_x(self, content_margins)
+			var spare_size_x: float = ScrollLayoutScript.get_spare_size_x(self, content_margins)
 			pos.x = clampf(
 				-value as float,
-				-ScrollLayout.get_child_size_x_diff(content_node, spare_size_x, true),
+				-ScrollLayoutScript.get_child_size_x_diff(content_node, spare_size_x, true),
 				0.0
 			)
 			# Wake up process to ensure scrollbars update visually
@@ -392,10 +403,10 @@ func _set(property: StringName, value: Variant) -> bool:
 			scroll_vertical = value
 			scrollbar_animator.kill_scroll_y_tween()
 			velocity.y = 0.0
-			var spare_size_y: float = ScrollLayout.get_spare_size_y(self, content_margins)
+			var spare_size_y: float = ScrollLayoutScript.get_spare_size_y(self, content_margins)
 			pos.y = clampf(
 				-value as float,
-				-ScrollLayout.get_child_size_y_diff(content_node, spare_size_y, true),
+				-ScrollLayoutScript.get_child_size_y_diff(content_node, spare_size_y, true),
 				0.0
 			)
 			# Important: Wake up process to ensure scrollbars update visually
@@ -433,8 +444,8 @@ func scroll(vertical: bool, axis_velocity: float, axis_pos: float, delta: float)
 		if not should_scroll_vertical(): 
 			# Ensures position resets to 0 if content fits and auto-scroll disabled it
 			if auto_allow_scroll and pos.y != 0 and content_node:
-				var spare = ScrollLayout.get_spare_size_y(self, content_margins)
-				var diff = ScrollLayout.get_child_size_y_diff(content_node, spare, false)
+				var spare = ScrollLayoutScript.get_spare_size_y(self, content_margins)
+				var diff = ScrollLayoutScript.get_child_size_y_diff(content_node, spare, false)
 				if diff <= 0:
 					velocity.y = 0.0
 					pos.y = 0.0
@@ -445,8 +456,8 @@ func scroll(vertical: bool, axis_velocity: float, axis_pos: float, delta: float)
 		if not should_scroll_horizontal(): 
 			# Ensures position resets to 0 if content fits and auto-scroll disabled it
 			if auto_allow_scroll and pos.x != 0 and content_node:
-				var spare = ScrollLayout.get_spare_size_x(self, content_margins)
-				var diff = ScrollLayout.get_child_size_x_diff(content_node, spare, false)
+				var spare = ScrollLayoutScript.get_spare_size_x(self, content_margins)
+				var diff = ScrollLayoutScript.get_child_size_x_diff(content_node, spare, false)
 				if diff <= 0:
 					velocity.x = 0.0
 					pos.x = 0.0
@@ -479,14 +490,14 @@ func scroll(vertical: bool, axis_velocity: float, axis_pos: float, delta: float)
 	if vertical:
 		if not allow_overdragging:
 			# Clamp if calculated position is beyond boundary
-			var spare_size_y: float = ScrollLayout.get_spare_size_y(self, content_margins)
-			var size_diff_y: float = ScrollLayout.get_child_size_y_diff(content_node, spare_size_y, true)
+			var spare_size_y: float = ScrollLayoutScript.get_spare_size_y(self, content_margins)
+			var size_diff_y: float = ScrollLayoutScript.get_child_size_y_diff(content_node, spare_size_y, true)
 
-			if ScrollLayout.is_outside_top_boundary(axis_pos):
+			if ScrollLayoutScript.is_outside_top_boundary(axis_pos):
 				axis_pos = 0.0
 				axis_velocity = 0.0
 			
-			elif ScrollLayout.is_outside_bottom_boundary(axis_pos, size_diff_y):
+			elif ScrollLayoutScript.is_outside_bottom_boundary(axis_pos, size_diff_y):
 				axis_pos = -size_diff_y
 				axis_velocity = 0.0
 		content_node.position.y = _base_offset.y + axis_pos
@@ -496,14 +507,14 @@ func scroll(vertical: bool, axis_velocity: float, axis_pos: float, delta: float)
 	else:
 		if not allow_overdragging:
 			# Clamp if calculated position is beyond boundary
-			var spare_size_x: float = ScrollLayout.get_spare_size_x(self, content_margins)
-			var size_diff_x: float = ScrollLayout.get_child_size_x_diff(content_node, spare_size_x, true)
+			var spare_size_x: float = ScrollLayoutScript.get_spare_size_x(self, content_margins)
+			var size_diff_x: float = ScrollLayoutScript.get_child_size_x_diff(content_node, spare_size_x, true)
 
-			if ScrollLayout.is_outside_left_boundary(axis_pos):
+			if ScrollLayoutScript.is_outside_left_boundary(axis_pos):
 				axis_pos = 0.0
 				axis_velocity = 0.0
 			
-			elif ScrollLayout.is_outside_right_boundary(axis_pos, size_diff_x):
+			elif ScrollLayoutScript.is_outside_right_boundary(axis_pos, size_diff_x):
 				axis_pos = -size_diff_x
 				axis_velocity = 0.0
 			
@@ -518,22 +529,22 @@ func scroll(vertical: bool, axis_velocity: float, axis_pos: float, delta: float)
 func handle_overdrag(vertical: bool, axis_velocity: float, axis_pos: float, delta: float) -> float:
 	if not scroll_damper: return 0.0
 	
-	var spare_size: Vector2 = ScrollLayout.get_spare_size(self, content_margins)
-	var size_diff: float = ScrollLayout.get_child_size_y_diff(content_node, spare_size.y, true) if vertical \
-		else ScrollLayout.get_child_size_x_diff(content_node, spare_size.x, true)
+	var spare_size: Vector2 = ScrollLayoutScript.get_spare_size(self, content_margins)
+	var size_diff: float = ScrollLayoutScript.get_child_size_y_diff(content_node, spare_size.y, true) if vertical \
+		else ScrollLayoutScript.get_child_size_x_diff(content_node, spare_size.x, true)
 	
-	return ScrollPhysics.apply_overdrag(scroll_damper, axis_pos, axis_velocity, size_diff, delta)
+	return ScrollPhysicsScript.apply_overdrag(scroll_damper, axis_pos, axis_velocity, size_diff, delta)
 
 
 ## 当速度和距离都低于阈值时，将内容吸附到边界。[br]
 ## 使用 [param axis_velocity] 和 [param axis_pos] 检查 [param vertical] 垂直轴或水平轴。[br]
 ## 返回 [code][velocity, position][/code] 数组，其中的值可能已被吸附。
 func snap(vertical: bool, axis_velocity: float, axis_pos: float) -> Array:
-	var spare_size: Vector2 = ScrollLayout.get_spare_size(self, content_margins)
-	var size_diff: float = ScrollLayout.get_child_size_y_diff(content_node, spare_size.y, true) if vertical \
-		else ScrollLayout.get_child_size_x_diff(content_node, spare_size.x, true)
+	var spare_size: Vector2 = ScrollLayoutScript.get_spare_size(self, content_margins)
+	var size_diff: float = ScrollLayoutScript.get_child_size_y_diff(content_node, spare_size.y, true) if vertical \
+		else ScrollLayoutScript.get_child_size_x_diff(content_node, spare_size.x, true)
 	
-	return ScrollPhysics.apply_snap(axis_velocity, axis_pos, size_diff, just_snap_under)
+	return ScrollPhysicsScript.apply_snap(axis_velocity, axis_pos, size_diff, just_snap_under)
 
 
 ## 处理滚动条拖拽输入，并相应更新内容位置。[br]
@@ -561,7 +572,7 @@ func handle_content_dragging() -> void:
 	input_handler.content_dragging_moved = true
 	
 	if should_scroll_vertical():
-		var y_pos: float = ScrollPhysics.calculate_drag_position(
+		var y_pos: float = ScrollPhysicsScript.calculate_drag_position(
 			input_handler.drag_temp_data[6],  # Temp top_distance
 			input_handler.drag_temp_data[7],  # Temp bottom_distance
 			input_handler.drag_temp_data[1],  # Temp y relative accumulation
@@ -573,7 +584,7 @@ func handle_content_dragging() -> void:
 		content_node.position.y = _base_offset.y + y_pos
 	
 	if should_scroll_horizontal():
-		var x_pos: float = ScrollPhysics.calculate_drag_position(
+		var x_pos: float = ScrollPhysicsScript.calculate_drag_position(
 			input_handler.drag_temp_data[4],  # Temp left_distance
 			input_handler.drag_temp_data[5],  # Temp right_distance
 			input_handler.drag_temp_data[0],  # Temp x relative accumulation
@@ -634,8 +645,8 @@ func _scroll_x_to_internal(x_pos: float, duration := 0.5) -> void:
 	
 	set_process(true)
 	velocity.x = 0.0
-	var spare_size_x: float = ScrollLayout.get_spare_size_x(self, content_margins)
-	var size_x_diff: float = ScrollLayout.get_child_size_x_diff(content_node, spare_size_x, true)
+	var spare_size_x: float = ScrollLayoutScript.get_spare_size_x(self, content_margins)
+	var size_x_diff: float = ScrollLayoutScript.get_child_size_x_diff(content_node, spare_size_x, true)
 	x_pos = clampf(x_pos, -size_x_diff, 0.0)
 	scrollbar_animator.kill_scroll_x_tween()
 	scrollbar_animator.scroll_x_to(x_pos, duration)
@@ -657,8 +668,8 @@ func _scroll_y_to_internal(y_pos: float, duration := 0.5) -> void:
 
 	set_process(true)
 	velocity.y = 0.0
-	var spare_size_y: float = ScrollLayout.get_spare_size_y(self, content_margins)
-	var size_y_diff: float = ScrollLayout.get_child_size_y_diff(content_node, spare_size_y, true)
+	var spare_size_y: float = ScrollLayoutScript.get_spare_size_y(self, content_margins)
+	var size_y_diff: float = ScrollLayoutScript.get_child_size_y_diff(content_node, spare_size_y, true)
 	y_pos = clampf(y_pos, -size_y_diff, 0.0)
 	scrollbar_animator.kill_scroll_y_tween()
 	scrollbar_animator.scroll_y_to(y_pos, duration)
@@ -666,25 +677,25 @@ func _scroll_y_to_internal(y_pos: float, duration := 0.5) -> void:
 
 ## 使用补间动画向上滚动一页。时长由 [param duration] 指定，单位为秒。
 func scroll_page_up(duration := 0.5) -> void:
-	var destination: float = pos.y + ScrollLayout.get_spare_size_y(self, content_margins)
+	var destination: float = pos.y + ScrollLayoutScript.get_spare_size_y(self, content_margins)
 	scroll_y_to(destination, duration)
 
 
 ## 使用补间动画向下滚动一页。时长由 [param duration] 指定，单位为秒。
 func scroll_page_down(duration := 0.5) -> void:
-	var destination: float = pos.y - ScrollLayout.get_spare_size_y(self, content_margins)
+	var destination: float = pos.y - ScrollLayoutScript.get_spare_size_y(self, content_margins)
 	scroll_y_to(destination, duration)
 
 
 ## 使用补间动画向左滚动一页。时长由 [param duration] 指定，单位为秒。
 func scroll_page_left(duration := 0.5) -> void:
-	var destination: float = pos.x + ScrollLayout.get_spare_size_x(self, content_margins)
+	var destination: float = pos.x + ScrollLayoutScript.get_spare_size_x(self, content_margins)
 	scroll_x_to(destination, duration)
 
 
 ## 使用补间动画向右滚动一页。时长由 [param duration] 指定，单位为秒。
 func scroll_page_right(duration := 0.5) -> void:
-	var destination: float = pos.x - ScrollLayout.get_spare_size_x(self, content_margins)
+	var destination: float = pos.x - ScrollLayoutScript.get_spare_size_x(self, content_margins)
 	scroll_x_to(destination, duration)
 
 
@@ -709,7 +720,7 @@ func scroll_to_top(duration := 0.5) -> void:
 
 ## 使用补间动画滚动到底部。时长由 [param duration] 指定，单位为秒。
 func scroll_to_bottom(duration := 0.5) -> void:
-	var spare_size_y: float = ScrollLayout.get_spare_size_y(self, content_margins)
+	var spare_size_y: float = ScrollLayoutScript.get_spare_size_y(self, content_margins)
 	scroll_y_to(spare_size_y - content_node.size.y, duration)
 
 
@@ -720,7 +731,7 @@ func scroll_to_left(duration := 0.5) -> void:
 
 ## 使用补间动画滚动到最右侧位置。时长由 [param duration] 指定，单位为秒。
 func scroll_to_right(duration := 0.5) -> void:
-	var spare_size_x: float = ScrollLayout.get_spare_size_x(self, content_margins)
+	var spare_size_x: float = ScrollLayoutScript.get_spare_size_x(self, content_margins)
 	scroll_x_to(spare_size_x - content_node.size.x, duration)
 
 
@@ -741,8 +752,8 @@ func reset_scroll() -> void:
 
 ## 当内容高度足够进行垂直滚动时返回 [code]true[/code]。
 func should_scroll_vertical() -> bool:
-	var spare_size_y: float = ScrollLayout.get_spare_size_y(self, content_margins)
-	var child_size_diff: float = ScrollLayout.get_child_size_y_diff(content_node, spare_size_y, false)
+	var spare_size_y: float = ScrollLayoutScript.get_spare_size_y(self, content_margins)
+	var child_size_diff: float = ScrollLayoutScript.get_child_size_y_diff(content_node, spare_size_y, false)
 	var disable_scroll: bool = (not allow_vertical_scroll) \
 		or (auto_allow_scroll and child_size_diff <= 0) \
 		or not scroll_damper
@@ -757,8 +768,8 @@ func should_scroll_vertical() -> bool:
 
 ## 当内容宽度足够进行水平滚动时返回 [code]true[/code]。
 func should_scroll_horizontal() -> bool:
-	var spare_size_x: float = ScrollLayout.get_spare_size_x(self, content_margins)
-	var child_size_diff: float = ScrollLayout.get_child_size_x_diff(content_node, spare_size_x, false)
+	var spare_size_x: float = ScrollLayoutScript.get_spare_size_x(self, content_margins)
+	var child_size_diff: float = ScrollLayoutScript.get_child_size_x_diff(content_node, spare_size_x, false)
 	var disable_scroll: bool = (not allow_horizontal_scroll) \
 		or (auto_allow_scroll and child_size_diff <= 0) \
 		or not scroll_damper
@@ -841,8 +852,8 @@ func _execute_ensure_control_visible(control: Control, instant: bool) -> void:
 	
 	var control_in_content: Vector2 = control_rect.position - content_rect.position
 	var visible_size := Vector2(
-		ScrollLayout.get_spare_size_x(self, content_margins),
-		ScrollLayout.get_spare_size_y(self, content_margins)
+		ScrollLayoutScript.get_spare_size_x(self, content_margins),
+		ScrollLayoutScript.get_spare_size_y(self, content_margins)
 	)
 	
 	set_process(true)
@@ -869,10 +880,10 @@ func _execute_ensure_control_visible(control: Control, instant: bool) -> void:
 		target_y = -(control_in_content.y + control_rect.size.y - visible_size.y + follow_focus_margin)
 	
 	# Clamp targets
-	var spare_size_x: float = ScrollLayout.get_spare_size_x(self, content_margins)
-	var spare_size_y: float = ScrollLayout.get_spare_size_y(self, content_margins)
-	var size_x_diff: float = ScrollLayout.get_child_size_x_diff(content_node, spare_size_x, true)
-	var size_y_diff: float = ScrollLayout.get_child_size_y_diff(content_node, spare_size_y, true)
+	var spare_size_x: float = ScrollLayoutScript.get_spare_size_x(self, content_margins)
+	var spare_size_y: float = ScrollLayoutScript.get_spare_size_y(self, content_margins)
+	var size_x_diff: float = ScrollLayoutScript.get_child_size_x_diff(content_node, spare_size_x, true)
+	var size_y_diff: float = ScrollLayoutScript.get_child_size_y_diff(content_node, spare_size_y, true)
 	
 	target_x = clampf(target_x, -size_x_diff, 0.0)
 	target_y = clampf(target_y, -size_y_diff, 0.0)

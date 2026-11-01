@@ -16,7 +16,7 @@ public class PlayerAsset
     /// <summary>
     /// 玩家的钻石数量
     /// </summary>
-    public int Diamond { get; private set; } = 0;
+    public int Diamond { get; private set; } = 1000;
 
     /// <summary>
     /// 玩家拥有的卡组

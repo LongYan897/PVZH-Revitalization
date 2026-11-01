@@ -1,5 +1,5 @@
-class_name ExpoScrollDamper
-extends ScrollDamper
+﻿class_name ExpoScrollDamper
+extends "res://addons/SmoothScroll/scroll_damper/scroll_damper.gd"
 ## 指数滚动阻尼。
 ##
 ## 起始速度快，随后沿指数曲线逐渐减速。

@@ -1,5 +1,5 @@
-class_name QuadScrollDamper
-extends ScrollDamper
+﻿class_name QuadScrollDamper
+extends "res://addons/SmoothScroll/scroll_damper/scroll_damper.gd"
 ## 二次方滚动阻尼。
 ##
 ## 施加二次方减速曲线（x²）。缓动曲线强度中等，

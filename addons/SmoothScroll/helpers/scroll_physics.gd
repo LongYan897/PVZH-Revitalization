@@ -1,8 +1,12 @@
-class_name ScrollPhysics
+﻿class_name ScrollPhysics
 extends RefCounted
 ## 用于 [SmoothScrollContainer] 物理计算的静态工具类。
 ##
 ## 负责处理越界拖拽时的作用力、边界吸附以及速度计算。
+
+
+## 用 preload 常量代替全局类名，避免全局类缓存不完整时解析失败（和 StyleBorder 同一个问题）
+const ScrollDamperScript = preload("res://addons/SmoothScroll/scroll_damper/scroll_damper.gd")
 
 
 ## 内容被拉出边界时施加的拖拽阻尼系数
@@ -13,7 +17,7 @@ const OVERDRAG_DAMPING: float = 0.00001
 ## 根据 [param axis_pos]、[param axis_velocity]、[param size_diff]
 ## 以及 [param delta] 时间计算回弹力与吸引力，并返回修改后的速度。
 static func apply_overdrag(
-	scroll_damper: ScrollDamper,
+	scroll_damper: ScrollDamperScript,
 	axis_pos: float,
 	axis_velocity: float,
 	size_diff: float,

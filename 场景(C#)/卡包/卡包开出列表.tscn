@@ -46,3 +46,9 @@ metadata/_custom_type_script = "uid://bgqglerkcylxx"
 [node name="HFlowContainer" type="HFlowContainer" parent="底版/SmoothScrollContainer" unique_id=826687488]
 layout_mode = 2
 metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" type="Panel" parent="底版/SmoothScrollContainer/HFlowContainer" unique_id=1773986769]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true

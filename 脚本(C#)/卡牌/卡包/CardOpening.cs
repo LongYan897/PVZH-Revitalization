@@ -2,6 +2,7 @@ using Extension;
 using Godot;
 using System;
 using System.Threading.Tasks;
+using Scene;
 public partial class CardOpening : Node2D
 {
     //节点
@@ -9,6 +10,7 @@ public partial class CardOpening : Node2D
     public TextureRect CrackBlur { get; set; }
     public TextureRect ExplodeEffect { get; set; }
     public TextureRect CardNode { get; set; }
+    public TextureRect Highlight { get; set; }
     //属性
     public Vector2 UltimatePos { get; set; }
     public float MoveHeight { get; set; } = -1200f;
@@ -21,9 +23,10 @@ public partial class CardOpening : Node2D
     {
         Crack = GetNode<TextureRect>("卡包/裂缝/裂缝本体");
         CrackBlur = GetNode<TextureRect>("卡包/裂缝/裂缝发光");
-        ExplodeEffect = GetNode<TextureRect>("卡包/爆炸特效/爆炸特效");
+        ExplodeEffect = GetNode<TextureRect>("爆炸特效/爆炸特效");
         CardNode = GetNode<TextureRect>("卡包");
-        UltimatePos = GetViewportRect().Size / 2 - new Vector2(0, 100);
+        Highlight = GetNode<TextureRect>("高亮");
+        UltimatePos = GetViewportRect().Size / 2 - new Vector2(0,100);
         Crack.Scale = new Vector2(0, 1.242f);
         await IntroAn();
         await IdleAn();
@@ -75,11 +78,13 @@ public partial class CardOpening : Node2D
     {
         Tween tween = CreateTween();
         float duration = 0.25f;
-
+        Vector2 offsetScale = Vector2.One * 0.02f;
         for (int i = 0; i < 6; i++)
         {
             tween.TweenProperty(CardNode, "self_modulate", new Color(2, 2, 2, 1), duration * 0.5f);
+            tween.Parallel().TweenProperty(CardNode, "scale",Vector2.One + offsetScale, duration * 0.5f);
             tween.TweenProperty(CardNode, "self_modulate", new Color(1, 1, 1, 1), duration * 0.5f);
+            tween.Parallel().TweenProperty(CardNode, "scale", Vector2.One - offsetScale, duration * 0.5f);
             duration *= 0.9f;
         }
         tween.TweenProperty(CardNode, "self_modulate", new Color(2, 2, 2, 1), duration * 0.5f);
@@ -87,18 +92,26 @@ public partial class CardOpening : Node2D
     }
     public async Task CrackAndExplodeAn()
     {
+        Vector2 newScale = new(1.5f, 1.5f);
         Tween tween = CreateTween();
         tween.TweenProperty(CrackBlur, "self_modulate", new Color(1, 1, 1, 1), 1f);
         tween.TweenProperty(ExplodeEffect, "scale", new Vector2(3, 3), 0.5f)
                 .SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.InOut);
+        tween.Parallel().TweenProperty(ExplodeEffect, "self_modulate", new Color(1, 1, 1, 0), 0.5f)
+            .SetDelay(0.25);
         await this.Wait(1f);
         Finished?.Invoke();
         Tween tween1 = CreateTween();
-        tween1.TweenProperty(CardNode, "scale", new Vector2(1.5f, 1.5f), 0.5f)
-                .SetTrans(Tween.TransitionType.Quad)
+        tween1.TweenProperty(CardNode, "scale", newScale, 0.45f)
+                .SetTrans(Tween.TransitionType.Back)
                 .SetEase(Tween.EaseType.InOut);
-        tween1.Parallel().TweenProperty(CardNode, "modulate", new Color(1, 1, 1, 0), 0.5f);
+        tween1.Parallel().TweenProperty(CardNode, "modulate", new Color(1, 1, 1, 0), 0.3f);
+        tween1.Parallel().TweenProperty(Highlight, "self_modulate", new Color(1, 1, 1, 1), 0.5f);
+        tween1.Parallel().TweenProperty(Highlight, "scale", newScale, 0.5f);
+
+        tween1.Parallel().TweenProperty(Highlight, "self_modulate", new Color(1, 1, 1, 0), 0.3f)
+            .SetDelay(0.3);
         await ToSignal(tween1, Tween.SignalName.Finished);
     }
     public Tween QuickTween()
