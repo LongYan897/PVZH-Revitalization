@@ -1,5 +1,6 @@
 using Card.Pack;
 using Controller;
+using Controller.WavPlay;
 using Extension;
 using FileExtension;
 using Godot;
@@ -95,8 +96,21 @@ public partial class OpenCardControl : SubMenuScene
         // 关键：开包是"长流程"（飞包 + 等玩家点击撕包 + 展示结果），不能 await 在这里。
         // _Load() 被 SubMenuScene._EnterTree await，SceneManager 会等 LoadTask 完成才把这一层
         // 设为 Visible —— 如果这里 await 整个开包流程，界面会一直不可见（看着像卡死）。
-        _ = RunOpening();
+        RunOpeningSafe();
         return Task.CompletedTask;
+    }
+
+    /// <summary>后台跑开包流程，出错时打日志（fire-and-forget 的异常否则会被静默吞掉）</summary>
+    private async void RunOpeningSafe()
+    {
+        try
+        {
+            await RunOpening();
+        }
+        catch (Exception e)
+        {
+            GD.PushError($"[OpenCardControl] 开包流程出错：{e}");
+        }
     }
 
     /// <summary>真正的开包流程（在 _Load 里后台启动，不阻塞 SceneManager 的加载流程）</summary>
@@ -268,6 +282,7 @@ public partial class OpenCardControl : SubMenuScene
         cell1.PivotOffsetRatio = new Vector2(0.5f, 0.5f);
         cell.AddChild(cell1);
         //抽卡特效
+        FillEffectSFX(groupName);
         await FillEffect(cell1, groupName);
 
         NodeCard card = await NodeCard.DisplayCardAt(model, Vector2.Zero, cell1, CardView.Collection, fit);
@@ -442,6 +457,19 @@ public partial class OpenCardControl : SubMenuScene
                 effect.QueueFree();
         };
         _ = freeAfterAnimation();
+    }
+    /// <summary>按稀有度播一次性开包音效（CustomWav 播完会自动释放播放器）</summary>
+    private static void FillEffectSFX(string groupName)
+    {
+        string path = groupName switch
+        {
+            "罕见" => "res://素材(C#)/卡包/开包音频/罕见.mp3",
+            "稀有" => "res://素材(C#)/卡包/开包音频/稀有.mp3",
+            "超稀有" => "res://素材(C#)/卡包/开包音频/超稀有.mp3",
+            "传说" => "res://素材(C#)/卡包/开包音频/传说.mp3",
+            _ => "res://素材(C#)/卡包/开包音频/罕见.mp3"
+        };
+        WavPlayer.Play<CustomWav>(path);
     }
 
     /// <summary>

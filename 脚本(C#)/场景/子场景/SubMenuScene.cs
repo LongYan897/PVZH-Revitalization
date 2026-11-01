@@ -15,6 +15,13 @@ public abstract partial class SubMenuScene : Node2D
     {
         if (IsOpening) return;
         IsOpening = true;
+
+        // 单独测试某个子场景（编辑器里直接运行这个场景）时，主节点 autoload 的 _Ready 可能
+        // 还没执行完，这时还没有脚手架（Main.SceneContainer 为 null）。等它几帧再继续，
+        // 这样 _Load() 里的逻辑（spine、音频、玩家数据等）能正常执行，而不是一进来就报空引用。
+        for (int i = 0; i < 180 && Main.SceneContainer == null && IsInsideTree(); i++)
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
         BackButton.JoinScene(HideReturnButton);
         try
         {

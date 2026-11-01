@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://drfygxffyhps3"
+path="res://.godot/imported/Fire.atlas-fd8a28fbdd8b2517f2d003c587fe8c72.spatlas"
+
+[deps]
+
+source_file="res://场景/攻击特效/灼烧/Fire.atlas"
+dest_files=["res://.godot/imported/Fire.atlas-fd8a28fbdd8b2517f2d003c587fe8c72.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"
