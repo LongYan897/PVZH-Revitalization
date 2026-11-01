@@ -24,7 +24,8 @@ public class FireBuff(int amount) : StackableBuff(amount)
             {
                 if (!fighter.IsDie)
                 {
-                    instance = FireRate.Create();
+                    instance = FireRate.Create(Stacks);
+                    fighter.AddAnimChild(FighterCardModel.AnimSlot.Hp,instance);
                     await instance.Main().SetAnimationTask(0,"intro");
                     instance.Main().AddAnimation(0, "idle",true);
                 }
