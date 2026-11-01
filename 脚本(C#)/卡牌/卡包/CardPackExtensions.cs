@@ -1,4 +1,4 @@
-﻿using FileExtension;
+using FileExtension;
 using Godot;
 using Play;
 using System;
@@ -13,7 +13,6 @@ namespace Card.Pack;
 /// </summary>
 public partial class CardPackExtensions
 {
-<<<<<<< HEAD
 	public int seed { get; private set; }
 	//private string _path { get; } = "res://数据(C#)/cardPack.json";
 	//private FileJson _file { get; set; } = new();
@@ -50,7 +49,6 @@ public partial class CardPackExtensions
 		List<(string Group, string Card, int Count)> resByGroup = new();
 		FileJson file = new();
 		FileJson playerAssetFile = new();
-=======
     public int seed { get; private set; }
     //private string _path { get; } = "res://数据(C#)/cardPack.json";
     //private FileJson _file { get; set; } = new();
@@ -70,7 +68,6 @@ public partial class CardPackExtensions
         List<(string Card, int Count)> res = new();
         FileJson file = new();
         FileJson playerAssetFile = new();
->>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
         var playerAsset = playerAssetFile.Open("res://数据(C#)/playerAsset.json")
             .OpenObject("CardCounts");
@@ -101,7 +98,6 @@ public partial class CardPackExtensions
             packRemains.Add((i["Name"].GetValue<string>(), hasMax ? remainCount : -1));
         }
 
-<<<<<<< HEAD
 		//计算每个组的基础概率
 		List<(string Name, double Rate,double UtRate)> BasePackRates = new();
 		for (int index = 0; index < packs.Count; index++)

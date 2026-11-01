@@ -15,6 +15,7 @@ public class FireBuff(int amount) : StackableBuff(amount)
             {
                 if (!fighter.IsDie)
                 {
+
                     await fighter.ApplyDamage(Stacks, Variable.VariableReason.Damaged | Variable.VariableReason.Diff);
                     await fighter.RemoveBuff(this, Variable.VariableReason.Diff,true);
                 }
