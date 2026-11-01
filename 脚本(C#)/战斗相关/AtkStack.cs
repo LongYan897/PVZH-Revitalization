@@ -1,7 +1,6 @@
 using Card;
 using Godot;
 using System.Collections.Generic;
-using Target;
 
 namespace Battle;
 

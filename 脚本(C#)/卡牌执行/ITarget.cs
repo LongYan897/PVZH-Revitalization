@@ -1,7 +1,6 @@
 using Battle;
 using Battle.Entity;
 using Card;
-using Godot;
 using System;
 
 namespace Target;

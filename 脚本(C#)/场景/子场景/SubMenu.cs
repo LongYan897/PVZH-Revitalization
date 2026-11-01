@@ -1,18 +1,17 @@
 using Controller;
 using Godot;
-using System;
 namespace Scene;
 
 [GlobalClass]
 public partial class SubMenu : Control
 {
-	[Export]
-	public string SubScene { get; set; }
-	/// <summary>
-	/// 打开这个菜单时是否显示加载界面。<br/>
-	/// </summary>
-	[Export]
-	public bool ShowLoading { get; set; } = true;
+    [Export]
+    public string SubScene { get; set; }
+    /// <summary>
+    /// 打开这个菜单时是否显示加载界面。<br/>
+    /// </summary>
+    [Export]
+    public bool ShowLoading { get; set; } = true;
     /// <summary>
     /// 是否控制中心为 0.5,0.5
     /// </summary>
@@ -29,40 +28,40 @@ public partial class SubMenu : Control
     [Export]
     public bool IsPersistNess { get; set; } = false;
     private SubMenuScene SubmenuScene;
-	private float InitScale;
+    private float InitScale;
     public void ResetPress() => canPress = true;
     public object Payload { get; set; }
     public SubMenuScene GetScene() => SubmenuScene;
 
     public sealed override void _Ready()
-	{
+    {
         if (PivotOffset == Vector2.Zero && PivotOffsetRatio == Vector2.Zero && CenterPivot)
             PivotOffsetRatio = new Vector2(0.5f, 0.5f);
         InitScale = Scale.X;
-		GetNode<Button>("Button").Pressed += Enter;
-		ReadyField();
-	}
+        GetNode<Button>("Button").Pressed += Enter;
+        ReadyField();
+    }
     public sealed override void _EnterTree()
     {
         SceneManager.Register(this);
     }
-	protected virtual void ReadyField()
-	{ }
-	public void Function(bool enable)
-	{
-		GetNode<Button>("Button").MouseFilter = enable ? MouseFilterEnum.Stop : MouseFilterEnum.Ignore;
-	}
-	private async void Enter()
-	{
-		if (!canPress) return;
+    protected virtual void ReadyField()
+    { }
+    public void Function(bool enable)
+    {
+        GetNode<Button>("Button").MouseFilter = enable ? MouseFilterEnum.Stop : MouseFilterEnum.Ignore;
+    }
+    private async void Enter()
+    {
+        if (!canPress) return;
         if (!IsConstant)
-		    canPress = false;
-		Tween tween = CreateTween();
-		tween.TweenProperty(this, "scale", (InitScale - 0.05f) * new Vector2(1, 1), 0.1f);
-		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
-		await ToSignal(tween, Tween.SignalName.Finished);
-		EnterField();
-		SceneManager.JumpToSub(this);
+            canPress = false;
+        Tween tween = CreateTween();
+        tween.TweenProperty(this, "scale", (InitScale - 0.05f) * new Vector2(1, 1), 0.1f);
+        tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
+        await ToSignal(tween, Tween.SignalName.Finished);
+        EnterField();
+        SceneManager.JumpToSub(this);
     }
     protected virtual void EnterField()
     { }
@@ -70,10 +69,10 @@ public partial class SubMenu : Control
     {
         SceneManager.Unregister(this);
     }
-    
-	private bool canPress = true;
-	public SubMenuScene Instantiate()
-	{
+
+    private bool canPress = true;
+    public SubMenuScene Instantiate()
+    {
         SubmenuScene = null;
         if (string.IsNullOrWhiteSpace(SubScene))
         {
@@ -110,14 +109,14 @@ public partial class SubMenu : Control
     {
         SubmenuScene.IsOpening = false;
         Visible = true;
-		canPress = true;
-		Tween tween = CreateTween();
-		tween.TweenProperty(this, "scale", (InitScale + 0.05f) * new Vector2(1, 1), 0.15f);
-		tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
+        canPress = true;
+        Tween tween = CreateTween();
+        tween.TweenProperty(this, "scale", (InitScale + 0.05f) * new Vector2(1, 1), 0.15f);
+        tween.TweenProperty(this, "scale", InitScale * new Vector2(1, 1), 0.1f);
         FreeScene();
     }
-	public void Reparent(Node node)
-	{
+    public void Reparent(Node node)
+    {
         SubmenuScene.Reparent(node);
     }
 }

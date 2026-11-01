@@ -7,23 +7,23 @@ using Godot;
 /// </summary>
 public partial class NetworkTest : Node
 {
-	private HttpRequest _http;
+    private HttpRequest _http;
 
-	public override void _Ready()
-	{
-		_http = new HttpRequest();
-		AddChild(_http);
-		_http.RequestCompleted += OnRequestCompleted;
+    public override void _Ready()
+    {
+        _http = new HttpRequest();
+        AddChild(_http);
+        _http.RequestCompleted += OnRequestCompleted;
 
-		string url = "http://localhost:5065/api/Game/test";
-		Error err = _http.Request(url);
-		GD.Print($"[Net] Request() 返回 = {err}（0 = OK）  url={url}");
-	}
+        string url = "http://localhost:5065/api/Game/test";
+        Error err = _http.Request(url);
+        GD.Print($"[Net] Request() 返回 = {err}（0 = OK）  url={url}");
+    }
 
-	private void OnRequestCompleted(long result, long responseCode, string[] headers, byte[] body)
-	{
-		string responseText = System.Text.Encoding.UTF8.GetString(body);
-		// result 是 Godot 的 Error 枚举：0 = 成功；非 0 就是连接/解析失败
-		GD.Print($"[Net] result={result} 状态码={responseCode} 返回内容={responseText}");
-	}
+    private void OnRequestCompleted(long result, long responseCode, string[] headers, byte[] body)
+    {
+        string responseText = System.Text.Encoding.UTF8.GetString(body);
+        // result 是 Godot 的 Error 枚举：0 = 成功；非 0 就是连接/解析失败
+        GD.Print($"[Net] result={result} 状态码={responseCode} 返回内容={responseText}");
+    }
 }

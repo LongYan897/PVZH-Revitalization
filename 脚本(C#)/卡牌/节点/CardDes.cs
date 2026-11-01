@@ -414,7 +414,7 @@ public partial class CardDes : Control
     /// <summary>
     /// 解析语法并写入。
     /// </summary>
-    public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks,float extraSize = 0f)
+    public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks, float extraSize = 0f)
     {
         label.Clear();
         label.BbcodeEnabled = true;
@@ -464,7 +464,7 @@ public partial class CardDes : Control
                                 path, meta2, attr.Color, attr.OutlineColor, attr.OutlineSize);
                             if (tex != null)
                             {
-                                float scale = (float)(IconSize+extraSize) / tex.GetWidth();
+                                float scale = (float)(IconSize + extraSize) / tex.GetWidth();
                                 label.AddImage(tex, tex.GetWidth() * scale, tex.GetHeight() * scale);
                             }
                         }
@@ -481,7 +481,7 @@ public partial class CardDes : Control
             }
             else
             {
-                string name = m.Groups[1].Value; 
+                string name = m.Groups[1].Value;
                 bool hasNum = m.Groups[3].Success;
                 string value = hasNum ? m.Groups[3].Value : null;
 
@@ -643,7 +643,7 @@ public partial class CardDes : Control
             var prop = model.GetType().GetProperty(key, flags);
             if (TryGetFromProp(prop, model, out string rawDesc))
             {
-                desc = ReplacePlaceholders(rawDesc, arg, sep,model);
+                desc = ReplacePlaceholders(rawDesc, arg, sep, model);
                 return true;
             }
         }

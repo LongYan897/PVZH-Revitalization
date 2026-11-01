@@ -35,7 +35,7 @@ public static class TargetRegistry
         }
         return false;
     }
-    
+
     public static IEnumerable<ITarget> GetAllCanBeTarget(CardModel card, TargetType type, bool fromBuff, Func<ITarget, bool> filter = null)
     {
         var targets = new List<ITarget>();
@@ -48,12 +48,12 @@ public static class TargetRegistry
         return targets;
     }
 
-    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff,Camp? camp)
+    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff, Camp? camp)
     {
-        CallTargeted(card, type, fromBuff, card.TargetFilter,camp);
+        CallTargeted(card, type, fromBuff, card.TargetFilter, camp);
     }
 
-    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff, Func<ITarget, bool> filter,Camp? camp)
+    public static void CallTargeted(CardModel card, TargetType type, bool fromBuff, Func<ITarget, bool> filter, Camp? camp)
     {
         if (card == null) return;
         filter ??= (tg) => true;
@@ -61,7 +61,7 @@ public static class TargetRegistry
         {
             if ((t.TargetType & type) == 0) continue;
             if (!t.CanBeTarget(card, filter, fromBuff)) continue;
-            t.OnCallTargeted(type,card,camp);
+            t.OnCallTargeted(type, card, camp);
         }
     }
 
@@ -70,7 +70,7 @@ public static class TargetRegistry
         foreach (var t in _targets.ToList())
         {
             if ((t.TargetType & type) == 0) continue;
-            t.OnDeleteTargeted(type,camp);
+            t.OnDeleteTargeted(type, camp);
         }
     }
 }

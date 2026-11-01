@@ -2,9 +2,6 @@ using Battle.Entity;
 using Card.Cmd;
 using Phrases;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Target;
 
@@ -17,7 +14,7 @@ public class BananaPeel : CardModel
     {
         if (target.CanBeFighter(out var fighter))
         {
-            var (road, location) = await CardCmd.PlayerChoiceGrid(null,this,true,r=>r.Containable(fighter),Camp.Zombie);
+            var (road, location) = await CardCmd.PlayerChoiceGrid(null, this, true, r => r.Containable(fighter), Camp.Zombie);
             if (road != null)
             {
                 await PlayInstantAnimation("effect", target);

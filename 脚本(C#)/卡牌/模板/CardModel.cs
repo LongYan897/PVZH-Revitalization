@@ -132,7 +132,7 @@ public class CardModel
     /// <returns></returns>
     public static CardModel FromId(uint id)
     {
-        return TemplateEntries.FirstOrDefault(t=>t.Value.Id == id).Value;
+        return TemplateEntries.FirstOrDefault(t => t.Value.Id == id).Value;
     }
 
     /// <summary>
@@ -295,7 +295,7 @@ public class CardModel
     /// <param name="track">轨道</param>
     /// <param name="eventName">要等待到哪一个事件(null为等到动画完成)</param>
     /// <returns></returns>
-    protected async Task PlayLocationalAnimation(string up,string down, ITarget target, int track = 0, string eventName = null)
+    protected async Task PlayLocationalAnimation(string up, string down, ITarget target, int track = 0, string eventName = null)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
@@ -444,7 +444,7 @@ public class CardModel
     /// <summary>
     /// 卡牌的序列号(用于解析为实例卡牌)
     /// </summary>
-    public uint Id {  get; private set; }
+    public uint Id { get; private set; }
     /// <summary>
     /// 卡牌的稀有度
     /// </summary>
@@ -513,7 +513,7 @@ public class CardModel
     public CardModel Clone()
     {
         CardModel card = MemberwiseClone() as CardModel;
-        card._buffs = [..InitBuffs];
+        card._buffs = [.. InitBuffs];
         card.Cost = new CardIntVariable(card, "Cost", Cost.Current);
         card.Labels = new CardVariable<List<string>>(card, "Labels", [.. Labels.Current]);
         card.AfterClone();
@@ -579,7 +579,7 @@ public class CardModel
     /// <param name="valueAfter">修改之前的值</param>
     /// <param name="valueBefore">修改之后的值</param>
     /// <returns></returns>
-    public virtual Task Changed<T>(string key, T valueAfter, T valueBefore,VariableReason reason)
+    public virtual Task Changed<T>(string key, T valueAfter, T valueBefore, VariableReason reason)
     {
         return Task.CompletedTask;
     }
@@ -607,8 +607,29 @@ public class CardModel
     /// </summary>
     public async Task AddBuff(Buff buff, VariableReason reason)
     {
-        BuffList.Add(buff);
-        await buff.OnTiming(Timing.WhenApply, this, reason);
+        if (buff is StackableBuff stackable)
+        {
+            if (BuffList.Any(b => b.GetType() == buff.GetType()))
+            {
+                var canonicalBuff = BuffList.OfType<StackableBuff>().First(b => b.GetType() == buff.GetType());
+                var canonicalStacks = canonicalBuff.Stacks;
+                canonicalBuff.StackWith(stackable);
+                await buff.OnTiming(Timing.WhenStack, this, canonicalBuff.Stacks - canonicalStacks, reason);
+                await CardCmd.TimingOnCards(this, Timing.BuffStack, buff, canonicalBuff.Stacks - canonicalStacks, this, reason);
+            }
+            else
+            {
+                BuffList.Add(buff);
+                await buff.OnTiming(Timing.WhenApply, this, reason);
+                await CardCmd.TimingOnCards(this, Timing.BuffApply, buff, this, reason);
+            }
+        }
+        else
+        {
+            BuffList.Add(buff);
+            await buff.OnTiming(Timing.WhenApply, this, reason);
+            await CardCmd.TimingOnCards(this, Timing.BuffApply, buff, this, reason);
+        }
     }
 
     protected void RegistBuff(Buff buff)
@@ -618,10 +639,44 @@ public class CardModel
     /// <summary>
     /// 移除效果
     /// </summary>
-    public async Task RemoveBuff(Buff buff, VariableReason reason)
+    public async Task RemoveBuff(Buff buff, VariableReason reason, bool complete = false)
     {
-        BuffList.Remove(buff);
-        await buff.OnTiming(Timing.WhenRemove, this, reason);
+        if (buff is StackableBuff stackable)
+        {
+            if (BuffList.Any(b => b.GetType() == buff.GetType()))
+            {
+                if (complete)
+                {
+                    BuffList.Remove(buff);
+                    await buff.OnTiming(Timing.WhenRemove, this, reason);
+                    await CardCmd.TimingOnCards(this, Timing.BuffRemove, buff, this, reason);
+                }
+                else
+                {
+                    var canonicalBuff = BuffList.OfType<StackableBuff>().First(b => b.GetType() == buff.GetType());
+                    var canonicalStacks = canonicalBuff.Stacks;
+                    canonicalBuff.DestackWith(stackable);
+                    await buff.OnTiming(Timing.WhenDestack, this, -canonicalBuff.Stacks + canonicalStacks, reason);
+                    await CardCmd.TimingOnCards(this, Timing.BuffDestack, buff, -canonicalBuff.Stacks + canonicalStacks, this, reason);
+                    if (canonicalBuff.Stacks <= 0)
+                    {
+                        BuffList.Remove(canonicalBuff);
+                        await canonicalBuff.OnTiming(Timing.WhenRemove, this, reason);
+                        await CardCmd.TimingOnCards(this, Timing.BuffRemove, canonicalBuff, this, reason);
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+            BuffList.Remove(buff);
+            await buff.OnTiming(Timing.WhenRemove, this, reason);
+            await CardCmd.TimingOnCards(this, Timing.BuffRemove, buff, this, reason);
+        }
     }
 
     /// <summary>

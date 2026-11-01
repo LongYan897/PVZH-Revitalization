@@ -65,7 +65,7 @@ public class PresetPack : CardPack
             {
                 var hash = Cards.Select(c => c.Title);
                 var haSet = hash.ToHashSet();
-                return haSet.Sum(c=>Math.Min(PlayerManager.HostPlayer.Asset.GetAmount(c),hash.Count(c1=>c1 == c)));
+                return haSet.Sum(c => Math.Min(PlayerManager.HostPlayer.Asset.GetAmount(c), hash.Count(c1 => c1 == c)));
             }
         }
     }
@@ -105,7 +105,7 @@ public class PresetPack : CardPack
         get
         {
             EnsureFilled();
-            return [..cards];
+            return [.. cards];
         }
     }
 

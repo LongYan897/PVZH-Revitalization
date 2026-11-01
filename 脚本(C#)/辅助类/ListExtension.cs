@@ -20,7 +20,7 @@ public static class ListExtension
     public static void Repeat<T>(this List<T> list, int amount) where T : CardModel
     {
         List<T> values = new();
-        for (int i = 0;i < amount; i++)
+        for (int i = 0; i < amount; i++)
         {
             values.Add((T)CardModel.Load<T>());
         }

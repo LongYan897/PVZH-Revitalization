@@ -4,7 +4,6 @@ using Card.Cmd;
 using Card.String;
 using Godot;
 using Hero;
-using Logger;
 using Play;
 using Spine;
 using System;
@@ -19,7 +18,7 @@ namespace Card;
 /// <summary>
 /// 单位类型的卡牌
 /// </summary>
-public class FighterCardModel : CardModel,IDamageCard,IHealthCard
+public class FighterCardModel : CardModel, IDamageCard, IHealthCard
 {
     /// <summary>
     /// 僵尸是否隐藏在墓碑之中
@@ -39,7 +38,7 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
     /// </summary>
     /// <param name="func">修改节点的函数</param>
     /// <returns></returns>
-    public async Task ShapeMe(Func<Node2D,Task> func)
+    public async Task ShapeMe(Func<Node2D, Task> func)
     {
         if (IsPlaced)
             await func(Fighter.GetNode(this).AnimationNode);
@@ -50,10 +49,10 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
     /// <param name="road">移到的线路</param>
     /// <param name="location">移动的位置</param>
     /// <returns></returns>
-    public async Task MoveTo(Road road,Location location)
+    public async Task MoveTo(Road road, Location location)
     {
         if (!IsPlaced) return;
-        await Fighter.MoveTo(this,road,location);
+        await Fighter.MoveTo(this, road, location);
         await FireTiming(Timing.WhenMoved, road, this);
         await CardCmd.TimingOnCards(this, Timing.WhenMoved, road, this);
     }
@@ -76,7 +75,7 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
             await TransformTo(fighterCard);
         }
     }
-     
+
     protected sealed override void AfterClone()
     {
         Atk = new(this, "Attack", Atk.Current);
@@ -238,7 +237,7 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
     /// </summary>
     /// <returns></returns>
     private AtkStack CreateOwnedStack()
-    => new(this, [], Road, Atk.Current,false);
+    => new(this, [], Road, Atk.Current, false);
     /// <summary>
     /// 额外攻击一次
     /// </summary>
@@ -352,8 +351,8 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
             await CardCmd.TimingOnCards(this, Timing.AfterAttack, atkStack);
             return;
         }
-        await FireTiming(Timing.BeforeAttack,atkStack);
-        await CardCmd.TimingOnCards(this,Timing.BeforeAttack, atkStack);
+        await FireTiming(Timing.BeforeAttack, atkStack);
+        await CardCmd.TimingOnCards(this, Timing.BeforeAttack, atkStack);
         await GetTarget(atkStack);
         await FireTiming(Timing.ModifyDamage, atkStack);
         await CardCmd.TimingOnCards(this, Timing.ModifyDamage, atkStack);
@@ -453,7 +452,7 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
         }
         else
         {
-            stack ??= new AtkStack(null, [Attacking()], Road, 0,false);
+            stack ??= new AtkStack(null, [Attacking()], Road, 0, false);
             await FireTiming(Timing.OnDeath, stack);
             await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
         }
@@ -476,7 +475,7 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
     bool playHurtAnim = true,
     bool immediateDeath = true)
     {
-        stack ??= new(null, [Targeted()], null, amount,false);
+        stack ??= new(null, [Targeted()], null, amount, false);
         int before = Hp.Current;
         await FireTiming(Timing.ModifyCardDamage, stack);
         await CardCmd.TimingOnCards(this, Timing.ModifyCardDamage, stack);
@@ -490,7 +489,7 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
 
         if (IsDie && immediateDeath)
         {
-            await Die(VariableReason.Damaged | reason,stack);
+            await Die(VariableReason.Damaged | reason, stack);
         }
     }
     /// <summary>
@@ -637,13 +636,13 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
     /// <summary>
     /// 子弹是否带方向(会指向目标,需要子弹图标/动画的正方向向下)
     /// </summary>
-    public virtual bool ArrowAmmo {  get; } = false;
+    public virtual bool ArrowAmmo { get; } = false;
 
     public async Task IntroPlayed()
     {
         await PlayFighterAnimationTask("intro");
     }
-    public sealed override async Task Changed<T>(string key, T valueAfter, T valueBefore,VariableReason reason)
+    public sealed override async Task Changed<T>(string key, T valueAfter, T valueBefore, VariableReason reason)
     {
         if (reason.HasFlag(VariableReason.Reset)) return;
         if (key == "AttackType" && valueAfter is AtkType newAtk && valueBefore is AtkType oldAtk)
@@ -794,7 +793,7 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
         }
         else
         {
-            stack ??= new AtkStack(null, [Attacking()], Road, 0,false);
+            stack ??= new AtkStack(null, [Attacking()], Road, 0, false);
             await FireTiming(Timing.OnDeath, stack);
             await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
         }
@@ -813,6 +812,74 @@ public class FighterCardModel : CardModel,IDamageCard,IHealthCard
         {
             await Fighter.GetNode(this).Die();
         }
+    }
+
+    /// <summary>动画容器类型</summary>
+    public enum AnimSlot { Main, Atk, Hp }
+
+    /// <summary>
+    /// 往指定动画容器下挂一个子节点。
+    /// </summary>
+    public T AddAnimChild<T>(AnimSlot slot, T node, Vector2? position = null) where T : Node
+    {
+        if (!IsPlaced || node == null) return null;
+
+        var fighter = Fighter.GetNode(this);
+        var container = slot switch
+        {
+            AnimSlot.Main => fighter.AnimationNode,
+            AnimSlot.Atk => fighter.GetAtkAnimNode(),
+            AnimSlot.Hp => fighter.GetHpAnimNode(),
+            _ => null
+        };
+        if (container == null) return null;
+
+        if (node is Control c)
+            c.MouseFilter = Control.MouseFilterEnum.Ignore;
+        if (node is Node2D n2 && position.HasValue)
+            n2.Position = position.Value;
+
+        if (node.GetParent() != container)
+            container.AddChild(node);
+
+        return node;
+    }
+
+    /// <summary>
+    /// 异步修改指定动画槽的染色。
+    /// </summary>
+    public async Task ModifyTint(AnimSlot slot, Func<ShaderMaterial, Task> modifier)
+    {
+        if (!IsPlaced || modifier == null) return;
+
+        var fighter = Fighter.GetNode(this);
+        var handler = slot switch
+        {
+            AnimSlot.Main => fighter.AnimationNode,
+            AnimSlot.Atk => fighter.GetAtkAnimNode(),
+            AnimSlot.Hp => fighter.GetHpAnimNode(),
+            _ => null
+        };
+        if (handler == null) return;
+
+        await handler.ModifyShader(modifier);
+    }
+
+    /// <summary>
+    /// 清空指定动画容器里的额外子节点。
+    /// </summary>
+    public void ClearAnimChildren(AnimSlot slot, Func<Node, bool> predicate = null)
+    {
+        if (!IsPlaced) return;
+        var fighter = Fighter.GetNode(this);
+        var container = slot switch
+        {
+            AnimSlot.Main => fighter.AnimationNode,
+            AnimSlot.Atk => fighter.GetAtkAnimNode(),
+            AnimSlot.Hp => fighter.GetHpAnimNode(),
+            _ => null
+        };
+        container?.Clear(predicate);
     }
 
     protected override async Task ResetData()

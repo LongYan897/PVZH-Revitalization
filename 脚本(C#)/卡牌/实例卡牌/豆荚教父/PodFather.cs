@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card.Pea;
@@ -23,8 +20,8 @@ public class PodFather : FighterCardModel
                     if (fighter1.HasLabel("豌豆"))
                     {
                         await Task.WhenAll(
-                            fighter1.Atk.Gain(card.GetSignInt("Strength"),Variable.VariableReason.Plant),
-                            fighter1.GainHp(card.GetSignInt("Health"),Variable.VariableReason.Plant));
+                            fighter1.Atk.Gain(card.GetSignInt("Strength"), Variable.VariableReason.Plant),
+                            fighter1.GainHp(card.GetSignInt("Health"), Variable.VariableReason.Plant));
                     }
                 }
             }

@@ -44,7 +44,7 @@ public partial class NodeRoad : Control, ITarget
         if (Start)
         {
             highlight.Scale = new(0, 1.206f);
-            tween.TweenProperty(highlight,"scale", new Vector2(1.3f,1.206f),0.1f).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(highlight, "scale", new Vector2(1.3f, 1.206f), 0.1f).SetEase(Tween.EaseType.Out);
             tween.TweenProperty(highlight, "scale", new Vector2(0.957f, 1.206f), 0.1f).SetEase(Tween.EaseType.In);
         }
         else
@@ -96,9 +96,9 @@ public partial class NodeRoad : Control, ITarget
         GetNode<Node2D>("%植物_僵尸2").Visible = false;
         GetNode<Node2D>("%植物_3").Visible = false;
         GetNode<Button>("%碰撞").GuiInput += OnRoadGuiInput1;
-        GetNode<Button>("%碰撞2").GuiInput += e => OnRoadGuiInput2(e,false);
+        GetNode<Button>("%碰撞2").GuiInput += e => OnRoadGuiInput2(e, false);
         GetNode<Button>("%碰撞3").GuiInput += OnRoadGuiInput3;
-        GetNode<Button>("%碰撞5").GuiInput += e => OnRoadGuiInput2(e,true);
+        GetNode<Button>("%碰撞5").GuiInput += e => OnRoadGuiInput2(e, true);
         GetNode<Button>("%碰撞4").GuiInput += OnRoadGuiInput3;
     }
     private Vector2 _iColli1Scale;
@@ -180,7 +180,7 @@ public partial class NodeRoad : Control, ITarget
     private static bool NeedG2(TargetType t) =>
         t.HasFlag(TargetType.CoopGrids);
 
-    public void OnCallTargeted(TargetType targetType,CardModel card,Camp? camp)
+    public void OnCallTargeted(TargetType targetType, CardModel card, Camp? camp)
     {
         bool line = NeedLine(targetType);
         bool g1 = NeedG1(targetType);
@@ -192,7 +192,7 @@ public partial class NodeRoad : Control, ITarget
         else if (g2) CallCoopGridTargeted(camp);
         else if (g1) CallGridTargeted(camp);
 
-        SetMonitoring(line, g1, g2,camp);
+        SetMonitoring(line, g1, g2, camp);
     }
 
     public async void OnDeleteTargeted(TargetType targetType, Camp? camp)
@@ -349,7 +349,7 @@ public partial class NodeRoad : Control, ITarget
         _tweenTargeted2.TweenProperty(hl2, "scale", Vector2.One * 1.1f, 0.05f);
         _tweenTargeted2.TweenProperty(hl2, "scale", Vector2.One, 0.05f);
 
-        await Task.WhenAll(ToSignal(_tweenTargeted,Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted2, Tween.SignalName.Finished).ToTask());
+        await Task.WhenAll(ToSignal(_tweenTargeted, Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted2, Tween.SignalName.Finished).ToTask());
 
         _tweenTargeted = CreateTween().BindNode(hl1).SetLoops(-1);
         _tweenTargeted.TweenProperty(hl1, "scale", new Vector2(1f, 1f) * new Vector2(1.02f, 1.02f), 0.7f);
@@ -477,7 +477,7 @@ public partial class NodeRoad : Control, ITarget
             }
         }
 
-        await Task.WhenAll(ToSignal(_tweenTargeted,Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted2, Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted3, Tween.SignalName.Finished).ToTask());
+        await Task.WhenAll(ToSignal(_tweenTargeted, Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted2, Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted3, Tween.SignalName.Finished).ToTask());
 
         SetMonitoring(false, false, false);
     }
@@ -739,7 +739,7 @@ public partial class NodeRoad : Control, ITarget
         CardCmd.SelectTarget(this);
     }
 
-    private void OnRoadGuiInput2(InputEvent @event,bool far)
+    private void OnRoadGuiInput2(InputEvent @event, bool far)
     {
         if (!Calling) return;
         if (@event is not InputEventMouseButton mb) return;
@@ -803,7 +803,7 @@ public partial class NodeRoad : Control, ITarget
         {
             var tween = CreateTween();
             var f = Model.GetFighters().First(p => p.Model.Camp == Camp.Plant);
-            tween.TweenProperty(f,"position", GetFighterLocation(Location.PlantFront),0.3f);
+            tween.TweenProperty(f, "position", GetFighterLocation(Location.PlantFront), 0.3f);
             f.Model.Location = Location.PlantFront;
             f.SwitchLayer(f.Model.Location);
         }

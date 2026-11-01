@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card;
 
-public class FireBuff(int amount) : Buff
+public class FireBuff(int amount) : StackableBuff(amount)
 {
-    private readonly int Amount = amount;
-    public override Timing[] Timings => [Timing.BeforeLaneStart];
+    public override Timing[] Timings => [Timing.BeforeLaneStart, Timing.WhenApply, Timing.WhenStack, Timing.WhenDestack, Timing.WhenRemove];
     public override int Priority => 1000;
     public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
     {
@@ -17,7 +12,8 @@ public class FireBuff(int amount) : Buff
         {
             if (!fighter.IsDie)
             {
-                await fighter.ApplyDamage(Amount,Variable.VariableReason.Damaged | Variable.VariableReason.Diff);
+                await fighter.ApplyDamage(Stacks, Variable.VariableReason.Damaged | Variable.VariableReason.Diff);
+                await fighter.RemoveBuff(this, Variable.VariableReason.Diff);
             }
         }
     }

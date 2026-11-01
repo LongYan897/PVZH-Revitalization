@@ -3,8 +3,6 @@ using Battle.Entity;
 using Card.Cmd;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card.Wood;
@@ -13,7 +11,7 @@ public class TorchWood : FighterCardModel
 {
     private class TorchBuff : Buff
     {
-        public override Timing[] Timings => [Timing.AfterPlay,Timing.OnFighterEnter,Timing.OnFighterExit];
+        public override Timing[] Timings => [Timing.AfterPlay, Timing.OnFighterEnter, Timing.OnFighterExit];
         public override bool IsTransferable => false;
         private Func<Task> redo;
         public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
@@ -44,7 +42,7 @@ public class TorchWood : FighterCardModel
                     {
                         if (redo != null)
                             await redo();
-                    }  
+                    }
                 }
             }
         }

@@ -1,11 +1,7 @@
-using Battle.Entity;
 using Card.Cmd;
-using Logger;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Target;
 
 namespace Card.Dance;
 
@@ -41,7 +37,7 @@ public class BackupDancer : FighterCardModel
                 {
                     if (parameters[1] == fighterCard || parameters[1] == target)
                     {
-                        if (redo != null) 
+                        if (redo != null)
                             await redo();
                     }
                 }

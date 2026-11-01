@@ -27,7 +27,7 @@ public abstract class HeroModel
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static HeroModel Identity<T>() where T : HeroModel,new()
+    public static HeroModel Identity<T>() where T : HeroModel, new()
     {
         var hero = Load<T>();
         hero.IsIdentity = true;
@@ -121,7 +121,7 @@ public abstract class HeroModel
         int shield = random.Next(1, 4);
         if (!isShieldGain) shield = 0;
         Variable<bool> stop = new("HeroDamaged", false);
-        stack ??= new(null, [Targeted()], null, amount,false);
+        stack ??= new(null, [Targeted()], null, amount, false);
         await CardCmd.TimingOnCards(null, Timing.TryStopHeroTakeDamage, stop, this);
         PlayAnimation("hit", true);
         if (amount > Health.Current)
@@ -156,8 +156,8 @@ public abstract class HeroModel
         if (amount <= 0) return;
         if (amount > Shield.Current)
             amount = Shield.Current;
-        await BattleSubMenuScene.PlayLoseShield(PlayerManager.GetFromHero(this),amount);
-        await Shield.Lose(amount,reason,cardModel);
+        await BattleSubMenuScene.PlayLoseShield(PlayerManager.GetFromHero(this), amount);
+        await Shield.Lose(amount, reason, cardModel);
     }
     /// <summary>
     /// 加载英雄

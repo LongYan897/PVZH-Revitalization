@@ -348,6 +348,39 @@ public partial class Fighter : Control, ITarget, IAttackable
         if (Visible && !IsHiding && Model != null)
             _ = PlayAnimation("idle", false);
     }
+
+    /// <summary>获取攻击动画节点</summary>
+    public SpineHandler GetAtkAnimNode() =>
+        GodotObject.IsInstanceValid(_dmgSpine) ? _dmgSpine : GetNode<SpineHandler>("%伤害动画");
+
+    /// <summary>获取血量动画节点</summary>
+    public SpineHandler GetHpAnimNode() =>
+        GodotObject.IsInstanceValid(_hpSpine) ? _hpSpine : GetNode<SpineHandler>("%血量动画");
+
+    /// <summary>
+    /// 往攻击下添加额外节点。
+    /// </summary>
+    public T AddAtkExtra<T>(T node) where T : Node
+        => AddExtraInternal(GetAtkAnimNode(), node);
+
+    /// <summary>
+    /// 往血量下添加额外节点。
+    /// </summary>
+    public T AddHpExtra<T>(T node) where T : Node
+        => AddExtraInternal(GetHpAnimNode(), node);
+
+    private static T AddExtraInternal<T>(SpineHandler container, T node) where T : Node
+    {
+        if (node == null || container == null) return null;
+
+        if (node is Control c) c.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+        if (node.GetParent() != container)
+            container.AddChild(node);
+
+        return node;
+    }
+
     private async Task FollowOffset(float animDuration, float extraTime = 0.1f)
     {
         Vector2 worldOffset1 = _dmgSpine.GetBoneWorldPos("root");
@@ -371,7 +404,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         }
     }
 
-    public void OnCallTargeted(TargetType targetType, CardModel card,Camp? camp)
+    public void OnCallTargeted(TargetType targetType, CardModel card, Camp? camp)
     {
         if (!targetType.HasFlag(TargetType.Fighters) && !targetType.HasFlag(TargetType.GraveStone)) return;
         CallTargeted();
@@ -950,7 +983,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         f.Invisible(resistIcon);
     }
 
-    public static async Task MoveTo(FighterCardModel model,Road road,Location location)
+    public static async Task MoveTo(FighterCardModel model, Road road, Location location)
     {
         var f = GetNode(model);
         if (road == f.Road) return;
@@ -959,7 +992,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         var node = NodeRoad.GetNode(road);
         Tween tween = f.CreateTween();
         if (model.Camp.Zombie())
-            tween.TweenProperty(f,"position", node.GetFighterLocation(location) ,0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+            tween.TweenProperty(f, "position", node.GetFighterLocation(location), 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         else
         {
             var p = road.GetFighters().FirstOrDefault(f => f.Model.Location == location);
@@ -977,7 +1010,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             tween.TweenProperty(f, "position", node.GetFighterLocation(location), 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         }
         await tween.ToTask();
-        await Task.WhenAll(f.PlayAnimation("intro",true),model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0,"intro") : Task.CompletedTask);
+        await Task.WhenAll(f.PlayAnimation("intro", true), model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0, "intro") : Task.CompletedTask);
         f.Road = road;
         await road.AddFighter(model, f);
     }
@@ -1184,9 +1217,11 @@ public partial class Fighter : Control, ITarget, IAttackable
         _busy = false;
         var sprite = GetNode<SpineHandler>("%动画");
         sprite.ClearTracks();
+        sprite.Clear();
         GetNode<SpineHandler>("%土坑").ClearTracks();
         TargetRegistry.Unregister(this);
-
+        GetAtkAnimNode().Clear();
+        GetHpAnimNode().Clear();
         foreach (var f in fighters.ToList())
         {
             fighters.Remove(f);

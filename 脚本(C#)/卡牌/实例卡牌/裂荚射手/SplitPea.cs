@@ -1,8 +1,5 @@
 using Battle;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card.Pea;
@@ -24,7 +21,7 @@ public class SplitPea : FighterCardModel
                     if (road == fighter.Road)
                     {
                         await fighter.Attack(card.Player.Status.AtkMe());
-                        await card.Player.Status.Hero.ApplyDamage(card.GetSignInt("Health"),Variable.VariableReason.Plant | Variable.VariableReason.Damaged);
+                        await card.Player.Status.Hero.ApplyDamage(card.GetSignInt("Health"), Variable.VariableReason.Plant | Variable.VariableReason.Damaged);
                     }
                 }
             }

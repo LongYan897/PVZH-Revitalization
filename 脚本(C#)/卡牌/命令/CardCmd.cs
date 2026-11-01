@@ -6,7 +6,6 @@ using Play;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using Target;
 using Variable;
@@ -29,14 +28,14 @@ public static class CardCmd
     private static object stepLock = new();
     public static void PushStop()
     {
-        lock(stopLock)
+        lock (stopLock)
         {
             _stopCount++;
             PhraseManager.PushProcessing();
             if (_stopCount == 1)
             {
                 JustFreshAllCards();
-            } 
+            }
         }
     }
 
@@ -105,8 +104,8 @@ public static class CardCmd
     public static async Task ChangedCard<T>(CardModel cardModel, string key, T before, T after, VariableReason variableReason)
     {
         cardModel.Fresh();
-        await cardModel.Changed(key, after, before,variableReason);
-        await TimingOnCards(null, Timing.OnVariableChanged, key,  after, before, variableReason);
+        await cardModel.Changed(key, after, before, variableReason);
+        await TimingOnCards(null, Timing.OnVariableChanged, key, after, before, variableReason);
     }
 
     /// <summary>
@@ -122,7 +121,7 @@ public static class CardCmd
         else if (Index == 5)
             return [PhraseManager.GetRoad(Index - 1)];
         else if (Index > 1 && Index < 5)
-            return [PhraseManager.GetRoad(Index + 1),PhraseManager.GetRoad(Index-1)];
+            return [PhraseManager.GetRoad(Index + 1), PhraseManager.GetRoad(Index - 1)];
         else
             return null;
     }
@@ -158,7 +157,7 @@ public static class CardCmd
     /// <param name="cardModel">索引的卡牌</param>
     /// <param name="amount">抽牌的数量</param>
     /// <returns></returns>
-    public static async Task Draw(Player player, CardModel cardModel,int amount = 1)
+    public static async Task Draw(Player player, CardModel cardModel, int amount = 1)
     {
         player ??= PlayerManager.GetPlayer(cardModel.Camp);
         await player.Status.PlayCardAndDraw(amount);
@@ -265,7 +264,7 @@ public static class CardCmd
     /// <returns></returns>
     public static async Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
     {
-        foreach (var card in CardInstances.Where(c=> PlayerManager.GetPlayer(c.Camp).Status.HandCards.Contains(c)).ToList())
+        foreach (var card in CardInstances.Where(c => PlayerManager.GetPlayer(c.Camp).Status.HandCards.Contains(c)).ToList())
         {
             if (card != cardModel)
                 await card.FireTiming(timing, paramters);
@@ -291,7 +290,7 @@ public static class CardCmd
         {
             if (buff.Timings.Contains(timing))
             {
-                await buff.OnTiming(timing,null,paramters);
+                await buff.OnTiming(timing, null, paramters);
             }
         }
     }
@@ -314,7 +313,7 @@ public static class CardCmd
     /// <param name="targetType">目标类型</param>
     /// <param name="filter">过滤器</param>
     /// <returns></returns>
-    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null,Camp? camp = null)
+    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null, Camp? camp = null)
     {
         PushStop();
         player ??= PlayerManager.GetPlayer(cardModel.Camp);
@@ -328,19 +327,19 @@ public static class CardCmd
 
                 if (candidates.Count == 1) return candidates[0];
 
-                TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter,camp);
+                TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter, camp);
 
                 _tcs = new TaskCompletionSource<ITarget>();
                 var result = await _tcs.Task;
 
-                TargetRegistry.DeleteTargeted(targetType,camp);
+                TargetRegistry.DeleteTargeted(targetType, camp);
                 return result;
             }
             else
             {
                 if (player is AiPlayer ai)
                 {
-                    return await ai.ChoiceTarget(cardModel,targetType,fromBuff,filter);
+                    return await ai.ChoiceTarget(cardModel, targetType, fromBuff, filter);
                 }
                 else
                 {
@@ -463,7 +462,7 @@ public static class CardCmd
     /// <param name="filter">过滤器</param>
     public static IEnumerable<ITarget> GetTargets(CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null)
     {
-        return TargetRegistry.GetAllCanBeTarget(cardModel,targetType,fromBuff,filter);
+        return TargetRegistry.GetAllCanBeTarget(cardModel, targetType, fromBuff, filter);
     }
     /// <summary>
     /// 获得按照先后顺序排列的单位
@@ -608,7 +607,7 @@ public static class CardCmd
     /// </summary>
     /// <param name="predicate">过滤器</param>
     /// <returns></returns>
-    public static bool AnyZombie(Func<FighterCardModel, bool> predicate = null,bool checkHiding = true)
+    public static bool AnyZombie(Func<FighterCardModel, bool> predicate = null, bool checkHiding = true)
         => AnyFighter(f => f != null
             && f.Camp == Camp.Zombie && (!f.Hiding || !checkHiding)
             && (predicate == null || predicate(f)));

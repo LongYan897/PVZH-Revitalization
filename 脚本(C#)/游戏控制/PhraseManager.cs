@@ -129,14 +129,14 @@ public static class PhraseManager
             Phrase += 1;
         }
         string ext = myTurn ? !isTurnCostNotEnough ? "Yellow" : "Green" : "";
-        await Task.WhenAll( spine.SetAnimationTask(0, isBattle ? $"{entr}BackCardTurn" : Phrase switch
+        await Task.WhenAll(spine.SetAnimationTask(0, isBattle ? $"{entr}BackCardTurn" : Phrase switch
         {
             Phrase.Plant => $"{entr}{ext}MovePlantTurn",
             Phrase.Trick => $"{entr}{ext}MoveTrickTurn",
             Phrase.Fight => $"{entr}{ext}MoveAttackTurn",
             Phrase.Zombie => $"{entr}StartZombieTurn",
             _ => ""
-        }),BattleSubMenuScene.Hint(Phrase));
+        }), BattleSubMenuScene.Hint(Phrase));
         if (Phrase == Phrase.Zombie && isAuto)
         {
             isTurnCostNotEnough = false;
@@ -212,7 +212,7 @@ public static class PhraseManager
         {
             Phrase.Plant => "plantChangeColorPlantTurn",
             _ => ""
-        } : Phrase switch 
+        } : Phrase switch
         {
             Phrase.Trick => "zombieChangeColorTrickTurn",
             Phrase.Zombie => "zombieChangeColorZombieTurn",

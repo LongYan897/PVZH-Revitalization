@@ -101,7 +101,7 @@ public class CardString
     /// <summary>
     /// 卡牌的序列化代码
     /// </summary>
-    public uint Id {  get; private set; }
+    public uint Id { get; private set; }
     /// <summary>
     /// 血量
     /// </summary>
@@ -210,7 +210,7 @@ public class CardString
         {
             cardString.IconPath = GetData(cardTitle, "Icon").AsString();
         }
-        if(GetData(cardTitle, "Id").VariantType != Variant.Type.Nil)
+        if (GetData(cardTitle, "Id").VariantType != Variant.Type.Nil)
         {
             cardString.Id = GetData(cardTitle, "Id").AsUInt16();
         }
