@@ -11,7 +11,7 @@
 				"ButtonText": "1包",
 				"PriceType": "Gem",
 				"Price": 300,
-				"PullCount": 4
+				"PullCount": 50
 			},
 			{
 				"ButtonText": "买10包送1包",

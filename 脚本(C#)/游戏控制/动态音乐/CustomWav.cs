@@ -7,7 +7,7 @@ using Godot;
 
 namespace Controller.WavPlay;
 
-public class CustomWav : Wav
+public class CustomWav
 {
 
 }

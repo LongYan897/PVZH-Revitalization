@@ -1,8 +1,8 @@
 using Card.Pack;
+using Controller;
 using Extension;
 using FileExtension;
 using Godot;
-using Play;
 using Play;
 using Scene;
 using Spine;
@@ -137,7 +137,7 @@ public partial class OpenCardControl : SubMenuScene
             AddChild(card);
         }
 
-        await this.Wait(delay + 1f);
+        await this.Wait(delay + 0.5f);
 
         var packOpening = GD.Load<PackedScene>(OpeningScenePath).Instantiate<CardOpening>();
         AddChild(packOpening);
@@ -282,23 +282,96 @@ public partial class OpenCardControl : SubMenuScene
         card.AllowExpand = false;
         card.PreventGray = true;
         card.SetToBright();
-
-        // 设置数量：直接改 ForceShowAmount/ForcedAmount 不会刷新界面，
-        // 必须调 SetAmount（内部会 ForceShowAmount=true + ForcedAmount=count + 立即刷新）
         card.SetAmount(count);
-
-        // 弹出动画：只缩放"卡牌自己"，不要动 cell1。
-        // cell1 里还挂着开卡特效（SpineHandler 子节点），缩放 cell1 会把特效一起缩一下
-        // （表现就是"加载卡牌的时候特效突然小一下"）。
-        // 卡牌初始 scale 是 fit，所以从 0 补间到 fit。
-        card.Scale = Vector2.Zero;
-        var tween = CreateTween();
-        tween.TweenProperty(card, "scale", Vector2.One * fit, 0.5f)
-            .SetTrans(Tween.TransitionType.Back)
-            .SetEase(Tween.EaseType.Out);
-        await ToSignal(tween, Tween.SignalName.Finished);
+        await CardIntroAn(card, groupName, fit);
     }
+    private async Task CardIntroAn(NodeCard card,string groupName,float fit)
+    {
+        // 注意：Tween 必须至少有一个 Tweener 才能启动，
+        // 空的 Tween 会报 "Tween ... started with no Tweeners"，而且 await Finished 永远不会返回（卡死）。
+        // 所以 tween1 只在真正用到时创建，没用到的分组不要 await 它。
+        Tween tween = CreateTween();
+        Tween tween1 = null;
+        if (groupName == "罕见")
+        {
+            card.Scale = new(0, 0.4f);
+            tween.TweenProperty(card, "scale", Vector2.One * fit * 1f, 0.35f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+        }
+        else if (groupName == "稀有")
+        {
+            card.Scale = new(0, 0);
+            card.Rotation = Mathf.Pi * -0.2f;
+            tween.TweenProperty(card, "scale", Vector2.One * fit * 1.3f, 0.15f)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(card, "scale", Vector2.One * fit, 0.45f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.InOut);
 
+            tween1 = CreateTween();
+            tween1.TweenProperty(card, "rotation",0, 0.7f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+        }
+        else if (groupName == "超稀有")
+        {
+            card.Scale = new(2f, 2f);
+            card.Rotation = Mathf.Pi * -1f;
+            tween.TweenProperty(card, "scale", Vector2.One * fit, 0.2f)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(card, "scale", Vector2.One * fit * 1.4f, 0.35f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.InOut)
+                .SetDelay(0.1f);
+            tween.TweenProperty(card, "scale", Vector2.One * fit, 0.35f);
+
+            tween1 = CreateTween();
+            tween1.TweenProperty(card, "rotation", 0, 0.4f)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.Out);
+        }
+        else if (groupName == "传说")
+        {
+            card.Scale = new(0,0);
+            tween.TweenProperty(card, "scale", Vector2.One * fit * 2f, 0.4f)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(card, "scale", Vector2.One * fit * 1.2f, 0.4f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.InOut);
+            tween.TweenProperty(card, "scale", Vector2.One * fit * 1f, 0.4f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.InOut);
+
+            tween1 = CreateTween();
+            tween1.TweenProperty(card, "rotation", Mathf.Pi * -0.1f, 0.4f)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.InOut);
+            tween1.TweenProperty(card, "rotation", Mathf.Pi * 0.075f, 0.4f)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.InOut);
+            tween1.TweenProperty(card, "rotation", -0.05f, 0.4f);
+            tween1.TweenProperty(card, "rotation", 0, 0.4f);
+        }
+        else
+        {
+            card.Scale = new(0, 0.4f);
+            tween.TweenProperty(card, "scale", Vector2.One * fit * 1.2f, 0.25f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(card, "scale", Vector2.One * fit, 0.25f);
+        }
+        // 注意：两个补间是同时开始的，必须先"同时等"。
+        // 如果先 await tween 再 await tween1，而 tween1 更短、已经播完，
+        // 它的 Finished 信号不会再触发 → 永远卡在这里。
+        var waits = new List<Task> { ToSignal(tween, Tween.SignalName.Finished).ToTask() };
+        if (tween1 != null)
+            waits.Add(ToSignal(tween1, Tween.SignalName.Finished).ToTask());
+        await Task.WhenAll(waits);
+    }
     /// <summary>预读 4 种稀有度的开卡特效资源（skeleton data），避免第一次播放时同步读盘卡顿</summary>
     private static void PreloadEffects()
     {
