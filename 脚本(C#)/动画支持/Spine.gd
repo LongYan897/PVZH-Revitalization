@@ -77,3 +77,10 @@ func get_bone_local_pos(bone_name:String) -> Vector2:
 	if bone == null:
 		return Vector2.ZERO
 	return Vector2(bone.get_x(), bone.get_y())
+
+func get_tint_material() -> ShaderMaterial:
+	return get_normal_material() as ShaderMaterial
+
+func set_tint_material(shader:ShaderMaterial):
+	if (shader != null):
+		self.normal_material = shader;

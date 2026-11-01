@@ -1,8 +1,5 @@
 using Card.Cmd;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card.Metier;
@@ -21,9 +18,9 @@ public class Firefighter : FighterCardModel
             {
                 if ((FighterCardModel)parameters[0] == model)
                 {
-                    if (CardCmd.AnyZombie(z=>z != model))
+                    if (CardCmd.AnyZombie(z => z != model))
                     {
-                        var target = await CardCmd.PlayerChoiceZombie(null,card,true,z => z != model);
+                        var target = await CardCmd.PlayerChoiceZombie(null, card, true, z => z != model);
                         if (target != null)
                             await target.Bounced();
                     }

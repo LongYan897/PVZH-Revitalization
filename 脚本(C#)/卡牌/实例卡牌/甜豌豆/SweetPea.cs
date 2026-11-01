@@ -1,10 +1,6 @@
 using Battle.Entity;
 using Card.Cmd;
-using Logger;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card.Pea;
@@ -13,7 +9,7 @@ public class SweetPea : FighterCardModel
 {
     private class SweetBuff : Buff
     {
-        public override Timing[] Timings => [Timing.AfterPlay,Timing.WhenMoved];
+        public override Timing[] Timings => [Timing.AfterPlay, Timing.WhenMoved];
         public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
         {
             if (timing == Timing.AfterPlay)
@@ -37,7 +33,7 @@ public class SweetPea : FighterCardModel
                     {
                         if (fighter1.Camp.Zombie())
                         {
-                            await fighter.Atk.Gain(card.GetSignInt("Strength"),Variable.VariableReason.Self | Variable.VariableReason.Plant);
+                            await fighter.Atk.Gain(card.GetSignInt("Strength"), Variable.VariableReason.Self | Variable.VariableReason.Plant);
                         }
                     }
                 }

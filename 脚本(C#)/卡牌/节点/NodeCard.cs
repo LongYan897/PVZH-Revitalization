@@ -3,15 +3,12 @@ using Battle.Entity;
 using Card.Cmd;
 using Controller;
 using Godot;
-using Godot.Collections;
 using Hero;
 using Logger;
 using Pack;
-using Phrases;
 using Play;
 using Spine;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Target;
@@ -689,7 +686,7 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
-        TargetRegistry.CallTargeted(Model, Model.TargetType, false,Model.Camp);
+        TargetRegistry.CallTargeted(Model, Model.TargetType, false, Model.Camp);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
     {
@@ -879,7 +876,7 @@ public partial class NodeCard : Control
 
         var savedTarget = target;
         if (ChoiceCard == this) ChoiceCard = null;
-        TargetRegistry.DeleteTargeted(Model.TargetType,Model.Camp);
+        TargetRegistry.DeleteTargeted(Model.TargetType, Model.Camp);
         ClearTarget(true);
         if (savedTarget == null)
         {
@@ -1014,7 +1011,7 @@ public partial class NodeCard : Control
                 fighter = fighterCard;
             var ctx = kind switch
             {
-                "Road" => new TargetContext { Line = true, FighterCard = fighter ,Camp = Model.Camp },
+                "Road" => new TargetContext { Line = true, FighterCard = fighter, Camp = Model.Camp },
                 "Grid" => new TargetContext { Grid = true, FighterCard = fighter, Camp = Model.Camp },
                 "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter, Camp = Model.Camp },
                 _ => default

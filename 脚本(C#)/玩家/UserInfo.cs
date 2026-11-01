@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 /// </summary>
 public partial class UserInfo : SubMenuScene
 {
-	public override Task _Load()
-	{
-		return Task.CompletedTask;
-	}
+    public override Task _Load()
+    {
+        return Task.CompletedTask;
+    }
 }

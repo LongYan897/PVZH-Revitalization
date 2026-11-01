@@ -41,6 +41,8 @@ var tag_teamup: CheckBox
 var tag_amphibious: CheckBox
 var tag_gravestone: CheckBox
 
+var auto_clear_check: CheckBox
+
 var status_label: Label
 
 const RARITIES := ["基础", "普通", "罕见", "稀有", "超稀有", "传说", "活动", "令牌"]
@@ -229,10 +231,25 @@ func _ready() -> void:
 	icon_edit.placeholder_text = "res://..."
 	root.add_child(icon_edit)
 
+	auto_clear_check = CheckBox.new()
+	auto_clear_check.text = "创建后自动清空"
+	root.add_child(auto_clear_check)
+
+	var button_row := HBoxContainer.new()
+	button_row.add_theme_constant_override("separation", 8)
+	root.add_child(button_row)
+
 	var button := Button.new()
 	button.text = "创建"
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.pressed.connect(_create)
-	root.add_child(button)
+	button_row.add_child(button)
+
+	var clear_button := Button.new()
+	clear_button.text = "清空"
+	clear_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	clear_button.pressed.connect(_clear_all)
+	button_row.add_child(clear_button)
 
 	status_label = Label.new()
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -305,7 +322,42 @@ func _create() -> void:
 
 	_print_card_entry(clean, side, type_text)
 
+	if auto_clear_check.button_pressed:
+		_clear_all()
+
 	_show_success("已输出：" + clean)
+
+func _clear_all() -> void:
+	key_name_edit.text = ""
+	name_edit.text = ""
+	faction.select(0)
+	_on_faction_selected(0)
+	card_type.select(0)
+	_on_card_type_selected(0)
+	hero_check.button_pressed = false
+	des_edit.text = ""
+	cost_spin.value = 0
+	hp_spin.value = 0
+	hp_type_option.select(0)
+	include_atk.button_pressed = false
+	atk_spin.value = 0
+	atk_type_option.select(0)
+	include_star_type.button_pressed = false
+	star_type_option.select(0)
+	include_pack.button_pressed = false
+	pack_edit.text = ""
+	tag_teamup.button_pressed = false
+	tag_amphibious.button_pressed = false
+	tag_gravestone.button_pressed = false
+	flavor_edit.text = ""
+	id_edit.text = ""
+	rarity_option.select(0)
+	category_option.select(0)
+	label_edit.text = ""
+	animation_edit.text = ""
+	animation_extra_edit.text = ""
+	icon_edit.text = ""
+	status_label.text = ""
 
 func _print_card_entry(clean: String, side: String, type_text: String) -> void:
 	var is_zombie := side == "僵尸"

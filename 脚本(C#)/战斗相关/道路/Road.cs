@@ -1,8 +1,6 @@
 using Battle.Entity;
 using Card;
 using Card.Cmd;
-using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,7 +74,7 @@ public class Road
             var zombie = fighters.FirstOrDefault(f => f.Zombie);
             if (zombie != null)
             {
-                var stk = new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current,true);
+                var stk = new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current, true);
                 await zombie.Model.Battle(stk);
                 stks.Add(stk);
             }
@@ -240,6 +238,6 @@ public class Road
     /// <returns></returns>
     public bool Containable(FighterCardModel fighter)
     {
-        return Fighter.CanGenerate(fighter,this);
+        return Fighter.CanGenerate(fighter, this);
     }
 }

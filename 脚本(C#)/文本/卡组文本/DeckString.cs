@@ -1,12 +1,7 @@
-using Card.String;
 using Godot;
 using Godot.Collections;
 using Hero.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Card.Pack.PresetPack;
 
 namespace Card.Pack.String;

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bgmjjqk2t3ddd"]
+
+[ext_resource type="Texture2D" uid="uid://dl3xoqf72sao1" path="res://场景/植物卡组/火焰豌豆植物/a0b225ce-0617-4197-bd44-3234168231e9.png" id="1_sxwks"]
+
+[node name="卡面" type="Control" unique_id=579907030]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1313947399]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 13.0
+offset_right = 224.0
+offset_bottom = 197.0
+texture = ExtResource("1_sxwks")
+expand_mode = 1
+stretch_mode = 3

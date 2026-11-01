@@ -1,11 +1,4 @@
 using Battle;
-using Card.Cmd;
-using Logger;
-using Pack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Card;
@@ -52,5 +45,5 @@ public class DoubleAtkType : AtkType
 
         return Task.CompletedTask;
     }
-    public override Buff Buff => new CustomBuff([Timing.AfterAttack,Timing.BeforeLaneStart], Target);
+    public override Buff Buff => new CustomBuff([Timing.AfterAttack, Timing.BeforeLaneStart], Target);
 }

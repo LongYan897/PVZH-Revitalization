@@ -3,7 +3,6 @@ using Card.Cmd;
 using Controller;
 using Godot;
 using Hero;
-using Logger;
 using Pack;
 using Phrases;
 using Play;
@@ -172,7 +171,7 @@ public partial class BattleSubMenuScene : SubMenuScene
             Phrase.Trick => new Color("8000ff"),
             Phrase.Fight => new Color("ff6600"),
             _ => new Color()
-        }; 
+        };
         var colorBtn = phrase switch
         {
             Phrase.Plant => new Color("007e85"),
@@ -197,15 +196,15 @@ public partial class BattleSubMenuScene : SubMenuScene
             Phrase.Fight => new Color("ff6c1793"),
             _ => new Color()
         };
-        shadTex.SetShaderParameter("color",colorTex);
-        shad.SetShaderParameter("top_color",color);
+        shadTex.SetShaderParameter("color", colorTex);
+        shad.SetShaderParameter("top_color", color);
         shad.SetShaderParameter("bottom_color", colorBtn);
         shadSec.SetShaderParameter("top_color", color);
         shadSec.SetShaderParameter("bottom_color", colorBtn);
-        TurnMain.AddThemeColorOverride("font_outline_color",colorOtl);
+        TurnMain.AddThemeColorOverride("font_outline_color", colorOtl);
         TurnSec.AddThemeColorOverride("font_outline_color", colorOtl);
         var tex2 = instance.GetNode<TextureRect>("%阶段投影");
-        tex2.Texture = (phrase switch 
+        tex2.Texture = (phrase switch
         {
             Phrase.Plant => "res://素材/对象高亮框/植物投影.png",
             Phrase.Zombie => "res://素材/对象高亮框/僵尸投影.png",
@@ -218,11 +217,11 @@ public partial class BattleSubMenuScene : SubMenuScene
         tex2.Modulate = new(1, 1, 1, 0);
         Tween tween = instance.CreateTween();
         tex.Scale = new();
-        tween.TweenProperty(tex,"scale",new Vector2(1.73f,1.73f) * 1f,0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        tween.TweenProperty(tex, "scale", new Vector2(1.73f, 1.73f) * 1f, 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         Tween tween1 = instance.CreateTween();
-        tween1.TweenProperty(tex2, "modulate", new Color(1,1,1,1), 0.2f).SetEase(Tween.EaseType.Out);
+        tween1.TweenProperty(tex2, "modulate", new Color(1, 1, 1, 1), 0.2f).SetEase(Tween.EaseType.Out);
         await tween.ToTask();
-        await instance.ToSignal(instance.GetTree().CreateTimer(0.2f),Timer.SignalName.Timeout);
+        await instance.ToSignal(instance.GetTree().CreateTimer(0.2f), Timer.SignalName.Timeout);
         tween = instance.CreateTween();
         tween.TweenProperty(tex, "scale", new Vector2(1.83f, 1.73f) * 1f, 0.1f).SetEase(Tween.EaseType.Out);
         tween.TweenProperty(tex, "scale", new Vector2(1.73f, 1.73f) * 0f, 0.1f).SetEase(Tween.EaseType.In);
@@ -267,7 +266,7 @@ public partial class BattleSubMenuScene : SubMenuScene
             Camp.Plant => "res://素材(C#)/文本图片/inhnd_sun_gb.png",
             _ => ""
         });
-        instance.GetNode<SpineHandler>("%费用特效动画").SetAttachment("main",PlayerManager.HostPlayer.Status.Hero.Camp switch
+        instance.GetNode<SpineHandler>("%费用特效动画").SetAttachment("main", PlayerManager.HostPlayer.Status.Hero.Camp switch
         {
             Camp.Zombie => "brain",
             Camp.Plant => "sun",
@@ -303,7 +302,7 @@ public partial class BattleSubMenuScene : SubMenuScene
             {
                 refButton.MouseFilter = Control.MouseFilterEnum.Pass;
                 refButton.GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
-                refButton.GetNode<Button>("碰撞").Pressed += () => BattleSubFreshButton(refButton, refButton.Name.ToString().Replace("刷新卡牌","").ToInt());
+                refButton.GetNode<Button>("碰撞").Pressed += () => BattleSubFreshButton(refButton, refButton.Name.ToString().Replace("刷新卡牌", "").ToInt());
             }
         }
         instance.GetNode<Node2D>("%重新选卡").GetNode<NinePatchRect>("开始战斗").GetNode<Button>("碰撞").Pressed += BattleSubStartButton;
@@ -320,14 +319,14 @@ public partial class BattleSubMenuScene : SubMenuScene
         instance.GetNode<Node2D>("%重新选卡").GetNode<NinePatchRect>("开始战斗").GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
         instance.GetNode<Node2D>("%重新选卡").Visible = false;
     }
-    public static Dictionary<int,Vector2> GetFreshLocation()
+    public static Dictionary<int, Vector2> GetFreshLocation()
     {
-        var dict = new Dictionary<int,Vector2>();
+        var dict = new Dictionary<int, Vector2>();
         foreach (var refloc in instance.GetNode<Node2D>("%重新选卡").GetChildren().OfType<Marker2D>())
         {
             if (refloc.Name.ToString().Contains('C'))
             {
-                dict.Add(refloc.Name.ToString().Replace("C","").ToInt(),refloc.GlobalPosition);
+                dict.Add(refloc.Name.ToString().Replace("C", "").ToInt(), refloc.GlobalPosition);
             }
         }
         return dict;
@@ -339,9 +338,9 @@ public partial class BattleSubMenuScene : SubMenuScene
         if (freshAwaiters == null) return;
         await freshAwaiters.Task;
     }
-    private static async void BattleSubFreshButton(TextureRect textureRect,int index)
+    private static async void BattleSubFreshButton(TextureRect textureRect, int index)
     {
-        if (textureRect == null ||textureRect.Visible == false) return;
+        if (textureRect == null || textureRect.Visible == false) return;
         textureRect.GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
         Tween tween = textureRect.CreateTween();
         Tween tween1 = textureRect.CreateTween();
@@ -349,7 +348,7 @@ public partial class BattleSubMenuScene : SubMenuScene
         tween.TweenProperty(textureRect, "scale", canon * 1.3f, 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         tween.TweenProperty(textureRect, "scale", canon * 0f, 0.2f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
         tween1.TweenProperty(textureRect, "rotation", Math.PI * 2, 0.3f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-        var task = Task.WhenAll(DeckCmd.FreshIndex(index),tween.ToTask());
+        var task = Task.WhenAll(DeckCmd.FreshIndex(index), tween.ToTask());
         lock (freshTasks) freshTasks.Add(task);
         await task;
         textureRect.Visible = false;
@@ -385,7 +384,7 @@ public partial class BattleSubMenuScene : SubMenuScene
         }
         CardCmd.PopStop();
     }
-    public static async Task PlayLoseShield(Player player,int amount)
+    public static async Task PlayLoseShield(Player player, int amount)
     {
         CardCmd.PushStop();
         if (player == PlayerManager.HostPlayer)
@@ -446,7 +445,7 @@ public partial class BattleSubMenuScene : SubMenuScene
         await Task.WhenAll(
             instance.ToSignal(tween, Tween.SignalName.Finished).ToTask(),
             twNode.SetAnimationTask(0, animName),
-            FollowScale(costLabel2,animDur));
+            FollowScale(costLabel2, animDur));
 
         Tween tween2 = instance.CreateTween();
         tween2.TweenProperty(twNode, "position", new Vector2(), 0.4f);
@@ -462,7 +461,7 @@ public partial class BattleSubMenuScene : SubMenuScene
         Tween tween1 = instance.CreateTween();
         tween1.TweenProperty(tgNode, "modulate", new Color(1, 1, 1, 1), 0.2f);
         Tween tween3 = instance.CreateTween();
-        tween3.TweenProperty(glNode, "modulate", new Color(1,1,1,1), 0.2f);
+        tween3.TweenProperty(glNode, "modulate", new Color(1, 1, 1, 1), 0.2f);
         tween3.TweenProperty(glNode, "modulate", new Color(1, 1, 1, 0), 0.2f);
         Tween tween4 = instance.CreateTween();
         tween4.TweenProperty(glNode2, "modulate", new Color(1, 1, 1, 1), 0.2f);
@@ -546,16 +545,16 @@ public partial class BattleSubMenuScene : SubMenuScene
             CardCmd.PopStop();
         }
     }
-    private static async Task FollowScale(Label label,float dur)
+    private static async Task FollowScale(Label label, float dur)
     {
         var cannoncial = label.Position;
         Tween tween = label.CreateTween();
         Tween tween1 = label.CreateTween();
-        tween.TweenProperty(label,"scale",new Vector2(0.7f,1f),dur - 0.5f);
+        tween.TweenProperty(label, "scale", new Vector2(0.7f, 1f), dur - 0.5f);
         tween1.TweenProperty(label, "position", cannoncial, dur - 0.5f);
         tween.TweenProperty(label, "scale", new Vector2(1f, 1.3f), 0.1f);
         tween1.TweenProperty(label, "position", cannoncial + new Vector2(0, -10f), 0.15f);
-        tween.TweenProperty(label, "scale", new Vector2(1f, 0.8f), 0.15f );
+        tween.TweenProperty(label, "scale", new Vector2(1f, 0.8f), 0.15f);
         tween1.TweenProperty(label, "position", cannoncial, 0.2f);
         tween.TweenProperty(label, "scale", new Vector2(1f, 1f), 0.2f);
         var pos = label.Position;

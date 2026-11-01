@@ -1,4 +1,5 @@
 using Godot;
+using Pack;
 using System;
 using System.Threading.Tasks;
 
@@ -10,177 +11,154 @@ namespace Spine;
 /// </summary>
 public partial class SpineHandler : Node2D
 {
-	private static PackedScene Scene => GD.Load<PackedScene>("res://场景(C#)/动画.tscn");
-	private Node _spineSprite;
+    private static PackedScene Scene => "res://场景(C#)/动画.tscn".Load<PackedScene>();
+    private Node2D _spineSprite;
 
-	private Node SpineSprite
-	{
-		get
-		{
-			if (_spineSprite == null)
-			{
-				_spineSprite = GetNode<Node>("SpineNode");
-				ConnectAnimationEvent();
-			}
-			return _spineSprite;
-		}
-	}
-	/// <summary>
-	/// 获取一个动画节点
-	/// </summary>
-	/// <returns></returns>
-	public static SpineHandler Get() => Scene.Instantiate<SpineHandler>();
-	/// <summary>
-	/// 等待动画事件
-	/// </summary>
-	/// <param name="eventName">事件名称</param>
-	/// <returns></returns>
-	public async Task<float> WaitForAnimEvent(string eventName)
-	{
-		var tcs = new TaskCompletionSource<float>();
+    private Node2D SpineSprite
+    {
+        get
+        {
+            if (_spineSprite == null)
+            {
+                _spineSprite = GetNode<Node2D>("SpineNode");
+                ConnectAnimationEvent();
+            }
+            return _spineSprite;
+        }
+    }
 
-		void Handler(string name, float remaining)
-		{
-			if (name == eventName)
-				tcs.TrySetResult(remaining);
-		}
+    public const string TintColor = "tint_color";
 
-		OnSpineAnimEvent += Handler;
-		try { return await tcs.Task; }
-		finally { OnSpineAnimEvent -= Handler; }
-	}
+    public const string TintIntensity = "tint_intensity";
 
-	/// <summary>
-	/// 加载 SpineSkeletonDataResource (.tres)
-	/// </summary>
-	public void LoadSkeletonData(string tresPath)
-	{
-		LoadSkeletonData(GetSkeletonData(tresPath));
-	}
+    public const string 染色颜色 = "tint_color";
 
-	/// <summary>加载已经读好的 skeleton data（配合 <see cref="GetSkeletonData"/> 使用，避免重复读盘）</summary>
-	public void LoadSkeletonData(Resource data)
-	{
-		if (SpineSprite == null || data == null)
-		{
-			return;
-		}
-		SpineSprite.Set("skeleton_data_res", data);
-		SetTimeScale();
-	}
+    public const string 染色强度 = "tint_intensity";
 
-	private static readonly System.Collections.Generic.Dictionary<string, Resource> SkeletonDataCache = new();
+    public void Clear(Func<Node, bool> predicate = null)
+    {
+        predicate ??= (nd) => true;
+        foreach (var nd in GetChildren())
+        {
+            if (nd != SpineSprite && predicate(nd))
+                nd.QueueFree();
+        }
+    }
+    /// <summary>
+    /// 给该动画节点染色
+    /// shader参数 : tint_color 染色颜色 Color 和 tint_intensity 染色强度 float (0f ,1f)
+    /// </summary>
+    /// <param name="modifier"></param>
+    /// <returns></returns>
+    public async Task ModifyShader(Func<ShaderMaterial, Task> modifier)
+    {
+        if (SpineSprite == null || modifier == null) return;
 
-	/// <summary>
-	/// 读取并缓存 skeleton data（.tres）。<br/>
-	/// 同一个特效每次开包都重复 ResourceLoader.Load 会同步读盘，容易造成"顿一下"，
-	/// 走这个缓存后同一条特效资源只读一次。
-	/// </summary>
-	public static Resource GetSkeletonData(string tresPath)
-	{
-		if (string.IsNullOrWhiteSpace(tresPath)) return null;
-		if (SkeletonDataCache.TryGetValue(tresPath, out var cached) && GodotObject.IsInstanceValid(cached))
-			return cached;
+        var mat = SpineSprite.Call("get_tint_material").As<ShaderMaterial>();
 
-		Resource data = ResourceLoader.Load(tresPath);
-		if (data != null) SkeletonDataCache[tresPath] = data;
-		return data;
-	}
+        await modifier(mat);
+    }
 
-	/// <summary>
-	/// 等待当前轨道的动画播放结束（不重新设置动画，用于"已经 SetAnimation 过、只想等它播完"的场景）。
-	/// </summary>
-	public async Task WaitAnimationCompleteTask()
-	{
-		if (SpineSprite == null) return;
+    /// <summary>
+    /// 获取一个动画节点
+    /// </summary>
+    /// <returns></returns>
+    public static SpineHandler Get() => Scene.Instantiate<SpineHandler>();
+    /// <summary>
+    /// 等待动画事件
+    /// </summary>
+    /// <param name="eventName">事件名称</param>
+    /// <returns></returns>
+    public async Task<float> WaitForAnimEvent(string eventName)
+    {
+        var tcs = new TaskCompletionSource<float>();
 
-		var tcs = new TaskCompletionSource<bool>();
-		Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
-			(sprite, state, entry) => tcs.TrySetResult(true));
+        void Handler(string name, float remaining)
+        {
+            if (name == eventName)
+                tcs.TrySetResult(remaining);
+        }
 
-		SpineSprite.Connect("animation_completed", callable,
-			(uint)GodotObject.ConnectFlags.OneShot);
+        OnSpineAnimEvent += Handler;
+        try { return await tcs.Task; }
+        finally { OnSpineAnimEvent -= Handler; }
+    }
 
-		await tcs.Task;
-	}
+    /// <summary>
+    /// 加载 SpineSkeletonDataResource (.tres)
+    /// </summary>
+    public void LoadSkeletonData(string tresPath)
+    {
+        LoadSkeletonData(GetSkeletonData(tresPath));
+    }
 
-	public void SetTimeScale(float timeScale = 1.25f)
-	{
-		SpineSprite.Call("rebind_time_scale",timeScale);
-	}
+    /// <summary>加载已经读好的 skeleton data（配合 <see cref="GetSkeletonData"/> 使用，避免重复读盘）</summary>
+    public void LoadSkeletonData(Resource data)
+    {
+        if (SpineSprite == null || data == null)
+        {
+            return;
+        }
+        SpineSprite.Set("skeleton_data_res", data);
+        SetTimeScale();
+    }
 
-	/// <summary>
-	/// 设置动画。
-	/// </summary>
-	public void SetAnimation(int track, string animName, bool loop)
-	{
-		SpineSprite.Call("set_animation", track, animName, loop);
-	}
-	/// <summary>
-	/// 添加动画。
-	/// </summary>
-	public void AddAnimation(int track, string animName, bool loop, float delay = 0.0f)
-	{
-		SpineSprite.Call("add_animation", track, animName, loop, delay);
-	}
+    private static readonly System.Collections.Generic.Dictionary<string, Resource> SkeletonDataCache = new();
 
-	public void SetAttachment(string id, string attachment)
-	{
-		SpineSprite.Call("set_attachment", id, attachment);
-	}
-	public void SetSkin(string skinName)
-	{
-		SpineSprite.Call("set_skin", skinName);
-	}
+    /// <summary>
+    /// 读取并缓存 skeleton data（.tres）。<br/>
+    /// 同一个特效每次开包都重复 ResourceLoader.Load 会同步读盘，容易造成"顿一下"，
+    /// 走这个缓存后同一条特效资源只读一次。
+    /// </summary>
+    public static Resource GetSkeletonData(string tresPath)
+    {
+        if (string.IsNullOrWhiteSpace(tresPath)) return null;
+        if (SkeletonDataCache.TryGetValue(tresPath, out var cached) && GodotObject.IsInstanceValid(cached))
+            return cached;
 
-	public Vector2 GetBoneWorldScale(string boneName)
-	{
-		return SpineSprite.Call("get_bone_world_scale", boneName).AsVector2();
-	}
+        Resource data = tresPath.Load<Resource>();
+        if (data != null) SkeletonDataCache[tresPath] = data;
+        return data;
+    }
 
-	public Vector2 GetBoneScale(string boneName)
-	{
-		return SpineSprite.Call("get_bone_scale", boneName).AsVector2();
-	}
+    /// <summary>
+    /// 等待当前轨道的动画播放结束（不重新设置动画，用于"已经 SetAnimation 过、只想等它播完"的场景）。
+    /// </summary>
+    public async Task WaitAnimationCompleteTask()
+    {
+        if (SpineSprite == null) return;
 
-	public Vector2 GetBoneLocalPos(string boneName)
-	{
-		return SpineSprite.Call("get_bone_local_pos", boneName).AsVector2();
-	}
+        var tcs = new TaskCompletionSource<bool>();
+        Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
+            (sprite, state, entry) => tcs.TrySetResult(true));
 
-	public Vector2 GetBoneWorldPos(string boneName)
-	{
-		return SpineSprite.Call("get_bone_world_pos", boneName).AsVector2();
-	}
+        SpineSprite.Connect("animation_completed", callable,
+            (uint)GodotObject.ConnectFlags.OneShot);
 
-	public event Action<string, float> OnSpineAnimEvent;
+        await tcs.Task;
+    }
 
-	public void ConnectAnimationEvent()
-	{
-		SpineSprite.Connect("spine_anim_event", Callable.From<string, float>((name, obj) =>
-		{
-			OnSpineAnimEvent?.Invoke(name, obj);
-		}));
-	}
-	public void ClearTrack(int track)
-	{
-		if (SpineSprite == null) return;
-		SpineSprite.Call("clear_track", track);
-	}
-	public void ClearTracks()
-	{
-		if (SpineSprite == null) return;
-		SpineSprite.Call("clear_tracks");
-	}
+    public void SetTimeScale(float timeScale = 1.25f)
+    {
+        SpineSprite.Call("rebind_time_scale", timeScale);
+    }
 
-	/// <summary>
-	/// 设置动画，等待播放完成后销毁自身
-	/// </summary>
-	public void SetAnimationAndFreeOnEnd(int track, string animName, bool loop = false)
-	{
-		SetAnimation(track, animName, loop);
-		if (loop) return;
+    /// <summary>
+    /// 设置动画。
+    /// </summary>
+    public void SetAnimation(int track, string animName, bool loop)
+    {
+        SpineSprite.Call("set_animation", track, animName, loop);
+    }
+    /// <summary>
+    /// 添加动画。
+    /// </summary>
+    public void AddAnimation(int track, string animName, bool loop, float delay = 0.0f)
+    {
+        SpineSprite.Call("add_animation", track, animName, loop, delay);
+    }
 
+<<<<<<< HEAD
 		var callable = Callable.From<GodotObject, GodotObject, GodotObject>(
 			(sprite, state, entry) =>
 			{
@@ -189,263 +167,324 @@ public partial class SpineHandler : Node2D
 				// "Error calling deferred method: 'Node2D(SpineHandler.cs)::QueueFree': Method not found"。
 				Callable.From(QueueFree).CallDeferred();
 			});
+=======
+    public void SetAttachment(string id, string attachment)
+    {
+        SpineSprite.Call("set_attachment", id, attachment);
+    }
+    public void SetSkin(string skinName)
+    {
+        SpineSprite.Call("set_skin", skinName);
+    }
+>>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
-		SpineSprite.Connect("animation_completed", callable,
-			(uint)GodotObject.ConnectFlags.OneShot);
-	}
+    public Vector2 GetBoneWorldScale(string boneName)
+    {
+        return SpineSprite.Call("get_bone_world_scale", boneName).AsVector2();
+    }
 
-	/// <summary>
-	/// 设置动画，等待播放完成。
-	/// </summary>
-	public async Task SetAnimationTask(int track, string animName, bool loop = false)
-	{
-		SetAnimation(track, animName, loop);
-		if (loop) return;
+    public Vector2 GetBoneScale(string boneName)
+    {
+        return SpineSprite.Call("get_bone_scale", boneName).AsVector2();
+    }
 
-		var tcs = new TaskCompletionSource<bool>();
-		Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
-			(sprite, state, entry) => tcs.TrySetResult(true));
+    public Vector2 GetBoneLocalPos(string boneName)
+    {
+        return SpineSprite.Call("get_bone_local_pos", boneName).AsVector2();
+    }
 
-		SpineSprite.Connect("animation_completed", callable,
-			(uint)GodotObject.ConnectFlags.OneShot);
+    public Vector2 GetBoneWorldPos(string boneName)
+    {
+        return SpineSprite.Call("get_bone_world_pos", boneName).AsVector2();
+    }
 
-		await tcs.Task;
-	}
+    public event Action<string, float> OnSpineAnimEvent;
 
-	/// <summary>
-	/// 设置动画，等待播放完成后销毁自身。循环动画会立即返回且不销毁。
-	/// </summary>
-	public async Task SetAnimationAndFreeOnEndTask(int track, string animName, bool loop = false)
-	{
-		SetAnimation(track, animName, loop);
-		if (loop) return;
+    public void ConnectAnimationEvent()
+    {
+        SpineSprite.Connect("spine_anim_event", Callable.From<string, float>((name, obj) =>
+        {
+            OnSpineAnimEvent?.Invoke(name, obj);
+        }));
+    }
+    public void ClearTrack(int track)
+    {
+        if (SpineSprite == null) return;
+        SpineSprite.Call("clear_track", track);
+    }
+    public void ClearTracks()
+    {
+        if (SpineSprite == null) return;
+        SpineSprite.Call("clear_tracks");
+    }
 
-		var tcs = new TaskCompletionSource<bool>();
-		Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
-			(sprite, state, entry) => tcs.TrySetResult(true));
+    /// <summary>
+    /// 设置动画，等待播放完成后销毁自身
+    /// </summary>
+    public void SetAnimationAndFreeOnEnd(int track, string animName, bool loop = false)
+    {
+        SetAnimation(track, animName, loop);
+        if (loop) return;
 
-		SpineSprite.Connect("animation_completed", callable,
-			(uint)GodotObject.ConnectFlags.OneShot);
+        var callable = Callable.From<GodotObject, GodotObject, GodotObject>(
+            (sprite, state, entry) => CallDeferred(nameof(QueueFree)));
 
-		await tcs.Task;
+        SpineSprite.Connect("animation_completed", callable,
+            (uint)GodotObject.ConnectFlags.OneShot);
+    }
 
-		QueueFree();
-	}
-	/// <summary>
-	/// 播放动画，并等待指定事件触发后返回。
-	/// loop 为 true 时也会等待事件，不会立即返回。
-	/// </summary>
-	/// <param name="track">轨道</param>
-	/// <param name="animName">动画名</param>
-	/// <param name="eventName">要等待的事件名</param>
-	/// <param name="loop">是否循环播放</param>
-	/// <returns>事件触发时返回 remaining（和 WaitForAnimEvent 一致）</returns>
-	public async Task<float> SetAnimationAndWaitEvent(
-		int track,
-		string animName,
-		string eventName,
-		bool loop = false)
-	{
-		var tcs = new TaskCompletionSource<float>();
+    /// <summary>
+    /// 设置动画，等待播放完成。
+    /// </summary>
+    public async Task SetAnimationTask(int track, string animName, bool loop = false)
+    {
+        SetAnimation(track, animName, loop);
+        if (loop) return;
 
-		void Handler(string name, float remaining)
-		{
-			if (name == eventName)
-				tcs.TrySetResult(remaining);
-		}
+        var tcs = new TaskCompletionSource<bool>();
+        Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
+            (sprite, state, entry) => tcs.TrySetResult(true));
 
-		OnSpineAnimEvent += Handler;
-		try
-		{
-			SetAnimation(track, animName, loop);
-			return await tcs.Task;
-		}
-		finally
-		{
-			OnSpineAnimEvent -= Handler;
-		}
-	}
-	/// <summary>
-	/// 播放动画，等待指定事件触发后销毁自身。
-	/// loop 为 true 时也会等待事件，不会立即返回。
-	/// </summary>
-	/// <param name="track">轨道</param>
-	/// <param name="animName">动画名</param>
-	/// <param name="eventName">要等待的事件名</param>
-	/// <param name="loop">是否循环播放</param>
-	public async Task SetAnimationAndFreeOnEvent(
-		int track,
-		string animName,
-		string eventName,
-		bool loop = false)
-	{
-		var tcs = new TaskCompletionSource<float>();
+        SpineSprite.Connect("animation_completed", callable,
+            (uint)GodotObject.ConnectFlags.OneShot);
 
-		void Handler(string name, float remaining)
-		{
-			if (name == eventName)
-				tcs.TrySetResult(remaining);
-		}
+        await tcs.Task;
+    }
 
-		OnSpineAnimEvent += Handler;
-		try
-		{
-			SetAnimation(track, animName, loop);
-			await tcs.Task;
-		}
-		finally
-		{
-			OnSpineAnimEvent -= Handler;
-		}
+    /// <summary>
+    /// 设置动画，等待播放完成后销毁自身。循环动画会立即返回且不销毁。
+    /// </summary>
+    public async Task SetAnimationAndFreeOnEndTask(int track, string animName, bool loop = false)
+    {
+        SetAnimation(track, animName, loop);
+        if (loop) return;
 
-		QueueFree();
-	}
-	/// <summary>
-	/// 获得动画的时长
-	/// </summary>
-	/// <param name="animName">动画名称</param>
-	/// <returns></returns>
-	public float GetAnimationDuration(string animName)
-	{
-		return SpineSprite.Call("get_animation_duration", animName).AsSingle();
-	}
-	/// <summary>
-	/// 递归预加载目录下所有 Spine .tres 资源，填充 Godot 资源缓存，
-	/// 避免首次冷加载触发绑定层的 update_mixes 缺陷。
-	/// </summary>
-	/// <param name="dirPath">资源目录，如 "res://素材(C#)/卡牌"</param>
-	public static void Init(string dirPath)
-	{
-		using var dir = DirAccess.Open(dirPath);
-		if (dir == null)
-		{
-			return;
-		}
+        var tcs = new TaskCompletionSource<bool>();
+        Callable callable = Callable.From<GodotObject, GodotObject, GodotObject>(
+            (sprite, state, entry) => tcs.TrySetResult(true));
 
-		dir.ListDirBegin();
-		string fileName = dir.GetNext();
-		while (fileName != "")
-		{
-			if (!fileName.StartsWith("."))
-			{
-				string fullPath = dirPath.PathJoin(fileName);
+        SpineSprite.Connect("animation_completed", callable,
+            (uint)GodotObject.ConnectFlags.OneShot);
 
-				if (dir.CurrentIsDir())
-				{
-					Init(fullPath);
-				}
-				else if (fileName.EndsWith(".tres"))
-				{
-					var res = ResourceLoader.Load(fullPath);
-				}
-			}
-			fileName = dir.GetNext();
-		}
-		dir.ListDirEnd();
-	}
-	/// <summary>
-	/// 停止动画
-	/// </summary>
-	/// <param name="track"></param>
-	public void PauseAnimation(int track)
-	{
-		SpineSprite.Call("pause_animation", track);
-	}
-	/// <summary>
-	/// 停止动画
-	/// </summary>
-	/// <param name="track"></param>
-	public void PauseAnimation()
-	{
-		SpineSprite.Call("pause_all_tracks");
-	}
-	/// <summary>
-	/// 判断是否存在指定名称的动画
-	/// </summary>
-	public bool HasAnimation(string animName)
-	{
-		if (SpineSprite == null) return false;
-		return SpineSprite.Call("has_animation", animName).AsBool();
-	}
-	/// <summary>
-	/// 播放候选列表里第一个存在的动画
-	/// </summary>
-	/// <param name="track">轨道</param>
-	/// <param name="loop">是否循环</param>
-	/// <param name="animNames">候选动画名，按优先级排列</param>
-	/// <returns>实际播放的动画名，都没找到返回 null</returns>
-	public string SetFirstAvailableAnimation(int track, bool loop, params string[] animNames)
-	{
-		foreach (var name in animNames)
-		{
-			if (HasAnimation(name))
-			{
-				SetAnimation(track, name, loop);
-				return name;
-			}
-		}
-		return null;
-	}
-	/// <summary>
-	/// 播放候选列表里第一个存在的动画并等待播放完毕
-	/// </summary>
-	/// <param name="track">轨道</param>
-	/// <param name="loop">是否循环</param>
-	/// <param name="animNames">候选动画名，按优先级排列</param>
-	/// <returns>实际播放的动画名，都没找到返回 null</returns>
-	public async Task<string> SetFirstAvailableAnimationTask(int track, bool loop, params string[] animNames)
-	{
-		foreach (var name in animNames)
-		{
-			if (HasAnimation(name))
-			{
-				await SetAnimationTask(track, name, loop);
-				return name;
-			}
-		}
-		return null;
-	}
-	/// <summary>
-	/// 播放候选列表里第一个存在的动画并等待事件
-	/// </summary>
-	/// <param name="track">轨道</param>
-	/// <param name="loop">是否循环</param>
-	/// <param name="animNames">候选动画名，按优先级排列</param>
-	/// <returns>实际播放的动画名，都没找到返回 0</returns>
-	public async Task<float> SetFirstAvailableAndWaitEvent(
-	int track,
-	string eventName,
-	bool loop,
-	params string[] animNames)
-	{
-		foreach (var name in animNames)
-		{
-			if (HasAnimation(name))
-			{
-				return await SetAnimationAndWaitEvent(track, name, eventName, loop);
-			}
-		}
-		return -1f;
-	}
-	/// <summary>
-	/// 返回候选列表里第一个存在的动画名，都不存在返回 null
-	/// </summary>
-	public string GetFirstAvailableAnimation(params string[] animNames)
-	{
-		foreach (var name in animNames)
-		{
-			if (HasAnimation(name))
-				return name;
-		}
-		return null;
-	}
+        await tcs.Task;
 
-	/// <summary>
-	/// 返回候选列表里第一个存在的动画的时长，都不存在返回 0
-	/// </summary>
-	public float GetFirstAvailableDuration(params string[] animNames)
-	{
-		var name = GetFirstAvailableAnimation(animNames);
-		return name == null ? 0f : GetAnimationDuration(name);
-	}
+        QueueFree();
+    }
+    /// <summary>
+    /// 播放动画，并等待指定事件触发后返回。
+    /// loop 为 true 时也会等待事件，不会立即返回。
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="animName">动画名</param>
+    /// <param name="eventName">要等待的事件名</param>
+    /// <param name="loop">是否循环播放</param>
+    /// <returns>事件触发时返回 remaining（和 WaitForAnimEvent 一致）</returns>
+    public async Task<float> SetAnimationAndWaitEvent(
+        int track,
+        string animName,
+        string eventName,
+        bool loop = false)
+    {
+        var tcs = new TaskCompletionSource<float>();
+
+        void Handler(string name, float remaining)
+        {
+            if (name == eventName)
+                tcs.TrySetResult(remaining);
+        }
+
+        OnSpineAnimEvent += Handler;
+        try
+        {
+            SetAnimation(track, animName, loop);
+            return await tcs.Task;
+        }
+        finally
+        {
+            OnSpineAnimEvent -= Handler;
+        }
+    }
+    /// <summary>
+    /// 播放动画，等待指定事件触发后销毁自身。
+    /// loop 为 true 时也会等待事件，不会立即返回。
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="animName">动画名</param>
+    /// <param name="eventName">要等待的事件名</param>
+    /// <param name="loop">是否循环播放</param>
+    public async Task SetAnimationAndFreeOnEvent(
+        int track,
+        string animName,
+        string eventName,
+        bool loop = false)
+    {
+        var tcs = new TaskCompletionSource<float>();
+
+        void Handler(string name, float remaining)
+        {
+            if (name == eventName)
+                tcs.TrySetResult(remaining);
+        }
+
+        OnSpineAnimEvent += Handler;
+        try
+        {
+            SetAnimation(track, animName, loop);
+            await tcs.Task;
+        }
+        finally
+        {
+            OnSpineAnimEvent -= Handler;
+        }
+
+        QueueFree();
+    }
+    /// <summary>
+    /// 获得动画的时长
+    /// </summary>
+    /// <param name="animName">动画名称</param>
+    /// <returns></returns>
+    public float GetAnimationDuration(string animName)
+    {
+        return SpineSprite.Call("get_animation_duration", animName).AsSingle();
+    }
+    /// <summary>
+    /// 递归预加载目录下所有 Spine .tres 资源，填充 Godot 资源缓存，
+    /// 避免首次冷加载触发绑定层的 update_mixes 缺陷。
+    /// </summary>
+    /// <param name="dirPath">资源目录，如 "res://素材(C#)/卡牌"</param>
+    public static void Init(string dirPath)
+    {
+        using var dir = DirAccess.Open(dirPath);
+        if (dir == null)
+        {
+            return;
+        }
+
+        dir.ListDirBegin();
+        string fileName = dir.GetNext();
+        while (fileName != "")
+        {
+            if (!fileName.StartsWith("."))
+            {
+                string fullPath = dirPath.PathJoin(fileName);
+
+                if (dir.CurrentIsDir())
+                {
+                    Init(fullPath);
+                }
+                else if (fileName.EndsWith(".tres"))
+                {
+                    var res = fullPath.Load<Resource>();
+                }
+            }
+            fileName = dir.GetNext();
+        }
+        dir.ListDirEnd();
+    }
+    /// <summary>
+    /// 停止动画
+    /// </summary>
+    /// <param name="track"></param>
+    public void PauseAnimation(int track)
+    {
+        SpineSprite.Call("pause_animation", track);
+    }
+    /// <summary>
+    /// 停止动画
+    /// </summary>
+    /// <param name="track"></param>
+    public void PauseAnimation()
+    {
+        SpineSprite.Call("pause_all_tracks");
+    }
+    /// <summary>
+    /// 判断是否存在指定名称的动画
+    /// </summary>
+    public bool HasAnimation(string animName)
+    {
+        if (SpineSprite == null) return false;
+        return SpineSprite.Call("has_animation", animName).AsBool();
+    }
+    /// <summary>
+    /// 播放候选列表里第一个存在的动画
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="loop">是否循环</param>
+    /// <param name="animNames">候选动画名，按优先级排列</param>
+    /// <returns>实际播放的动画名，都没找到返回 null</returns>
+    public string SetFirstAvailableAnimation(int track, bool loop, params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+            {
+                SetAnimation(track, name, loop);
+                return name;
+            }
+        }
+        return null;
+    }
+    /// <summary>
+    /// 播放候选列表里第一个存在的动画并等待播放完毕
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="loop">是否循环</param>
+    /// <param name="animNames">候选动画名，按优先级排列</param>
+    /// <returns>实际播放的动画名，都没找到返回 null</returns>
+    public async Task<string> SetFirstAvailableAnimationTask(int track, bool loop, params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+            {
+                await SetAnimationTask(track, name, loop);
+                return name;
+            }
+        }
+        return null;
+    }
+    /// <summary>
+    /// 播放候选列表里第一个存在的动画并等待事件
+    /// </summary>
+    /// <param name="track">轨道</param>
+    /// <param name="loop">是否循环</param>
+    /// <param name="animNames">候选动画名，按优先级排列</param>
+    /// <returns>实际播放的动画名，都没找到返回 0</returns>
+    public async Task<float> SetFirstAvailableAndWaitEvent(
+    int track,
+    string eventName,
+    bool loop,
+    params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+            {
+                return await SetAnimationAndWaitEvent(track, name, eventName, loop);
+            }
+        }
+        return -1f;
+    }
+    /// <summary>
+    /// 返回候选列表里第一个存在的动画名，都不存在返回 null
+    /// </summary>
+    public string GetFirstAvailableAnimation(params string[] animNames)
+    {
+        foreach (var name in animNames)
+        {
+            if (HasAnimation(name))
+                return name;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 返回候选列表里第一个存在的动画的时长，都不存在返回 0
+    /// </summary>
+    public float GetFirstAvailableDuration(params string[] animNames)
+    {
+        var name = GetFirstAvailableAnimation(animNames);
+        return name == null ? 0f : GetAnimationDuration(name);
+    }
 }

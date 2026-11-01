@@ -1,11 +1,7 @@
 using Godot;
 using Pack;
 using Scene;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Card.Pack;
 
@@ -103,7 +99,7 @@ public partial class CardDeck : Control
         {
             var progress = preset.LockedCard;
             GetNode<Label>("%进度数字").Text = progress.ToString();
-            GetNode<Panel>("%进度绿色条").Size = new(progress * (122f / 40f),41f);
+            GetNode<Panel>("%进度绿色条").Size = new(progress * (122f / 40f), 41f);
             GetNode<Panel>("%进度绿色亮条").Size = new(progress * (120f / 40f), 20f);
         }
     }

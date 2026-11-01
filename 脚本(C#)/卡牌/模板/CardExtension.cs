@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Card;
 
 public static class CardExtension
 {
-    public static T Switch<T>(this Camp camp,T objPlant,T objZombie)
+    public static T Switch<T>(this Camp camp, T objPlant, T objZombie)
     {
         return camp.Plant() ? objPlant : objZombie;
     }

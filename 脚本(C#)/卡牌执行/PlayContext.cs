@@ -1,9 +1,4 @@
 using Battle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Target;
 
@@ -27,7 +22,7 @@ public struct PlayContext
             TargetType = targetType,
         };
     }
-    public ITarget Target {  get; private set; }
+    public ITarget Target { get; private set; }
     public RoadTargetKind RoadKind { get; private set; }
     public TargetType TargetType { get; private set; }
 }

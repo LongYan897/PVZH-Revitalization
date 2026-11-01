@@ -1,4 +1,3 @@
-using Card;
 using Extension;
 using Godot;
 using System;
@@ -7,9 +6,9 @@ using Scene;
 public partial class CardOpening : Node2D
 {
     //节点
-	public TextureRect Crack { get; set; }
-	public TextureRect CrackBlur { get; set; }
-	public TextureRect ExplodeEffect { get; set; }
+    public TextureRect Crack { get; set; }
+    public TextureRect CrackBlur { get; set; }
+    public TextureRect ExplodeEffect { get; set; }
     public TextureRect CardNode { get; set; }
     public TextureRect Highlight { get; set; }
     //属性
@@ -35,7 +34,7 @@ public partial class CardOpening : Node2D
     public async Task IntroAn()
     {
         Position = UltimatePos + new Vector2(0, MoveHeight);
-        QuickTween().TweenProperty(this, "position", UltimatePos - new Vector2(0,-SineDistance), 1.5f)
+        QuickTween().TweenProperty(this, "position", UltimatePos - new Vector2(0, -SineDistance), 1.5f)
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.Out);
         await ToSignal(Tween1, Tween.SignalName.Finished);
@@ -45,7 +44,7 @@ public partial class CardOpening : Node2D
         QuickTween();
         Tween1.SetLoops();
 
-        Tween1.TweenProperty(this, "position", UltimatePos - new Vector2(0,SineDistance), 1f)
+        Tween1.TweenProperty(this, "position", UltimatePos - new Vector2(0, SineDistance), 1f)
             .SetTrans(Tween.TransitionType.Sine)
             .SetEase(Tween.EaseType.InOut);
         Tween1.TweenProperty(this, "position", UltimatePos + new Vector2(0, SineDistance), 1f)
@@ -65,9 +64,9 @@ public partial class CardOpening : Node2D
             QuickTween().TweenProperty(this, "rotation", Math.PI * -0.075f, 0.1f)
                 .SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.InOut);
-            Tween1.Parallel().TweenProperty(Crack, "scale", new Vector2(1.242f, 1.242f),0.1f);
+            Tween1.Parallel().TweenProperty(Crack, "scale", new Vector2(1.242f, 1.242f), 0.1f);
             await ToSignal(Tween1, Tween.SignalName.Finished);
-            QuickTween().TweenProperty(this, "rotation", 0 ,1f)
+            QuickTween().TweenProperty(this, "rotation", 0, 1f)
                 .SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.InOut);
             _ = Blink();
@@ -96,7 +95,7 @@ public partial class CardOpening : Node2D
         Vector2 newScale = new(1.5f, 1.5f);
         Tween tween = CreateTween();
         tween.TweenProperty(CrackBlur, "self_modulate", new Color(1, 1, 1, 1), 1f);
-        tween.TweenProperty(ExplodeEffect, "scale",new Vector2(3,3), 0.5f)
+        tween.TweenProperty(ExplodeEffect, "scale", new Vector2(3, 3), 0.5f)
                 .SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.InOut);
         tween.Parallel().TweenProperty(ExplodeEffect, "self_modulate", new Color(1, 1, 1, 0), 0.5f)

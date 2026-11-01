@@ -10,35 +10,35 @@ namespace Card;
 /// </summary>
 public partial class Card3D : Sprite2D
 {
-	/// <summary>飞入后停留的位置（屏幕坐标）</summary>
-	public Vector2 UltimatePos { get; set; }
+    /// <summary>飞入后停留的位置（屏幕坐标）</summary>
+    public Vector2 UltimatePos { get; set; }
 
-	/// <summary>从下方多远飞上来</summary>
-	public float MoveHeight { get; set; } = -1200f;
+    /// <summary>从下方多远飞上来</summary>
+    public float MoveHeight { get; set; } = -1200f;
 
-	/// <summary>飞入动画间隔/延迟（秒），做依次飞入的效果</summary>
-	public float StartDelay { get; set; } = 0f;
+    /// <summary>飞入动画间隔/延迟（秒），做依次飞入的效果</summary>
+    public float StartDelay { get; set; } = 0f;
 
-	private Tween _tween;
+    private Tween _tween;
 
-	public override void _Ready()
-	{
-		if (UltimatePos == Vector2.Zero)
-			UltimatePos = GetViewportRect().Size / 2;
-		_ = MoveAn();
-	}
+    public override void _Ready()
+    {
+        if (UltimatePos == Vector2.Zero)
+            UltimatePos = GetViewportRect().Size / 2;
+        _ = MoveAn();
+    }
 
-	public async Task MoveAn()
-	{
-		if (_tween != null && _tween.IsValid())
-			_tween.Kill();
+    public async Task MoveAn()
+    {
+        if (_tween != null && _tween.IsValid())
+            _tween.Kill();
 
-		_tween = CreateTween();
-		Position = UltimatePos + new Vector2(0, MoveHeight);
-		_tween.TweenProperty(this, "position", UltimatePos, 0.5f)
-			.SetDelay(StartDelay)
-			.SetTrans(Tween.TransitionType.Quad)
-			.SetEase(Tween.EaseType.Out);
-		await ToSignal(_tween, Tween.SignalName.Finished);
-	}
+        _tween = CreateTween();
+        Position = UltimatePos + new Vector2(0, MoveHeight);
+        _tween.TweenProperty(this, "position", UltimatePos, 0.5f)
+            .SetDelay(StartDelay)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.Out);
+        await ToSignal(_tween, Tween.SignalName.Finished);
+    }
 }

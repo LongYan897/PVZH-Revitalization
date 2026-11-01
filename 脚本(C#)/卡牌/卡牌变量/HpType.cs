@@ -21,6 +21,7 @@ public class GHpTypeAttribute : Attribute
 /// </summary>
 public abstract class HpType
 {
+    public HpType Clone() => MemberwiseClone() as HpType;
     public Texture2D Icon => IconPath != null ? IconPath.Load<Texture2D>() : null;
     /// <summary>
     /// 生命动画图标

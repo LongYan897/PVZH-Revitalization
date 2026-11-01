@@ -1,8 +1,11 @@
 using Card;
 using Controller;
 using Godot;
+<<<<<<< HEAD
 using Play;
 using Scene;
+=======
+>>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 
 /// <summary>
 /// 卡包磁贴上的一个购买按钮（对应 cardPack.json 里 Options 的一项）。<br/>
@@ -12,6 +15,7 @@ using Scene;
 /// </summary>
 public partial class OptionSlot : Control
 {
+<<<<<<< HEAD
 	/// <summary>按钮文字（如“1包/买10包送1包”）</summary>
 	public string IntroduceText { get; set; }
 	/// <summary>价格（钻石）</summary>
@@ -77,4 +81,21 @@ public partial class OptionSlot : Control
 		_openMenu.AddChild(new Button { Name = "Button" });
 		AddChild(_openMenu);   // 进树时 SubMenu._EnterTree 会向 SceneManager 注册
 	}
+=======
+    public string IntroduceText { get; set; }
+    public int PriceCount { get; set; }
+    private Label IntroduceLabel;
+    private Label PriceLabel;
+
+    public override void _Ready()
+    {
+        IntroduceLabel = GetNode<Label>("购买按钮/按钮文本");
+        PriceLabel = GetNode<Label>("购买按钮/CenterContainer/HBoxContainer/钻石数量");
+    }
+    public void Setup()
+    {
+        IntroduceLabel.Text = IntroduceText;
+        PriceLabel.Text = PriceCount.ToString();
+    }
+>>>>>>> 2d3e6731912857228bfb489dffef83befb1b6b3a
 }

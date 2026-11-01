@@ -1,6 +1,5 @@
 using Card;
 using Card.Pack;
-using Godot;
 using Hero.Model;
 using System.Collections.Generic;
 

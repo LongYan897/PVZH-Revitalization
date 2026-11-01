@@ -8,7 +8,6 @@ using Play;
 using Scene;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +26,7 @@ public partial class SelectDeck : SubMenuScene
         BallContainer = GetNode<MinimumHFlowContainer>("主容器/英雄图标背景板/滚动框/英雄图标框");
         DeckContainer = GetNode<MinimumHFlowContainer>("%卡组框");
         BallPanel = GetNode<Panel>("主容器/英雄图标背景板");
-        await Task.WhenAll(CreateBalls(),CreateDecks());
+        await Task.WhenAll(CreateBalls(), CreateDecks());
         if (DeckCamp == Camp.Plant) BallPanel.SelfModulate = new Color(0.411f, 0.69f, 0.38f, 1.0f);
         else BallPanel.SelfModulate = new Color(0.365f, 0.192f, 0.439f, 1.0f);
     }
@@ -39,7 +38,7 @@ public partial class SelectDeck : SubMenuScene
             var hero = HeroModel.Identity(Hero.Name);
             var flow = HeroFlow.Flow(hero);
             DeckContainer.AddChild(flow);
-            foreach (var deck in PlayerManager.HostPlayer.Presets.Where(d=>d.Hero != null && d.Hero.GetType() == Hero))
+            foreach (var deck in PlayerManager.HostPlayer.Presets.Where(d => d.Hero != null && d.Hero.GetType() == Hero))
             {
                 flow.AddChild(CardDeck.Instance(deck));
             }
@@ -57,13 +56,13 @@ public partial class SelectDeck : SubMenuScene
         }
         if (x > 1 && x <= 6)
         {
-            for (int i = x;i <= 6; i++)
+            for (int i = x; i <= 6; i++)
             {
                 await CreateBall(null, true);
             }
         }
     }
-    private async Task CreateBall(string heroName,bool disabled = false)
+    private async Task CreateBall(string heroName, bool disabled = false)
     {
         Texture2D texture;
         if (heroName != null) texture = GD.Load<Texture2D>(HeroString.GetData(heroName, "Icon").AsString());
@@ -72,13 +71,13 @@ public partial class SelectDeck : SubMenuScene
             if (DeckCamp == Camp.Plant) texture = GD.Load<Texture2D>("res://素材(C#)/英雄图标/cornerimage_plants_create.png");
             else texture = GD.Load<Texture2D>("res://素材(C#)/英雄图标/cornerimage_zombies_create.png");
             Image image = texture.GetImage();
-            image.Resize(227,227);
+            image.Resize(227, 227);
             texture = ImageTexture.CreateFromImage(image);
         }
         NButton ball = BallScene.Instantiate<NButton>();
         ball.TextureNormal = texture;
         ball.Disabled = disabled;
-        if (heroName != null) Balls.Add(heroName,ball);
+        if (heroName != null) Balls.Add(heroName, ball);
         BallContainer.AddChild(ball);
     }
 }

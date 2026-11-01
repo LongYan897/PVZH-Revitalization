@@ -261,7 +261,7 @@
   "GatlingPea.Id": 14,
 
   "DiscoZombie.Title": "迪斯科僵尸",
-  "DiscoZombie.Des": "_打出_：在一条线_生成_一只=Health={1}/=Strength={1}的伴舞僵尸。",
+  "DiscoZombie.Des": "_打出_：在一条线_生成_一只=Health={1}/=Strength={1}的_伴舞僵尸_。",
   "DiscoZombie.Cost": 3,
   "DiscoZombie.Camp": "僵尸",
   "DiscoZombie.Type": "单位",
@@ -400,5 +400,24 @@
   "CosmicPea.AtkType": "双重打击",
   "CosmicPea.Pack": "银河",
   "CosmicPea.Flavor": "“宇宙如此浩瀚，而豌豆如此渺小。这种并置不禁让我陷入沉思，你懂的？”",
-  "CosmicPea.Id": 22
+  "CosmicPea.Id": 22,
+
+  "FirePea.Title": "火焰豌豆",
+  "FirePea.Des": "被这株植物造成=Health=的僵尸获得=Fire=_灼烧&1&_。",
+  "FirePea.Cost": 2,
+  "FirePea.Camp": "植物",
+  "FirePea.Type": "单位",
+  "FirePea.Rarity": "罕见",
+  "FirePea.Category": "猛长",
+  "FirePea.Animation": "res://素材(C#)/卡牌/豌豆射手/豌豆射手植物动画.tres",
+  "FirePea.Icon": "res://场景(C#)/卡面/firePea.tscn",
+  "FirePea.Label": [ "豌豆" ],
+  "FirePea.Tag": [],
+  "FirePea.Hp": 2,
+  "FirePea.HpType": "普通",
+  "FirePea.Atk": 3,
+  "FirePea.AtkType": "普通",
+  "FirePea.Pack": "高级",
+  "FirePea.Flavor": "”我怎么感觉这里越来越热了？“",
+  "FirePea.Id": 23
 }
