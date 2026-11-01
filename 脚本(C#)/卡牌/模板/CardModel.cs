@@ -688,7 +688,7 @@ public class CardModel
 
         foreach (var buff in BuffList)
         {
-            if (this is FighterCardModel fighterCard && !fighterCard.IsPlaced && buff.OnlyPlaced) continue;
+            if (this is FighterCardModel fighterCard && (!fighterCard.IsPlaced || fighterCard.IsDie) && buff.OnlyPlaced ) continue;
             if (!buff.Timings.Contains(timing)) continue;
             fired.Add(buff);
         }

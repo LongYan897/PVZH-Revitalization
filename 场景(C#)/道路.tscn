@@ -227,7 +227,7 @@ position = Vector2(0, -321)
 unique_name_in_owner = true
 visible = false
 z_index = 10
-position = Vector2(-55, -175)
+position = Vector2(-55, -128)
 
 [node name="单位高亮4" type="TextureRect" parent="植物_3" unique_id=1220320731]
 unique_name_in_owner = true
@@ -254,7 +254,7 @@ metadata/_edit_use_anchors_ = true
 unique_name_in_owner = true
 visible = false
 z_index = 10
-position = Vector2(-55, -317)
+position = Vector2(-55, -270)
 
 [node name="单位高亮3" type="TextureRect" parent="植物_僵尸2" unique_id=832598762]
 unique_name_in_owner = true
