@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://c0l7l27n3hdu3"
+path="res://.godot/imported/臭臭僵尸.atlas-d4894b58855bb0eee4bd98df0f7864b6.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/臭臭僵尸/臭臭僵尸.atlas"
+dest_files=["res://.godot/imported/臭臭僵尸.atlas-d4894b58855bb0eee4bd98df0f7864b6.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

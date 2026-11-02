@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://db4301kr1mtep"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://c0l7l27n3hdu3" path="res://场景/僵尸卡/臭臭僵尸/臭臭僵尸.atlas" id="1_16lel"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://dlgdpxdim3bcc" path="res://场景/僵尸卡/臭臭僵尸/臭臭僵尸.skel" id="2_gabjq"]
+
+[resource]
+atlas_res = ExtResource("1_16lel")
+skeleton_file_res = ExtResource("2_gabjq")

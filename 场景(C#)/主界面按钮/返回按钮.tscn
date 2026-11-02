@@ -11,6 +11,7 @@ offset_top = 1168.0
 offset_right = -608.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset_ratio = Vector2(0, 1)
 texture_normal = ExtResource("1_4758t")
 script = ExtResource("2_os4y6")
 metadata/_custom_type_script = "uid://cpa2gg7fa2reo"

@@ -26,6 +26,20 @@ public static class CardCmd
     public static bool StopCardPlay => _stopCount > 0;
     private static object stopLock = new();
     private static object stepLock = new();
+    private static readonly Random _makeRng = new();
+    private static TaskCompletionSource<ITarget> _tcs;
+    private static readonly List<(
+        Func<CardModel, bool> Filter,
+        Func<CardModel, Task> Action,
+        HashSet<CardModel> Applied)> _cardHooks = new();
+    private static readonly List<Buff> Buffs = new();
+
+    public static Task ScheduleTiming(Func<Task> action)
+    {
+        if (action == null) return Task.CompletedTask;
+        return action();
+    }
+
     public static void PushStop()
     {
         lock (stopLock)
@@ -83,7 +97,6 @@ public static class CardCmd
         }
     }
 
-
     /// <summary>
     /// 从Cmd删除卡牌
     /// </summary>
@@ -91,6 +104,41 @@ public static class CardCmd
     public static void Remove(CardModel cardModel)
     {
         CardInstances.Remove(cardModel);
+    }
+
+    private static void JustFreshAllCards()
+    {
+        foreach (var card in CardInstances.ToList())
+        {
+            var node = NodeCard.GetNode(card);
+            node?.JustFresh();
+        }
+    }
+
+    /// <summary>
+    /// 对满足filter的卡牌进行操作
+    /// </summary>
+    public static async Task ForCards(Func<CardModel, bool> filter, Func<CardModel, Task> action)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        ArgumentNullException.ThrowIfNull(action);
+
+        var applied = new HashSet<CardModel>();
+        _cardHooks.Add((filter, action, applied));
+
+        var cards = CardInstances
+            .Concat(TargetRegistry.All.OfType<Fighter>().Select(f => f.Model))
+            .Where(c => c != null)
+            .Distinct()
+            .ToList();
+
+        foreach (var card in cards)
+        {
+            if (applied.Contains(card) || !filter(card)) continue;
+            applied.Add(card);
+            await action(card);
+        }
     }
 
     /// <summary>
@@ -106,24 +154,6 @@ public static class CardCmd
         cardModel.Fresh();
         await cardModel.Changed(key, after, before, variableReason);
         await TimingOnCards(null, Timing.OnVariableChanged, key, after, before, variableReason);
-    }
-
-    /// <summary>
-    /// 获取相邻线
-    /// </summary>
-    /// <param name="road">所处的线</param>
-    /// <returns></returns>
-    public static IEnumerable<Road> GetBehindRoad(Road road)
-    {
-        var Index = road.Index;
-        if (Index == 1)
-            return [PhraseManager.GetRoad(Index + 1)];
-        else if (Index == 5)
-            return [PhraseManager.GetRoad(Index - 1)];
-        else if (Index > 1 && Index < 5)
-            return [PhraseManager.GetRoad(Index + 1), PhraseManager.GetRoad(Index - 1)];
-        else
-            return null;
     }
 
     /// <summary>
@@ -183,8 +213,6 @@ public static class CardCmd
         return cards;
     }
 
-    private static readonly Random _makeRng = new();
-
     /// <summary>
     /// 创建指定类型的卡牌并加入玩家手牌。
     /// </summary>
@@ -230,14 +258,6 @@ public static class CardCmd
         await player.Status.PlayCardAndReturn(cards);
     }
 
-    private static void JustFreshAllCards()
-    {
-        foreach (var card in CardInstances.ToList())
-        {
-            var node = NodeCard.GetNode(card);
-            node?.JustFresh();
-        }
-    }
     /// <summary>
     /// 改变玩家的阳光/脑子数
     /// </summary>
@@ -256,13 +276,37 @@ public static class CardCmd
     }
 
     /// <summary>
+    /// 生成战斗单位
+    /// </summary>
+    /// <param name="fighter">战斗单位卡牌</param>
+    /// <param name="road">打出的道路</param>
+    /// <param name="location">打出的位置</param>
+    /// <returns></returns>
+    public static async Task FighterGenerate(FighterCardModel fighter, Road road, Location location)
+    {
+        PushStop();
+        await Fighter.Generate(fighter, road, location);
+        if (!fighter.CardTag.HasFlag(CardTag.GraveStone))
+            await fighter.IntroPlayed();
+        await fighter.AnimationWhenPlayed(road);
+        await fighter.FireTiming(Timing.AfterPlay, NodeRoad.GetNode(road));
+        PopStop();
+    }
+
+    /// <summary>
     /// 触发卡牌的时点
     /// </summary>
     /// <param name="cardModel">忽略的卡牌（一般是发起者）</param>
     /// <param name="timing">时点</param>
     /// <param name="paramters">参数</param>
     /// <returns></returns>
-    public static async Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
+    public static Task TimingOnCards(CardModel cardModel, Timing timing, params object[] paramters)
+    {
+        var copy = paramters != null && paramters.Length > 0 ? (object[])paramters.Clone() : Array.Empty<object>();
+        return ScheduleTiming(() => TimingOnCardsCore(cardModel, timing, copy));
+    }
+
+    private static async Task TimingOnCardsCore(CardModel cardModel, Timing timing, object[] paramters)
     {
         foreach (var card in CardInstances.Where(c => PlayerManager.GetPlayer(c.Camp).Status.HandCards.Contains(c)).ToList())
         {
@@ -302,8 +346,6 @@ public static class CardCmd
         Location.Plant => 2,
         _ => 3
     };
-
-    private static TaskCompletionSource<ITarget> _tcs;
 
     /// <summary>
     /// 让玩家选择一个目标(自定义过滤器)
@@ -504,57 +546,6 @@ public static class CardCmd
             .Select(f => f.Model)
             .FirstOrDefault();
     }
-    private static readonly List<(
-        Func<CardModel, bool> Filter,
-        Func<CardModel, Task> Action,
-        HashSet<CardModel> Applied)> _cardHooks = new();
-    /// <summary>
-    /// 对满足filter的卡牌进行操作
-    /// </summary>
-    public static async Task ForCards(Func<CardModel, bool> filter, Func<CardModel, Task> action)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        ArgumentNullException.ThrowIfNull(action);
-
-        var applied = new HashSet<CardModel>();
-        _cardHooks.Add((filter, action, applied));
-
-        var cards = CardInstances
-            .Concat(TargetRegistry.All.OfType<Fighter>().Select(f => f.Model))
-            .Where(c => c != null)
-            .Distinct()
-            .ToList();
-
-        foreach (var card in cards)
-        {
-            if (applied.Contains(card) || !filter(card)) continue;
-            applied.Add(card);
-            await action(card);
-        }
-    }
-    private static readonly List<Buff> Buffs = new();
-    /// <summary>
-    /// 向全局注册一个Buff，会持续监听时点
-    /// </summary>
-    /// <param name="buff">要添加的效果</param>
-    /// <returns>收回该Buff的函数</returns>
-    public static Action EnableBuff(Buff buff)
-    {
-        if (Buffs.Contains(buff)) return () => UnableBuff(buff);
-        Buffs.Add(buff);
-        return () => UnableBuff(buff);
-    }
-
-    /// <summary>
-    /// 把全局注册的Buff收回
-    /// </summary>
-    /// <param name="buff"></param>
-    public static void UnableBuff(Buff buff)
-    {
-        if (!Buffs.Contains(buff)) return;
-        Buffs.Remove(buff);
-    }
 
     /// <summary>
     /// 获取最左侧（第一个）的僵尸单位
@@ -567,23 +558,7 @@ public static class CardCmd
     /// </summary>
     public static FighterCardModel GetFirstPlant(Func<FighterCardModel, bool> predicate = null)
         => GetFirstFighter(predicate, Camp.Plant);
-    /// <summary>
-    /// 生成战斗单位
-    /// </summary>
-    /// <param name="fighter">战斗单位卡牌</param>
-    /// <param name="road">打出的道路</param>
-    /// <param name="location">打出的位置</param>
-    /// <returns></returns>
-    public static async Task FighterGenerate(FighterCardModel fighter, Road road, Location location)
-    {
-        PushStop();
-        await Fighter.Generate(fighter, road, location);
-        if (!fighter.CardTag.HasFlag(CardTag.GraveStone))
-            await fighter.IntroPlayed();
-        await fighter.AnimationWhenPlayed(road);
-        await fighter.FireTiming(Timing.AfterPlay, NodeRoad.GetNode(road));
-        PopStop();
-    }
+
     /// <summary>
     /// 搜寻有没有可以作为Target的对象
     /// </summary>
@@ -621,6 +596,28 @@ public static class CardCmd
         => AnyFighter(f => f != null
             && f.Camp == Camp.Plant
             && (predicate == null || predicate(f)));
+
+    /// <summary>
+    /// 向全局注册一个Buff，会持续监听时点
+    /// </summary>
+    /// <param name="buff">要添加的效果</param>
+    /// <returns>收回该Buff的函数</returns>
+    public static Action EnableBuff(Buff buff)
+    {
+        if (Buffs.Contains(buff)) return () => UnableBuff(buff);
+        Buffs.Add(buff);
+        return () => UnableBuff(buff);
+    }
+
+    /// <summary>
+    /// 把全局注册的Buff收回
+    /// </summary>
+    /// <param name="buff"></param>
+    public static void UnableBuff(Buff buff)
+    {
+        if (!Buffs.Contains(buff)) return;
+        Buffs.Remove(buff);
+    }
 
     /// <summary>
     /// 将融合卡牌和目标卡牌融合
@@ -662,6 +659,25 @@ public static class CardCmd
         await TimingOnCards(evolver, Timing.WhenFuse, evolved, evolver);
         PopStop();
     }
+
+    /// <summary>
+    /// 获取相邻线
+    /// </summary>
+    /// <param name="road">所处的线</param>
+    /// <returns></returns>
+    public static IEnumerable<Road> GetBehindRoad(Road road)
+    {
+        var Index = road.Index;
+        if (Index == 1)
+            return [PhraseManager.GetRoad(Index + 1)];
+        else if (Index == 5)
+            return [PhraseManager.GetRoad(Index - 1)];
+        else if (Index > 1 && Index < 5)
+            return [PhraseManager.GetRoad(Index + 1), PhraseManager.GetRoad(Index - 1)];
+        else
+            return null;
+    }
+
     /// <summary>
     /// 检查是否能生成某个单位
     /// </summary>

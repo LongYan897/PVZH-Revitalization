@@ -86,7 +86,7 @@ alpha_curve = SubResource("CurveTexture_wuiui")
 base_font = ExtResource("6_fsyp8")
 
 [node name="卡牌" type="Control" unique_id=637355252]
-custom_minimum_size = Vector2(255, 193)
+custom_minimum_size = Vector2(256, 193)
 layout_mode = 3
 anchors_preset = 0
 offset_left = -128.0

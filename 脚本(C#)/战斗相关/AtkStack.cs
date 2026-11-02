@@ -168,6 +168,11 @@ public class AtkStack
     public int FinalDamage { get; set; }
 
     /// <summary>
+    /// 最后是否强制死亡
+    /// </summary>
+    public bool FinalResult { get; set; }
+
+    /// <summary>
     /// 是否命中英雄
     /// </summary>
     public bool HitHero { get; set; }

@@ -1,6 +1,7 @@
 using Battle.Entity;
 using Card;
 using Card.Cmd;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,131 +59,162 @@ public class Road
     /// 该道路存储的战斗单位
     /// </summary>
     private readonly List<Fighter> fighters = new();
+
+    /// <summary>
+    /// 死亡拦截门：非 null 时表示道路战斗期间，Die 应挂到它上面
+    /// </summary>
+    private TaskCompletionSource _preventDieTcs;
+
+    /// <summary>
+    /// 挂起的死亡执行任务，用于在门关闭后等所有死亡处理完
+    /// </summary>
+    private readonly List<Task> _pendingDieTasks = new();
+
+    /// <summary>
+    /// 是否正在拦截死亡
+    /// </summary>
+    public bool IsPreventingDie => _preventDieTcs != null;
+
+    /// <summary>
+    /// 登记一个要在 PreventDie 结束后执行的死亡动作
+    /// </summary>
+    public void ScheduleDie(Func<Task> dieAction)
+    {
+        if (_preventDieTcs == null) return;
+        _pendingDieTasks.Add(WaitThenRun(_preventDieTcs.Task, dieAction));
+    }
+
+    private static async Task WaitThenRun(Task wait, Func<Task> action)
+    {
+        await wait;
+        await action();
+    }
+
+    /// <summary>
+    /// 关掉拦截门并等待所有挂起的死亡执行完毕
+    /// </summary>
+    private async Task FlushPendingDeaths()
+    {
+        var tcs = _preventDieTcs;
+        _preventDieTcs = null;
+        tcs?.SetResult();
+
+        var pending = _pendingDieTasks.ToArray();
+        _pendingDieTasks.Clear();
+        if (pending.Length > 0)
+            await Task.WhenAll(pending);
+    }
+
     /// <summary>
     /// 开始这条线上的战斗
     /// </summary>
     public async Task Start(List<AtkStack> stks = null)
     {
-        IsBattling = true;
-        var bol = stks == null;
-        await NodeRoad.GetNode(this).Invoke(true);
-        if (bol)
+        var outer = stks == null;
+        if (outer)
         {
-            await CardCmd.TimingOnCards(null, Timing.BeforeLaneStart, this);
-            stks = new List<AtkStack>();
-            await CardCmd.TimingOnCards(null, Timing.AfterLaneStart, this);
-            var zombie = fighters.FirstOrDefault(f => f.Zombie);
-            if (zombie != null)
-            {
-                var stk = new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current, true);
-                await zombie.Model.Battle(stk);
-                stks.Add(stk);
-            }
-            var plantf = fighters.FirstOrDefault(f => f.Plant1);
-            var plant = fighters.FirstOrDefault(f => f.Plant2);
-            var bothppf = plantf != null && plant != null;
-            var cannonical = 0;
-            if (plantf != null)
-            {
-                var stk = new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current, true);
-                cannonical = plantf.Model.Atk.Current;
-                await plantf?.Model?.Battle(stk);
-                stks.Add(stk);
-            }
-            if (plant != null)
-            {
-                var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current, true) { IgnoreShield = bothppf && plantf != null && cannonical > 0 };
-                await plant?.Model?.Battle(stk);
-                stks.Add(stk);
-            }
+            _preventDieTcs = new TaskCompletionSource();
+            _pendingDieTasks.Clear();
+            IsBattling = true;
         }
-        else
+
+        try
         {
-            var zombie = fighters.FirstOrDefault(f => f.Zombie);
-            if (zombie != null)
+            await NodeRoad.GetNode(this).Invoke(true);
+            if (outer)
             {
-                if (stks.Any(atk => atk.Attacker == zombie.Model && atk.ExtraAttacks > 0))
+                await CardCmd.TimingOnCards(null, Timing.BeforeLaneStart, this);
+                stks = new List<AtkStack>();
+                await CardCmd.TimingOnCards(null, Timing.AfterLaneStart, this);
+                var zombie = fighters.FirstOrDefault(f => f.Zombie);
+                if (zombie != null)
                 {
-                    var stk = stks.FirstOrDefault(atk => atk.Attacker == zombie.Model && atk.ExtraAttacks > 0);
-                    stk.ExtraAttacks -= 1;
+                    var stk = new AtkStack(zombie.Model, [], this, zombie.Model.Atk.Current, true);
                     await zombie.Model.Battle(stk);
+                    stks.Add(stk);
                 }
-            }
-            var plantf = fighters.FirstOrDefault(f => f.Plant1);
-            var plant = fighters.FirstOrDefault(f => f.Plant2);
-            var bothppf = plantf != null && plant != null;
-            var cannonical = 0;
-            if (plantf != null)
-            {
-                cannonical = plantf.Model.Atk.Current;
-                if (stks.Any(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0))
+                var plantf = fighters.FirstOrDefault(f => f.Plant1);
+                var plant = fighters.FirstOrDefault(f => f.Plant2);
+                var bothppf = plantf != null && plant != null;
+                var cannonical = 0;
+                if (plantf != null)
                 {
-                    var stk = stks.FirstOrDefault(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0);
-                    stk.ExtraAttacks -= 1;
-
-                    await plantf.Model.Battle(stk);
+                    var stk = new AtkStack(plantf.Model, [], this, plantf.Model.Atk.Current, true);
+                    cannonical = plantf.Model.Atk.Current;
+                    await plantf?.Model?.Battle(stk);
+                    stks.Add(stk);
                 }
-            }
-            if (plant != null)
-            {
-                if (stks.Any(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0))
+                if (plant != null)
                 {
-                    var stk = stks.FirstOrDefault(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0);
-                    stk.ExtraAttacks -= 1;
-                    stk.IgnoreShield = bothppf && plantf != null && cannonical > 0;
-                    await plant.Model.Battle(stk);
-
+                    var stk = new AtkStack(plant.Model, [], this, plant.Model.Atk.Current, true) { IgnoreShield = bothppf && plantf != null && cannonical > 0 };
+                    await plant?.Model?.Battle(stk);
+                    stks.Add(stk);
                 }
             }
+            else
+            {
+                var zombie = fighters.FirstOrDefault(f => f.Zombie);
+                if (zombie != null)
+                {
+                    if (stks.Any(atk => atk.Attacker == zombie.Model && atk.ExtraAttacks > 0))
+                    {
+                        var stk = stks.FirstOrDefault(atk => atk.Attacker == zombie.Model && atk.ExtraAttacks > 0);
+                        stk.ExtraAttacks -= 1;
+                        await zombie.Model.Battle(stk);
+                    }
+                }
+                var plantf = fighters.FirstOrDefault(f => f.Plant1);
+                var plant = fighters.FirstOrDefault(f => f.Plant2);
+                var bothppf = plantf != null && plant != null;
+                var cannonical = 0;
+                if (plantf != null)
+                {
+                    cannonical = plantf.Model.Atk.Current;
+                    if (stks.Any(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0))
+                    {
+                        var stk = stks.FirstOrDefault(atk => atk.Attacker == plantf.Model && atk.ExtraAttacks > 0);
+                        stk.ExtraAttacks -= 1;
+
+                        await plantf.Model.Battle(stk);
+                    }
+                }
+                if (plant != null)
+                {
+                    if (stks.Any(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0))
+                    {
+                        var stk = stks.FirstOrDefault(atk => atk.Attacker == plant.Model && atk.ExtraAttacks > 0);
+                        stk.ExtraAttacks -= 1;
+                        stk.IgnoreShield = bothppf && plantf != null && cannonical > 0;
+                        await plant.Model.Battle(stk);
+
+                    }
+                }
+            }
+
+            if (stks != null && stks.Any(s => s.ExtraAttacks > 0 && !s.Attacker.IsDie))
+            {
+                await Start(stks);
+            }
+
+            if (outer)
+            {
+                await FlushPendingDeaths();
+
+                await CardCmd.TimingOnCards(null, Timing.BeforeLaneEnd, this);
+
+                await NodeRoad.GetNode(this).Invoke(false);
+
+                await CardCmd.TimingOnCards(null, Timing.AfterLaneEnd, this);
+            }
         }
-
-        await ResolveDeaths(stks);
-
-        if (stks != null && stks.Any(s => s.ExtraAttacks > 0))
+        finally
         {
-            await Start(stks);
+            if (outer)
+            {
+                _preventDieTcs = null;
+                IsBattling = false;
+            }
         }
-
-        if (bol)
-        {
-            await CardCmd.TimingOnCards(null, Timing.BeforeLaneEnd, this);
-
-            await NodeRoad.GetNode(this).Invoke(false);
-
-            await CardCmd.TimingOnCards(null, Timing.AfterLaneEnd, this);
-
-            IsBattling = false;
-        }
-    }
-
-    /// <summary>
-    /// 结算死亡
-    /// </summary>
-    private async Task ResolveDeaths(List<AtkStack> stacks)
-    {
-        var dying = CardCmd.GetOrderedFighters()
-            .Where(f => f.Model is { IsDie: true })
-            .ToList();
-
-        var tasks = new List<Task>();
-
-        foreach (var fighter in dying)
-        {
-            var related = stacks
-                .Where(stk => stk.Targets.Contains(fighter))
-                .ToList();
-
-            await fighter.Model.BeginDie(
-                VariableReason.Fighter | VariableReason.Damaged,
-                related.FirstOrDefault());
-        }
-
-        foreach (var fighter in dying)
-        {
-            tasks.Add(fighter.Model.EndDie());
-        }
-
-        await Task.WhenAll(tasks);
     }
 
     private readonly Variable<Environment> _environment = new("Environment", null);

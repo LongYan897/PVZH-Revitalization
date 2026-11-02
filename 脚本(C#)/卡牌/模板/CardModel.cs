@@ -11,6 +11,7 @@ using Play;
 using Scene;
 using Spine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -684,18 +685,20 @@ public class CardModel
     /// </summary>
     public async Task FireTiming(Timing timing, params object[] parameters)
     {
-        var fired = new List<Buff>();
-
-        foreach (var buff in BuffList)
+        using (Log.BeginTiming(this, timing, parameters))
         {
-            if (this is FighterCardModel fighterCard && (!fighterCard.IsPlaced || fighterCard.IsDie) && buff.OnlyPlaced ) continue;
-            if (!buff.Timings.Contains(timing)) continue;
-            fired.Add(buff);
-        }
+            var fired = new List<Buff>();
+            foreach (var buff in BuffList)
+            {
+                if (this is FighterCardModel fighterCard && !fighterCard.IsPlaced && buff.OnlyPlaced) continue;
+                if (!buff.Timings.Contains(timing)) continue;
+                fired.Add(buff);
+            }
 
-        foreach (var buff in fired.OrderByDescending(b => b.Priority))
-        {
-            await buff.OnTiming(timing, this, parameters);
+            foreach (var buff in fired.OrderByDescending(b => b.Priority))
+            {
+                await buff.OnTiming(timing, this, parameters);
+            }
         }
     }
 

@@ -980,10 +980,12 @@ public partial class Fighter : Control, ITarget, IAttackable
         GetNode<Control>("%碰撞").MouseFilter = MouseFilterEnum.Stop;
     }
 
-    public static void Overlay(FighterCardModel fighter, Texture2D resistIcon)
+    public static async Task Overlay(FighterCardModel fighter, Texture2D resistIcon)
     {
         var f = GetNode(fighter);
+        var road = f.Road;
         f.Invisible(resistIcon);
+        await road.RemoveFighter(fighter, f);
     }
 
     public static async Task MoveTo(FighterCardModel model, Road road, Location location)

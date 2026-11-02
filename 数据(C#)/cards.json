@@ -419,5 +419,23 @@
   "FirePea.AtkType": "普通",
   "FirePea.Pack": "高级",
   "FirePea.Flavor": "”我怎么感觉这里越来越热了？“",
-  "FirePea.Id": 23
+  "FirePea.Id": 23,
+
+  "StinkyZombie.Title": "臭臭僵尸",
+  "StinkyZombie.Des": "",
+  "StinkyZombie.Cost": 3,
+  "StinkyZombie.Camp": "僵尸",
+  "StinkyZombie.Type": "单位",
+  "StinkyZombie.Rarity": "基础",
+  "StinkyZombie.Category": "狡猾",
+  "StinkyZombie.Animation": "res://数据资源/僵尸动画/臭臭僵尸动画.tres",
+  "StinkyZombie.Icon": "res://场景(C#)/卡面/stinkyZombie.tscn",
+  "StinkyZombie.Label": [ "宠物" ],
+  "StinkyZombie.Tag": [ "墓碑" ],
+  "StinkyZombie.Hp": 4,
+  "StinkyZombie.HpType": "普通",
+  "StinkyZombie.Atk": 2,
+  "StinkyZombie.AtkType": "致命",
+  "StinkyZombie.Flavor": "泛泛之交的朋友不会懂他的宠物在哪。他们不明白臭臭飞虫也能成为如此温柔的伙伴。",
+  "StinkyZombie.Id": 24
 }

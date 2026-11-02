@@ -1,3 +1,5 @@
+using Battle;
+using Logger;
 using System.Threading.Tasks;
 
 namespace Card;
@@ -11,7 +13,7 @@ public class FireBuff(int amount) : StackableBuff(amount)
     {
         if (card is FighterCardModel fighter)
         {
-            if (timing == Timing.BeforeLaneStart)
+            if (timing == Timing.BeforeLaneStart && parameters[0] is Road road && road == fighter.Road)
             {
                 if (!fighter.IsDie)
                 {

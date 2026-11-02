@@ -5,6 +5,8 @@
 [ext_resource type="Shader" uid="uid://ctimnulvc2pax" path="res://着色器/渐变艺术字.gdshader" id="3_5plu8"]
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="3_gtcvs"]
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="4_r31cl"]
+[ext_resource type="Script" uid="uid://dugfxhm0h06t8" path="res://脚本(C#)/辅助类/InputNineRect.cs" id="6_r31cl"]
+[ext_resource type="Texture2D" uid="uid://cvok2cw7qkvhh" path="res://素材(C#)/其他/trashbutton.png" id="6_ucl5f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5plu8"]
 bg_color = Color(0.25275356, 0.25275356, 0.25275356, 1)
@@ -120,3 +122,13 @@ layout_mode = 2
 script = ExtResource("1_vvy46")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="TrashBox" type="NinePatchRect" parent="." unique_id=1152002250]
+offset_left = 608.0
+offset_top = 1168.0
+offset_right = 720.0
+offset_bottom = 1280.0
+pivot_offset_ratio = Vector2(1, 1)
+texture = ExtResource("6_ucl5f")
+script = ExtResource("6_r31cl")
+metadata/_custom_type_script = "uid://dugfxhm0h06t8"

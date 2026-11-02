@@ -1,4 +1,5 @@
 using Battle;
+using Logger;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,9 +22,10 @@ public class FirePea : FighterCardModel
                         var tasks = new List<Task>();
                         foreach (var tg in stack.Targets)
                         {
-                            if (tg is FighterCardModel ftg)
-                                tasks.Add(ftg.AddBuff(new FireBuff(1),Variable.VariableReason.Plant | Variable.VariableReason.Diff));
+                            if (tg.InferAsCard() != null)
+                                tasks.Add(tg.InferAsCard().AddBuff(new FireBuff(1),Variable.VariableReason.Plant | Variable.VariableReason.Diff));
                         }
+                        await Task.WhenAll(tasks);
                     }
                 }
             }

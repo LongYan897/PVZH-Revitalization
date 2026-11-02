@@ -12,6 +12,6 @@ public class GatlingPea : FighterCardModel
     }
     public override async Task Evolve(FighterCardModel fighter)
     {
-        await Battle(true);
+        await Battle();
     }
 }

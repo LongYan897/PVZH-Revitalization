@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://ovkg4qft4174"]
+
+[ext_resource type="Texture2D" uid="uid://bp5vn1thny1lr" path="res://素材(C#)/卡包/卡套/deckCustomBackground.png" id="1_1vutn"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="2_36vbc"]
+[ext_resource type="Texture2D" uid="uid://c4ixgoegbwet8" path="res://素材(C#)/其他/PlayerBtn.png" id="3_xmf1v"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="4_5lh04"]
+[ext_resource type="Texture2D" uid="uid://bjcf7jk0u5qdb" path="res://素材(C#)/其他/icon_addfriend_64.png" id="4_xbbtl"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xbbtl"]
+shader = ExtResource("4_5lh04")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
+
+[node name="创建卡包" type="Control" unique_id=1831590628]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -107.0
+offset_top = -128.0
+offset_right = -613.0
+offset_bottom = -1152.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="." unique_id=1304662287]
+layout_mode = 0
+offset_right = 214.0
+offset_bottom = 256.0
+flat = true
+
+[node name="背景" type="Sprite2D" parent="." unique_id=1935447166]
+unique_name_in_owner = true
+position = Vector2(107, 128)
+texture = ExtResource("1_1vutn")
+
+[node name="SubMenu" type="Control" parent="背景" unique_id=1675851671]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -68.88
+offset_top = -127.0
+offset_right = 68.88
+offset_bottom = 14.679993
+pivot_offset_ratio = Vector2(0.5, 0.5)
+script = ExtResource("2_36vbc")
+SubScene = "res://场景(C#)/定制卡组.tscn"
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="背景/SubMenu" unique_id=811427359]
+custom_minimum_size = Vector2(123, 0)
+layout_mode = 0
+offset_top = -4.0
+offset_right = 135.88
+offset_bottom = 140.0
+flat = true
+
+[node name="Sprite2D" type="Sprite2D" parent="背景/SubMenu" unique_id=1255074461]
+position = Vector2(68.88, 68.84)
+scale = Vector2(0.56, 0.56)
+texture = ExtResource("3_xmf1v")
+
+[node name="Sprite2D2" type="Sprite2D" parent="背景/SubMenu" unique_id=1903149890]
+material = SubResource("ShaderMaterial_xbbtl")
+position = Vector2(68.88, 64.84)
+scale = Vector2(1.56, 1.56)
+texture = ExtResource("4_xbbtl")
+
+[node name="Label" type="Label" parent="背景" unique_id=57373585]
+offset_left = -72.0
+offset_top = 17.0
+offset_right = 72.0
+offset_bottom = 67.25
+pivot_offset_ratio = Vector2(0.5, 0)
+theme_override_font_sizes/font_size = 30
+text = "定制牌组"
+horizontal_alignment = 1
+vertical_alignment = 1

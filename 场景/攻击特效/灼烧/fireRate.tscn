@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://e5t4x7q3560b" path="res://脚本(C#)/场景/特效场景/FireRate.cs" id="1_reoc8"]
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="1_tqvsd"]
 [ext_resource type="SpineSkeletonDataResource" uid="uid://dh6k1ymw5ypju" path="res://数据资源/属性动画/血量动画.tres" id="3_4ok6c"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://6damiheggxsu" path="res://数据资源/属性动画/攻击动画.tres" id="4_82cm4"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://bd12o6igkqyok" path="res://场景/攻击特效/灼烧/Fire.tres" id="5_et8dp"]
 
 [node name="Fire" type="Node2D" unique_id=583484785]
 script = ExtResource("1_reoc8")
@@ -21,18 +21,31 @@ preview_time = 0.0
 
 [node name="火焰" parent="." unique_id=421937215 instance=ExtResource("1_tqvsd")]
 unique_name_in_owner = true
+position = Vector2(-11.000001, -20.000002)
+scale = Vector2(2.8, 2.8)
 
 [node name="SpineNode" parent="火焰" index="0" unique_id=273388558]
-skeleton_data_res = ExtResource("4_82cm4")
+skeleton_data_res = ExtResource("5_et8dp")
 preview_skin = "Default"
-preview_animation = "-- Empty --"
+preview_animation = "idle"
 preview_frame = false
 preview_time = 0.0
+position = Vector2(-1.4285707, -2.857142)
+rotation = 0.09211675
 
 [node name="子焰" type="Node2D" parent="." unique_id=953510559]
 unique_name_in_owner = true
 
 [node name="1" parent="子焰" unique_id=1557065758 instance=ExtResource("1_tqvsd")]
+
+[node name="SpineNode" parent="子焰/1" index="0" unique_id=273388558]
+skeleton_data_res = ExtResource("5_et8dp")
+preview_skin = "default"
+preview_animation = "wind"
+preview_frame = false
+preview_time = 1.4
+position = Vector2(0, 243)
+scale = Vector2(2, 2)
 
 [editable path="生命模板"]
 [editable path="火焰"]

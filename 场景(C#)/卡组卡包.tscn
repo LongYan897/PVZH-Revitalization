@@ -8,6 +8,9 @@
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="6_e4h0y"]
 [ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="6_wefbc"]
 [ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="7_56yx6"]
+[ext_resource type="Texture2D" uid="uid://c4ixgoegbwet8" path="res://素材(C#)/其他/PlayerBtn.png" id="9_k5iah"]
+[ext_resource type="Shader" uid="uid://bed8xwc6p34ig" path="res://着色器/按钮.gdshader" id="9_vgk32"]
+[ext_resource type="Texture2D" uid="uid://dmyt3bgolc0cv" path="res://素材/ui/界面ui/icon_x.png" id="11_sgn3i"]
 
 [sub_resource type="FontVariation" id="FontVariation_6n3n6"]
 base_font = ExtResource("4_lm4i2")
@@ -27,7 +30,7 @@ bg_color = Color(0, 0.85, 0.070833266, 1)
 [sub_resource type="FontVariation" id="FontVariation_56yx6"]
 base_font = ExtResource("6_e4h0y")
 
-[sub_resource type="Shader" id="Shader_yam0n"]
+[sub_resource type="Shader" id="Shader_e4h0y"]
 code = "shader_type canvas_item;
 
 uniform float contrast : hint_range(0.0, 2.0) = 1.0;
@@ -43,8 +46,14 @@ void fragment() {
 }"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_56yx6"]
-shader = SubResource("Shader_yam0n")
+shader = SubResource("Shader_e4h0y")
 shader_parameter/contrast = 1.75600008341
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vgk32"]
+shader = ExtResource("9_vgk32")
+shader_parameter/hue_shift = 0.4790000227525
+shader_parameter/contrast = 0.67600003211
+shader_parameter/brightness = 1.03200004902
 
 [node name="卡组卡包" type="Control" unique_id=1494845629]
 custom_minimum_size = Vector2(214, 256)
@@ -323,3 +332,23 @@ theme_override_font_sizes/font_size = 120
 text = "编辑"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="顶层按钮" type="Button" parent="背景" unique_id=1318408223]
+unique_name_in_owner = true
+visible = false
+offset_left = 21.0
+offset_top = -167.0
+offset_right = 139.0
+offset_bottom = -49.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+flat = true
+
+[node name="Sprite2D" type="Sprite2D" parent="背景/顶层按钮" unique_id=698627606]
+material = SubResource("ShaderMaterial_vgk32")
+position = Vector2(61, 61.5)
+scale = Vector2(0.46, 0.46)
+texture = ExtResource("9_k5iah")
+
+[node name="Sprite2D2" type="Sprite2D" parent="背景/顶层按钮" unique_id=1499333490]
+position = Vector2(61.5, 61.5)
+texture = ExtResource("11_sgn3i")

@@ -15,6 +15,7 @@ public partial class FireRate : Node2D
     {
         var rate = Scene.Instantiate<FireRate>();
         rate.GetNode<SpineHandler>("%生命模板").QueueFree();
+        rate.Visible = true;
         for (int i = 0; i < amount; i++)
         {
             var spine = SpineHandler.Get();

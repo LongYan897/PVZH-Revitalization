@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c033ul37vue0"
-path="res://.godot/imported/Fire.png-c126cad15ecb6aa2ec54c4b69127bad0.ctex"
+uid="uid://cvok2cw7qkvhh"
+path="res://.godot/imported/trashbutton.png-c21f0ca1aa3a88aede0b740f47284adc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://场景/攻击特效/灼烧/Fire.png"
-dest_files=["res://.godot/imported/Fire.png-c126cad15ecb6aa2ec54c4b69127bad0.ctex"]
+source_file="res://素材(C#)/其他/trashbutton.png"
+dest_files=["res://.godot/imported/trashbutton.png-c21f0ca1aa3a88aede0b740f47284adc.ctex"]
 
 [params]
 

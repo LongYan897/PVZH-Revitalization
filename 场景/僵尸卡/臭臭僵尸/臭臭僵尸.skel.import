@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://dlgdpxdim3bcc"
+path="res://.godot/imported/臭臭僵尸.skel-fc94e96dd322268d3ed99e3c6640686f.spskel"
+
+[deps]
+
+source_file="res://场景/僵尸卡/臭臭僵尸/臭臭僵尸.skel"
+dest_files=["res://.godot/imported/臭臭僵尸.skel-fc94e96dd322268d3ed99e3c6640686f.spskel"]
+
+[params]
+

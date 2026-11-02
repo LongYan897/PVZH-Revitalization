@@ -29,9 +29,9 @@ public class FighterCardModel : CardModel, IDamageCard, IHealthCard
     /// 隐藏单位的数值,并销毁单位
     /// </summary>
     /// <param name="Icon">融合的特殊图像</param>
-    public static void Overlay(FighterCardModel fighter, Texture2D Icon)
+    public static async Task Overlay(FighterCardModel fighter, Texture2D Icon)
     {
-        Fighter.Overlay(fighter, Icon);
+        await Fighter.Overlay(fighter, Icon);
     }
     /// <summary>
     /// 修改单位的动画节点的属性 (比如缩小,移动...)
@@ -435,31 +435,51 @@ public class FighterCardModel : CardModel, IDamageCard, IHealthCard
 
     /// <summary>
     /// 触发死亡时点并播放死亡动画。
+    /// 道路战斗期间自动挂到 Road 的拦截门上，由 Road.Start 结束时统一放行；
+    /// 其余情况立即执行。
     /// </summary>
     /// <param name="reason">死亡原因</param>
     /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
-    public async Task Die(Variable.VariableReason reason, AtkStack stack = null)
+    public async Task Die(Variable.VariableReason reason, AtkStack stack = null, bool immediate = false)
     {
         if (IsDying) return;
+
         IsDying = true;
 
-        bool isDamage = reason.HasFlag(Variable.VariableReason.Fighter) || reason.HasFlag(Variable.VariableReason.Damaged);
-
-        if (isDamage && stack?.Attacker != null)
+        if (!immediate && Road != null && Road.IsPreventingDie)
         {
-            await FireTiming(Timing.OnKilled, stack);
-            await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
-        }
-        else
-        {
-            stack ??= new AtkStack(null, [Attacking()], Road, 0, false);
-            await FireTiming(Timing.OnDeath, stack);
-            await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
+            Road.ScheduleDie(() => DieCore(reason, stack));
+            return;
         }
 
-        var fighter = Fighter.GetNode(this);
-        if (fighter != null)
-            await fighter.Die();
+        await DieCore(reason, stack);
+    }
+
+    private async Task DieCore(Variable.VariableReason reason, AtkStack stack)
+    {
+        try
+        {
+            bool isDamage = reason.HasFlag(Variable.VariableReason.Fighter)
+                         || reason.HasFlag(Variable.VariableReason.Damaged);
+
+            if (isDamage && stack?.Attacker != null)
+            {
+                await FireTiming(Timing.OnKilled, stack);
+                await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
+            }
+            else
+            {
+                stack ??= new AtkStack(null, [Attacking()], Road, 0, false);
+                await FireTiming(Timing.OnDeath, stack);
+                await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
+            }
+        }
+        finally
+        {
+            var fighter = Fighter.GetNode(this);
+            if (fighter != null)
+                await fighter.Die();
+        }
     }
 
     /// <summary>
@@ -487,15 +507,14 @@ public class FighterCardModel : CardModel, IDamageCard, IHealthCard
         if (playHurtAnim && actual > 0)
             await Fighter.GetNode(this).Hurt(stack.FinalDamage);
 
-        if (IsDie && immediateDeath)
-        {
-            await Die(VariableReason.Damaged | reason, stack);
-        }
+        if (IsDie)
+            await Die(VariableReason.Damaged | reason, stack, immediateDeath);
     }
     /// <summary>
     /// 是否有初始血量
     /// </summary>
     public bool BornWithAtk { get; private set; }
+
     /// <summary>
     /// 是否已死亡（Hp ≤ 0）
     /// </summary>
@@ -727,11 +746,11 @@ public class FighterCardModel : CardModel, IDamageCard, IHealthCard
             if (fighter.CanFusion(this, out var icon))
             {
                 await CardCmd.Fuse(this, fighter);
-                Overlay(fighter, icon);
+                await Overlay(fighter, icon);
             }
             if (CanEvolution(fighter))
             {
-                Overlay(fighter, null);
+                await Overlay(fighter, null);
             }
             await CardCmd.FighterGenerate(this, fighter.Road, fighter.Location);
             AddGroup(fighter);
@@ -771,47 +790,6 @@ public class FighterCardModel : CardModel, IDamageCard, IHealthCard
     private IAttackable Targeted()
     {
         return Fighter.GetNode(this);
-    }
-    /// <summary>
-    /// 触发死亡时点。
-    /// 调用前确保 Hp ≤ 0；方法内部会校验。
-    /// </summary>
-    /// <param name="reason">死亡原因</param>
-    /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
-    public async Task BeginDie(Variable.VariableReason reason, AtkStack stack = null)
-    {
-        if (!IsDie) return;
-        if (IsDying) return;
-        IsDying = true;
-
-        bool isDamage = reason.HasFlag(Variable.VariableReason.Fighter) || reason.HasFlag(Variable.VariableReason.Damaged);
-
-        if (isDamage && stack?.Attacker != null)
-        {
-            await FireTiming(Timing.OnKilled, stack);
-            await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
-        }
-        else
-        {
-            stack ??= new AtkStack(null, [Attacking()], Road, 0, false);
-            await FireTiming(Timing.OnDeath, stack);
-            await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
-        }
-    }
-
-    /// <summary>
-    /// 触发死亡动画。
-    /// 调用前确保 Hp ≤ 0；方法内部会校验。
-    /// </summary>
-    /// <param name="reason">死亡原因</param>
-    /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
-    public async Task EndDie()
-    {
-        if (!IsDie) return;
-        if (IsPlaced)
-        {
-            await Fighter.GetNode(this).Die();
-        }
     }
 
     /// <summary>动画容器类型</summary>

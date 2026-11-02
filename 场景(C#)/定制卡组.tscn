@@ -1,20 +1,399 @@
 [gd_scene format=3 uid="uid://dpqmhlv4g860a"]
 
-[ext_resource type="Texture2D" uid="uid://cvnlklgk31l7c" path="res://素材/ui/界面ui/frame_stroke #139990.png" id="1_coa38"]
+[ext_resource type="Script" uid="uid://dfqk5l44ipyeg" path="res://脚本(C#)/场景/子场景/DeckEditSubMenuScene.cs" id="1_g0clt"]
+[ext_resource type="Texture2D" uid="uid://dm6vx61ctijj6" path="res://素材/ui/英雄图片/cornerimage_greenshadow.png" id="2_8svqr"]
+[ext_resource type="Texture2D" uid="uid://doe447rq6ihmp" path="res://素材/ui/界面ui/猛长.png" id="2_gpvli"]
+[ext_resource type="Texture2D" uid="uid://cttsnfkdqyst1" path="res://素材/ui/界面ui/聪明.png" id="3_0mejf"]
+[ext_resource type="Texture2D" uid="uid://b3sxys3ikt860" path="res://素材(C#)/其他/bar.png" id="4_8svqr"]
+[ext_resource type="Texture2D" uid="uid://djhsp8lhqkjnq" path="res://素材(C#)/其他/bg.png" id="4_pv7st"]
+[ext_resource type="Texture2D" uid="uid://b616x6b4h2763" path="res://素材(C#)/其他/bar2.png" id="4_wif33"]
+[ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="5_yxoah"]
+[ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="6_miqsg"]
+[ext_resource type="Script" uid="uid://djw2uav0wcgkd" path="res://脚本(C#)/辅助类/MinimumHFlowContainer.cs" id="7_miqsg"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="7_sw1b0"]
+[ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="12_g0clt"]
+[ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="13_l405b"]
+[ext_resource type="Script" uid="uid://bhqnh1uogwt06" path="res://脚本(C#)/辅助类/NButton.cs" id="14_ukhsk"]
+[ext_resource type="Texture2D" uid="uid://d4l7h6voxbdxg" path="res://素材/ui/界面ui/searchicon_inactive.png" id="15_4jd1s"]
+[ext_resource type="Texture2D" uid="uid://d1vdub5akb3n5" path="res://素材/ui/界面ui/searchicon_x.png" id="16_0f5ef"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_setff"]
+[sub_resource type="Resource" id="Resource_g0clt"]
+script = ExtResource("6_miqsg")
 
-[node name="定制卡组" type="Node2D" unique_id=361804895]
+[sub_resource type="Resource" id="Resource_4p6ps"]
+script = ExtResource("6_miqsg")
 
-[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=1827932582]
-modulate = Color(0, 0.9833336, 1, 1)
-material = SubResource("ShaderMaterial_setff")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g0clt"]
+bg_color = Color(0, 0, 0, 0.50980395)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="FontVariation" id="FontVariation_pv7st"]
+base_font = ExtResource("7_sw1b0")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sw1b0"]
+bg_color = Color(0, 0, 0, 0.2509804)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0, 0, 0, 0.6509804)
+border_blend = true
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+corner_detail = 12
+
+[sub_resource type="FontVariation" id="FontVariation_sw1b0"]
+base_font = ExtResource("12_g0clt")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qunrk"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o1djq"]
+texture = ExtResource("13_l405b")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_i0xha"]
+texture = ExtResource("13_l405b")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mem38"]
+texture = ExtResource("13_l405b")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="Theme" id="Theme_oun6r"]
+Button/styles/hover = SubResource("StyleBoxTexture_o1djq")
+Button/styles/normal = SubResource("StyleBoxTexture_i0xha")
+Button/styles/pressed = SubResource("StyleBoxTexture_mem38")
+
+[node name="定制卡组" type="Node2D" unique_id=1234199250]
+script = ExtResource("1_g0clt")
+metadata/_custom_type_script = "uid://dfqk5l44ipyeg"
+
+[node name="Butt" type="CanvasLayer" parent="." unique_id=886765735]
+layer = 0
+
+[node name="Bg" type="TextureRect" parent="Butt" unique_id=601920444]
+self_modulate = Color(0.19607843, 0.34901962, 0.6313726, 1)
+z_index = -40
+clip_contents = true
+offset_left = -92.0
+offset_top = 343.0
+offset_right = 798.0
+offset_bottom = 618.0
+texture = ExtResource("4_pv7st")
+
+[node name="Bg2" type="TextureRect" parent="Butt" unique_id=2072307215]
+self_modulate = Color(0.34117648, 0.8117647, 0.5137255, 1)
+z_index = -1000
+offset_left = -157.0
+offset_top = 692.0
+offset_right = 880.0
+offset_bottom = 1302.0
+texture = ExtResource("4_pv7st")
+
+[node name="But" type="CanvasLayer" parent="." unique_id=1713569357]
+layer = 15
+
+[node name="角色" type="Sprite2D" parent="But" unique_id=1129757476]
+z_index = -40
+position = Vector2(360, 150)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("2_8svqr")
+
+[node name="属性1" type="Sprite2D" parent="But" unique_id=870964883]
+z_index = -40
+position = Vector2(101, 150)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_gpvli")
+
+[node name="属性2" type="Sprite2D" parent="But" unique_id=720915998]
+z_index = -40
+position = Vector2(171, 150)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("3_0mejf")
+
+[node name="滚动" type="ScrollContainer" parent="But" unique_id=1941403449]
+offset_top = 256.0
+offset_right = 1058.824
+offset_bottom = 901.58813
+scale = Vector2(0.68, 0.68)
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+script = ExtResource("5_yxoah")
+wheel_scroll_damper = SubResource("Resource_g0clt")
+dragging_scroll_damper = SubResource("Resource_4p6ps")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="已进入卡组" type="HFlowContainer" parent="But/滚动" unique_id=1561540722]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1058.824, 193)
+layout_mode = 2
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 8
+script = ExtResource("7_miqsg")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Mid" type="CanvasLayer" parent="." unique_id=2000346798]
+layer = 25
+
+[node name="滚动" type="ScrollContainer" parent="Mid" unique_id=1066066146]
+offset_top = 623.0
+offset_right = 1058.0
+offset_bottom = 1692.118
+scale = Vector2(0.68, 0.68)
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+script = ExtResource("5_yxoah")
+wheel_scroll_damper = SubResource("Resource_g0clt")
+dragging_scroll_damper = SubResource("Resource_4p6ps")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="未进入卡组" type="HFlowContainer" parent="Mid/滚动" unique_id=245978007]
+custom_minimum_size = Vector2(1058, 193)
+layout_mode = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+script = ExtResource("7_miqsg")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="已拥有" type="HFlowContainer" parent="Mid/滚动/未进入卡组" unique_id=748386485]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 8
+script = ExtResource("7_miqsg")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="横条" type="Panel" parent="Mid/滚动/未进入卡组/已拥有" unique_id=120869009]
+z_index = -50
+custom_minimum_size = Vector2(1058.824, 55)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_g0clt")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="文字" type="Label" parent="Mid/滚动/未进入卡组/已拥有/横条" unique_id=355371618]
+layout_mode = 0
+offset_left = 10.29412
+offset_right = 290.29413
+offset_bottom = 55.833332
+theme_override_font_sizes/font_size = 40
+text = "已经拥有的卡牌"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="未拥有" type="HFlowContainer" parent="Mid/滚动/未进入卡组" unique_id=2006773036]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 8
+script = ExtResource("7_miqsg")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="横条2" type="Panel" parent="Mid/滚动/未进入卡组/未拥有" unique_id=874982675]
+z_index = -50
+custom_minimum_size = Vector2(1058.824, 55)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_g0clt")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="文字" type="Label" parent="Mid/滚动/未进入卡组/未拥有/横条2" unique_id=267296300]
+layout_mode = 0
+offset_left = 10.29412
+offset_right = 458.29413
+offset_bottom = 86.0
+theme_override_font_sizes/font_size = 40
+text = "尚未找到的牌"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Top" type="CanvasLayer" parent="." unique_id=1806756780]
+layer = 45
+
+[node name="底层栏" type="NinePatchRect" parent="Top" unique_id=1085592063]
+modulate = Color(0.41599998, 0.65, 0.43549997, 1)
+z_index = 160
+offset_left = -41.0
+offset_top = 668.0
+offset_right = 755.0
+offset_bottom = 707.0
+texture = ExtResource("4_wif33")
+patch_margin_left = 20
+patch_margin_top = 20
+
+[node name="底层栏2" type="NinePatchRect" parent="Top" unique_id=837550416]
+modulate = Color(0.7, 1, 0.86, 1)
+z_index = 160
+offset_left = -41.0
+offset_top = 617.0
+offset_right = 755.0
+offset_bottom = 656.0
+texture = ExtResource("4_wif33")
+patch_margin_left = 20
+patch_margin_top = 20
+
+[node name="底层栏3" type="NinePatchRect" parent="Top" unique_id=445168056]
+modulate = Color(0.30240002, 0.72, 0.45551997, 1)
+z_index = 160
+offset_left = -41.0
+offset_top = 621.0
+offset_right = 755.0
+offset_bottom = 701.0
+texture = ExtResource("4_8svqr")
+patch_margin_left = 20
+patch_margin_top = 20
+
+[node name="顶层栏" type="NinePatchRect" parent="Top" unique_id=374946113]
+modulate = Color(0, 0.6500001, 0.75, 1)
+z_index = 120
+offset_left = -41.0
+offset_top = 304.0
+offset_right = 755.0
+offset_bottom = 343.0
+texture = ExtResource("4_wif33")
+patch_margin_left = 20
+patch_margin_top = 20
+
+[node name="顶层栏2" type="NinePatchRect" parent="Top" unique_id=1878440524]
+modulate = Color(0, 0.8666668, 1, 1)
+z_index = 120
+offset_left = -41.0
+offset_top = 253.0
+offset_right = 755.0
+offset_bottom = 292.0
+texture = ExtResource("4_wif33")
+patch_margin_left = 20
+patch_margin_top = 20
+
+[node name="顶层栏3" type="NinePatchRect" parent="Top" unique_id=1827932582]
+modulate = Color(0.25322023, 0.524267, 0.8762468, 1)
+z_index = 120
 offset_left = -41.0
 offset_top = 257.0
 offset_right = 755.0
 offset_bottom = 337.0
-texture = ExtResource("1_coa38")
-patch_margin_left = 40
-patch_margin_top = 40
-patch_margin_right = 40
-patch_margin_bottom = 40
+texture = ExtResource("4_8svqr")
+patch_margin_left = 20
+patch_margin_top = 20
+
+[node name="数值" type="Label" parent="Top" unique_id=1029418402]
+z_index = 120
+offset_left = 615.0
+offset_top = 274.0
+offset_right = 695.0
+offset_bottom = 320.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("FontVariation_pv7st")
+theme_override_font_sizes/font_size = 40
+text = "0/40"
+horizontal_alignment = 2
+
+[node name="顶层栏标题" type="Panel" parent="Top" unique_id=1008088924]
+z_index = 160
+offset_left = 80.0
+offset_top = 263.0
+offset_right = 600.0
+offset_bottom = 331.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_sw1b0")
+
+[node name="名称" type="LineEdit" parent="Top/顶层栏标题" unique_id=741559984]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 1.0
+offset_right = 490.0
+offset_bottom = 66.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("FontVariation_sw1b0")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_qunrk")
+text = "小菜一碟"
+alignment = 1
+max_length = 24
+
+[node name="搜索" type="TextureButton" parent="Top" unique_id=406598209]
+unique_name_in_owner = true
+self_modulate = Color(0, 1, 1, 1)
+z_index = 200
+offset_left = 540.0
+offset_top = 535.0
+offset_right = 795.0
+offset_bottom = 785.0
+scale = Vector2(0.32, 0.32)
+pivot_offset = Vector2(127.5, 125)
+texture_normal = ExtResource("13_l405b")
+script = ExtResource("14_ukhsk")
+metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+
+[node name="取消框" type="Button" parent="Top/搜索" unique_id=1291262836]
+self_modulate = Color(1, 0, 0, 1)
+z_index = -1
+layout_mode = 0
+offset_right = 255.0
+offset_bottom = 250.0
+pivot_offset = Vector2(127.5, 125)
+theme = SubResource("Theme_oun6r")
+
+[node name="TextureRect" type="TextureRect" parent="Top/搜索" unique_id=1688675084]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -27.0
+offset_top = -27.0
+offset_right = 27.0
+offset_bottom = 27.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(3.2, 3.138)
+pivot_offset = Vector2(27, 27)
+texture = ExtResource("15_4jd1s")
+
+[node name="取消" type="TextureButton" parent="Top/搜索" unique_id=395187231]
+visible = false
+z_index = 1
+layout_mode = 0
+offset_right = 255.0
+offset_bottom = 250.0
+pivot_offset = Vector2(127.5, 125)
+script = ExtResource("14_ukhsk")
+metadata/_custom_type_script = "uid://bhqnh1uogwt06"
+
+[node name="TextureRect" type="TextureRect" parent="Top/搜索/取消" unique_id=503054575]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -127.5
+offset_top = -125.0
+offset_right = 127.5
+offset_bottom = 125.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.65, 0.65)
+pivot_offset = Vector2(127.5, 125)
+texture = ExtResource("16_0f5ef")
