@@ -154,7 +154,7 @@ public class PlayerBox
             var node = NodeCard.GetNode(layoutCards[i]);
             if (node == null) continue;
 
-            var pos = new Vector2(startX + i * cardW, y) - new Vector2(node.Scale.X * 100f, 0);
+            var pos = new Vector2(startX + i * cardW, y) - new Vector2(0.56f * 100f, 0);
             node.BindOrigin(pos);
             node.BringToFront();
 
@@ -201,7 +201,7 @@ public class PlayerBox
             var node = NodeCard.GetNode(layoutCards[i]);
             if (node == null) continue;
 
-            var pos = new Vector2(startX + i * gap, 15f);
+            var pos = new Vector2(startX + i * gap, 15f) - new Vector2(0.5f * 100f, 0);
             node.BindOrigin(pos);
             node.BringToFront();
 
@@ -218,6 +218,7 @@ public class PlayerBox
              .SetEase(Tween.EaseType.Out);
     }
 
+    private float BaseScale => Player == PlayerManager.HostPlayer ? 0.56f : 0.5f;
     private float DrawScale => Player == PlayerManager.HostPlayer ? 0.64f : 0.64f * 0.5f / 0.56f;
 
     /// <summary>
@@ -252,7 +253,7 @@ public class PlayerBox
             for (int i = 0; i < n; i++)
             {
                 var pos = new Vector2(startX + i * cardW, baseY);
-                tasks.Add(NodeCard.DrawACard(cards[i], pos, scaleFactor: scale));
+                tasks.Add(NodeCard.DrawACard(cards[i], pos, scaleFactor: BaseScale, drawScale: scale));
             }
             await Task.WhenAll(tasks);
             StuffCard();
@@ -293,7 +294,7 @@ public class PlayerBox
                 card.Status = Player == PlayerManager.HostPlayer ? Status.FaceUp : Status.FaceDown;
 
                 var pos = new Vector2(startX + i * cardW, baseY);
-                tasks.Add(NodeCard.DrawACard(card, pos, scaleFactor: scale));
+                tasks.Add(NodeCard.DrawACard(card, pos, scaleFactor:BaseScale, drawScale: scale));
             }
 
             await Task.WhenAll(tasks);

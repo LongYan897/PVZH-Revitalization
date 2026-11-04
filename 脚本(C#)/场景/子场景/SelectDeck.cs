@@ -42,6 +42,7 @@ public partial class SelectDeck : SubMenuScene
             {
                 flow.AddChild(CardDeck.Instance(deck));
             }
+            flow.AddChild(CreateDeck.Instance(hero));
         }
     }
     private async Task CreateBalls()

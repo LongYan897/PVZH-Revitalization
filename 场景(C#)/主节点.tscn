@@ -141,7 +141,7 @@ layer = 5
 follow_viewport_enabled = true
 
 [node name="Button" type="CanvasLayer" parent="Scene" unique_id=948884562]
-layer = 4
+layer = 80
 
 [node name="钻石" type="Panel" parent="Scene/Button" unique_id=285240468]
 unique_name_in_owner = true
@@ -194,7 +194,6 @@ layer = 85
 unique_name_in_owner = true
 offset_left = -112.0
 offset_right = -720.0
-pivot_offset_ratio = Vector2(0, 1)
 
 [node name="Hero2" type="CanvasLayer" parent="." unique_id=1735385839]
 layer = 15
@@ -223,7 +222,7 @@ layer = 33
 follow_viewport_enabled = true
 
 [node name="Animators" type="CanvasLayer" parent="." unique_id=1250929900]
-layer = 100
+layer = 120
 
 [node name="Des" type="CanvasLayer" parent="." unique_id=1151842865]
 layer = 1000
@@ -233,7 +232,7 @@ layer = 40
 follow_viewport_enabled = true
 
 [node name="Cards" type="CanvasLayer" parent="." unique_id=1406632363]
-layer = 50
+layer = 95
 follow_viewport_enabled = true
 
 [node name="Audios" type="Node2D" parent="." unique_id=95414566]
@@ -246,11 +245,11 @@ layer = 15
 
 [node name="SceneAnimFToC" type="CanvasLayer" parent="." unique_id=952960160]
 unique_name_in_owner = true
-layer = 40
+layer = 50
 
 [node name="SceneAnimCToA" type="CanvasLayer" parent="." unique_id=401318343]
 unique_name_in_owner = true
-layer = 75
+layer = 105
 
 [node name="SceneAnimAToD" type="CanvasLayer" parent="." unique_id=1035361643]
 unique_name_in_owner = true

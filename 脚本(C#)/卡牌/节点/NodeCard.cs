@@ -129,15 +129,18 @@ public partial class NodeCard : Control
     /// <param name="parent">父节点，为 null 时使用 Main.CardContainer</param>
     /// <param name="drawAnimation">是否播放抽卡动画</param>
     /// <param name="scaleFactor">缩放系数，默认 BaseScaleFactor</param>
+    /// <param name="drawScale">抽卡动画期间的临时缩放，为 null 时使用 scaleFactor</param>
     public static async Task<NodeCard> CreateCard(
     CardModel cardModel,
     Vector2 position,
     CardView cardView = CardView.Battle,
     Node parent = null,
     bool drawAnimation = false,
-    float scaleFactor = BaseScaleFactor)
+    float scaleFactor = BaseScaleFactor,
+    float? drawScale = null)
     {
         parent ??= Main.CardContainer;
+        var initial = new Vector2(drawScale ?? scaleFactor, drawScale ?? scaleFactor);
 
         if (instances.Count < maxInstance)
         {
@@ -145,7 +148,7 @@ public partial class NodeCard : Control
             node.Model = cardModel;
             node.Position = position;
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
-            node.Scale = node._baseScale;
+            node.Scale = initial;
             node.CardViewMode = cardView;
             node.Visible = false;
             parent.AddChild(node);
@@ -168,7 +171,7 @@ public partial class NodeCard : Control
             node.Model = cardModel;
             node.Position = position;
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
-            node.Scale = node._baseScale;
+            node.Scale = initial;
             node.CardViewMode = cardView;
             node.Visible = false;
             instances[node] = cardModel;
@@ -196,13 +199,15 @@ public partial class NodeCard : Control
     /// <param name="cardView">预览模式</param>
     /// <param name="drawAnimation">是否播放抽卡动画</param>
     /// <param name="scaleFactor">缩放系数</param>
+    /// <param name="drawScale">抽卡动画期间的临时缩放</param>
     public static Task<NodeCard> CreateCardInGroup(
         CardModel cardModel,
         Vector2 position,
         CanvasLayer group,
         CardView cardView = CardView.Battle,
         bool drawAnimation = false,
-        float scaleFactor = BaseScaleFactor)
+        float scaleFactor = BaseScaleFactor,
+        float? drawScale = null)
     {
         Node parent = group;
 
@@ -210,7 +215,7 @@ public partial class NodeCard : Control
         if (container != null)
             parent = container;
 
-        return CreateCard(cardModel, position, cardView, parent, drawAnimation, scaleFactor);
+        return CreateCard(cardModel, position, cardView, parent, drawAnimation, scaleFactor, drawScale);
     }
 
     /// <summary>
@@ -218,31 +223,31 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static Task<NodeCard> DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, parent, drawAnimation: false, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, parent, drawAnimation: false, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static Task<NodeCard> DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, parent, drawAnimation: true, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, parent, drawAnimation: true, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
-    public static Task<NodeCard> DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, null, drawAnimation: false, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, null, drawAnimation: false, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static Task<NodeCard> DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, null, drawAnimation: true, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, null, drawAnimation: true, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 暂时隐藏一个卡牌节点
@@ -438,7 +443,7 @@ public partial class NodeCard : Control
         tween3.TweenProperty(
         this, "scale", cannonical * 1.2f, 0.05f);
         tween3.TweenProperty(
-        this, "scale", cannonical * 1f, 0.05f);
+        this, "scale", _baseScale, 0.05f);
         await ToSignal(tween3, Tween.SignalName.Finished);
     }
     /// <summary>
@@ -552,6 +557,7 @@ public partial class NodeCard : Control
     }
     public override void _Input(InputEvent @event)
     {
+        if (_returning) return;
         if (_openedCard == this && IsInstanceValid(this))
         {
             if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left && mb.Pressed)
@@ -575,6 +581,7 @@ public partial class NodeCard : Control
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;
+        if (_returning) return;
         if (CardViewMode == CardView.Battle && !isCallDragging) return;
         if (@event is InputEventMouseButton mb)
         {
@@ -910,23 +917,40 @@ public partial class NodeCard : Control
             }
         }
     }
-
+    private bool _returning;
     private void ReturnToOrigin(float duration = 0.9f)
     {
-        KillReturnTween();
-        _returnTween = CreateTween();
-        _returnTween.SetEase(Tween.EaseType.Out);
-        _returnTween.SetTrans(Tween.TransitionType.Quad);
-        _returnTween.TweenProperty(this, "position", _cardOriginPos, duration);
+        _ = ReturnToOriginAsync(duration);
     }
+
     private async Task ReturnToOriginTask(float duration = 0.9f)
     {
+        await ReturnToOriginAsync(duration);
+    }
+
+    private async Task ReturnToOriginAsync(float duration = 0.9f)
+    {
         KillReturnTween();
+        KillClickTween();
+
+        _returning = true;
+        _isDragging = false;
+
+        _clickTween = CreateTween();
+        _clickTween.TweenProperty(this, "scale", _baseScale, ClickScaleTime)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.Out);
+
         _returnTween = CreateTween();
         _returnTween.SetEase(Tween.EaseType.Out);
         _returnTween.SetTrans(Tween.TransitionType.Quad);
         _returnTween.TweenProperty(this, "position", _cardOriginPos, duration);
+
         await ToSignal(_returnTween, Tween.SignalName.Finished);
+
+        Position = _cardOriginPos;
+
+        _returning = false;
     }
     private ITarget target;
     private Area2D _currentTargetArea;

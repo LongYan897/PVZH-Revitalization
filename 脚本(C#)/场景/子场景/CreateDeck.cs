@@ -2,6 +2,7 @@ using Card.Pack;
 using Godot;
 using Hero.Model;
 using Pack;
+using Scene;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,28 @@ using System.Threading.Tasks;
 
 namespace Card;
 
-public partial class CreateDeck : Control
+[GlobalClass]
+public partial class CreateDeck : SubMenu
 {
     private static readonly PackedScene Scene = "res://场景(C#)/创建卡包.tscn".Load<PackedScene>();
 
-    public static CreateDeck Instance(HeroModel hero)
+    private HeroModel Hero;
+
+    public static Control Instance(HeroModel hero)
     {
-        CreateDeck deck = Scene.Instantiate<CreateDeck>();
-        deck.Predeck(hero);
+        Control deck = Scene.Instantiate<Control>();
+        CreateDeck create = deck.GetNode<CreateDeck>("Control");
+        create.Predeck(hero);
         return deck;
     }
 
     private void Predeck(HeroModel hero)
     {
+        Hero = hero;
+    }
 
+    protected override void EnterField()
+    {
+        DeckEditSubMenuScene.CurrentPack = new DIYPack() { Hero = Hero , PackName = ""};
     }
 }

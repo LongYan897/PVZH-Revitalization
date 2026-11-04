@@ -162,7 +162,7 @@ public sealed class MergedAtkType(IEnumerable<AtkType> types) : AtkType
 
     public override Buff Buff => iBuff ??= BuildBuff(_types);
 
-    public override string IconPath => null;
+    public override string IconPath => "res://素材(C#)/文本图片/Icon_Multi.png";
 
     private static Buff BuildBuff(IReadOnlyList<AtkType> types)
     {

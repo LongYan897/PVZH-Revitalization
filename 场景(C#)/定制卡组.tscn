@@ -84,11 +84,10 @@ script = ExtResource("1_g0clt")
 metadata/_custom_type_script = "uid://dfqk5l44ipyeg"
 
 [node name="Butt" type="CanvasLayer" parent="." unique_id=886765735]
-layer = 0
+layer = 50
 
 [node name="Bg" type="TextureRect" parent="Butt" unique_id=601920444]
 self_modulate = Color(0.19607843, 0.34901962, 0.6313726, 1)
-z_index = -40
 clip_contents = true
 offset_left = -92.0
 offset_top = 343.0
@@ -98,15 +97,22 @@ texture = ExtResource("4_pv7st")
 
 [node name="Bg2" type="TextureRect" parent="Butt" unique_id=2072307215]
 self_modulate = Color(0.34117648, 0.8117647, 0.5137255, 1)
-z_index = -1000
 offset_left = -157.0
 offset_top = 692.0
 offset_right = 880.0
 offset_bottom = 1302.0
 texture = ExtResource("4_pv7st")
 
+[node name="ColorRect" type="ColorRect" parent="Butt" unique_id=578611156]
+z_index = -100
+offset_left = -89.0
+offset_top = -73.0
+offset_right = 787.0
+offset_bottom = 1411.0
+color = Color(0, 0, 0, 0.50980395)
+
 [node name="But" type="CanvasLayer" parent="." unique_id=1713569357]
-layer = 15
+layer = 55
 
 [node name="角色" type="Sprite2D" parent="But" unique_id=1129757476]
 z_index = -40
@@ -127,9 +133,9 @@ scale = Vector2(0.6, 0.6)
 texture = ExtResource("3_0mejf")
 
 [node name="滚动" type="ScrollContainer" parent="But" unique_id=1941403449]
-offset_top = 256.0
+offset_top = 343.0
 offset_right = 1058.824
-offset_bottom = 901.58813
+offset_bottom = 747.41174
 scale = Vector2(0.68, 0.68)
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
@@ -149,12 +155,12 @@ metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="Mid" type="CanvasLayer" parent="." unique_id=2000346798]
-layer = 25
+layer = 60
 
 [node name="滚动" type="ScrollContainer" parent="Mid" unique_id=1066066146]
-offset_top = 623.0
+offset_top = 707.0
 offset_right = 1058.0
-offset_bottom = 1692.118
+offset_bottom = 1552.5881
 scale = Vector2(0.68, 0.68)
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
@@ -224,8 +230,14 @@ theme_override_font_sizes/font_size = 40
 text = "尚未找到的牌"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
+[node name="Control" type="Control" parent="Mid/滚动/未进入卡组" unique_id=1710501437]
+custom_minimum_size = Vector2(1058, 193)
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
 [node name="Top" type="CanvasLayer" parent="." unique_id=1806756780]
-layer = 45
+layer = 65
 
 [node name="底层栏" type="NinePatchRect" parent="Top" unique_id=1085592063]
 modulate = Color(0.41599998, 0.65, 0.43549997, 1)
@@ -330,6 +342,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_qunrk")
 text = "小菜一碟"
 alignment = 1
 max_length = 24
+flat = true
 
 [node name="搜索" type="TextureButton" parent="Top" unique_id=406598209]
 unique_name_in_owner = true
