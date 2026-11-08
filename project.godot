@@ -26,8 +26,8 @@ MainController="*uid://bveho05qklxli"
 
 [display]
 
-window/size/viewport_width=720
-window/size/viewport_height=1280
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/size/initial_position_type=5
 window/size/resizable=false
 window/stretch/mode="canvas_items"

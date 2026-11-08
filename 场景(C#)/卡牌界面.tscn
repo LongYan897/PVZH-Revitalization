@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://2sf8a4wv46c8" path="res://场景(C#)/动画.tscn" id="10_fad38"]
 [ext_resource type="Shader" uid="uid://wfa2v4nircfk" path="res://着色器/裁剪着色器.gdshader" id="10_setff"]
 [ext_resource type="FontFile" uid="uid://hsayw12ab5vm" path="res://素材/字体/CAFR____.ttf" id="11_fad38"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://wnyo1ea45qg1" path="res://数据资源/植物动画/豌豆射手植物动画.tres" id="11_ts65j"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="12_setff"]
 [ext_resource type="Script" uid="uid://dpy81oq8meuvd" path="res://脚本(C#)/辅助类/IconComposer.cs" id="17_ts65j"]
 
@@ -82,6 +83,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = -360.0
+offset_right = -640.0
+offset_bottom = -360.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
@@ -294,6 +299,13 @@ scale = Vector2(0.8, 0.8)
 unique_name_in_owner = true
 position = Vector2(0, 140)
 
+[node name="SpineNode" parent="单位容器/动画" index="0" unique_id=273388558]
+skeleton_data_res = ExtResource("11_ts65j")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+
 [node name="单位框" type="Sprite2D" parent="." unique_id=13245324]
 unique_name_in_owner = true
 z_index = 6
@@ -402,7 +414,7 @@ modulate = Color(0, 0, 0, 0.28627452)
 top_level = true
 z_index = -20
 color = Color(0, 0, 0, 0.5803922)
-polygon = PackedVector2Array(-77, -51, -153, 1438, 1163, 1322, 814, -81)
+polygon = PackedVector2Array(-573, -443, -572, 1281, 1864, 1310, 1855, -427)
 
 [node name="IconComposer" type="Node" parent="." unique_id=2117131518]
 unique_name_in_owner = true
@@ -412,19 +424,19 @@ metadata/_custom_type_script = "uid://dpy81oq8meuvd"
 [node name="额外区域" type="Control" parent="." unique_id=1272520395]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_left = -423.0
+offset_left = -950.0
 offset_top = -746.0
-offset_right = 446.0
+offset_right = 950.0
 offset_bottom = 717.0
 
-[node name="介绍Label" type="RichTextLabel" parent="额外区域" unique_id=2112734755]
+[node name="介绍Label" type="RichTextLabel" parent="." unique_id=2112734755]
 unique_name_in_owner = true
 z_index = 20
 layout_mode = 0
-offset_left = 207.0
-offset_top = 701.0
-offset_right = 636.0
-offset_bottom = 771.0
+offset_left = -216.0
+offset_top = -45.0
+offset_right = 213.0
+offset_bottom = 26.0
 pivot_offset_ratio = Vector2(0.5, 0)
 theme_override_colors/font_outline_color = Color(0.1148968, 0.11489681, 0.1148968, 1)
 theme_override_colors/font_shadow_color = Color(0.15487596, 0.154876, 0.15487596, 1)
@@ -471,3 +483,5 @@ theme_override_font_sizes/font_size = 48
 text = "x4"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[editable path="单位容器/动画"]

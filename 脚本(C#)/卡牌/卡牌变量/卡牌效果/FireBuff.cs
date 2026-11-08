@@ -1,5 +1,7 @@
 using Battle;
+using Godot;
 using Logger;
+using Pack;
 using System.Threading.Tasks;
 
 namespace Card;
@@ -18,7 +20,7 @@ public class FireBuff(int amount) : StackableBuff(amount)
                 if (!fighter.IsDie)
                 {
                     await fighter.ApplyDamage(Stacks, Variable.VariableReason.Damaged | Variable.VariableReason.Diff);
-                    await fighter.RemoveBuff(this, Variable.VariableReason.Diff,true);
+                    await fighter.RemoveBuff(this, Variable.VariableReason.Diff, true);
                 }
             }
 
@@ -27,9 +29,22 @@ public class FireBuff(int amount) : StackableBuff(amount)
                 if (!fighter.IsDie)
                 {
                     instance = FireRate.Create(Stacks);
-                    fighter.AddAnimChild(FighterCardModel.AnimSlot.Hp,instance);
-                    await instance.Main().SetAnimationTask(0,"intro");
-                    instance.Main().AddAnimation(0, "idle",true);
+                    fighter.AddAnimChild(FighterCardModel.AnimSlot.Hp, instance);
+                    await instance.Main().SetAnimationTask(0, "intro");
+                    instance.Main().AddAnimation(0, "idle", true);
+                }
+            }
+
+            if (timing == Timing.WhenRemove)
+            {
+                if (instance != null && GodotObject.IsInstanceValid(instance))
+                {
+                    var scale = instance.Scale;
+                    Tween tween = instance.CreateTween();
+                    tween.TweenProperty(instance,"scale", scale * 1.5f , 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+                    tween.Parallel().TweenProperty(instance,"modulate", new Color(1,1,1,0) , 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+                    await tween.ToTask();
+                    instance.QueueFree();
                 }
             }
         }

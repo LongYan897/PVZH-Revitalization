@@ -1,52 +1,16 @@
 [gd_scene format=3 uid="uid://b82k587le8ukv"]
 
 [ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_f1i2d"]
-[ext_resource type="Texture2D" uid="uid://dsnag66lhgvmy" path="res://素材/ui/界面ui/pvpimage_New.png" id="2_iabat"]
-[ext_resource type="Texture2D" uid="uid://djrnhsnaoecwq" path="res://素材/ui/界面ui/渐变纹理.png" id="3_wx2ff"]
+[ext_resource type="Texture2D" uid="uid://cs0ldsjfe4n4b" path="res://素材/ui/界面ui/centre_M.png" id="2_ewrbg"]
 [ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="4_pta5a"]
-[ext_resource type="Texture2D" uid="uid://br5nuly1nj771" path="res://素材/ui/界面ui/按钮5.png" id="5_p6jnt"]
-[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="5_wx2ff"]
 
-[sub_resource type="Shader" id="Shader_wx2ff"]
-code = "shader_type canvas_item;
-
-uniform vec4 color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform float strength : hint_range(0.0, 1.0) = 1.0;
-uniform float brightness : hint_range(-1.0, 1.0) = 0.0;
-uniform float saturation : hint_range(0.0, 2.0) = 1.0;
-uniform float contrast : hint_range(0.0, 2.0) = 1.0;
-
-float luminance(vec3 c) {
-	return dot(c, vec3(0.2126, 0.7152, 0.0722));
+[sub_resource type="FontVariation" id="FontVariation_ewrbg"]
+base_font = ExtResource("4_pta5a")
+variation_opentype = {
+2003265652: 500
 }
-
-void fragment() {
-	vec4 tex = texture(TEXTURE, UV);
-	vec3 src = tex.rgb;
-
-	float srcLum = luminance(src);
-	float tgtLum = max(luminance(color.rgb), 0.0001);
-
-	vec3 tinted = color.rgb * (srcLum / tgtLum);
-	float maxc = max(max(tinted.r, tinted.g), tinted.b);
-	if (maxc > 1.0) tinted /= maxc;
-
-	vec3 result = mix(src, tinted, strength);
-	result = (result - 0.5) * contrast + 0.5 + brightness;
-
-	float gray = luminance(result);
-	result = mix(vec3(gray), result, saturation);
-
-	COLOR = vec4(clamp(result, 0.0, 1.0), tex.a * color.a);
-}"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wx2ff"]
-shader = SubResource("Shader_wx2ff")
-shader_parameter/color = Color(1, 1, 1, 0.3882353)
-shader_parameter/strength = 1.0
-shader_parameter/brightness = -1.0
-shader_parameter/saturation = 1.0
-shader_parameter/contrast = 1.0
+variation_embolden = 0.1
+variation_transform = Transform2D(1, 0, 0, 0.7, 0, 0)
 
 [sub_resource type="FontVariation" id="FontVariation_j7747"]
 base_font = ExtResource("4_pta5a")
@@ -54,63 +18,15 @@ variation_opentype = {
 2003265652: 500
 }
 variation_embolden = 0.1
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7s325"]
-shader = ExtResource("5_wx2ff")
-shader_parameter/color = Color(1, 1, 1, 0.3882353)
-shader_parameter/strength = 1.0
-shader_parameter/brightness = -1.0
-shader_parameter/saturation = 1.0
-shader_parameter/contrast = 1.0
-
-[sub_resource type="Shader" id="Shader_pta5a"]
-code = "shader_type canvas_item;
-
-uniform vec4 color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform float strength : hint_range(0.0, 1.0) = 1.0;
-uniform float brightness : hint_range(-1.0, 1.0) = 0.0;
-uniform float saturation : hint_range(0.0, 2.0) = 1.0;
-uniform float contrast : hint_range(0.0, 2.0) = 1.0;
-
-float luminance(vec3 c) {
-	return dot(c, vec3(0.2126, 0.7152, 0.0722));
-}
-
-void fragment() {
-	vec4 tex = texture(TEXTURE, UV);
-	vec3 src = tex.rgb;
-
-	float srcLum = luminance(src);
-	float tgtLum = max(luminance(color.rgb), 0.0001);
-
-	vec3 tinted = color.rgb * (srcLum / tgtLum);
-	float maxc = max(max(tinted.r, tinted.g), tinted.b);
-	if (maxc > 1.0) tinted /= maxc;
-
-	vec3 result = mix(src, tinted, strength);
-	result = (result - 0.5) * contrast + 0.5 + brightness;
-
-	float gray = luminance(result);
-	result = mix(vec3(gray), result, saturation);
-
-	COLOR = vec4(clamp(result, 0.0, 1.0), tex.a * color.a);
-}"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_setff"]
-shader = SubResource("Shader_pta5a")
-shader_parameter/color = Color(0.16, 0, 0, 1)
-shader_parameter/strength = 1.0
-shader_parameter/brightness = -1.0
-shader_parameter/saturation = 1.2830000609425
-shader_parameter/contrast = 1.0530000500175
+variation_transform = Transform2D(1, 0, 0, 0.85, 0, 0)
 
 [node name="Control" type="Control" unique_id=260714909]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -720.0
-offset_bottom = -1280.0
+offset_right = -1280.0
+offset_bottom = -720.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_f1i2d")
@@ -119,119 +35,45 @@ metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="." unique_id=1394770203]
 layout_mode = 0
-offset_left = -611.0
-offset_top = -397.0
-offset_right = 611.0
-offset_bottom = 356.0
+offset_left = -601.0
+offset_top = -509.0
+offset_right = 602.0
+offset_bottom = 509.0
 flat = true
 
 [node name="Frame" type="Node2D" parent="." unique_id=1524062516]
-position = Vector2(-512.672, -393)
 
-[node name="卡片影子" type="Sprite2D" parent="Frame" unique_id=691612947]
-clip_children = 2
-material = SubResource("ShaderMaterial_wx2ff")
-position = Vector2(534.04694, 200.5)
-scale = Vector2(1.1972495, 0.8612335)
-texture = ExtResource("2_iabat")
+[node name="Sprite2D" type="Sprite2D" parent="Frame" unique_id=1688486349]
+position = Vector2(0, -398)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_ewrbg")
 
-[node name="卡片" type="Sprite2D" parent="Frame" unique_id=1547979496]
-clip_children = 2
-position = Vector2(512.6724, 223.00003)
-scale = Vector2(1.2, 1)
-texture = ExtResource("2_iabat")
-
-[node name="紫色渐变" type="Sprite2D" parent="Frame/卡片" unique_id=2123813251]
-self_modulate = Color(0.79261, 0.1274, 0.91, 1)
-position = Vector2(0.8329773, 48.99997)
-scale = Vector2(1, 0.22)
-texture = ExtResource("3_wx2ff")
-
-[node name="草坪战争" type="Label" parent="Frame" unique_id=1184699845]
-offset_left = 14.671997
-offset_top = -125.000015
-offset_right = 1010.672
-offset_bottom = 242.99998
-scale = Vector2(1.2, 1.2)
-pivot_offset_ratio = Vector2(0.5, 0)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 8
-theme_override_constants/shadow_offset_y = 8
-theme_override_constants/outline_size = 15
-theme_override_constants/shadow_outline_size = 1
-theme_override_fonts/font = SubResource("FontVariation_j7747")
-theme_override_font_sizes/font_size = 96
-text = "草坪战争"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="卡牌影子" type="Sprite2D" parent="Frame" unique_id=1693707795]
-self_modulate = Color(0.26339912, 3.880542e-07, 7.219613e-08, 1)
-clip_children = 2
-material = SubResource("ShaderMaterial_7s325")
-position = Vector2(517.44696, 585)
-scale = Vector2(3.05, 2.7)
-texture = ExtResource("5_p6jnt")
-
-[node name="卡牌2" type="Sprite2D" parent="Frame" unique_id=2082412175]
-visible = false
-self_modulate = Color(0.26339912, 3.880542e-07, 7.219613e-08, 1)
-clip_children = 2
-material = SubResource("ShaderMaterial_setff")
-position = Vector2(511, 571)
-scale = Vector2(3.05, 2.7)
-texture = ExtResource("5_p6jnt")
-
-[node name="卡牌" type="Sprite2D" parent="Frame" unique_id=423790578]
-self_modulate = Color(0.97, 0.8742934, 0.2522, 1)
-clip_children = 2
-position = Vector2(511, 559.75)
-scale = Vector2(3, 2.6584506)
-texture = ExtResource("5_p6jnt")
-
-[node name="紫色渐变" type="Sprite2D" parent="Frame/卡牌" unique_id=294127909]
-self_modulate = Color(0.97, 0.68288004, 0.2522, 1)
-position = Vector2(0.30906844, 2.3729515)
-rotation = -3.1415927
-scale = Vector2(0.37872863, 0.12328371)
-texture = ExtResource("3_wx2ff")
-
-[node name="紫色渐变2" type="Sprite2D" parent="Frame/卡牌" unique_id=2096948040]
-modulate = Color(0.9333333, 1, 0, 1)
-self_modulate = Color(0.97, 0.97, 0.97, 0.34117648)
-position = Vector2(0.30906844, -1.1999977)
-rotation = -6.2831855
-scale = Vector2(0.37872863, 0.12328371)
-texture = ExtResource("3_wx2ff")
-
-[node name="战斗" type="Label" parent="Frame" unique_id=1366428717]
-offset_left = 39.0
-offset_top = 316.0
-offset_right = 983.0
-offset_bottom = 644.0
+[node name="战斗" type="Label" parent="Frame/Sprite2D" unique_id=1366428717]
+offset_left = -484.0
+offset_top = 174.66667
+offset_right = 460.0
+offset_bottom = 545.6667
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 16
 theme_override_constants/shadow_offset_y = 16
-theme_override_constants/outline_size = 8
+theme_override_constants/outline_size = 24
 theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_j7747")
-theme_override_font_sizes/font_size = 127
+theme_override_fonts/font = SubResource("FontVariation_ewrbg")
+theme_override_font_sizes/font_size = 256
 text = "战斗"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="赛季时长" type="Label" parent="Frame" unique_id=860047854]
-offset_left = 453.672
-offset_top = 316.0
-offset_right = 1397.672
-offset_bottom = 662.0
+[node name="赛季时长" type="Label" parent="Frame/Sprite2D" unique_id=860047854]
+offset_left = -8.0
+offset_top = 214.66667
+offset_right = 936.0
+offset_bottom = 560.6667
 theme_override_colors/font_color = Color(0.44, 0.06599999, 0, 1)
 theme_override_colors/font_shadow_color = Color(0.15, 0, 0, 0.18431373)
 theme_override_fonts/font = SubResource("FontVariation_j7747")
-theme_override_font_sizes/font_size = 42
+theme_override_font_sizes/font_size = 56
 text = "赛季将在2d
 5h后结束"
 horizontal_alignment = 1

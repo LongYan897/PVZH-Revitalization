@@ -21,6 +21,11 @@ public class Player
     public readonly PlayerBox Status = new();
 
     /// <summary>
+    /// 玩家选中的卡牌
+    /// </summary>
+    public PresetPack SelectedPreset { get; set; }
+
+    /// <summary>
     /// 玩家的资产
     /// </summary>
     public PlayerAsset Asset { get; private set; } = new();
@@ -43,5 +48,13 @@ public class Player
     {
         var hero = HeroModel.Load<T>();
         Status.PrefABox(this, hero, deck);
+    }
+
+    /// <summary>
+    /// 准备一次战斗，创建一个战斗状态
+    /// </summary>
+    public void PrefABox(PresetPack deck)
+    {
+        Status.PrefABox(this, HeroModel.Identity(deck.Hero.Data.Title), deck);
     }
 }

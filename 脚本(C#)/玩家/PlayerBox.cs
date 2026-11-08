@@ -1,4 +1,3 @@
-
 using Battle;
 using Card;
 using Card.Cmd;
@@ -26,9 +25,8 @@ public class PlayerBox
     {
         battleRng = new();
         Player = player;
-        if (!hero.IsIdentity)
-            Hero = hero;
-        _deckCards = cards;
+        Hero = hero;
+        _deckCards = cards.Clone();
         _handCards = new();
     }
     /// <summary>
@@ -110,8 +108,8 @@ public class PlayerBox
             }
         }
 
-        _stuffCard(row1, 925.0f);
-        _stuffCard(row2, 925.0f + 193f * 0.56f);
+        _stuffCard(row1, 625.0f);
+        _stuffCard(row2, 625.0f + 193f * 0.56f * 0.6f);
 
         var plantSide = host == PlayerManager.GetPlayer(Camp.Plant);
         var player2 = (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant));
@@ -124,8 +122,8 @@ public class PlayerBox
     }
     private static void _stuffCard(List<CardModel> cards, float y)
     {
-        const float cardW = 256f * 0.56f;
-        const float screenW = 720f;
+        const float cardW = 256f * 0.56f * 0.6f;
+        const float screenW = 1280f;
 
         var host = PlayerManager.HostPlayer;
         if (host?.Status == null) return;
@@ -154,17 +152,17 @@ public class PlayerBox
             var node = NodeCard.GetNode(layoutCards[i]);
             if (node == null) continue;
 
-            var pos = new Vector2(startX + i * cardW, y) - new Vector2(0.56f * 100f, 0);
+            var pos = new Vector2(startX + i * cardW, y) - new Vector2(0.56f * 100f * 0.6f, 0);
             node.BindOrigin(pos);
             node.BringToFront();
 
-            _quickScaleTo(node, new Vector2(0.56f, 0.56f));
+            _quickScaleTo(node, new Vector2(0.56f * 0.6f, 0.56f * 0.6f));
         }
     }
 
     private static void _stuffCardForEnemy(IReadOnlyList<CardModel> cards)
     {
-        const float cardW = 256f * 0.28f;
+        const float cardW = 256f * 0.28f * 0.6f;
         const float minGap = 8f;
         const float baseGap = cardW;
 
@@ -194,18 +192,18 @@ public class PlayerBox
 
         float gap = n <= 1 ? baseGap : Mathf.Max(minGap, baseGap / n);
 
-        float startX = -40f;
+        float startX = 40f;
 
         for (int i = 0; i < n; i++)
         {
             var node = NodeCard.GetNode(layoutCards[i]);
             if (node == null) continue;
 
-            var pos = new Vector2(startX + i * gap, 15f) - new Vector2(0.5f * 100f, 0);
+            var pos = new Vector2(startX + i * gap, 285f) - new Vector2(0.5f * 100f * 0.6f, 0);
             node.BindOrigin(pos);
             node.BringToFront();
 
-            _quickScaleTo(node, new Vector2(0.5f, 0.5f));
+            _quickScaleTo(node, new Vector2(0.5f * 0.6f, 0.5f * 0.6f));
         }
     }
     private static void _quickScaleTo(Godot.Node node, Vector2 targetScale, float duration = 0.08f)
@@ -218,8 +216,8 @@ public class PlayerBox
              .SetEase(Tween.EaseType.Out);
     }
 
-    private float BaseScale => Player == PlayerManager.HostPlayer ? 0.56f : 0.5f;
-    private float DrawScale => Player == PlayerManager.HostPlayer ? 0.64f : 0.64f * 0.5f / 0.56f;
+    private float BaseScale => Player == PlayerManager.HostPlayer ? 0.56f * 0.6f : 0.5f * 0.6f;
+    private float DrawScale => Player == PlayerManager.HostPlayer ? 0.64f * 0.6f : 0.64f * 0.6f * 0.5f / 0.56f;
 
     /// <summary>
     /// 播放抽卡动画
@@ -246,8 +244,8 @@ public class PlayerBox
 
             float scale = DrawScale;
             float cardW = 256f * scale;
-            float startX = 360f - (n - 1) * cardW / 2f - 256f / 2f;
-            float baseY = Player == PlayerManager.HostPlayer ? 560.0f : 420.0f;
+            float startX = 360f - (n - 1) * cardW / 2f - 256f * 0.6f / 2f;
+            float baseY = Player == PlayerManager.HostPlayer ? 640.0f : 500.0f;
 
             var tasks = new List<Task>();
             for (int i = 0; i < n; i++)
@@ -280,8 +278,8 @@ public class PlayerBox
             int n = validCards.Length;
             float scale = DrawScale;
             float cardW = 256f * scale;
-            float startX = 360f - (n - 1) * cardW / 2f - 256f / 2f;
-            float baseY = Player == PlayerManager.HostPlayer ? 560.0f : 420.0f;
+            float startX = 360f - (n - 1) * cardW / 2f - 256f * 0.6f / 2f;
+            float baseY = Player == PlayerManager.HostPlayer ? 840.0f : 600.0f;
 
             var tasks = new List<Task>();
             for (int i = 0; i < n; i++)
@@ -294,7 +292,7 @@ public class PlayerBox
                 card.Status = Player == PlayerManager.HostPlayer ? Status.FaceUp : Status.FaceDown;
 
                 var pos = new Vector2(startX + i * cardW, baseY);
-                tasks.Add(NodeCard.DrawACard(card, pos, scaleFactor:BaseScale, drawScale: scale));
+                tasks.Add(NodeCard.DrawACard(card, pos, scaleFactor: BaseScale, drawScale: scale));
             }
 
             await Task.WhenAll(tasks);

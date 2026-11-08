@@ -285,6 +285,7 @@ public static class CardCmd
     public static async Task FighterGenerate(FighterCardModel fighter, Road road, Location location)
     {
         PushStop();
+        Remove(fighter);
         await Fighter.Generate(fighter, road, location);
         if (!fighter.CardTag.HasFlag(CardTag.GraveStone))
             await fighter.IntroPlayed();
@@ -314,7 +315,7 @@ public static class CardCmd
                 await card.FireTiming(timing, paramters);
         }
 
-        var fighters = TargetRegistry.All.OfType<Fighter>().ToList();
+        var fighters = TargetRegistry.All.OfType<Fighter>().Where(f => !f.Model.Hiding).ToList();
         fighters.Sort((a, b) =>
         {
             int byRoad = a.Road.Index.CompareTo(b.Road.Index);
@@ -354,22 +355,33 @@ public static class CardCmd
     /// <param name="cardModel">是哪个卡牌调用的</param>
     /// <param name="targetType">目标类型</param>
     /// <param name="filter">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null, Camp? camp = null)
+    public static async Task<ITarget> PlayerChoiceTarget(Player player, CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null, Camp? camp = null, bool checkHiding = true)
     {
         PushStop();
         player ??= PlayerManager.GetPlayer(cardModel.Camp);
         try
         {
+            Func<ITarget, bool> effectiveFilter = filter;
+
+            if (checkHiding)
+            {
+                var baseFilter = filter;
+                effectiveFilter = itg =>
+                    (baseFilter == null || baseFilter(itg))
+                    && !(itg is Fighter fighter && fighter.Model != null && fighter.Model.Hiding);
+            }
+
             if (player == PlayerManager.HostPlayer)
             {
-                var candidates = TargetRegistry.GetAllCanBeTarget(cardModel, targetType, fromBuff, filter).ToList();
+                var candidates = TargetRegistry.GetAllCanBeTarget(cardModel, targetType, fromBuff, effectiveFilter).ToList();
 
                 if (candidates.Count == 0) return null;
 
                 if (candidates.Count == 1) return candidates[0];
 
-                TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, filter, camp);
+                TargetRegistry.CallTargeted(cardModel, targetType, fromBuff, effectiveFilter, camp);
 
                 _tcs = new TaskCompletionSource<ITarget>();
                 var result = await _tcs.Task;
@@ -381,7 +393,7 @@ public static class CardCmd
             {
                 if (player is AiPlayer ai)
                 {
-                    return await ai.ChoiceTarget(cardModel, targetType, fromBuff, filter);
+                    return await ai.ChoiceTarget(cardModel, targetType, fromBuff, effectiveFilter);
                 }
                 else
                 {
@@ -402,15 +414,16 @@ public static class CardCmd
     /// <param name="player">选中的玩家</param>
     /// <param name="cardModel">是哪个卡牌调用的</param>
     /// <param name="filter">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static async Task<FighterCardModel> PlayerChoiceFighter(Player player, CardModel cardModel, bool fromBuff, Func<FighterCardModel, bool> filter = null)
+    public static async Task<FighterCardModel> PlayerChoiceFighter(Player player, CardModel cardModel, bool fromBuff, Func<FighterCardModel, bool> filter = null, bool checkHiding = true)
     {
         filter ??= (f) => true;
         Func<ITarget, bool> itgFilter = (itg) =>
         {
-            return itg.CanBeFighter(out var c) && filter(c);
+            return itg.CanBeFighter(out var c) && filter(c) && (!checkHiding || !c.Hiding);
         };
-        var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Fighters, fromBuff, itgFilter);
+        var itg = await PlayerChoiceTarget(player, cardModel, TargetType.Fighters, fromBuff, itgFilter, null, checkHiding);
         return itg.CanBeFighter(out var fighter) ? fighter : null;
     }
 
@@ -420,11 +433,12 @@ public static class CardCmd
     /// <param name="player">选中的玩家</param>
     /// <param name="cardModel">是哪个卡牌调用的</param>
     /// <param name="filter">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static async Task<FighterCardModel> PlayerChoiceZombie(Player player, CardModel cardModel, bool fromBuff, Func<FighterCardModel, bool> filter = null)
+    public static async Task<FighterCardModel> PlayerChoiceZombie(Player player, CardModel cardModel, bool fromBuff, Func<FighterCardModel, bool> filter = null, bool checkHiding = true)
     {
         filter ??= (f) => true;
-        return await PlayerChoiceFighter(player, cardModel, fromBuff, (f) => f.Camp == Camp.Zombie && filter(f));
+        return await PlayerChoiceFighter(player, cardModel, fromBuff, (f) => f.Camp == Camp.Zombie && filter(f), checkHiding);
     }
 
     /// <summary>
@@ -433,11 +447,12 @@ public static class CardCmd
     /// <param name="player">选中的玩家</param>
     /// <param name="cardModel">是哪个卡牌调用的</param>
     /// <param name="filter">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static async Task<FighterCardModel> PlayerChoicePlant(Player player, CardModel cardModel, bool fromBuff, Func<FighterCardModel, bool> filter = null)
+    public static async Task<FighterCardModel> PlayerChoicePlant(Player player, CardModel cardModel, bool fromBuff, Func<FighterCardModel, bool> filter = null, bool checkHiding = true)
     {
         filter ??= (f) => true;
-        return await PlayerChoiceFighter(player, cardModel, fromBuff, (f) => f.Camp == Camp.Plant && filter(f));
+        return await PlayerChoiceFighter(player, cardModel, fromBuff, (f) => f.Camp == Camp.Plant && filter(f), checkHiding);
     }
 
     /// <summary>
@@ -502,17 +517,28 @@ public static class CardCmd
     /// <param name="targetType">目标类型</param>
     /// <param name="fromBuff">是不是由Buff而来</param>
     /// <param name="filter">过滤器</param>
-    public static IEnumerable<ITarget> GetTargets(CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null)
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
+    public static IEnumerable<ITarget> GetTargets(CardModel cardModel, TargetType targetType, bool fromBuff, Func<ITarget, bool> filter = null, bool checkHiding = true)
     {
-        return TargetRegistry.GetAllCanBeTarget(cardModel, targetType, fromBuff, filter);
+        var targets = TargetRegistry.GetAllCanBeTarget(cardModel, targetType, fromBuff, filter);
+
+        if (checkHiding)
+            targets = targets.Where(t => !(t is Fighter f && f.Model != null && f.Model.Hiding));
+
+        return targets;
     }
     /// <summary>
     /// 获得按照先后顺序排列的单位
     /// </summary>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static List<Fighter> GetOrderedFighters()
+    public static IEnumerable<FighterCardModel> GetOrderedFighters(bool checkHiding = true)
     {
-        var fighters = TargetRegistry.All.OfType<Fighter>().ToList();
+        var fighters = TargetRegistry.All
+            .OfType<Fighter>()
+            .Where(f => f.Model != null)
+            .Where(f => !checkHiding || !f.Model.Hiding)
+            .ToList();
         fighters.Sort((a, b) =>
         {
             int byRoad = a.Road.Index.CompareTo(b.Road.Index);
@@ -520,18 +546,20 @@ public static class CardCmd
             return LocationPriority(a.Model.Location)
                  .CompareTo(LocationPriority(b.Model.Location));
         });
-        return fighters;
+        return fighters.Select(f => f.Model);
     }
     /// <summary>
     /// 获取最左侧（第一个）的单位（按 TimingOnCards 顺序：Road.Index 升序，再按 Location 优先级）
     /// </summary>
     /// <param name="predicate">过滤器（可选）</param>
     /// <param name="camp">阵营过滤（null 表示不区分）</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns>第一个 FighterCardModel，没有则返回 null</returns>
-    public static FighterCardModel GetFirstFighter(Func<FighterCardModel, bool> predicate = null, Camp? camp = null)
+    public static FighterCardModel GetFirstFighter(Func<FighterCardModel, bool> predicate = null, Camp? camp = null, bool checkHiding = true)
     {
         var query = TargetRegistry.All
             .OfType<Fighter>()
+            .Where(f => !checkHiding || !f.Model.Hiding)
             .Where(f => f.Model != null && !f.Model.IsDie);
 
         if (camp != null)
@@ -550,52 +578,62 @@ public static class CardCmd
     /// <summary>
     /// 获取最左侧（第一个）的僵尸单位
     /// </summary>
-    public static FighterCardModel GetFirstZombie(Func<FighterCardModel, bool> predicate = null)
-        => GetFirstFighter(predicate, Camp.Zombie);
+    /// <param name="predicate">过滤器（可选）</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
+    public static FighterCardModel GetFirstZombie(Func<FighterCardModel, bool> predicate = null, bool checkHiding = true)
+        => GetFirstFighter(predicate, Camp.Zombie, checkHiding);
 
     /// <summary>
     /// 获取最左侧（第一个）的植物单位
     /// </summary>
-    public static FighterCardModel GetFirstPlant(Func<FighterCardModel, bool> predicate = null)
-        => GetFirstFighter(predicate, Camp.Plant);
+    /// <param name="predicate">过滤器（可选）</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
+    public static FighterCardModel GetFirstPlant(Func<FighterCardModel, bool> predicate = null, bool checkHiding = true)
+        => GetFirstFighter(predicate, Camp.Plant, checkHiding);
 
     /// <summary>
     /// 搜寻有没有可以作为Target的对象
     /// </summary>
     /// <param name="predicate">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static bool AnyTarget(Func<ITarget, bool> predicate)
+    public static bool AnyTarget(Func<ITarget, bool> predicate, bool checkHiding = true)
     {
-        return TargetRegistry.All.Any(predicate);
+        return TargetRegistry.All.Any(t =>
+            predicate(t)
+            && (!checkHiding || !(t is Fighter f && f.Model != null && f.Model.Hiding)));
     }
 
     /// <summary>
     /// 搜寻有没有符合目标的单位
     /// </summary>
     /// <param name="predicate">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static bool AnyFighter(Func<FighterCardModel, bool> predicate)
-    => TargetRegistry.All.Any(t => t is Fighter f && predicate(f.Model) && !f.Model.IsDie);
+    public static bool AnyFighter(Func<FighterCardModel, bool> predicate, bool checkHiding = true)
+    => TargetRegistry.All.Any(t => t is Fighter f && predicate(f.Model) && !f.Model.IsDie && (!checkHiding || !f.Model.Hiding));
 
     /// <summary>
     /// 搜寻有没有符合目标的僵尸单位
     /// </summary>
     /// <param name="predicate">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
     public static bool AnyZombie(Func<FighterCardModel, bool> predicate = null, bool checkHiding = true)
         => AnyFighter(f => f != null
             && f.Camp == Camp.Zombie && (!f.Hiding || !checkHiding)
-            && (predicate == null || predicate(f)));
+            && (predicate == null || predicate(f)), false);
 
     /// <summary>
     /// 搜寻有没有符合目标的植物单位
     /// </summary>
     /// <param name="predicate">过滤器</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static bool AnyPlant(Func<FighterCardModel, bool> predicate = null)
+    public static bool AnyPlant(Func<FighterCardModel, bool> predicate = null, bool checkHiding = true)
         => AnyFighter(f => f != null
             && f.Camp == Camp.Plant
-            && (predicate == null || predicate(f)));
+            && (predicate == null || predicate(f)), checkHiding);
 
     /// <summary>
     /// 向全局注册一个Buff，会持续监听时点
@@ -638,11 +676,12 @@ public static class CardCmd
     /// 检测有没有能被进化卡牌进化的单位
     /// </summary>
     /// <param name="fusioner">要进化的卡牌</param>
+    /// <param name="checkHiding">是否过滤隐藏单位，默认为 true</param>
     /// <returns></returns>
-    public static bool IsAnyOneCanEvolved(FighterCardModel fusioner)
+    public static bool IsAnyOneCanEvolved(FighterCardModel fusioner, bool checkHiding = true)
     {
         if (!fusioner.IsEvolution) return false;
-        return AnyFighter(f => fusioner.CanEvolution(f));
+        return AnyFighter(f => fusioner.CanEvolution(f), checkHiding);
     }
 
     /// <summary>
@@ -676,6 +715,20 @@ public static class CardCmd
             return [PhraseManager.GetRoad(Index + 1), PhraseManager.GetRoad(Index - 1)];
         else
             return null;
+    }
+
+    /// <summary>
+    /// 获取所有线
+    /// </summary>
+    /// <returns></returns>
+    public static IEnumerable<Road> GetRoads()
+    {
+        var roads = new List<Road>();
+        for (int i = 1;i < 6;i++)
+        {
+            roads.Add(PhraseManager.GetRoad(i));
+        }
+        return roads;
     }
 
     /// <summary>

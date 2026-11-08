@@ -214,12 +214,21 @@ offset_right = 352.0
 offset_bottom = 427.0
 scale = Vector2(0.4, 0.4)
 
-[node name="操作按钮" type="NinePatchRect" parent="背景/内层/按钮" unique_id=985357725]
+[node name="操作" type="Control" parent="背景/内层/按钮" unique_id=381355537]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(440, 265)
+layout_mode = 2
+
+[node name="操作按钮" type="NinePatchRect" parent="背景/内层/按钮/操作" unique_id=985357725]
 unique_name_in_owner = true
 self_modulate = Color(0.083333254, 1, 0, 1)
 material = SubResource("ShaderMaterial_56yx6")
 custom_minimum_size = Vector2(440, 265)
-layout_mode = 2
+layout_mode = 0
+offset_top = 4.0
+offset_right = 440.0
+offset_bottom = 269.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 0
 texture = ExtResource("6_wefbc")
 patch_margin_left = 40
@@ -227,7 +236,7 @@ patch_margin_top = 40
 patch_margin_right = 40
 patch_margin_bottom = 40
 
-[node name="Label" type="Label" parent="背景/内层/按钮/操作按钮" unique_id=1096078089]
+[node name="Label" type="Label" parent="背景/内层/按钮/操作/操作按钮" unique_id=1096078089]
 layout_mode = 0
 offset_left = 96.667
 offset_top = 20.0
@@ -248,6 +257,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(440, 265)
 layout_mode = 2
 script = ExtResource("7_56yx6")
+SubScene = "res://场景(C#)/官方卡组.tscn"
 ShowLoading = false
 CenterPivot = true
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
@@ -335,7 +345,6 @@ vertical_alignment = 1
 
 [node name="顶层按钮" type="Button" parent="背景" unique_id=1318408223]
 unique_name_in_owner = true
-visible = false
 offset_left = 21.0
 offset_top = -167.0
 offset_right = 139.0

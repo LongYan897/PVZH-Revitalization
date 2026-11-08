@@ -1,6 +1,7 @@
 using Battle.Entity;
 using Card;
 using Card.Cmd;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,12 +112,6 @@ public class Road
     public async Task Start(List<AtkStack> stks = null)
     {
         var outer = stks == null;
-        if (outer)
-        {
-            _preventDieTcs = new TaskCompletionSource();
-            _pendingDieTasks.Clear();
-            IsBattling = true;
-        }
 
         try
         {
@@ -125,6 +120,9 @@ public class Road
             {
                 await CardCmd.TimingOnCards(null, Timing.BeforeLaneStart, this);
                 stks = new List<AtkStack>();
+                _preventDieTcs = new TaskCompletionSource();
+                _pendingDieTasks.Clear();
+                IsBattling = true;
                 await CardCmd.TimingOnCards(null, Timing.AfterLaneStart, this);
                 var zombie = fighters.FirstOrDefault(f => f.Zombie);
                 if (zombie != null)
@@ -218,6 +216,21 @@ public class Road
     }
 
     private readonly Variable<Environment> _environment = new("Environment", null);
+
+    public Vector2 Pos(Location? loc = null)
+    {
+        if (loc == null)
+        {
+            return NodeRoad.GetNode(this).Position;
+        }
+        else if (loc is Location location)
+        {
+            return NodeRoad.GetNode(this).GetFighterLocation(location);
+        }
+        else
+            return new();
+    }
+
     /// <summary>
     /// 该道路的环境
     /// 只有道路类型是平地的才有

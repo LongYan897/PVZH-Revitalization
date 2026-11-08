@@ -318,12 +318,20 @@ public class CardModel
     /// <param name="track">轨道</param>
     /// <param name="eventName">要等待到哪一个事件(null为等到动画完成)</param>
     /// <returns></returns>
-    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0, string eventName = null)
+    protected async Task PlayInstantAnimation(string animName, ITarget target, int track = 0, string eventName = null , Vector2? posModulate = null,  Vector2? scaleModulate = null)
     {
         var node = Main.Animator;
         var sp = SpineHandler.Get();
         sp.Position = ((Control)(GodotObject)target).GlobalPosition;
+        if (posModulate != null)
+        {
+            sp.Position += (Vector2)posModulate;
+        }
         sp.Scale = new(0.7f, 0.7f);
+        if (scaleModulate != null)
+        {
+            sp.Scale *= (Vector2)scaleModulate;
+        }
         node.AddChild(sp);
         sp.LoadSkeletonData(AnimationPath);
         if (eventName != null)

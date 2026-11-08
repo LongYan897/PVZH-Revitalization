@@ -51,101 +51,95 @@ metadata/_custom_type_script = "uid://cyd56foe8cq4n"
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="顶部" type="Sprite2D" parent="." unique_id=313599328]
+[node name="节点" type="Node2D" parent="." unique_id=1370525070]
+position = Vector2(425, 0)
+scale = Vector2(0.6, 0.6)
+
+[node name="顶部" type="Sprite2D" parent="节点" unique_id=313599328]
 unique_name_in_owner = true
 z_index = -8
 position = Vector2(360, 155)
+scale = Vector2(1.4, 1)
 texture = ExtResource("2_bggyq")
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="客方" type="Sprite2D" parent="." unique_id=1531739339]
+[node name="客方" type="Sprite2D" parent="节点" unique_id=1531739339]
 unique_name_in_owner = true
 z_index = -2
 position = Vector2(340, 301)
+scale = Vector2(1.4, 1)
 texture = ExtResource("3_41p5g")
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="主机" type="Sprite2D" parent="." unique_id=1554391998]
+[node name="主机" type="Sprite2D" parent="节点" unique_id=1554391998]
 unique_name_in_owner = true
 z_index = 6
 position = Vector2(360, 850)
+scale = Vector2(1.4, 1)
 texture = ExtResource("4_f3g53")
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="左边" type="Sprite2D" parent="." unique_id=1919804875]
+[node name="左边" type="Sprite2D" parent="节点" unique_id=1919804875]
 unique_name_in_owner = true
 z_index = 6
-position = Vector2(80, 535)
+position = Vector2(-58.333313, 535)
+scale = Vector2(1.4, 1)
 texture = ExtResource("5_cu1cr")
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="右边" type="Sprite2D" parent="." unique_id=80064574]
+[node name="右边" type="Sprite2D" parent="节点" unique_id=80064574]
 unique_name_in_owner = true
 z_index = 6
-position = Vector2(630, 541)
+position = Vector2(755, 541)
+scale = Vector2(1.4, 1)
 texture = ExtResource("6_y1gsq")
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="底部" type="Sprite2D" parent="." unique_id=1587575397]
+[node name="底部" type="Sprite2D" parent="节点" unique_id=1587575397]
 unique_name_in_owner = true
 z_index = 12
 position = Vector2(360, 1038)
+scale = Vector2(1.4, 1)
 texture = ExtResource("7_pqs4j")
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="道路层" parent="." unique_id=1692843012 instance=ExtResource("7_21f3a")]
+[node name="道路层" parent="节点" unique_id=1692843012 instance=ExtResource("7_21f3a")]
+unique_name_in_owner = true
 z_index = 2
-position = Vector2(0, -39)
+position = Vector2(-138.33331, -39)
+scale = Vector2(1.4, 1)
+
+[node name="1" parent="节点/道路层" index="0" unique_id=1720357688]
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="1" parent="道路层" index="0" unique_id=1720357688]
+[node name="2" parent="节点/道路层" index="1" unique_id=1066117273]
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="2" parent="道路层" index="1" unique_id=1066117273]
+[node name="3" parent="节点/道路层" index="2" unique_id=2563964]
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="3" parent="道路层" index="2" unique_id=2563964]
+[node name="4" parent="节点/道路层" index="3" unique_id=159569896]
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="4" parent="道路层" index="3" unique_id=159569896]
+[node name="5" parent="节点/道路层" index="4" unique_id=481194125]
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="5" parent="道路层" index="4" unique_id=481194125]
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
-
-[node name="费用容器" type="CanvasLayer" parent="." unique_id=521051514]
-layer = 42
-follow_viewport_enabled = true
-
-[node name="费用" type="Node2D" parent="费用容器" unique_id=2119942898]
-z_index = 160
+[node name="费用" type="Node2D" parent="节点" unique_id=2119942898]
+z_index = 4040
 position = Vector2(88, 863)
 
-[node name="费用特效动画" parent="费用容器/费用" unique_id=634445961 instance=ExtResource("9_p8b7g")]
+[node name="费用特效动画" parent="节点/费用" unique_id=634445961 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(166, -266)
 
-[node name="SpineNode" parent="费用容器/费用/费用特效动画" index="0" unique_id=273388558]
+[node name="SpineNode" parent="节点/费用/费用特效动画" index="0" unique_id=273388558]
 skeleton_data_res = ExtResource("10_k7al5")
 preview_skin = "Default"
 preview_animation = "-- Empty --"
 preview_frame = false
 preview_time = 0.0
 
-[node name="数值3" type="Label" parent="费用容器/费用/费用特效动画" unique_id=143833756]
+[node name="数值3" type="Label" parent="节点/费用/费用特效动画" unique_id=143833756]
 unique_name_in_owner = true
 z_index = 30
 anchors_preset = 8
@@ -167,7 +161,7 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="费用特效" type="TextureRect" parent="费用容器/费用" unique_id=1009323864]
+[node name="费用特效" type="TextureRect" parent="节点/费用" unique_id=1009323864]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -184,7 +178,7 @@ scale = Vector2(0.6, 0.6)
 pivot_offset_ratio = Vector2(1, 0.5)
 stretch_mode = 3
 
-[node name="阳光发光3" type="TextureRect" parent="费用容器/费用/费用特效" unique_id=1369741216]
+[node name="阳光发光3" type="TextureRect" parent="节点/费用/费用特效" unique_id=1369741216]
 unique_name_in_owner = true
 visible = false
 z_index = -1
@@ -198,7 +192,7 @@ texture = ExtResource("12_52n4m")
 expand_mode = 1
 stretch_mode = 3
 
-[node name="费用图片" type="TextureRect" parent="费用容器/费用" unique_id=2009723613]
+[node name="费用图片" type="TextureRect" parent="节点/费用" unique_id=2009723613]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -216,7 +210,7 @@ pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("11_f1tyx")
 stretch_mode = 3
 
-[node name="阳光发光" type="TextureRect" parent="费用容器/费用/费用图片" unique_id=355716276]
+[node name="阳光发光" type="TextureRect" parent="节点/费用/费用图片" unique_id=355716276]
 unique_name_in_owner = true
 visible = false
 z_index = -1
@@ -230,7 +224,7 @@ texture = ExtResource("12_52n4m")
 expand_mode = 1
 stretch_mode = 3
 
-[node name="数值" type="Label" parent="费用容器/费用/费用图片" unique_id=714932284]
+[node name="数值" type="Label" parent="节点/费用/费用图片" unique_id=714932284]
 unique_name_in_owner = true
 z_index = 30
 layout_mode = 1
@@ -252,23 +246,23 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="费用2" type="Node2D" parent="费用容器" unique_id=207810551]
-z_index = 160
+[node name="费用2" type="Node2D" parent="节点" unique_id=207810551]
+z_index = 4040
 position = Vector2(641, 125)
 
-[node name="费用特效动画2" parent="费用容器/费用2" unique_id=2132684599 instance=ExtResource("9_p8b7g")]
+[node name="费用特效动画2" parent="节点/费用2" unique_id=2132684599 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(-178, 295)
 
-[node name="SpineNode" parent="费用容器/费用2/费用特效动画2" index="0" unique_id=273388558]
+[node name="SpineNode" parent="节点/费用2/费用特效动画2" index="0" unique_id=273388558]
 skeleton_data_res = ExtResource("10_k7al5")
 preview_skin = "Default"
 preview_animation = "-- Empty --"
 preview_frame = false
 preview_time = 0.0
 
-[node name="数值4" type="Label" parent="费用容器/费用2/费用特效动画2" unique_id=52364848]
+[node name="数值4" type="Label" parent="节点/费用2/费用特效动画2" unique_id=52364848]
 unique_name_in_owner = true
 z_index = 30
 anchors_preset = 8
@@ -290,7 +284,7 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="费用特效2" type="TextureRect" parent="费用容器/费用2" unique_id=1261991883]
+[node name="费用特效2" type="TextureRect" parent="节点/费用2" unique_id=1261991883]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -307,7 +301,7 @@ scale = Vector2(0.6, 0.6)
 pivot_offset_ratio = Vector2(0, 0.5)
 stretch_mode = 3
 
-[node name="阳光发光4" type="TextureRect" parent="费用容器/费用2/费用特效2" unique_id=758643437]
+[node name="阳光发光4" type="TextureRect" parent="节点/费用2/费用特效2" unique_id=758643437]
 unique_name_in_owner = true
 visible = false
 z_index = -1
@@ -321,7 +315,7 @@ texture = ExtResource("12_52n4m")
 expand_mode = 1
 stretch_mode = 3
 
-[node name="费用图片2" type="TextureRect" parent="费用容器/费用2" unique_id=1169168947]
+[node name="费用图片2" type="TextureRect" parent="节点/费用2" unique_id=1169168947]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -339,7 +333,7 @@ pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("13_f1tyx")
 stretch_mode = 3
 
-[node name="阳光发光2" type="TextureRect" parent="费用容器/费用2/费用图片2" unique_id=2075158307]
+[node name="阳光发光2" type="TextureRect" parent="节点/费用2/费用图片2" unique_id=2075158307]
 unique_name_in_owner = true
 visible = false
 z_index = -1
@@ -353,7 +347,7 @@ texture = ExtResource("12_52n4m")
 expand_mode = 1
 stretch_mode = 3
 
-[node name="数值2" type="Label" parent="费用容器/费用2/费用图片2" unique_id=1228519368]
+[node name="数值2" type="Label" parent="节点/费用2/费用图片2" unique_id=1228519368]
 unique_name_in_owner = true
 z_index = 30
 layout_mode = 1
@@ -375,19 +369,19 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="副玩家" type="Marker2D" parent="." unique_id=773997479]
+[node name="副玩家" type="Marker2D" parent="节点" unique_id=773997479]
 unique_name_in_owner = true
 position = Vector2(348, 230)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="主玩家" type="Marker2D" parent="." unique_id=2106473752]
+[node name="主玩家" type="Marker2D" parent="节点" unique_id=2106473752]
 unique_name_in_owner = true
 position = Vector2(357, 874)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="护盾" parent="." unique_id=1138820925 instance=ExtResource("9_p8b7g")]
+[node name="护盾" parent="节点" unique_id=1138820925 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
 visible = false
 modulate = Color(0.9533334, 0.3, 1, 1)
@@ -397,7 +391,7 @@ scale = Vector2(0.5, 0.5)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="护盾2" parent="." unique_id=2083661993 instance=ExtResource("9_p8b7g")]
+[node name="护盾2" parent="节点" unique_id=2083661993 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
 visible = false
 modulate = Color(0.0333333, 1, 0, 1)
@@ -407,88 +401,77 @@ scale = Vector2(0.5, 0.5)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="SpineNode" parent="护盾2" index="0" unique_id=273388558]
+[node name="SpineNode" parent="节点/护盾2" index="0" unique_id=273388558]
 skeleton_data_res = ExtResource("14_vw8as")
 preview_skin = "Default"
 preview_animation = "plantshield"
 preview_frame = false
 preview_time = 0.0
 
-[node name="护盾容器" type="CanvasLayer" parent="." unique_id=2071271051]
-layer = 43
-follow_viewport_enabled = true
-
-[node name="英雄血量" parent="护盾容器" unique_id=1804947190 instance=ExtResource("10_4cdlk")]
+[node name="英雄血量" parent="节点" unique_id=1804947190 instance=ExtResource("10_4cdlk")]
 unique_name_in_owner = true
-z_index = 100
+z_index = 4040
 position = Vector2(207, 865)
 scale = Vector2(0.6, 0.6)
 
-[node name="英雄血量2" parent="护盾容器" unique_id=1517580426 instance=ExtResource("10_4cdlk")]
+[node name="英雄血量2" parent="节点" unique_id=1517580426 instance=ExtResource("10_4cdlk")]
 unique_name_in_owner = true
-z_index = 100
+z_index = 4040
 position = Vector2(524, 128)
 scale = Vector2(0.6, 0.6)
 
-[node name="卡牌组中心2" type="Marker2D" parent="." unique_id=671542422]
+[node name="卡牌组中心2" type="Marker2D" parent="节点" unique_id=671542422]
 unique_name_in_owner = true
 position = Vector2(80, 140)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="卡牌组中心" type="Marker2D" parent="." unique_id=220082344]
+[node name="卡牌组中心" type="Marker2D" parent="节点" unique_id=220082344]
 unique_name_in_owner = true
 position = Vector2(80, 1025)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="重新选卡层" type="CanvasLayer" parent="." unique_id=1559340914]
-layer = 49
-follow_viewport_enabled = true
-
-[node name="重新选卡" parent="重新选卡层" unique_id=2139683625 instance=ExtResource("16_4cdlk")]
+[node name="重新选卡" parent="节点" unique_id=2139683625 instance=ExtResource("16_4cdlk")]
 unique_name_in_owner = true
 visible = false
-z_index = 175
+z_index = 4046
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="抽卡位置2" type="Marker2D" parent="." unique_id=361908283]
+[node name="抽卡位置2" type="Marker2D" parent="节点" unique_id=361908283]
 unique_name_in_owner = true
 position = Vector2(360, 420)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="抽卡位置" type="Marker2D" parent="." unique_id=1158534064]
+[node name="抽卡位置" type="Marker2D" parent="节点" unique_id=1158534064]
 unique_name_in_owner = true
 position = Vector2(360, 560)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="战斗阶段" type="CanvasLayer" parent="." unique_id=34903559]
-layer = 45
-
-[node name="阶段" type="Node2D" parent="战斗阶段" unique_id=1016573463]
+[node name="阶段" type="Node2D" parent="节点" unique_id=1016573463]
 unique_name_in_owner = true
-z_index = 100
+z_index = 4040
 position = Vector2(580, 865)
 scale = Vector2(0.9, 0.9)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="动画" parent="战斗阶段/阶段" unique_id=922182681 instance=ExtResource("9_p8b7g")]
+[node name="动画" parent="节点/阶段" unique_id=922182681 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="SpineNode" parent="战斗阶段/阶段/动画" index="0" unique_id=273388558]
+[node name="SpineNode" parent="节点/阶段/动画" index="0" unique_id=273388558]
 skeleton_data_res = ExtResource("10_41p5g")
 preview_skin = "Default"
 preview_animation = "plantChangeColorPlantTurn"
 preview_frame = false
 preview_time = 0.0
 
-[node name="Button" type="Button" parent="战斗阶段/阶段" unique_id=421639317]
+[node name="Button" type="Button" parent="节点/阶段" unique_id=421639317]
 unique_name_in_owner = true
 z_index = 24
 offset_left = -64.44446
@@ -499,7 +482,7 @@ flat = true
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="阶段投影" type="TextureRect" parent="战斗阶段/阶段" unique_id=1859134767]
+[node name="阶段投影" type="TextureRect" parent="节点/阶段" unique_id=1859134767]
 unique_name_in_owner = true
 visible = false
 offset_left = -241.1111
@@ -512,7 +495,7 @@ texture = ExtResource("13_jis5k")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="投影" type="TextureRect" parent="战斗阶段/阶段" unique_id=840892191]
+[node name="投影" type="TextureRect" parent="节点/阶段" unique_id=840892191]
 unique_name_in_owner = true
 visible = false
 self_modulate = Color(1, 1, 1, 0.7019608)
@@ -525,7 +508,7 @@ scale = Vector2(1.731015, 1.731015)
 pivot_offset_ratio = Vector2(0.8, 0.9)
 texture = ExtResource("11_f3g53")
 
-[node name="回合提示" type="Label" parent="战斗阶段/阶段/投影" unique_id=939766451]
+[node name="回合提示" type="Label" parent="节点/阶段/投影" unique_id=939766451]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_cu1cr")
 layout_mode = 0
@@ -541,7 +524,7 @@ theme_override_fonts/font = SubResource("FontVariation_f3g53")
 theme_override_font_sizes/font_size = 48
 text = "植物"
 
-[node name="回合提示2" type="Label" parent="战斗阶段/阶段/投影" unique_id=584466773]
+[node name="回合提示2" type="Label" parent="节点/阶段/投影" unique_id=584466773]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_cu1cr")
 layout_mode = 0
@@ -557,23 +540,21 @@ theme_override_fonts/font = SubResource("FontVariation_f3g53")
 theme_override_font_sizes/font_size = 48
 text = "出牌"
 
-[node name="战斗胜利层" type="CanvasLayer" parent="." unique_id=602986266]
-layer = 75
-
-[node name="战斗胜利" parent="战斗胜利层" unique_id=346782537 instance=ExtResource("18_bggyq")]
+[node name="战斗胜利" parent="节点" unique_id=346782537 instance=ExtResource("18_bggyq")]
 unique_name_in_owner = true
 visible = false
+z_index = 4096
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 
-[node name="Center" type="Marker2D" parent="." unique_id=2047118299]
+[node name="Center" type="Marker2D" parent="节点" unique_id=2047118299]
 unique_name_in_owner = true
 position = Vector2(360, 500)
 
-[editable path="道路层"]
-[editable path="费用容器/费用/费用特效动画"]
-[editable path="费用容器/费用2/费用特效动画2"]
-[editable path="护盾"]
-[editable path="护盾2"]
-[editable path="重新选卡层/重新选卡"]
-[editable path="战斗阶段/阶段/动画"]
+[editable path="节点/道路层"]
+[editable path="节点/费用/费用特效动画"]
+[editable path="节点/费用2/费用特效动画2"]
+[editable path="节点/护盾"]
+[editable path="节点/护盾2"]
+[editable path="节点/重新选卡"]
+[editable path="节点/阶段/动画"]

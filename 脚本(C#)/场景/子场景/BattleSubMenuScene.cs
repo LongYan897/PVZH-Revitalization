@@ -23,7 +23,11 @@ public partial class BattleSubMenuScene : SubMenuScene
     public override async Task _Load()
     {
         instance = this;
-        PhraseManager.BuildUp(GetNode<Node2D>("道路层"), PlayerManager.HostPlayer.Status.Hero.Camp);
+        var host = PlayerManager.HostPlayer;
+        host.PrefABox(host.SelectedPreset);
+        var guest = PlayerManager.GuestPlayer;
+        guest.PrefABox(guest.SelectedPreset);
+        PhraseManager.BuildUp(GetNode<Node2D>("%道路层"), PlayerManager.HostPlayer.Status.Hero.Camp);
         GetNode<SpineHandler>("%动画").LoadSkeletonData("res://素材/ui/轮盘动画/轮盘动画.tres");
         PhraseManager.SetUp(GetNode<Button>("%Button"), GetNode<SpineHandler>("%动画"));
         await Prepare();

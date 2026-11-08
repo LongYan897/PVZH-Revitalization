@@ -1016,7 +1016,7 @@ public partial class Fighter : Control, ITarget, IAttackable
             tween.TweenProperty(f, "position", node.GetFighterLocation(location), 0.2f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
         }
         await tween.ToTask();
-        await Task.WhenAll(f.PlayAnimation("intro", true), model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0, "intro") : Task.CompletedTask,road.AddFighter(model, f));
+        await Task.WhenAll(f.PlayAnimation("intro", true), model.Camp.Zombie() ? f.GetNode<SpineHandler>("%土坑").SetAnimationTask(0, "intro") : Task.CompletedTask, road.AddFighter(model, f));
     }
 
     private void Fresh()
@@ -1027,7 +1027,7 @@ public partial class Fighter : Control, ITarget, IAttackable
         if (isFirstPlace)
         {
             _isOpen = true;
-            Scale = new(0.17f, 0.17f);
+            Scale = new Vector2(0.17f, 0.17f) * 0.6f;
             if (Model.AnimationScenePath != null)
             {
                 var scene = Model.AnimationScenePath.Load<PackedScene>().Instantiate<Node2D>();

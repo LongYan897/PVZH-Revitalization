@@ -7,24 +7,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Scene;
 
 [GlobalClass]
 public partial class DeckSubMenuScene : SubMenuScene
 {
-    private Sprite2D BackGround; // 背景图
-    private Sprite2D Top1; // 顶部遮挡
-    private Sprite2D Top2; // 顶部遮挡1
-    private TextureButton Plant; // 植物按钮
-    private TextureButton Zombie; // 僵尸按钮
-    private Control Container; //图鉴信息
-    private ColorRect HeroLabel; //英雄标志
-    private ColorRect Cards; //卡片信息
-    private HFlowContainer CardInformation; //卡牌列表
-    private NButton Search; //搜索
-    private ColorRect SearchRect; //搜索框
-    private Label Amount; //数量
+    public static DeckSubMenuScene Instance { get; private set; }
+
+    private const float SearchBoxHeight = 250f;
+    private const float SearchCollapsedWidth = 255f;
+    private const float SearchExpandDeltaX = 255f;
+    private const float SearchOpenMoveX = -81.6f;
+    private const int HeroesPerRow = 5;
+
+    private Sprite2D BackGround;
+    private Sprite2D Top1;
+    private Sprite2D Top2;
+    private TextureButton Plant;
+    private TextureButton Zombie;
+    private Control Container;
+    private ColorRect HeroLabel;
+    private ColorRect Cards;
+    private HFlowContainer CardInformation;
+    private NButton Search;
+    private ColorRect SearchRect;
+    private Label Amount;
     private PackedScene classScene;
     private List<Node> CurrentInformation = new List<Node>();
     private Dictionary<Class, List<CardModel>> CurrentClassCards = new Dictionary<Class, List<CardModel>>();
@@ -42,6 +49,11 @@ public partial class DeckSubMenuScene : SubMenuScene
         new Color(0.657f, 0.348f, 0.79f, 1.0f),
         new Color(0.25f, 0.132f, 0.3f, 1.0f),
     };
+    public override void _WhenEnterTree()
+    {
+        Instance = this;
+    }
+
     public override async Task _Load()
     {
         BackGround = FindChild("背景图") as Sprite2D;
@@ -65,21 +77,66 @@ public partial class DeckSubMenuScene : SubMenuScene
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
         CurrentCamp = Camp.Plant;
+        await Refresh();
+    }
+
+    public override void _ExitTree()
+    {
+        if (Instance == this) Instance = null;
+        base._ExitTree();
+    }
+
+    public static async Task SafeRefresh()
+    {
+        if (Instance != null && GodotObject.IsInstanceValid(Instance) && !Instance.IsQueuedForDeletion())
+        {
+            await Instance.Refresh();
+        }
+    }
+
+    public async Task Refresh()
+    {
+        if (AllNodeCards.Count > 0)
+        {
+            foreach (var node in AllNodeCards)
+            {
+                if (GodotObject.IsInstanceValid(node))
+                {
+                    node.JustFresh();
+                }
+            }
+            return;
+        }
+
+        if (CurrentCamp == Camp.Plant)
+        {
+            BackGround.Modulate = ThemeColors1[0];
+            Top1.Modulate = ThemeColors1[1];
+            Top2.Modulate = ThemeColors1[2];
+        }
+        else
+        {
+            BackGround.Modulate = ThemeColors2[0];
+            Top1.Modulate = ThemeColors2[1];
+            Top2.Modulate = ThemeColors2[2];
+        }
         await InitializeInformation(CurrentCamp.ToName());
     }
-    private async void OnCancelPressed()
+
+    private void OnCancelPressed()
     {
         ShowCards(c => true);
         Button cancelFrame = Search.GetNode<Button>("取消框");
         NButton cancel = Search.GetNode<NButton>("取消");
         Tween t1 = cancelFrame.CreateTween();
         Tween t2 = Search.CreateTween();
-        t1.TweenProperty(cancelFrame, "size", new Vector2(255, 250), 0.5);
-        t2.TweenProperty(Search, "position", new Vector2(370, 27), 0.5);
+        t1.TweenProperty(cancelFrame, "size:x", -SearchExpandDeltaX, 0.5).AsRelative();
+        t2.TweenProperty(Search, "position:x", -SearchOpenMoveX, 0.5).AsRelative();
         cancel.Visible = false;
-        cancel.Position = new Vector2(0, 0);
+        cancel.Position = Vector2.Zero;
         IsShowed = false;
     }
+
     private async void OnSearchPressed()
     {
         SearchRect.Visible = true;
@@ -97,11 +154,11 @@ public partial class DeckSubMenuScene : SubMenuScene
             NButton cancel = Search.GetNode<NButton>("取消");
             Tween t1 = cancelFrame.CreateTween();
             Tween t2 = Search.CreateTween();
-            t1.TweenProperty(cancelFrame, "size", new Vector2(510, 250), 0.5);
-            t2.TweenProperty(Search, "position", new Vector2(370 - 81.6f, 27), 0.5);
+            t1.TweenProperty(cancelFrame, "size:x", SearchExpandDeltaX, 0.5).AsRelative();
+            t2.TweenProperty(Search, "position:x", SearchOpenMoveX, 0.5).AsRelative();
             await t1.ToSignal(t1, Tween.SignalName.Finished);
             cancel.Visible = true;
-            cancel.Position = new Vector2(255, 0);
+            cancel.Position = new Vector2(cancelFrame.Size.X * 0.5f, 0);
             IsShowed = true;
         }
         else
@@ -109,22 +166,25 @@ public partial class DeckSubMenuScene : SubMenuScene
             ShowCards(c => true);
         }
     }
+
     private async void OnPlantPressed()
     {
+        CurrentCamp = Camp.Plant;
         BackGround.Modulate = ThemeColors1[0];
         Top1.Modulate = ThemeColors1[1];
         Top2.Modulate = ThemeColors1[2];
-        CurrentCamp = Camp.Plant;
         await InitializeInformation(CurrentCamp.ToName());
     }
+
     private async void OnZombiePressed()
     {
+        CurrentCamp = Camp.Zombie;
         BackGround.Modulate = ThemeColors2[0];
         Top1.Modulate = ThemeColors2[1];
         Top2.Modulate = ThemeColors2[2];
-        CurrentCamp = Camp.Zombie;
         await InitializeInformation(CurrentCamp.ToName());
     }
+
     private void CreateSpirtes(string camp)
     {
         if (CurrentInformation.Count > 0)
@@ -136,32 +196,30 @@ public partial class DeckSubMenuScene : SubMenuScene
         }
         CurrentInformation = new List<Node>();
         List<Type> types = HeroModel.SeekHeroModel(camp);
-        Vector2I position = new Vector2I(1, 1);
+        HFlowContainer slot = Container.GetNode<HFlowContainer>("标志栏");
         foreach (Type type in types)
         {
-            string name = type.Name;
-            HeroSprite hs = HeroSprite.Create(name);
-            Container.GetNode<HFlowContainer>("标志栏").AddChild(hs);
+            HeroSprite hs = HeroSprite.Create(type.Name);
+            slot.AddChild(hs);
             CurrentInformation.Add(hs);
-            position.X++;
-            if (position.X > 5)
-            {
-                position.X = 1;
-            }
         }
-        if (position.X > 1)
+        int remainder = types.Count % HeroesPerRow;
+        if (remainder != 0)
         {
-            for (int i = position.X; i < 6; i++)
+            PackedScene placeholderScene = ResourceLoader.Load<PackedScene>(
+                camp == Camp.Plant.ToName()
+                    ? "res://场景(C#)/植物英雄图标.tscn"
+                    : "res://场景(C#)/僵尸英雄图标.tscn");
+            int fillCount = HeroesPerRow - remainder;
+            for (int i = 0; i < fillCount; i++)
             {
-                Control hs;
-                if (camp == Camp.Plant.ToName()) { hs = ResourceLoader.Load<PackedScene>("res://场景(C#)/植物英雄图标.tscn").Instantiate<Control>(); }
-                else { hs = ResourceLoader.Load<PackedScene>("res://场景(C#)/僵尸英雄图标.tscn").Instantiate<Control>(); }
+                Control hs = placeholderScene.Instantiate<Control>();
                 CurrentInformation.Add(hs);
-                Container.GetNode<HFlowContainer>("标志栏").AddChild(hs);
-                position.X++;
+                slot.AddChild(hs);
             }
         }
     }
+
     private async Task CreateCurrentCards()
     {
         int count = 0;
@@ -187,6 +245,7 @@ public partial class DeckSubMenuScene : SubMenuScene
             }
         }
     }
+
     private async Task InitializeInformation(string camp)
     {
         CreateSpirtes(camp);
@@ -210,6 +269,7 @@ public partial class DeckSubMenuScene : SubMenuScene
         Amount.Text = AllNodeCards.Count.ToString();
         SelectDeck.CurrentCamp = CurrentCamp;
     }
+
     private Control CreateClassSprite(Class c)
     {
         Control classI = classScene.Instantiate<MinimumHFlowContainer>();
@@ -218,6 +278,7 @@ public partial class DeckSubMenuScene : SubMenuScene
         GetNode<HFlowContainer>("%卡牌列表").AddChild(classI);
         return classI;
     }
+
     private void ShowCards(Func<CardModel, bool> predicate)
     {
         SortCards(predicate, CurrentClassCards.Keys.ToList());
@@ -228,6 +289,7 @@ public partial class DeckSubMenuScene : SubMenuScene
             GD.Print(predicate(ncard.Model), "->", ncard.Model.Title);
         }
     }
+
     private void SearchCards(string keywords)
     {
         List<string> keyWords = keywords.Split(" ").ToList();
@@ -241,12 +303,12 @@ public partial class DeckSubMenuScene : SubMenuScene
             if (word[0] == '+')
             {
                 predicateMod = "+";
-                word.Remove(0);
+                word = word.Substring(1);
             }
             else if (word[0] == '-')
             {
                 predicateMod = "-";
-                word.Remove(0);
+                word = word.Substring(1);
             }
             Func<CardModel, bool> p = (c) => c.GetAllStrings().Any(s => s.Contains(word));
             predicates[p] = predicateMod;
@@ -264,6 +326,7 @@ public partial class DeckSubMenuScene : SubMenuScene
         };
         ShowCards(predicate);
     }
+
     private List<Class> sortClassFromCamp(string camp)
     {
         return camp switch
@@ -285,6 +348,7 @@ public partial class DeckSubMenuScene : SubMenuScene
             _ => []
         };
     }
+
     private void SortCards(Func<CardModel, bool> predicate, List<Class> classes)
     {
         Vector2I costRange = new Vector2I(0, -1);
@@ -307,6 +371,4 @@ public partial class DeckSubMenuScene : SubMenuScene
             }
         }
     }
-
-
 }

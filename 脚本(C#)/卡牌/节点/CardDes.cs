@@ -173,14 +173,15 @@ public partial class CardDes : Control
         _isEnd = false;
         GetNode<Polygon2D>("%底色").TopLevel = true;
         GetNode<Control>("%单位容器").ZIndex = 1036;
-        GetNode<Control>("%单位容器").Position = new(360f, 305f);
+        GetNode<Control>("%单位容器").Position = new(360f, 335f);
         GetNode<Control>("%单位容器").TopLevel = true;
+        GetNode<Control>("%单位容器").Scale = Vector2.One;
         Scale = Vector2.Zero;
         GetNode<Polygon2D>("%底色").Modulate = new Color(0, 0, 0, 0);
         _tween = CreateTween();
         _tween.SetTrans(Tween.TransitionType.Back);
         _tween.SetEase(Tween.EaseType.Out);
-        _tween.Parallel().TweenProperty(this, "scale", Vector2.One, 0.5f);
+        _tween.Parallel().TweenProperty(this, "scale", Vector2.One * 0.8f, 0.5f);
         _tween.Parallel().TweenProperty(GetNode<Polygon2D>("%底色"), "modulate", new Color(0, 0, 0, 0.5f), 0.5f);
     }
 
@@ -193,8 +194,10 @@ public partial class CardDes : Control
             _tween.Kill();
         }
         GetNode<Control>("%单位容器").ZIndex = 12;
-        GetNode<Control>("%单位容器").Position = new(0f, -325f);
         GetNode<Control>("%单位容器").TopLevel = false;
+        GetNode<Control>("%单位容器").Position = new(0f, -378f);
+        GetNode<Control>("%单位容器").Scale = new Vector2(1.25f, 1.25f);
+
         var sprite = GetNode<SpineHandler>("%动画");
         sprite.ClearTrack(0);
         _tween = CreateTween();
@@ -680,6 +683,7 @@ public partial class CardDes : Control
     {
         if (Model != null)
         {
+            Position = new(360, 640);
             var cost = GetNode<Label>("%花费数值Label");
             cost.Text = $"{Model.Cost.Current}";
             GetNode<Sprite2D>("%花费数值").Texture = Model.CampCostIcon;
@@ -707,8 +711,9 @@ public partial class CardDes : Control
                 var col1 = scene.GetNode<Node2D>("Collection").Position;
                 var col2 = scene.GetNode<Node2D>("Collection2").Position;
                 var cols1 = scene.GetNode<Node2D>("Collection").Scale;
-                GetNode<SpineHandler>("%动画").Position = (col1 - col2) + GetNode<SpineHandler>("%土坑").Position;
-                GetNode<SpineHandler>("%动画").Scale = cols1;
+                Vector2 originalPos = (col1 - col2) + GetNode<SpineHandler>("%土坑").Position;
+                GetNode<SpineHandler>("%动画").Position = originalPos + new Vector2(0f, 12f);
+                GetNode<SpineHandler>("%动画").Scale = cols1 * 0.8f;
                 if (scene.GetChildren().Any(c => c.Name.ToString().Contains("Saved")))
                 {
                     GetNode<SubViewport>("%裁剪").AddChild(scene);
@@ -729,8 +734,8 @@ public partial class CardDes : Control
             }
             else
             {
-                GetNode<SpineHandler>("%动画").Position = new(5f, 140.0f);
-                GetNode<SpineHandler>("%动画").Scale = new(1, 1);
+                GetNode<SpineHandler>("%动画").Position = new(5f, 140.0f + 12f);
+                GetNode<SpineHandler>("%动画").Scale = new Vector2(1, 1) * 0.8f;
             }
             if (Model is FighterCardModel fighterCard)
             {

@@ -302,4 +302,10 @@ public class PresetPack : CardPack
                 AddCard(card);
         }
     }
+
+    public PresetPack Clone()
+    {
+        var clone = MemberwiseClone() as PresetPack;
+        return clone;
+    }
 }

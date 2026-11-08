@@ -182,7 +182,7 @@ public partial class HeroInstance : Control, ITarget, IAttackable
         var node = isGuest ? Main.GuestHeroContainer : Main.HeroContainer;
         node.AddChild(instance);
         instance.Hero = heroModel;
-        instance.Scale = new(0.3f, 0.3f);
+        instance.Scale = new(0.26f, 0.26f);
         Instances.Add(instance, heroModel);
         instance.Position = vector2;
         instance.Fresh();

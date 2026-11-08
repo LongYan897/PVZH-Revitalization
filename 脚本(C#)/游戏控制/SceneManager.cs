@@ -154,6 +154,7 @@ public static class SceneManager
                 return;
             }
             scene.Visible = false;
+            scene.Position = Vector2.Left * (1280f - 720f) / 2 + Vector2.Down * (1280f - 720f) / 2;
             scene.Payload = subMenu.Payload;
 
             if (showLoading) await Load();
@@ -210,8 +211,6 @@ public static class SceneManager
         var layers = new List<SubMenu>(Menus);
         Menus.Clear();
 
-        // 或门：任意一层原本要加载 或 自定义要加载 → 都加载；
-        // 强制替换：只看自定义设置。
         bool playLoading = forceReplace
             ? showLoading
             : showLoading || layers.Any(m => m != null && GodotObject.IsInstanceValid(m) && m.ShowLoading);
@@ -283,8 +282,6 @@ public static class SceneManager
         SubMenuScene scene = menu.GetScene();
         Menus.RemoveAt(Menus.Count - 1);
 
-        // 或门：这一层原本要加载 或 自定义要加载 → 都加载；
-        // 强制替换：只看自定义设置。
         bool playLoading = forceReplace
             ? showLoading
             : showLoading || (menu != null && GodotObject.IsInstanceValid(menu) && menu.ShowLoading);
@@ -312,7 +309,6 @@ public static class SceneManager
             }
             else
             {
-                // 回到上一层：如果这一层要播加载动画，也用加载界面盖住这次切换。
                 if (playLoading) await Load();
 
                 menu.FreeScene();

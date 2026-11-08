@@ -13,15 +13,12 @@ public abstract partial class SubMenuScene : Node2D
 {
     public sealed override async void _EnterTree()
     {
+        _WhenEnterTree();
         if (IsOpening) return;
         IsOpening = true;
 
-        // 单独测试某个子场景（编辑器里直接运行这个场景）时，主节点 autoload 的 _Ready 可能
-        // 还没执行完，这时还没有脚手架（Main.SceneContainer 为 null）。等它几帧再继续，
-        // 这样 _Load() 里的逻辑（spine、音频、玩家数据等）能正常执行，而不是一进来就报空引用。
         for (int i = 0; i < 180 && Main.SceneContainer == null && IsInsideTree(); i++)
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-
         BackButton.JoinScene(HideReturnButton);
         try
         {
@@ -33,11 +30,12 @@ public abstract partial class SubMenuScene : Node2D
         }
         finally
         {
-            // 无论成功失败都要放行，否则 SceneManager 会永远卡在 await LoadTask，
-            // 表现就是场景不显示、所有按钮变灰点不动。
             SceneManager.InvokeLoadEnd();
         }
     }
+
+    public virtual void _WhenEnterTree()
+    { }
 
     public abstract Task _Load();
 
@@ -48,8 +46,7 @@ public abstract partial class SubMenuScene : Node2D
     public object Payload { get; set; }
 
     /// <summary>
-    /// 离开这一层之前播放的动画（滑出、淡出……）。<br/>
-    /// SceneManager 会 await 它，播完才释放本层场景，所以返回动画写在这里。
+    /// 点击返回按钮后的函数，用于处理一些功能。
     /// </summary>
     public virtual Task Outro() => Task.CompletedTask;
 

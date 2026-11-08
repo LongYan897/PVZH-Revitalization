@@ -47,6 +47,11 @@ public partial class NodeCard : Control
     public bool ForceShowAmount { get; set; } = false;
 
     /// <summary>
+    /// 是否强制隐藏卡牌数量。
+    /// </summary>
+    public bool ForceHideAmount { get; set; } = false;
+
+    /// <summary>
     /// 强制显示的卡牌数量。
     /// </summary>
     public int ForcedAmount { get; set; } = 0;
@@ -489,8 +494,6 @@ public partial class NodeCard : Control
 
     public override void _Ready()
     {
-        // 直接在场景里摆放的卡牌实例没有经过 CreateCard（不会写入 _baseScale），
-        // 这里用场景里设置的 scale 兜底；否则点击动画会 tween 到 _baseScale(0,0)，卡片被缩没。
         if (_baseScale == Vector2.Zero)
             _baseScale = Scale;
 
@@ -499,48 +502,49 @@ public partial class NodeCard : Control
         GetNode<Area2D>("碰撞箱").AreaEntered += AreaEntered;
         GetNode<Area2D>("碰撞箱").AreaExited += AreaExited;
 
-        var infoBtn = GetNode<InputNineRect>("%信息按钮");
+        var infoBtn = GetNode<NinePatchRect>("%信息按钮");
         BindControlClickAnimation(infoBtn, OnInfoButtonPressed);
 
-        var opBtn = GetNode<InputNineRect>("%操作按钮");
+        var opBtn = GetNode<NinePatchRect>("%操作按钮");
         BindControlClickAnimation(opBtn);
     }
-    private void BindControlClickAnimation(InputNineRect control, System.Action onClick = null)
+    private void BindControlClickAnimation(NinePatchRect control, System.Action onClick = null)
     {
         if (control == null) return;
         SetupPivot(control);
+
+        var button = control.GetNodeOrNull<Button>("Button");
+        if (button == null) return;
+
         var originScale = control.Scale;
         bool pressing = false;
 
-        control.Input += (@event) =>
+        button.ButtonDown += () =>
         {
             if (!control.Visible) return;
             if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
 
-            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
-            {
-                if (mb.Pressed)
-                {
-                    pressing = true;
-                    var tween = control.CreateTween();
-                    tween.TweenProperty(control, "scale", originScale * 0.9f, 0.06f)
-                        .SetTrans(Tween.TransitionType.Quad)
-                        .SetEase(Tween.EaseType.Out);
-                }
-                else
-                {
-                    if (pressing)
-                    {
-                        pressing = false;
-                        var tween = control.CreateTween();
-                        tween.TweenProperty(control, "scale", originScale, 0.08f)
-                            .SetTrans(Tween.TransitionType.Back)
-                            .SetEase(Tween.EaseType.Out);
+            pressing = true;
+            var tween = control.CreateTween();
+            tween.TweenProperty(control, "scale", originScale * 0.9f, 0.06f)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.Out);
+        };
 
-                        onClick?.Invoke();
-                    }
-                }
-            }
+        button.ButtonUp += () =>
+        {
+            if (!pressing) return;
+            pressing = false;
+
+            var tween = control.CreateTween();
+            tween.TweenProperty(control, "scale", originScale, 0.08f)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+
+            if (!control.Visible) return;
+            if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
+
+            onClick?.Invoke();
         };
     }
 
@@ -709,6 +713,15 @@ public partial class NodeCard : Control
         control.MouseFilter = visible
             ? Control.MouseFilterEnum.Stop
             : Control.MouseFilterEnum.Ignore;
+
+        if (control is NinePatchRect nine)
+        {
+            var button = nine.GetNodeOrNull<Button>("Button");
+            if (button != null)
+                button.MouseFilter = visible
+                    ? Control.MouseFilterEnum.Stop
+                    : Control.MouseFilterEnum.Ignore;
+        }
     }
 
     private void OnCardClick()
@@ -742,7 +755,7 @@ public partial class NodeCard : Control
     /// </summary>
     public void CloseNonBattle()
     {
-        var nonBattle = GetNode<Node2D>("%非战斗");
+        var nonBattle = GetNode<Control>("%非战斗");
         if (!nonBattle.Visible) return;
 
         _ = ToggleNonBattleAsync(false);
@@ -752,13 +765,13 @@ public partial class NodeCard : Control
 
     private void ToggleNonBattle()
     {
-        var nonBattle = GetNode<Node2D>("%非战斗");
+        var nonBattle = GetNode<Control>("%非战斗");
         _ = ToggleNonBattleAsync(!nonBattle.Visible);
     }
 
     private async Task ToggleNonBattleAsync(bool willOpen)
     {
-        var nonBattle = GetNode<Node2D>("%非战斗");
+        var nonBattle = GetNode<Control>("%非战斗");
         if (willOpen == nonBattle.Visible) return;
 
         var infoBg = GetNode<Control>("%信息背景");
@@ -1219,7 +1232,7 @@ public partial class NodeCard : Control
 
                 if (CardViewMode == CardView.Battle)
                 {
-                    GetNode<Node2D>("%非战斗").Visible = false;
+                    GetNode<Control>("%非战斗").Visible = false;
                 }
                 else
                 {
@@ -1229,7 +1242,7 @@ public partial class NodeCard : Control
                     var infoBtn = GetNode<NinePatchRect>("%信息按钮");
                     SetControlVisible(infoBtn, false);
 
-                    var nonBattle = GetNode<Node2D>("%非战斗");
+                    var nonBattle = GetNode<Control>("%非战斗");
                     nonBattle.Visible = false;
 
                     var infoBg = GetNode<Control>("%信息背景");
@@ -1565,6 +1578,13 @@ public partial class NodeCard : Control
     {
         var amountRoot = GetNodeOrNull<CanvasItem>("%卡牌数容器");
         var amountLabel = GetNodeOrNull<Label>("%数量");
+
+        if (ForceHideAmount)
+        {
+            if (amountRoot != null) amountRoot.Visible = false;
+            SetGray(false);
+            return;
+        }
 
         if (CardViewMode == CardView.Battle || Model == null)
         {

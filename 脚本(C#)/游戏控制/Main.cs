@@ -64,10 +64,14 @@ public partial class Main : Node
         WavPlayer.SetBgMusic<MainMenuWav>();
         TextureBag.SetCurrent<DiscoBag>();
         //
-        var p1 = new Player("MME");
-        var p2 = new AiPlayer("Ai");
-        p2.PrefABox<SuperZombie>(PresetPack.Load<AllDancer>());
-        p1.PrefABox<Penelopea>(PresetPack.Load<AllPea>());
+        var p1 = new Player("MME")
+        {
+            SelectedPreset = PresetPack.Load<AllDancer>()
+        };
+        var p2 = new AiPlayer("Ai")
+        {
+            SelectedPreset = PresetPack.Load<AllPea>()
+        };
         PlayerManager.Hosting(p1);
         PlayerManager.FillPlayer(PlayerManager.HostPlayer, p2);
         p1.Asset.GainAllCards();

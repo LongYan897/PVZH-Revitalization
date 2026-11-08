@@ -123,7 +123,8 @@ script = ExtResource("1_vvy46")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
-[node name="TrashBox" type="NinePatchRect" parent="." unique_id=1152002250]
+[node name="TrashBox" type="NinePatchRect" parent="." unique_id=503235931]
+unique_name_in_owner = true
 offset_left = 608.0
 offset_top = 1168.0
 offset_right = 720.0

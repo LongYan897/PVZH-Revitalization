@@ -60,4 +60,10 @@ public static class PlayerManager
     /// 当前视角的玩家
     /// </summary>
     public static Player HostPlayer { get; private set; }
+
+
+    /// <summary>
+    /// 当前客方玩家
+    /// </summary>
+    public static Player GuestPlayer => P1 != HostPlayer ? P1 : P2;
 }

@@ -27,6 +27,11 @@ public partial class SubMenu : Control
     /// </summary>
     [Export]
     public bool IsPersistNess { get; set; } = false;
+    /// <summary>
+    /// 是否打开其他同层级的SubMenu
+    /// </summary>
+    [Export]
+    public bool IsSameSub { get; set; } = false;
     private SubMenuScene SubmenuScene;
     private float InitScale;
     public void ResetPress() => canPress = true;
