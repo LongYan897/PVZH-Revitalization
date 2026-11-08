@@ -38,7 +38,7 @@ public static class DeckCmd
                     player.Status.InputCard(prepareCards[i]);
                     continue;
                 }
-                pending.Add((i + 1, initCards[i], NodeCard.DrawACard(initCards[i], position, CardView.Battle)));
+                pending.Add((i + 1, initCards[i], NodeCard.DrawACard(initCards[i], position, CardView.Battle , scaleFactor: 0.56f * 0.6f)));
             }
 
             for (int i = count; i < initCards.Count; i++)

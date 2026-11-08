@@ -289,53 +289,53 @@ scale = Vector2(0.9, 0.9)
 [node name="属性背景1" type="TextureRect" parent="人物" unique_id=1812110569]
 unique_name_in_owner = true
 clip_contents = true
-offset_left = 7.777778
-offset_top = -30.0
-offset_right = 719.7778
-offset_bottom = 263.0
+offset_left = 767.77783
+offset_top = 12.222225
+offset_right = 1101.1111
+offset_bottom = 307.44446
 texture = SubResource("GradientTexture2D_ukhsk")
 
 [node name="属性图标1" type="Sprite2D" parent="人物/属性背景1" unique_id=861913569]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_ukhsk")
-position = Vector2(356, 179)
+position = Vector2(173.33339, 154.44447)
 scale = Vector2(2.8, 2.8)
 texture = ExtResource("3_4jd1s")
 
 [node name="属性背景2" type="TextureRect" parent="人物" unique_id=1033408045]
 unique_name_in_owner = true
 clip_contents = true
-offset_left = 720.0
-offset_top = -30.0
-offset_right = 1432.2222
-offset_bottom = 264.0
+offset_left = 1101.1111
+offset_top = 12.222221
+offset_right = 1436.6666
+offset_bottom = 307.33337
 texture = SubResource("GradientTexture2D_4jd1s")
 
 [node name="属性图标2" type="Sprite2D" parent="人物/属性背景2" unique_id=554368356]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_4jd1s")
-position = Vector2(356, 179)
+position = Vector2(173.333, 179)
 scale = Vector2(2.8, 2.8)
 texture = ExtResource("4_126y7")
 
 [node name="角色" type="Sprite2D" parent="人物" unique_id=1129757476]
 unique_name_in_owner = true
-z_index = 50
-position = Vector2(720.00006, 150)
+z_index = 150
+position = Vector2(1098.5332, 173.73889)
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("2_8svqr")
 
 [node name="属性1" type="Sprite2D" parent="人物" unique_id=870964883]
 unique_name_in_owner = true
-z_index = 50
-position = Vector2(308.88892, 150)
+z_index = 150
+position = Vector2(825.2, 183.46666)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("2_gpvli")
 
 [node name="属性2" type="Sprite2D" parent="人物" unique_id=720915998]
 unique_name_in_owner = true
-z_index = 50
-position = Vector2(407.77777, 150)
+z_index = 150
+position = Vector2(923.3334, 183.4669)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("3_0mejf")
 
@@ -346,9 +346,11 @@ scale = Vector2(0.9, 0.9)
 [node name="顶层栏" type="NinePatchRect" parent="顶层栏" unique_id=374946113]
 modulate = Color(0, 0.6500001, 0.75, 1)
 z_index = 120
-offset_top = 304.0
-offset_right = 720.0
-offset_bottom = 343.57
+offset_left = 714.0145
+offset_top = 30.43135
+offset_right = 1520.9701
+offset_bottom = 70.00136
+rotation = 1.5707964
 texture = ExtResource("4_wif33")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -356,17 +358,21 @@ patch_margin_top = 20
 [node name="顶层栏2" type="NinePatchRect" parent="顶层栏" unique_id=1878440524]
 modulate = Color(0, 0.9666667, 1, 1)
 z_index = 120
-offset_top = 252.5
-offset_right = 720.0
-offset_bottom = 292.5
+offset_left = 768.8889
+offset_top = 28.3237
+offset_right = 1579.7522
+offset_bottom = 68.3237
+rotation = 1.5707964
 texture = ExtResource("4_wif33")
 
 [node name="顶层栏3" type="NinePatchRect" parent="顶层栏" unique_id=1827932582]
 modulate = Color(0.25322023, 0.524267, 0.8762468, 1)
 z_index = 120
-offset_top = 257.0
-offset_right = 720.0
-offset_bottom = 337.0
+offset_left = 761.11115
+offset_top = 25.55556
+offset_right = 1574.889
+offset_bottom = 105.55556
+rotation = 1.5707964
 texture = ExtResource("4_8svqr")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -375,17 +381,19 @@ patch_margin_top = 20
 self_modulate = Color(0.13949999, 0.24817498, 0.45, 1)
 z_index = -4022
 clip_contents = true
-offset_top = 343.0
+offset_left = 11.111111
+offset_top = 34.444447
 offset_right = 720.0
-offset_bottom = 834.4445
+offset_bottom = 834.4446
 texture = ExtResource("4_pv7st")
 
 [node name="滚动" type="ScrollContainer" parent="顶层栏" unique_id=1941403449]
 unique_name_in_owner = true
-offset_top = 343.0
-offset_right = 1058.824
-offset_bottom = 1065.7124
-scale = Vector2(0.68, 0.68)
+offset_left = 26.666666
+offset_top = 139.99997
+offset_right = 1085.4906
+offset_bottom = 1299.2593
+scale = Vector2(0.6, 0.6)
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 script = ExtResource("5_yxoah")
@@ -453,10 +461,10 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="顶层栏标题" type="Panel" parent="顶层栏" unique_id=1008088924]
 z_index = 160
-offset_left = 80.0
-offset_top = 263.0
-offset_right = 600.0
-offset_bottom = 331.0
+offset_left = 13.333333
+offset_top = 58.888885
+offset_right = 533.3333
+offset_bottom = 126.888885
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_styles/panel = SubResource("StyleBoxFlat_sw1b0")
 
@@ -480,10 +488,10 @@ flat = true
 [node name="数值" type="Label" parent="顶层栏" unique_id=1029418402]
 unique_name_in_owner = true
 z_index = 120
-offset_left = 615.0
-offset_top = 272.0
-offset_right = 695.0
-offset_bottom = 324.0
+offset_left = 543.3333
+offset_top = 66.666664
+offset_right = 623.3333
+offset_bottom = 118.666664
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 4
@@ -498,31 +506,31 @@ scale = Vector2(0.9, 0.9)
 
 [node name="底层栏" type="NinePatchRect" parent="底层栏" unique_id=1085592063]
 unique_name_in_owner = true
-z_index = 160
-offset_left = 720.0
-offset_top = 88.5
-offset_right = 1440.0
-offset_bottom = 127.5
+z_index = 40
+offset_left = 745.5556
+offset_top = 141.11111
+offset_right = 1437.7778
+offset_bottom = 177.7778
 texture = ExtResource("4_wif33")
 patch_margin_left = 20
 patch_margin_top = 20
 
 [node name="底层栏2" type="NinePatchRect" parent="底层栏" unique_id=837550416]
 unique_name_in_owner = true
-z_index = 160
-offset_left = 720.0
-offset_top = 37.0
-offset_right = 1440.0
-offset_bottom = 76.0
+z_index = 40
+offset_left = 746.6667
+offset_top = 86.66669
+offset_right = 1437.7778
+offset_bottom = 125.66669
 texture = ExtResource("4_wif33")
 
 [node name="底层栏3" type="NinePatchRect" parent="底层栏" unique_id=445168056]
 unique_name_in_owner = true
-z_index = 160
-offset_left = 720.0
-offset_top = 41.777775
-offset_right = 1440.0
-offset_bottom = 121.77777
+z_index = 40
+offset_left = 721.1112
+offset_top = 93.333374
+offset_right = 1434.4445
+offset_bottom = 173.33337
 texture = ExtResource("4_8svqr")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -537,11 +545,11 @@ offset_bottom = 618.8889
 texture = ExtResource("4_pv7st")
 
 [node name="滚动2" type="ScrollContainer" parent="底层栏" unique_id=1066066146]
-offset_left = 719.99994
-offset_top = 127.77783
-offset_right = 1778.0
-offset_bottom = 849.99994
-scale = Vector2(0.68, 0.68)
+offset_left = 783.3333
+offset_top = 179.99998
+offset_right = 1841.3333
+offset_bottom = 911.4814
+scale = Vector2(0.6, 0.6)
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 script = ExtResource("5_yxoah")
@@ -620,10 +628,10 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 unique_name_in_owner = true
 self_modulate = Color(0, 1, 1, 1)
 z_index = 200
-offset_left = 637.7778
-offset_top = -42.555557
-offset_right = 892.7778
-offset_bottom = 207.44444
+offset_left = 688.8889
+offset_top = 5.5555534
+offset_right = 943.8889
+offset_bottom = 255.55556
 scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(127.5, 125)
 texture_normal = ExtResource("13_l405b")
@@ -685,14 +693,14 @@ texture = ExtResource("16_0f5ef")
 
 [node name="收藏" type="Label" parent="底层栏" unique_id=1170712077]
 z_index = 350
-offset_left = 698.0
-offset_top = 45.777775
-offset_right = 1418.0
-offset_bottom = 115.56946
+offset_left = 733.3334
+offset_top = 77.77779
+offset_right = 1453.3334
+offset_bottom = 186.77782
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = SubResource("FontVariation_oun6r")
-theme_override_font_sizes/font_size = 44
+theme_override_font_sizes/font_size = 56
 text = "收藏"
 horizontal_alignment = 1
 vertical_alignment = 1
