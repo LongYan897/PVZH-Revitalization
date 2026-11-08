@@ -40,6 +40,11 @@ public enum CardView
 public partial class NodeCard : Control
 {
     /// <summary>
+    /// 操作按钮点击时触发的事件
+    /// </summary>
+    public Action OnOperate { get; set; }
+
+    /// <summary>
     /// 是否强制显示卡牌数量。<br/>
     /// 注意：这是普通属性，赋值不会自动刷新界面，需要调用 <see cref="RefreshAmount"/>，
     /// 或者在 <see cref="NodeCard.DisplayCardAt"/> 之前设置好。
@@ -506,7 +511,7 @@ public partial class NodeCard : Control
         BindControlClickAnimation(infoBtn, OnInfoButtonPressed);
 
         var opBtn = GetNode<NinePatchRect>("%操作按钮");
-        BindControlClickAnimation(opBtn);
+        BindControlClickAnimation(opBtn, () => OnOperate?.Invoke());
     }
     private void BindControlClickAnimation(NinePatchRect control, System.Action onClick = null)
     {
@@ -524,6 +529,8 @@ public partial class NodeCard : Control
             if (!control.Visible) return;
             if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
 
+            GetViewport().SetInputAsHandled();
+
             pressing = true;
             var tween = control.CreateTween();
             tween.TweenProperty(control, "scale", originScale * 0.9f, 0.06f)
@@ -535,6 +542,8 @@ public partial class NodeCard : Control
         {
             if (!pressing) return;
             pressing = false;
+
+            GetViewport().SetInputAsHandled();
 
             var tween = control.CreateTween();
             tween.TweenProperty(control, "scale", originScale, 0.08f)
@@ -790,6 +799,8 @@ public partial class NodeCard : Control
         {
             _openedCard = this;
             nonBattle.Visible = true;
+            nonBattle.MouseFilter = Control.MouseFilterEnum.Stop;
+            GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
 
             if (isCollection)
             {
@@ -827,6 +838,9 @@ public partial class NodeCard : Control
         else
         {
             if (_openedCard == this) _openedCard = null;
+
+            GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
+            nonBattle.MouseFilter = Control.MouseFilterEnum.Ignore;
 
             if (isCollection)
             {

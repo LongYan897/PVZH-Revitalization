@@ -298,7 +298,7 @@ texture = SubResource("GradientTexture2D_ukhsk")
 [node name="属性图标1" type="Sprite2D" parent="人物/属性背景1" unique_id=861913569]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_ukhsk")
-position = Vector2(173.33339, 154.44447)
+position = Vector2(173.33339, 172.22223)
 scale = Vector2(2.8, 2.8)
 texture = ExtResource("3_4jd1s")
 
@@ -306,9 +306,9 @@ texture = ExtResource("3_4jd1s")
 unique_name_in_owner = true
 clip_contents = true
 offset_left = 1101.1111
-offset_top = 12.222221
+offset_top = 7.7777767
 offset_right = 1436.6666
-offset_bottom = 307.33337
+offset_bottom = 302.88892
 texture = SubResource("GradientTexture2D_4jd1s")
 
 [node name="属性图标2" type="Sprite2D" parent="人物/属性背景2" unique_id=554368356]
