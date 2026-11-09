@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Widgets;
 
 namespace Scene;
 
@@ -545,6 +546,10 @@ public partial class DeckEditSubMenuScene : SubMenuScene
     private void SetupCampColors(HeroModel hero)
     {
         if (hero == null) return;
+
+        // 背景特效跟着阵营换色（植物=绿 / 僵尸=紫）
+        GetNodeOrNull<SceneBackdrop>("%背景特效")?.SetCampTheme(hero.Camp);
+        GetNodeOrNull<SceneLightSweep>("%光晕层")?.SetCampTheme(hero.Camp);
 
         if (hero.Camp == Camp.Plant)
         {

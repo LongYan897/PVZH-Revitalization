@@ -23,6 +23,9 @@
 [ext_resource type="Texture2D" uid="uid://d4l7h6voxbdxg" path="res://素材/ui/界面ui/searchicon_inactive.png" id="15_4jd1s"]
 [ext_resource type="Texture2D" uid="uid://d1vdub5akb3n5" path="res://素材/ui/界面ui/searchicon_x.png" id="16_0f5ef"]
 [ext_resource type="FontFile" uid="uid://wmq6fa8dsbw" path="res://素材/字体/SF-Pro.ttf" id="19_0f5ef"]
+[ext_resource type="Script" uid="uid://c4r0a8he1jbio" path="res://脚本(C#)/界面组件/StylizedPanel.cs" id="24_lakgw"]
+[ext_resource type="Script" uid="uid://brpcbapu5lcs0" path="res://脚本(C#)/界面组件/SceneBackdrop.cs" id="25_backdrop"]
+[ext_resource type="Script" uid="uid://cgltq8hds7law" path="res://脚本(C#)/界面组件/SceneLightSweep.cs" id="26_sweep"]
 
 [sub_resource type="Gradient" id="Gradient_0f5ef"]
 colors = PackedColorArray(0.08235294, 0.29803923, 0.039215688, 1, 0.1325, 0.53, 0, 1)
@@ -274,7 +277,31 @@ base_font = ExtResource("19_0f5ef")
 script = ExtResource("1_g0clt")
 metadata/_custom_type_script = "uid://dfqk5l44ipyeg"
 
+[node name="背景特效" type="Control" parent="." unique_id=1072997958]
+unique_name_in_owner = true
+z_index = -4095
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+script = ExtResource("25_backdrop")
+AccentColor = Color(0.31314498, 0.6926833, 0.44550276, 1)
+BodyColorTop = Color(0.010367268, 0.08410046, 0.09862787, 1)
+ShowSweep = true
+
+[node name="光晕层" type="Control" parent="." unique_id=1979658251]
+unique_name_in_owner = true
+z_index = 4000
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+script = ExtResource("26_sweep")
+
 [node name="ColorRect" type="ColorRect" parent="." unique_id=578611156]
+visible = false
 z_index = -4024
 offset_left = -89.0
 offset_top = -73.0
@@ -283,6 +310,7 @@ offset_bottom = 1411.0
 color = Color(0, 0, 0, 0.50980395)
 
 [node name="人物" type="Node2D" parent="." unique_id=672259972]
+visible = false
 position = Vector2(-10, -31)
 scale = Vector2(0.9, 0.9)
 
@@ -340,6 +368,7 @@ scale = Vector2(0.8, 0.8)
 texture = ExtResource("3_0mejf")
 
 [node name="顶层栏" type="Node2D" parent="." unique_id=111746715]
+visible = false
 position = Vector2(-10, -31)
 scale = Vector2(0.9, 0.9)
 
@@ -501,6 +530,7 @@ text = "0/40"
 horizontal_alignment = 2
 
 [node name="底层栏" type="Node2D" parent="." unique_id=1825757223]
+visible = false
 position = Vector2(-10, 163)
 scale = Vector2(0.9, 0.9)
 
@@ -702,5 +732,169 @@ theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = SubResource("FontVariation_oun6r")
 theme_override_font_sizes/font_size = 56
 text = "收藏"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="左栏" type="Container" parent="." unique_id=700038427]
+clip_contents = true
+offset_left = 9.0
+offset_top = 83.0
+offset_right = 309.0
+offset_bottom = 702.0
+script = ExtResource("24_lakgw")
+BackdropTexture = ExtResource("4_pv7st")
+ScanlineStep = 3.5
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="HFlowContainer" type="HFlowContainer" parent="左栏" unique_id=773202125]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1017269094]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="ColorRect2" type="ColorRect" parent="左栏/HFlowContainer" unique_id=568030088]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="ColorRect3" type="ColorRect" parent="左栏/HFlowContainer" unique_id=2145580541]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="ColorRect4" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1132975862]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="ColorRect5" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1302969303]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="ColorRect6" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1359925492]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="中间栏" type="Container" parent="." unique_id=1082655672]
+clip_contents = true
+offset_left = 332.0
+offset_top = 83.0
+offset_right = 931.0
+offset_bottom = 702.0
+script = ExtResource("24_lakgw")
+Style = 2
+BackdropTexture = ExtResource("4_pv7st")
+ScanlineStep = 3.5
+AccentColor = Color(0.6361598, 0.7820993, 0.98079437, 1)
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="右栏" type="Container" parent="." unique_id=798002761]
+clip_contents = true
+offset_left = 1253.0
+offset_top = 83.0
+offset_right = 1553.0
+offset_bottom = 702.0
+scale = Vector2(-1, 1)
+script = ExtResource("24_lakgw")
+BackdropTexture = ExtResource("4_pv7st")
+ScanlineStep = 3.5
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="顶边栏左" type="Container" parent="." unique_id=1732178557]
+clip_contents = true
+offset_left = 14.0
+offset_top = 13.0
+offset_right = 458.0
+offset_bottom = 73.0
+script = ExtResource("24_lakgw")
+ScanlineStep = 3.5
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="顶边栏右1" type="Container" parent="." unique_id=1387605993]
+clip_contents = true
+offset_left = 1102.0
+offset_top = 13.0
+offset_right = 1253.0
+offset_bottom = 73.0
+script = ExtResource("24_lakgw")
+Style = 6
+BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
+ScanlineStep = 3.5
+AccentColor = Color(0, 0, 0, 0)
+Inset = 4.5
+Chamfer = 10.0
+ShowCornerAccent = false
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="Label" type="Label" parent="顶边栏右1" unique_id=44002751]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "保存"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="顶边栏右2" type="Container" parent="." unique_id=1535454003]
+clip_contents = true
+offset_left = 937.0
+offset_top = 13.0
+offset_right = 1088.0
+offset_bottom = 73.0
+script = ExtResource("24_lakgw")
+Style = 6
+BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
+ScanlineStep = 3.5
+AccentColor = Color(0, 0, 0, 0)
+Inset = 4.5
+Chamfer = 10.0
+ShowCornerAccent = false
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="Label" type="Label" parent="顶边栏右2" unique_id=753154266]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "排序顺序"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="顶边栏右3" type="Container" parent="." unique_id=1624685116]
+clip_contents = true
+offset_left = 773.0
+offset_top = 13.0
+offset_right = 924.0
+offset_bottom = 73.0
+script = ExtResource("24_lakgw")
+Style = 6
+BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
+ScanlineStep = 3.5
+AccentColor = Color(0, 0, 0, 0)
+Inset = 4.5
+Chamfer = 10.0
+ShowCornerAccent = false
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="Label" type="Label" parent="顶边栏右3" unique_id=1355812981]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "排序种类"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="顶边栏右4" type="Container" parent="." unique_id=1419387346]
+clip_contents = true
+offset_left = 531.0
+offset_top = 13.0
+offset_right = 753.0
+offset_bottom = 73.0
+script = ExtResource("24_lakgw")
+BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
+ScanlineStep = 3.5
+Inset = 4.5
+Chamfer = 10.0
+ShowCornerAccent = false
+Shadow = false
+metadata/_custom_type_script = "uid://c4r0a8he1jbio"
+
+[node name="Label" type="Label" parent="顶边栏右4" unique_id=901772275]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "卡组名字"
 horizontal_alignment = 1
 vertical_alignment = 1

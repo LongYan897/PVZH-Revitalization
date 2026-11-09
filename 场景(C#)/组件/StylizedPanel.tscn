@@ -1,0 +1,10 @@
+﻿[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://脚本(C#)/界面组件/StylizedPanel.cs" id="1_panel"]
+
+[node name="StylizedPanel" type="Container"]
+custom_minimum_size = Vector2(360, 240)
+offset_right = 360.0
+offset_bottom = 240.0
+script = ExtResource("1_panel")
+Style = 0
