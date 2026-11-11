@@ -2,23 +2,99 @@
 
 [ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_f1i2d"]
 [ext_resource type="Texture2D" uid="uid://cs0ldsjfe4n4b" path="res://素材/ui/界面ui/centre_M.png" id="2_ewrbg"]
-[ext_resource type="FontFile" uid="uid://btmyglu620lg3" path="res://素材/字体/NotoSansSC-VariableFont_wght.ttf" id="4_pta5a"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="5_iabat"]
+[ext_resource type="Shader" uid="uid://bed8xwc6p34ig" path="res://着色器/按钮.gdshader" id="5_j7747"]
+[ext_resource type="Shader" uid="uid://ctimnulvc2pax" path="res://着色器/渐变艺术字.gdshader" id="7_j7747"]
+[ext_resource type="Texture2D" uid="uid://n8d7v68l4e5y" path="res://素材/ui/段位/frame_0.png" id="7_pta5a"]
+[ext_resource type="FontVariation" uid="uid://d1env7muiww5i" path="res://素材/字体/默认字体.tres" id="8_j7747"]
+[ext_resource type="Texture2D" uid="uid://cbk25jehwcagf" path="res://素材/ui/段位/段位标志/rankicon_1.png" id="8_p6jnt"]
+[ext_resource type="Texture2D" uid="uid://br5nuly1nj771" path="res://素材/ui/界面ui/按钮5.png" id="9_j7747"]
 
-[sub_resource type="FontVariation" id="FontVariation_ewrbg"]
-base_font = ExtResource("4_pta5a")
-variation_opentype = {
-2003265652: 500
-}
-variation_embolden = 0.1
-variation_transform = Transform2D(1, 0, 0, 0.7, 0, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iabat"]
+bg_color = Color(0.17, 0.11951, 0.057799995, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
-[sub_resource type="FontVariation" id="FontVariation_j7747"]
-base_font = ExtResource("4_pta5a")
-variation_opentype = {
-2003265652: 500
+[sub_resource type="FontVariation" id="FontVariation_iabat"]
+base_font = ExtResource("5_iabat")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v8bvt"]
+shader = ExtResource("7_j7747")
+shader_parameter/top_color = Color(1, 1, 1, 1)
+shader_parameter/bottom_color = Color(0.52, 0.52, 0.52, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p6jnt"]
+bg_color = Color(0, 0.96, 0.047999952, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5uc3r"]
+shader = ExtResource("5_j7747")
+shader_parameter/hue_shift = 0.0
+shader_parameter/contrast = 0.7770000369075
+shader_parameter/brightness = 1.0
+
+[sub_resource type="Shader" id="Shader_p6jnt"]
+code = "shader_type canvas_item;
+
+uniform float hue_shift : hint_range(0.0, 1.0) = 0.0;
+uniform float contrast : hint_range(0.0, 2.0) = 0.0;
+uniform float brightness : hint_range(0.0, 2.0) = 1.0;
+
+vec3 rgb_to_hsv(vec3 c) {
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 }
-variation_embolden = 0.1
-variation_transform = Transform2D(1, 0, 0, 0.85, 0, 0)
+
+vec3 hsv_to_rgb(vec3 c) {
+    vec3 p = abs(fract(c.xxx + vec3(0.0, 2.0 / 3.0, 1.0 / 3.0)) * 6.0 - 3.0);
+    return c.z * mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), c.y);
+}
+
+float luma(vec3 c) {
+    return dot(c, vec3(0.2126, 0.7152, 0.0722));
+}
+
+void fragment() {
+    vec4 tex_color = texture(TEXTURE, UV);
+    vec3 rgb = tex_color.rgb;
+
+    vec3 hsv = rgb_to_hsv(rgb);
+    hsv.x = mod(hsv.x + hue_shift, 1.0);
+    rgb = hsv_to_rgb(hsv);
+
+    rgb *= brightness;
+
+    float L = luma(rgb);
+    float L_new = mix(L, smoothstep(0.0, 1.0, L), contrast);
+    L_new = clamp(L_new, 0.0, 1.0);
+
+    float scale = (L > 1e-5) ? (L_new / L) : 1.0;
+    rgb = rgb * scale;
+
+    rgb = clamp(rgb, 0.0, 1.0);
+
+    COLOR = vec4(rgb, tex_color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j7747"]
+shader = SubResource("Shader_p6jnt")
+shader_parameter/hue_shift = 1.0
+shader_parameter/contrast = 0.7770000369075
+shader_parameter/brightness = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pta5a"]
+
+[sub_resource type="FontVariation" id="FontVariation_pta5a"]
+base_font = ExtResource("8_j7747")
 
 [node name="Control" type="Control" unique_id=260714909]
 layout_mode = 3
@@ -35,45 +111,86 @@ metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="." unique_id=1394770203]
 layout_mode = 0
-offset_left = -601.0
-offset_top = -509.0
-offset_right = 602.0
-offset_bottom = 509.0
+offset_left = -671.0
+offset_top = -624.0
+offset_right = 672.0
+offset_bottom = 1043.0
 flat = true
 
 [node name="Frame" type="Node2D" parent="." unique_id=1524062516]
 
 [node name="Sprite2D" type="Sprite2D" parent="Frame" unique_id=1688486349]
-position = Vector2(0, -398)
-scale = Vector2(0.75, 0.75)
+position = Vector2(0, -96)
 texture = ExtResource("2_ewrbg")
 
-[node name="战斗" type="Label" parent="Frame/Sprite2D" unique_id=1366428717]
-offset_left = -484.0
-offset_top = 174.66667
-offset_right = 460.0
-offset_bottom = 545.6667
+[node name="Sprite2D4" type="Sprite2D" parent="Frame" unique_id=116380648]
+self_modulate = Color(1, 0.85, 0, 1)
+position = Vector2(-1.2999908, 726.8)
+scale = Vector2(3.4, 4.4535213)
+texture = ExtResource("9_j7747")
+
+[node name="Panel" type="Panel" parent="Frame" unique_id=1578190719]
+offset_left = -351.3
+offset_top = 794.0
+offset_right = 491.7
+offset_bottom = 935.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_iabat")
+
+[node name="Label" type="Label" parent="Frame/Panel" unique_id=489737813]
+layout_mode = 0
+offset_left = 350.0
+offset_right = 541.0
+offset_bottom = 173.08333
+theme_override_fonts/font = SubResource("FontVariation_iabat")
+theme_override_font_sizes/font_size = 124
+text = "0/5"
+
+[node name="Panel2" type="Panel" parent="Frame/Panel" unique_id=1831992060]
+material = SubResource("ShaderMaterial_v8bvt")
+layout_mode = 0
+offset_top = 13.0
+offset_right = 350.0
+offset_bottom = 127.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_p6jnt")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Frame" unique_id=358348251]
+material = SubResource("ShaderMaterial_5uc3r")
+position = Vector2(-429.44995, 857.2519)
+scale = Vector2(1.7, 1.7)
+texture = ExtResource("8_p6jnt")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Frame" unique_id=1993638861]
+material = SubResource("ShaderMaterial_j7747")
+position = Vector2(-427.44998, 855.25183)
+scale = Vector2(2.7, 2.7)
+texture = ExtResource("7_pta5a")
+
+[node name="Label" type="Label" parent="Frame" unique_id=633146077]
+material = SubResource("ShaderMaterial_pta5a")
+offset_left = -282.3
+offset_top = 411.0
+offset_right = 253.70001
+offset_bottom = 785.0834
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 16
 theme_override_constants/shadow_offset_y = 16
-theme_override_constants/outline_size = 24
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = SubResource("FontVariation_ewrbg")
-theme_override_font_sizes/font_size = 256
-text = "战斗"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_constants/outline_size = 36
+theme_override_fonts/font = SubResource("FontVariation_pta5a")
+theme_override_font_sizes/font_size = 268
+text = "对战"
 
-[node name="赛季时长" type="Label" parent="Frame/Sprite2D" unique_id=860047854]
-offset_left = -8.0
-offset_top = 214.66667
-offset_right = 936.0
-offset_bottom = 560.6667
-theme_override_colors/font_color = Color(0.44, 0.06599999, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.15, 0, 0, 0.18431373)
-theme_override_fonts/font = SubResource("FontVariation_j7747")
-theme_override_font_sizes/font_size = 56
+[node name="Label2" type="Label" parent="Frame" unique_id=1067630071]
+offset_left = 202.70001
+offset_top = 411.0
+offset_right = 738.7
+offset_bottom = 768.3334
+theme_override_colors/font_color = Color(0.68, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 16
+theme_override_constants/shadow_offset_y = 16
+theme_override_fonts/font = SubResource("FontVariation_pta5a")
+theme_override_font_sizes/font_size = 68
 text = "赛季将在2d
 5h后结束"
 horizontal_alignment = 1

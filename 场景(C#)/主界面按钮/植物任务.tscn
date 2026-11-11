@@ -2,6 +2,14 @@
 
 [ext_resource type="Script" uid="uid://cknm0nuv26odt" path="res://脚本(C#)/场景/子场景/PlantQuestMenu.cs" id="1_8gf6f"]
 [ext_resource type="Texture2D" uid="uid://ctblwtikgyjbj" path="res://素材/ui/界面ui/left_M.png" id="2_nv6oq"]
+[ext_resource type="Texture2D" uid="uid://dju83lyw4iiay" path="res://素材/ui/死亡特效/按钮2.png" id="3_bpc2r"]
+[ext_resource type="Shader" uid="uid://dje43hn8dhiwj" path="res://着色器/特效着色器.gdshader" id="4_8gf6f"]
+[ext_resource type="Texture2D" uid="uid://blitak70txbfm" path="res://素材/ui/护盾/featureunlock_plantHQ.png" id="5_8gf6f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5fg8k"]
+shader = ExtResource("4_8gf6f")
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_intensity = 1.0
 
 [node name="植物任务" type="Control" unique_id=1591753121]
 layout_mode = 3
@@ -16,13 +24,29 @@ metadata/_custom_type_script = "uid://cknm0nuv26odt"
 
 [node name="Button" type="Button" parent="." unique_id=1567682655]
 layout_mode = 0
-offset_left = -131.0
-offset_top = -335.0
-offset_right = 611.0
-offset_bottom = 542.0
+offset_left = -87.0
+offset_top = -207.0
+offset_right = 445.0
+offset_bottom = 820.0
 flat = true
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1200090348]
+[node name="按钮图片" type="Sprite2D" parent="." unique_id=1200090348]
 position = Vector2(240, 120)
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_nv6oq")
+
+[node name="按钮图片2" type="Sprite2D" parent="." unique_id=362977588]
+self_modulate = Color(0, 1, 0.01666665, 1)
+position = Vector2(167.5, 630)
+scale = Vector2(2.885, 4)
+texture = ExtResource("3_bpc2r")
+
+[node name="按钮描边" type="Sprite2D" parent="." unique_id=8674839]
+material = SubResource("ShaderMaterial_5fg8k")
+position = Vector2(183.3, 447)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("5_8gf6f")
+
+[node name="按钮图片3" type="Sprite2D" parent="." unique_id=65779125]
+position = Vector2(183.3, 447)
+texture = ExtResource("5_8gf6f")

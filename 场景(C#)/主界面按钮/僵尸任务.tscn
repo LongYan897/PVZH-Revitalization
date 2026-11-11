@@ -2,6 +2,14 @@
 
 [ext_resource type="Script" uid="uid://bbpaefydj08hm" path="res://脚本(C#)/场景/子场景/ZombieQuestMenu.cs" id="1_m6y8i"]
 [ext_resource type="Texture2D" uid="uid://ldsjd7l32iok" path="res://素材/ui/界面ui/right_M.png" id="2_7a23k"]
+[ext_resource type="Texture2D" uid="uid://ehoxa3bh8ukd" path="res://素材/ui/死亡特效/按钮3.png" id="3_6v6li"]
+[ext_resource type="Texture2D" uid="uid://bx3epq8oxb2ei" path="res://素材/ui/界面ui/featureunlock_zombiehq.png" id="4_5r0xb"]
+[ext_resource type="Shader" uid="uid://dje43hn8dhiwj" path="res://着色器/特效着色器.gdshader" id="4_m6y8i"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5r0xb"]
+shader = ExtResource("4_m6y8i")
+shader_parameter/tint_color = Color(1, 1, 1, 1)
+shader_parameter/tint_intensity = 1.0
 
 [node name="Control" type="Control" unique_id=1153394981]
 layout_mode = 3
@@ -16,13 +24,29 @@ metadata/_custom_type_script = "uid://bbpaefydj08hm"
 
 [node name="Button" type="Button" parent="." unique_id=224185089]
 layout_mode = 0
-offset_left = -137.0
-offset_top = -335.0
-offset_right = 617.0
-offset_bottom = 533.0
+offset_left = 37.0
+offset_top = -207.0
+offset_right = 568.0
+offset_bottom = 821.0
 flat = true
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=684854171]
+[node name="按钮图片" type="Sprite2D" parent="." unique_id=684854171]
 position = Vector2(240, 120)
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_7a23k")
+
+[node name="按钮图片2" type="Sprite2D" parent="." unique_id=1725904575]
+modulate = Color(0.6833334, 0, 1, 1)
+position = Vector2(314, 630)
+scale = Vector2(2.8700001, 4)
+texture = ExtResource("3_6v6li")
+
+[node name="按钮描边" type="Sprite2D" parent="." unique_id=1681144275]
+material = SubResource("ShaderMaterial_5r0xb")
+position = Vector2(313.3, 447)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("4_5r0xb")
+
+[node name="按钮图片3" type="Sprite2D" parent="." unique_id=182942437]
+position = Vector2(313.3, 447)
+texture = ExtResource("4_5r0xb")

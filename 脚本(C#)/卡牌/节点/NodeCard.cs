@@ -497,6 +497,17 @@ public partial class NodeCard : Control
     private const float ClickScaleTime = 0.08f;
     private const float DragThreshold = 10f;
 
+    /// <summary>
+    /// 把鼠标从 viewport 坐标转换到卡牌父级 CanvasLayer 的坐标空间。
+    /// 父级不是 CanvasLayer 时退回 GetGlobalMousePosition。
+    /// </summary>
+    private Vector2 MouseInCardLayer()
+    {
+        if (GetParent() is CanvasLayer cl)
+            return cl.GetFinalTransform().AffineInverse() * GetViewport().GetMousePosition();
+        return GetGlobalMousePosition();
+    }
+
     public override void _Ready()
     {
         if (_baseScale == Vector2.Zero)
@@ -595,7 +606,6 @@ public partial class NodeCard : Control
     {
         if (!_isOpen) return;
         if (_returning) return;
-        if (CardViewMode == CardView.Battle && !isCallDragging) return;
         if (@event is InputEventMouseButton mb)
         {
             if (mb.ButtonIndex == MouseButton.Left)
@@ -605,7 +615,7 @@ public partial class NodeCard : Control
                     KillReturnTween();
                     KillClickTween();
 
-                    _mouseDownGlobal = GetGlobalMousePosition();
+                    _mouseDownGlobal = MouseInCardLayer();
                     _cardOriginPos = _boundOriginPos ?? Position;
                     _isDragging = false;
                     _clickAnimationPlayed = false;
@@ -623,7 +633,7 @@ public partial class NodeCard : Control
                     }
                     else
                     {
-                        float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
+                        float dist = (_mouseDownGlobal - MouseInCardLayer()).Length();
 
                         if (dist < DragThreshold)
                         {
@@ -656,12 +666,9 @@ public partial class NodeCard : Control
             if (!Input.IsMouseButtonPressed(MouseButton.Left))
                 return;
 
-            if (!Model.CanPlay()) return;
-            if (!isCallDragging) return;
-
             if (!_isDragging)
             {
-                float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
+                float dist = (_mouseDownGlobal - MouseInCardLayer()).Length();
                 if (dist > DragThreshold)
                 {
                     _isDragging = true;
@@ -674,14 +681,15 @@ public partial class NodeCard : Control
                     KillClickTween();
                     Scale = _baseScale;
 
-                    Drag();
+                    if (Model.CanPlay())
+                        Drag();
                 }
             }
 
             if (_isDragging)
             {
-                Vector2 delta = GetGlobalMousePosition() - _mouseDownGlobal;
-                Position = _cardOriginPos + delta;
+                Vector2 delta = MouseInCardLayer() - _mouseDownGlobal;
+                Position = (_cardOriginPos + delta);
 
                 RefreshNearestTarget();
             }
@@ -706,6 +714,7 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
+        if (!Model.CanPlay()) return;
         TargetRegistry.CallTargeted(Model, Model.TargetType, false, Model.Camp);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
@@ -1017,7 +1026,7 @@ public partial class NodeCard : Control
         if (!Model.CanPlay()) return;
         if (!_isDragging) return;
 
-        var myPos = GetGlobalMousePosition();
+        var myPos = MouseInCardLayer();
 
         Area2D bestArea = null;
         ITarget bestTarget = null;
@@ -1782,7 +1791,7 @@ public partial class NodeCard : Control
             {
                 var parent2D = GetParent() as Node2D;
                 Vector2 local = parent2D != null ? parent2D.ToLocal(targetGlobal) : targetGlobal;
-                return local - CardCenterOffset();
+                return local - CardCenterOffset() + new Vector2(-32.4f, 15f);
             }
             var fighterm = Model as FighterCardModel;
             var ctx2 = ctx.RoadKind switch
@@ -1799,7 +1808,7 @@ public partial class NodeCard : Control
             tween.TweenProperty(this, "scale", Scale * 1.1f, 0.1f);
             tween.TweenProperty(this, "scale", Scale * 1f, 0.1f);
             tween.TweenProperty(this, "scale", Scale * 1f, 0.3f);
-            await BindOriginTask(ToCardPos(new(360f, 240f)), 0.6f);
+            await BindOriginTask(ToCardPos(new(360f, 430f)), 0.6f);
             ctx.Target.AutoTargeted(ctx2);
             await ToSignal(GetTree().CreateTimer(0.5f), Timer.SignalName.Timeout);
             if (ctx.Target is Fighter fighter)
@@ -1855,11 +1864,26 @@ public partial class NodeCard : Control
             PlayerManager.GetPlayer(Model.Camp).Status.HandRemoveCard(Model);
             PlayerBox.StuffCard();
             await DiscallDragging();
+            var model = Model;
             Visible = false;
+            Model = null;
             GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
             ctx.Target.AutoDistargeted(ctx2);
-            await CardCmd.PlayedCard(Model, ctx.Target);
-            await Model.DestroyMe();
+            try
+            {
+                if (model != null)
+                {
+                    await model.DestroyMe();
+                    await CardCmd.PlayedCard(model, ctx.Target);
+                }
+            }
+            finally
+            {
+                instances.Remove(this);
+                _isOpen = false;
+                if (GodotObject.IsInstanceValid(this))
+                    QueueFree();
+            }
         }
         finally
         {

@@ -59,6 +59,10 @@ script = ExtResource("2_d5m1c")
 Color = Color(0.14799999, 0.5426666, 0.74, 1)
 metadata/_custom_type_script = "uid://c4d6enygyoawb"
 
+[node name="Polygon2D" type="Polygon2D" parent="Scene/ButtomScene" unique_id=67270828]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(69, 374, 659, 373, 740, 631, 745, 631, 755, 785, -27, 786, -17, 633, -12, 633)
+
 [node name="卡包" parent="Scene/ButtomScene" unique_id=1529838576 instance=ExtResource("22_sjdq6")]
 unique_name_in_owner = true
 offset_left = 448.0001
@@ -92,31 +96,34 @@ offset_right = 287.0
 offset_bottom = 938.0
 scale = Vector2(0.7, 0.7)
 
-[node name="植物任务" parent="Scene/ButtomScene" unique_id=1509446347 instance=ExtResource("19_quj4d")]
+[node name="植物任务" parent="Scene/ButtomScene" unique_id=1591753121 instance=ExtResource("19_quj4d")]
 unique_name_in_owner = true
-offset_left = -28.0
-offset_top = 520.0
-offset_right = -28.0
-offset_bottom = 520.0
+offset_left = -266.0
+offset_top = -35.49991
+offset_right = 214.0
+offset_bottom = 787.0
 scale = Vector2(0.4, 0.4)
+pivot_offset_ratio = Vector2(1, 1)
 SubScene = "res://场景(C#)/任务.tscn"
 
-[node name="僵尸任务" parent="Scene/ButtomScene" unique_id=443452423 instance=ExtResource("14_2lx20")]
+[node name="僵尸任务" parent="Scene/ButtomScene" unique_id=1153394981 instance=ExtResource("14_2lx20")]
 unique_name_in_owner = true
-offset_left = 561.0
-offset_top = 520.0
-offset_right = 561.0
-offset_bottom = 520.0
+offset_left = 514.0
+offset_top = -36.49991
+offset_right = 994.0
+offset_bottom = 786.0
 scale = Vector2(0.4, 0.4)
+pivot_offset_ratio = Vector2(0, 1)
 SubScene = "res://场景(C#)/任务.tscn"
 
 [node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
 unique_name_in_owner = true
-offset_left = 364.0
-offset_top = 700.0
-offset_right = -916.0
-offset_bottom = -20.0
-scale = Vector2(0.4, 0.4)
+offset_left = 365.0
+offset_top = 176.0
+offset_right = -915.0
+offset_bottom = -72.0
+scale = Vector2(0.25, 0.25)
+pivot_offset_ratio = Vector2(0, 1)
 
 [node name="每日挑战" parent="Scene/ButtomScene" unique_id=687317841 instance=ExtResource("15_1cjfr")]
 unique_name_in_owner = true

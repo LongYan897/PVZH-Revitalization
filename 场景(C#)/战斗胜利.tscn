@@ -15,9 +15,9 @@ point_count = 36
 [node name="战斗胜利" type="Node2D" unique_id=346782537]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=691012042]
-offset_left = -246.0
+offset_left = -1218.0
 offset_top = -232.0
-offset_right = 1007.0
+offset_right = 1967.0
 offset_bottom = 1553.0
 color = Color(0, 0, 0, 0.26666668)
 
