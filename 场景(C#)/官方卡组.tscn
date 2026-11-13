@@ -12,9 +12,9 @@
 [ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="7_kxr4r"]
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="10_e5qfm"]
 [ext_resource type="Texture2D" uid="uid://crfe3ux7wei31" path="res://素材(C#)/卡包/卡包主体/stickerpack_hero_premium_greenshadow.png" id="10_pyxdw"]
+[ext_resource type="Script" uid="uid://bfmd7388jt4te" path="res://脚本(C#)/场景/子场景/EditSubMenu.cs" id="12_121iv"]
 [ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="12_mrg3f"]
 [ext_resource type="Shader" uid="uid://bed8xwc6p34ig" path="res://着色器/按钮.gdshader" id="14_121iv"]
-[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="14_yc3l1"]
 [ext_resource type="Texture2D" uid="uid://c4ixgoegbwet8" path="res://素材(C#)/其他/PlayerBtn.png" id="15_mqqh2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7k45c"]
@@ -362,15 +362,18 @@ theme_override_constants/shadow_offset_y = 8
 theme_override_font_sizes/font_size = 48
 text = "获得组合包来取得这位英雄"
 
-[node name="定制" type="Control" parent="主板" unique_id=1097576286]
+[node name="定制" type="Control" parent="主板" unique_id=204914727]
 anchors_preset = 0
 offset_left = 2077.5
 offset_top = 987.5
 offset_right = 2877.5
 offset_bottom = 1187.5
-script = ExtResource("14_yc3l1")
+script = ExtResource("12_121iv")
+SubScene = "res://场景(C#)/定制卡组.tscn"
 CenterPivot = true
-metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+IsPersistNess = true
+IsSameSub = true
+metadata/_custom_type_script = "uid://bfmd7388jt4te"
 
 [node name="Button" type="Button" parent="主板/定制" unique_id=1342133354]
 layout_mode = 0

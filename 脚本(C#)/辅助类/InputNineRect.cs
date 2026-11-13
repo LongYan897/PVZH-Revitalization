@@ -8,45 +8,37 @@ public partial class InputNineRect : NinePatchRect
     [Signal]
     public delegate void InputEventHandler(InputEvent @event);
 
+    private bool _isPressing = false;
+
     public override void _Input(InputEvent @event)
     {
         if (!IsVisibleInTree()) return;
+        if (MouseFilter == MouseFilterEnum.Ignore) return;
 
         if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
         {
-            if (GetGlobalRect().HasPoint(GetViewport().GetMousePosition()))
+            bool isInside = new Rect2(Vector2.Zero, Size).HasPoint(GetLocalMousePosition());
+
+            if (mb.Pressed)
             {
+                if (!isInside) return;
                 if (GetViewport().IsInputHandled()) return;
 
                 var hovered = GetViewport().GuiGetHoveredControl();
+                if (hovered is InputNineRect && hovered != this) return;
 
-                if (hovered != null && hovered != this)
-                {
-                    if (hovered is InputNineRect) return;
-
-                    bool hasCommonAncestor = false;
-                    Node p1 = this;
-                    while (p1 != null)
-                    {
-                        if (p1 == hovered || p1.IsAncestorOf(hovered))
-                        {
-                            hasCommonAncestor = true;
-                            break;
-                        }
-                        p1 = p1.GetParent();
-                    }
-
-                    if (!hasCommonAncestor && hovered is Control control)
-                    {
-                        if (control.MouseFilter == MouseFilterEnum.Stop)
-                        {
-                            return;
-                        }
-                    }
-                }
-
+                _isPressing = true;
                 EmitSignal(SignalName.Input, @event);
                 GetViewport().SetInputAsHandled();
+            }
+            else
+            {
+                if (_isPressing)
+                {
+                    _isPressing = false;
+                    EmitSignal(SignalName.Input, @event);
+                    GetViewport().SetInputAsHandled();
+                }
             }
         }
     }

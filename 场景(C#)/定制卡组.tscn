@@ -420,6 +420,7 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 [node name="帮我组完" type="NinePatchRect" parent="顶层栏/滚动/已进入卡组/占位" unique_id=1480447548]
 unique_name_in_owner = true
 self_modulate = Color(0.6166668, 0, 1, 1)
+z_index = 150
 layout_mode = 0
 offset_left = 20.588242
 offset_top = 2.2358818

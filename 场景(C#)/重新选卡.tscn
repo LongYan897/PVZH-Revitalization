@@ -36,7 +36,7 @@ texture = ExtResource("2_wp0en")
 
 [node name="C1" type="Marker2D" parent="刷新卡牌1" unique_id=550313016]
 unique_name_in_owner = true
-position = Vector2(123, -100.97155)
+position = Vector2(123, -249.54298)
 
 [node name="碰撞" type="Button" parent="刷新卡牌1" unique_id=801489932]
 layout_mode = 0
@@ -58,7 +58,7 @@ texture = ExtResource("2_wp0en")
 
 [node name="C2" type="Marker2D" parent="刷新卡牌2" unique_id=990066365]
 unique_name_in_owner = true
-position = Vector2(123, -100.97155)
+position = Vector2(123, -249.54298)
 
 [node name="碰撞" type="Button" parent="刷新卡牌2" unique_id=681219480]
 layout_mode = 0
@@ -80,7 +80,7 @@ texture = ExtResource("2_wp0en")
 
 [node name="C3" type="Marker2D" parent="刷新卡牌3" unique_id=1372955440]
 unique_name_in_owner = true
-position = Vector2(123, -100.97155)
+position = Vector2(123, -249.54298)
 
 [node name="碰撞" type="Button" parent="刷新卡牌3" unique_id=1638140472]
 layout_mode = 0
@@ -102,7 +102,7 @@ texture = ExtResource("2_wp0en")
 
 [node name="C4" type="Marker2D" parent="刷新卡牌4" unique_id=1420867697]
 unique_name_in_owner = true
-position = Vector2(123, -100.97155)
+position = Vector2(123, -249.54298)
 
 [node name="碰撞" type="Button" parent="刷新卡牌4" unique_id=1179404023]
 layout_mode = 0

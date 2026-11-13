@@ -23,6 +23,7 @@ public partial class DeckPreviewSubMenuScene : SubMenuScene
 
     public override async Task _Load()
     {
+        EditSubMenu.CurrentPack = CurrentPack;
         await Refresh();
     }
 

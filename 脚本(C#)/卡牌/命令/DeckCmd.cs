@@ -1,3 +1,4 @@
+using Godot;
 using Phrases;
 using Play;
 using Scene;
@@ -38,7 +39,7 @@ public static class DeckCmd
                     player.Status.InputCard(prepareCards[i]);
                     continue;
                 }
-                pending.Add((i + 1, initCards[i], NodeCard.DrawACard(initCards[i], position, CardView.Battle , scaleFactor: 0.56f * 0.75f)));
+                pending.Add((i + 1, initCards[i], NodeCard.DrawACard(initCards[i], position + new Vector2(-404.4f, 195.2f), CardView.Battle , scaleFactor: 0.56f * 0.75f)));
             }
 
             for (int i = count; i < initCards.Count; i++)

@@ -156,7 +156,7 @@ public partial class NodeCard : Control
         {
             var node = Scene.Instantiate<NodeCard>();
             node.Model = cardModel;
-            node.Position = position;
+            node.Position = position ;
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
             node.Scale = initial;
             node.CardViewMode = cardView;
@@ -352,8 +352,8 @@ public partial class NodeCard : Control
     /// </summary>
     public void BindOrigin(Vector2 position, float duration = 0.9f)
     {
-        _boundOriginPos = position;
-        _cardOriginPos = position;
+        _boundOriginPos = position + new Vector2(-404.4f, 195.2f);
+        _cardOriginPos = position + new Vector2(-404.4f, 195.2f);
         ReturnToOrigin(duration);
     }
     /// <summary>
@@ -361,8 +361,8 @@ public partial class NodeCard : Control
     /// </summary>
     public async Task BindOriginTask(Vector2 position, float duration = 0.9f)
     {
-        _boundOriginPos = position;
-        _cardOriginPos = position;
+        _boundOriginPos = position + new Vector2(-404.4f, 195.2f);
+        _cardOriginPos = position + new Vector2(-404.4f, 195.2f);
         await ReturnToOriginTask(duration);
     }
     /// <summary>
@@ -529,43 +529,36 @@ public partial class NodeCard : Control
         if (control == null) return;
         SetupPivot(control);
 
-        var button = control.GetNodeOrNull<Button>("Button");
-        if (button == null) return;
-
         var originScale = control.Scale;
-        bool pressing = false;
 
-        button.ButtonDown += () =>
+        if (control is InputNineRect inputRect)
         {
-            if (!control.Visible) return;
-            if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
+            inputRect.Input += (InputEvent @event) =>
+            {
+                if (@event is InputEventMouseButton mb)
+                {
+                    if (mb.Pressed)
+                    {
+                        if (!inputRect.Visible) return;
 
-            GetViewport().SetInputAsHandled();
+                        var tween = inputRect.CreateTween();
+                        tween.TweenProperty(inputRect, "scale", originScale * 0.9f, 0.06f)
+                            .SetTrans(Tween.TransitionType.Quad)
+                            .SetEase(Tween.EaseType.Out);
+                    }
+                    else
+                    {
+                        var tween = inputRect.CreateTween();
+                        tween.TweenProperty(inputRect, "scale", originScale, 0.08f)
+                            .SetTrans(Tween.TransitionType.Back)
+                            .SetEase(Tween.EaseType.Out);
 
-            pressing = true;
-            var tween = control.CreateTween();
-            tween.TweenProperty(control, "scale", originScale * 0.9f, 0.06f)
-                .SetTrans(Tween.TransitionType.Quad)
-                .SetEase(Tween.EaseType.Out);
-        };
-
-        button.ButtonUp += () =>
-        {
-            if (!pressing) return;
-            pressing = false;
-
-            GetViewport().SetInputAsHandled();
-
-            var tween = control.CreateTween();
-            tween.TweenProperty(control, "scale", originScale, 0.08f)
-                .SetTrans(Tween.TransitionType.Back)
-                .SetEase(Tween.EaseType.Out);
-
-            if (!control.Visible) return;
-            if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
-
-            onClick?.Invoke();
-        };
+                        if (!inputRect.Visible) return;
+                        onClick?.Invoke();
+                    }
+                }
+            };
+        }
     }
 
     private bool currentPlayable = true;
@@ -587,9 +580,10 @@ public partial class NodeCard : Control
             if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left && mb.Pressed)
             {
                 var infoBg = GetNodeOrNull<Control>("%信息背景");
+
                 if (infoBg != null && infoBg.Visible)
                 {
-                    if (!new Rect2(Vector2.Zero, infoBg.Size).HasPoint(infoBg.GetLocalMousePosition()))
+                    if (!infoBg.GetGlobalRect().HasPoint(GetViewport().GetMousePosition()))
                     {
                         CloseNonBattle();
                     }
@@ -1632,7 +1626,6 @@ public partial class NodeCard : Control
         if (amountRoot != null)
             amountRoot.Visible = amount > 0;
 
-        // PreventGray = true 时不要置灰（例如开包结果里"强制显示数量"的卡牌仍要保持彩色）
         SetGray(!_preventGray && (amount == 0 || ForceShowAmount));
     }
     private static readonly string[] GrayNodePaths =
@@ -1808,13 +1801,13 @@ public partial class NodeCard : Control
             tween.TweenProperty(this, "scale", Scale * 1.1f, 0.1f);
             tween.TweenProperty(this, "scale", Scale * 1f, 0.1f);
             tween.TweenProperty(this, "scale", Scale * 1f, 0.3f);
-            await BindOriginTask(ToCardPos(new(360f, 430f)), 0.6f);
+            await BindOriginTask(ToCardPos(new Vector2(360f, 430f) - new Vector2(-404.4f, 195.2f)), 0.6f);
             ctx.Target.AutoTargeted(ctx2);
             await ToSignal(GetTree().CreateTimer(0.5f), Timer.SignalName.Timeout);
             if (ctx.Target is Fighter fighter)
-                await BindOriginTask(ToCardPos(fighter.GlobalPosition));
+                await BindOriginTask(ToCardPos(fighter.GlobalPosition - new Vector2(-404.4f, 195.2f)));
             else if (ctx.Target is HeroInstance instance)
-                await BindOriginTask(ToCardPos(instance.GlobalPosition));
+                await BindOriginTask(ToCardPos(instance.GlobalPosition - new Vector2(-404.4f, 195.2f)));
             else if (ctx.Target is NodeRoad road)
             {
                 road.CallTargetKind(ctx.RoadKind);
@@ -1822,13 +1815,13 @@ public partial class NodeCard : Control
                 switch (road.LastTargetKind)
                 {
                     case RoadTargetKind.Line:
-                        await BindOriginTask(ToCardPos(road.GlobalPosition));
+                        await BindOriginTask(ToCardPos(road.GlobalPosition) - new Vector2(-404.4f, 195.2f));
                         break;
 
                     case RoadTargetKind.Grid:
                         if (Model is FighterCardModel && Model.Camp.Plant())
                             road.SwapForGrid();
-                        await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie))));
+                        await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie)) - new Vector2(-404.4f, 195.2f)));
                         break;
 
                     case RoadTargetKind.CoopGrid:
@@ -1836,7 +1829,7 @@ public partial class NodeCard : Control
                         {
                             if (Model is FighterCardModel)
                                 road.SwapForCoopGrid();
-                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant)));
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant) - new Vector2(-404.4f, 195.2f)));
                         }
                         break;
 
@@ -1845,17 +1838,17 @@ public partial class NodeCard : Control
                         {
                             if (Model is FighterCardModel)
                                 road.SwapForCoopGrid();
-                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant)));
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant) - new Vector2(-404.4f, 195.2f)));
                         }
                         else if (ctx.TargetType.HasFlag(TargetType.Grids))
                         {
                             if (Model is FighterCardModel && Model.Camp.Plant())
                                 road.SwapForGrid();
-                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie))));
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie)) - new Vector2(-404.4f, 195.2f)));
                         }
                         else
                         {
-                            await BindOriginTask(ToCardPos(road.GlobalPosition));
+                            await BindOriginTask(ToCardPos(road.GlobalPosition) - new Vector2(-404.4f, 195.2f));
                         }
                         break;
                 }

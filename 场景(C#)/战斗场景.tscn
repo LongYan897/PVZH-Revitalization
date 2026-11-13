@@ -24,6 +24,7 @@
 [ext_resource type="SpineSkeletonDataResource" uid="uid://38rw6wkfuuf6" path="res://素材/ui/护盾/动画/护盾动画.tres" id="14_vw8as"]
 [ext_resource type="PackedScene" uid="uid://cqnmj7yrerbhj" path="res://场景(C#)/重新选卡.tscn" id="16_4cdlk"]
 [ext_resource type="PackedScene" uid="uid://odbebjsvylb2" path="res://场景(C#)/战斗胜利.tscn" id="18_bggyq"]
+[ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="25_c5pre"]
 
 [sub_resource type="FontVariation" id="FontVariation_tkg4x"]
 base_font = ExtResource("12_clb5w")
@@ -532,11 +533,11 @@ text = "出牌"
 
 [node name="CardsHost" type="Marker2D" parent="节点/CanvasLayer2" unique_id=441186906]
 unique_name_in_owner = true
-position = Vector2(639, 609)
+position = Vector2(728, 594)
 
 [node name="CardsGuest" type="Marker2D" parent="节点/CanvasLayer2" unique_id=1332192921]
 unique_name_in_owner = true
-position = Vector2(544, 92)
+position = Vector2(527, 51)
 
 [node name="重新选卡" parent="节点/CanvasLayer2" unique_id=2139683625 instance=ExtResource("16_4cdlk")]
 unique_name_in_owner = true
@@ -565,6 +566,68 @@ position = Vector2(425, 0)
 scale = Vector2(0.6, 0.6)
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
+
+[node name="卡组栏" type="Node2D" parent="节点/CanvasLayer" unique_id=91925046]
+position = Vector2(1280, 360)
+
+[node name="背板" type="NinePatchRect" parent="节点/CanvasLayer/卡组栏" unique_id=1516802768]
+self_modulate = Color(0.08627451, 0.13333334, 0.19215687, 1)
+z_index = -50
+offset_left = -352.00003
+offset_top = -385.0
+offset_right = 538.0
+offset_bottom = 1539.9999
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("25_c5pre")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="背板2" type="NinePatchRect" parent="节点/CanvasLayer/卡组栏" unique_id=831813860]
+self_modulate = Color(0.1122, 0.20658003, 0.33, 1)
+z_index = -50
+offset_left = -352.00003
+offset_top = -17.00003
+offset_right = 538.0
+offset_bottom = 987.9999
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("25_c5pre")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="额外栏" type="Node2D" parent="节点/CanvasLayer" unique_id=1088370412]
+position = Vector2(0, 360)
+
+[node name="背板" type="NinePatchRect" parent="节点/CanvasLayer/额外栏" unique_id=670704660]
+self_modulate = Color(0.08627451, 0.13333334, 0.19215687, 1)
+z_index = -50
+offset_left = -1.9999998
+offset_top = -385.0
+offset_right = 888.0
+offset_bottom = 1539.9999
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("25_c5pre")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
+
+[node name="背板2" type="NinePatchRect" parent="节点/CanvasLayer/额外栏" unique_id=1509425339]
+self_modulate = Color(0.1122, 0.20658003, 0.33, 1)
+z_index = -50
+offset_left = -2.0
+offset_top = -17.00003
+offset_right = 888.0
+offset_bottom = 987.9999
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("25_c5pre")
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 40
 
 [node name="Center" type="Marker2D" parent="节点" unique_id=2047118299]
 unique_name_in_owner = true

@@ -84,6 +84,7 @@ public partial class NodeRoad : Control, ITarget
     }
     public override void _EnterTree()
     {
+        SetMonitoring(false, false, false);
         GetNode<Area2D>("%碰撞箱").SetMeta("Target", this);
         GetNode<Area2D>("%碰撞箱").SetMeta("TargetType", "Road");
         GetNode<Area2D>("%碰撞箱2").SetMeta("Target", this);
@@ -379,6 +380,7 @@ public partial class NodeRoad : Control, ITarget
     {
         KillTween();
         Calling = false;
+        SetMonitoring(false, false, false);
 
         var line = GetNode<Sprite2D>("%环境高亮");
         TextureRect hl1 = null;
@@ -393,8 +395,10 @@ public partial class NodeRoad : Control, ITarget
         }
         else
         {
-            CallGridTargeted(Camp.Plant);
-            CallGridTargeted(Camp.Zombie);
+            await Task.WhenAll(
+                DeleteLineTargeted(Camp.Plant),
+                DeleteLineTargeted(Camp.Zombie)
+            );
             return;
         }
         if (camp == Camp.Plant)
@@ -479,7 +483,6 @@ public partial class NodeRoad : Control, ITarget
 
         await Task.WhenAll(ToSignal(_tweenTargeted, Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted2, Tween.SignalName.Finished).ToTask(), ToSignal(_tweenTargeted3, Tween.SignalName.Finished).ToTask());
 
-        SetMonitoring(false, false, false);
     }
 
     public Camp? ClickedCamp { get; private set; }
@@ -857,6 +860,7 @@ public partial class NodeRoad : Control, ITarget
     private async Task AutoDeleteTargeted()
     {
         KillTween();
+        SetAutoVisual(false, false, false);
 
         var line = GetNode<Sprite2D>("%环境高亮");
         var hl3 = GetNode<TextureRect>("%单位高亮3");
@@ -914,7 +918,6 @@ public partial class NodeRoad : Control, ITarget
             ToSignal(_tweenTargeted2, Tween.SignalName.Finished).ToTask(),
             ToSignal(_tweenTargeted3, Tween.SignalName.Finished).ToTask());
 
-        SetAutoVisual(false, false, false);
     }
 
     private void AutoCallLineTargeted()

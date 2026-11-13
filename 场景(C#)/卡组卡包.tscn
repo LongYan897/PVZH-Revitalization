@@ -260,6 +260,7 @@ script = ExtResource("7_56yx6")
 SubScene = "res://场景(C#)/官方卡组.tscn"
 ShowLoading = false
 CenterPivot = true
+IsPersistNess = true
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="背景/内层/按钮/信息" unique_id=460640981]
@@ -305,6 +306,7 @@ layout_mode = 2
 script = ExtResource("7_56yx6")
 SubScene = "res://场景(C#)/定制卡组.tscn"
 CenterPivot = true
+IsPersistNess = true
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="背景/内层/按钮/编辑" unique_id=402391992]

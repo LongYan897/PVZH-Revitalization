@@ -50,23 +50,23 @@ script = ExtResource("1_j6ymc")
 
 [node name="背景板" type="ColorRect" parent="." unique_id=423470156]
 z_index = -50
-custom_minimum_size = Vector2(720, 1280)
-offset_right = 720.0
-offset_bottom = 1280.0
+custom_minimum_size = Vector2(1280, 720)
+offset_right = 1280.0
+offset_bottom = 720.0
 color = Color(0, 0, 0, 0.8862745)
 
 [node name="主容器" type="VBoxContainer" parent="." unique_id=78342785]
-offset_right = 720.0
-offset_bottom = 1284.0
+offset_right = 1280.0
+offset_bottom = 1280.0
 
 [node name="英雄图标背景板" type="Panel" parent="主容器" unique_id=1312107703]
-custom_minimum_size = Vector2(720, 300)
+custom_minimum_size = Vector2(1280, 200)
 layout_mode = 2
 theme = SubResource("Theme_j6ymc")
 
 [node name="艺术字" type="Label" parent="主容器/英雄图标背景板" unique_id=2095221842]
 material = SubResource("ShaderMaterial_nl4n4")
-custom_minimum_size = Vector2(720, 70)
+custom_minimum_size = Vector2(1280, 70)
 layout_mode = 0
 offset_right = 720.0
 offset_bottom = 70.0
@@ -82,10 +82,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -70.0
-offset_right = 1274.4
-offset_bottom = 429.40002
+offset_left = -640.0
+offset_top = -38.0
+offset_right = 2265.6
+offset_bottom = 265.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.441, 0.441)
@@ -95,7 +95,7 @@ dragging_scroll_damper = SubResource("Resource_x38gi")
 metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="英雄图标框" type="HFlowContainer" parent="主容器/英雄图标背景板/滚动框" unique_id=1017151613]
-custom_minimum_size = Vector2(1634.4, 499.4)
+custom_minimum_size = Vector2(2905.6, 303)
 layout_mode = 2
 theme = SubResource("Theme_i0xha")
 alignment = 1
@@ -103,9 +103,17 @@ script = ExtResource("1_vvy46")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
-[node name="卡组" type="ScrollContainer" parent="主容器" unique_id=667813537]
-custom_minimum_size = Vector2(720, 980)
+[node name="Control" type="Control" parent="主容器/英雄图标背景板/滚动框/英雄图标框" unique_id=1621766611]
+custom_minimum_size = Vector2(2905.6, 200)
 layout_mode = 2
+mouse_filter = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="卡组" type="ScrollContainer" parent="主容器" unique_id=667813537]
+custom_minimum_size = Vector2(1280, 516)
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 script = ExtResource("3_gtcvs")
 wheel_scroll_damper = SubResource("Resource_gtcvs")
 dragging_scroll_damper = SubResource("Resource_r31cl")
@@ -117,18 +125,24 @@ metadata/_custom_type_script = "uid://bgqglerkcylxx"
 
 [node name="卡组框" type="HFlowContainer" parent="主容器/卡组" unique_id=2102661173]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(720, 980)
+custom_minimum_size = Vector2(1280, 516)
 layout_mode = 2
 script = ExtResource("1_vvy46")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
+[node name="Control" type="Control" parent="主容器/卡组/卡组框" unique_id=1282978711]
+custom_minimum_size = Vector2(1280, 300)
+layout_mode = 2
+mouse_filter = 2
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
 [node name="TrashBox" type="NinePatchRect" parent="." unique_id=503235931]
 unique_name_in_owner = true
-offset_left = 608.0
-offset_top = 1168.0
-offset_right = 720.0
-offset_bottom = 1280.0
+offset_left = 1168.0
+offset_top = 608.0
+offset_right = 1280.0
+offset_bottom = 720.0
 pivot_offset_ratio = Vector2(1, 1)
 texture = ExtResource("6_ucl5f")
 script = ExtResource("6_r31cl")
