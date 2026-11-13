@@ -20,8 +20,8 @@ public partial class DeckEditSubMenuScene : SubMenuScene
     public static PresetPack CurrentPack;
     public static DeckEditSubMenuScene Instance { get; private set; }
 
-    private static readonly Color RemoveColor = new("#ff0000");
-    private static readonly Color AddColor = new("#15ff00");
+    private static readonly Color RemoveColor = new("#E0503C");
+    private static readonly Color AddColor = new("#58C322");
 
     private DIYPack _diy;
     private Control _deckContainer;
@@ -551,34 +551,39 @@ public partial class DeckEditSubMenuScene : SubMenuScene
         GetNodeOrNull<SceneBackdrop>("%背景特效")?.SetCampTheme(hero.Camp);
         GetNodeOrNull<SceneLightSweep>("%光晕层")?.SetCampTheme(hero.Camp);
 
-        if (hero.Camp == Camp.Plant)
+        bool plant = hero.Camp == Camp.Plant;
+
+        // 底层栏三层描边：深色轮廓 / 亮面 / 高光
+        var bar1 = GetNodeOrNull<CanvasItem>("%底层栏");
+        var bar2 = GetNodeOrNull<CanvasItem>("%底层栏2");
+        var bar3 = GetNodeOrNull<CanvasItem>("%底层栏3");
+        var bg2 = GetNodeOrNull<CanvasItem>("%Bg2");
+
+        if (plant)
         {
-            var bar1 = GetNodeOrNull<CanvasItem>("%底层栏");
-            if (bar1 != null) bar1.SelfModulate = new Color("#49734d");
-
-            var bar2 = GetNodeOrNull<CanvasItem>("%底层栏2");
-            if (bar2 != null) bar2.SelfModulate = new Color("#b3ffdb");
-
-            var bar3 = GetNodeOrNull<CanvasItem>("%底层栏3");
-            if (bar3 != null) bar3.SelfModulate = new Color("#429e4a");
-
-            var bg2 = GetNodeOrNull<CanvasItem>("%Bg2");
-            if (bg2 != null) bg2.SelfModulate = new Color("#57cf5d");
+            if (bar1 != null) bar1.SelfModulate = new Color("#123A22");
+            if (bar2 != null) bar2.SelfModulate = new Color("#FFF1C9");
+            if (bar3 != null) bar3.SelfModulate = new Color("#5FAE22");
+            if (bg2 != null) bg2.SelfModulate = new Color("#123A2A");
         }
-        else if (hero.Camp == Camp.Zombie)
+        else
         {
-            var bar1 = GetNodeOrNull<CanvasItem>("%底层栏");
-            if (bar1 != null) bar1.SelfModulate = new Color("#494973");
-
-            var bar2 = GetNodeOrNull<CanvasItem>("%底层栏2");
-            if (bar2 != null) bar2.SelfModulate = new Color("#b3b8ff");
-
-            var bar3 = GetNodeOrNull<CanvasItem>("%底层栏3");
-            if (bar3 != null) bar3.SelfModulate = new Color("#58429e");
-
-            var bg2 = GetNodeOrNull<CanvasItem>("%Bg2");
-            if (bg2 != null) bg2.SelfModulate = new Color("#7f57cf");
+            if (bar1 != null) bar1.SelfModulate = new Color("#241436");
+            if (bar2 != null) bar2.SelfModulate = new Color("#F1DFFF");
+            if (bar3 != null) bar3.SelfModulate = new Color("#8E4CC9");
+            if (bg2 != null) bg2.SelfModulate = new Color("#1E1638");
         }
+
+        // 主按钮（保存）与「帮我组完」跟着阵营走，别在僵尸卡组上冒绿光
+        var save = GetNodeOrNull<StylizedPanel>("顶边栏右1");
+        if (save != null)
+        {
+            save.BodyColorTop = plant ? new Color("#4F9C1F") : new Color("#8E4CC9");
+            save.BodyColorBottom = plant ? new Color("#2F650F") : new Color("#5B2A85");
+        }
+
+        var auto = GetNodeOrNull<CanvasItem>("%帮我组完");
+        if (auto != null) auto.SelfModulate = plant ? new Color("#5FAE22") : new Color("#8E4CC9");
     }
 
     private void UpdateDeckCountUI(bool animate = true)
@@ -597,8 +602,8 @@ public partial class DeckEditSubMenuScene : SubMenuScene
             autoBtn.Visible = (currentCount < 40);
 
         bool isPerfect = (currentCount == 40);
-        Color startColor = isPerfect ? new Color("#7ed9de") : new Color("#6c9e2e");
-        Color endColor = isPerfect ? new Color("#7ed9de") : new Color("#de8f28");
+        Color startColor = isPerfect ? new Color("#FFE7A3") : new Color("#FFF6E3");
+        Color endColor = isPerfect ? new Color("#FFC93C") : new Color("#FFF6E3");
 
         if (_countTween != null && _countTween.IsValid())
         {

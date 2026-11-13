@@ -16,16 +16,15 @@
 [ext_resource type="Shader" uid="uid://bfibgg7ixg8g7" path="res://着色器/属性背景.gdshader" id="9_4jd1s"]
 [ext_resource type="Texture2D" uid="uid://bgx8svrhwphx5" path="res://素材/ui/界面ui/button_tint #186351.png" id="11_m40bx"]
 [ext_resource type="Script" uid="uid://dugfxhm0h06t8" path="res://脚本(C#)/辅助类/InputNineRect.cs" id="12_age6v"]
-[ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="12_g0clt"]
 [ext_resource type="Texture2D" uid="uid://dfehwsaa0te8s" path="res://素材/ui/界面ui/autofillcon.png" id="12_m40bx"]
 [ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="13_l405b"]
 [ext_resource type="Script" uid="uid://bhqnh1uogwt06" path="res://脚本(C#)/辅助类/NButton.cs" id="14_ukhsk"]
 [ext_resource type="Texture2D" uid="uid://d4l7h6voxbdxg" path="res://素材/ui/界面ui/searchicon_inactive.png" id="15_4jd1s"]
 [ext_resource type="Texture2D" uid="uid://d1vdub5akb3n5" path="res://素材/ui/界面ui/searchicon_x.png" id="16_0f5ef"]
-[ext_resource type="FontFile" uid="uid://wmq6fa8dsbw" path="res://素材/字体/SF-Pro.ttf" id="19_0f5ef"]
 [ext_resource type="Script" uid="uid://c4r0a8he1jbio" path="res://脚本(C#)/界面组件/StylizedPanel.cs" id="24_lakgw"]
 [ext_resource type="Script" uid="uid://brpcbapu5lcs0" path="res://脚本(C#)/界面组件/SceneBackdrop.cs" id="25_backdrop"]
 [ext_resource type="Script" uid="uid://cgltq8hds7law" path="res://脚本(C#)/界面组件/SceneLightSweep.cs" id="26_sweep"]
+[ext_resource type="FontFile" uid="uid://1xp65eljivh2" path="res://素材/字体/ZCOOLKuaiLe-Regular.ttf" id="27_zcool"]
 
 [sub_resource type="Gradient" id="Gradient_0f5ef"]
 colors = PackedColorArray(0.08235294, 0.29803923, 0.039215688, 1, 0.1325, 0.53, 0, 1)
@@ -210,26 +209,22 @@ script = ExtResource("6_miqsg")
 [sub_resource type="Resource" id="Resource_4p6ps"]
 script = ExtResource("6_miqsg")
 
-[sub_resource type="FontVariation" id="FontVariation_126y7"]
-base_font = ExtResource("12_g0clt")
-spacing_glyph = 3
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sw1b0"]
-bg_color = Color(0, 0, 0, 0.3529412)
-border_width_left = 8
-border_width_top = 8
-border_width_right = 8
-border_width_bottom = 8
-border_color = Color(0, 0, 0, 0.39607844)
+bg_color = Color(0.96862745, 0.9137255, 0.7882353, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.16862746, 0.10980392, 0.05490196, 1)
 border_blend = true
-corner_radius_top_left = 32
-corner_radius_top_right = 32
-corner_radius_bottom_right = 32
-corner_radius_bottom_left = 32
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
 corner_detail = 12
-
-[sub_resource type="FontVariation" id="FontVariation_sw1b0"]
-base_font = ExtResource("12_g0clt")
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 8
+shadow_offset = Vector2(0, 5)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qunrk"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -238,11 +233,13 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 base_font = ExtResource("7_sw1b0")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g0clt"]
-bg_color = Color(0, 0, 0, 0.50980395)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+bg_color = Color(0.07058824, 0.15294118, 0.22745098, 0.92)
+border_width_left = 6
+border_color = Color(0.9137255, 0.7058824, 0.29803923, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o1djq"]
 texture = ExtResource("13_l405b")
@@ -270,8 +267,17 @@ Button/styles/hover = SubResource("StyleBoxTexture_o1djq")
 Button/styles/normal = SubResource("StyleBoxTexture_i0xha")
 Button/styles/pressed = SubResource("StyleBoxTexture_mem38")
 
-[sub_resource type="FontVariation" id="FontVariation_oun6r"]
-base_font = ExtResource("19_0f5ef")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slot"]
+bg_color = Color(0.043137256, 0.12156863, 0.17254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9137255, 0.7058824, 0.29803923, 0.55)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
 
 [node name="定制卡组" type="Node2D" unique_id=1234199250]
 script = ExtResource("1_g0clt")
@@ -287,7 +293,11 @@ offset_bottom = 720.0
 mouse_filter = 2
 script = ExtResource("25_backdrop")
 AccentColor = Color(0.31314498, 0.6926833, 0.44550276, 1)
-BodyColorTop = Color(0.010367268, 0.08410046, 0.09862787, 1)
+BodyColorTop = Color(0.039215688, 0.12941177, 0.1882353, 1)
+BodyColorBottom = Color(0.015686275, 0.043137256, 0.06666667, 1)
+GlowStrength = 0.45
+ShowTexture = false
+ParticleAmount = 14
 ShowSweep = true
 
 [node name="光晕层" type="Control" parent="." unique_id=1979658251]
@@ -299,6 +309,10 @@ offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
 script = ExtResource("26_sweep")
+IntervalMin = 9.0
+IntervalMax = 16.0
+PeakAlpha = 0.07
+Duration = 2.2
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=578611156]
 visible = false
@@ -373,7 +387,7 @@ position = Vector2(-10, -31)
 scale = Vector2(0.9, 0.9)
 
 [node name="顶层栏" type="NinePatchRect" parent="顶层栏" unique_id=374946113]
-modulate = Color(0, 0.6500001, 0.75, 1)
+modulate = Color(0.05490196, 0.08627451, 0.1254902, 1)
 z_index = 120
 offset_left = 714.0145
 offset_top = 30.43135
@@ -385,7 +399,7 @@ patch_margin_left = 20
 patch_margin_top = 20
 
 [node name="顶层栏2" type="NinePatchRect" parent="顶层栏" unique_id=1878440524]
-modulate = Color(0, 0.9666667, 1, 1)
+modulate = Color(0.96862745, 0.9137255, 0.7882353, 1)
 z_index = 120
 offset_left = 768.8889
 offset_top = 28.3237
@@ -395,7 +409,7 @@ rotation = 1.5707964
 texture = ExtResource("4_wif33")
 
 [node name="顶层栏3" type="NinePatchRect" parent="顶层栏" unique_id=1827932582]
-modulate = Color(0.25322023, 0.524267, 0.8762468, 1)
+modulate = Color(0.9137255, 0.7058824, 0.29803923, 1)
 z_index = 120
 offset_left = 761.11115
 offset_top = 25.55556
@@ -448,7 +462,7 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="帮我组完" type="NinePatchRect" parent="顶层栏/滚动/已进入卡组/占位" unique_id=1480447548]
 unique_name_in_owner = true
-self_modulate = Color(0.6166668, 0, 1, 1)
+self_modulate = Color(0.37254903, 0.68235296, 0.13333334, 1)
 layout_mode = 0
 offset_left = 20.588242
 offset_top = 2.2358818
@@ -476,13 +490,14 @@ offset_left = 292.10242
 offset_top = 4.2016716
 offset_right = 928.1024
 offset_bottom = 212.20168
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.83137256)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.44705883)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 12
-theme_override_constants/shadow_outline_size = 5
-theme_override_fonts/font = SubResource("FontVariation_126y7")
-theme_override_font_sizes/font_size = 156
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_shadow_color = Color(0.05490196, 0.043137256, 0.03137255, 0.9)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 10
+theme_override_constants/outline_size = 14
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 132
 text = "帮我组完"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -505,8 +520,10 @@ offset_top = 1.0
 offset_right = 490.0
 offset_bottom = 66.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = SubResource("FontVariation_sw1b0")
+theme_override_colors/font_color = Color(0.21176471, 0.13333334, 0.05490196, 1)
+theme_override_colors/font_outline_color = Color(1, 0.98039216, 0.92156863, 0.45)
+theme_override_colors/caret_color = Color(0.29803923, 0.5176471, 0.227451, 1)
+theme_override_fonts/font = ExtResource("27_zcool")
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_qunrk")
 text = "小菜一碟"
@@ -521,9 +538,12 @@ offset_left = 543.3333
 offset_top = 66.666664
 offset_right = 623.3333
 offset_bottom = 118.666664
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0.9490196, 0.8509804, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.75)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
 theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 4
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 7
 theme_override_fonts/font = SubResource("FontVariation_pv7st")
 theme_override_font_sizes/font_size = 46
 text = "0/40"
@@ -618,7 +638,11 @@ layout_mode = 0
 offset_left = 10.29412
 offset_right = 290.29413
 offset_bottom = 55.833332
-theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 32
 text = "已经拥有的卡牌"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
@@ -644,7 +668,11 @@ layout_mode = 0
 offset_left = 10.29412
 offset_right = 458.29413
 offset_bottom = 86.0
-theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 32
 text = "尚未找到的牌"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
@@ -656,7 +684,7 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="搜索" type="TextureButton" parent="底层栏" unique_id=406598209]
 unique_name_in_owner = true
-self_modulate = Color(0, 1, 1, 1)
+self_modulate = Color(0.96862745, 0.9137255, 0.7882353, 1)
 z_index = 200
 offset_left = 688.8889
 offset_top = 5.5555534
@@ -678,6 +706,7 @@ pivot_offset = Vector2(127.5, 125)
 theme = SubResource("Theme_oun6r")
 
 [node name="TextureRect" type="TextureRect" parent="底层栏/搜索" unique_id=1688675084]
+self_modulate = Color(0.21176471, 0.13333334, 0.05490196, 1)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -727,9 +756,12 @@ offset_left = 733.3334
 offset_top = 77.77779
 offset_right = 1453.3334
 offset_bottom = 186.77782
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("FontVariation_oun6r")
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 9
+theme_override_fonts/font = ExtResource("27_zcool")
 theme_override_font_sizes/font_size = 56
 text = "收藏"
 horizontal_alignment = 1
@@ -742,36 +774,24 @@ offset_top = 83.0
 offset_right = 309.0
 offset_bottom = 702.0
 script = ExtResource("24_lakgw")
-BackdropTexture = ExtResource("4_pv7st")
-ScanlineStep = 3.5
+Style = 7
+ContentPadding = 18.0
+BodyColorTop = Color(0.078431375, 0.18431373, 0.26666668, 1)
+BodyColorBottom = Color(0.039215688, 0.101960786, 0.15294118, 1)
+BorderColor = Color(0.023529412, 0.043137256, 0.07058824, 1)
+AccentColor = Color(0.95686275, 0.78039217, 0.37254903, 1)
+CornerRadius = 24.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
 [node name="HFlowContainer" type="HFlowContainer" parent="左栏" unique_id=773202125]
 layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
 
-[node name="ColorRect" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1017269094]
-custom_minimum_size = Vector2(50, 50)
+[node name="ColorRect" type="Panel" parent="左栏/HFlowContainer" unique_id=1017269094]
+custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
-
-[node name="ColorRect2" type="ColorRect" parent="左栏/HFlowContainer" unique_id=568030088]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-
-[node name="ColorRect3" type="ColorRect" parent="左栏/HFlowContainer" unique_id=2145580541]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-
-[node name="ColorRect4" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1132975862]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-
-[node name="ColorRect5" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1302969303]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-
-[node name="ColorRect6" type="ColorRect" parent="左栏/HFlowContainer" unique_id=1359925492]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot")
 
 [node name="中间栏" type="Container" parent="." unique_id=1082655672]
 clip_contents = true
@@ -780,10 +800,13 @@ offset_top = 83.0
 offset_right = 931.0
 offset_bottom = 702.0
 script = ExtResource("24_lakgw")
-Style = 2
-BackdropTexture = ExtResource("4_pv7st")
-ScanlineStep = 3.5
-AccentColor = Color(0.6361598, 0.7820993, 0.98079437, 1)
+Style = 7
+ContentPadding = 20.0
+BodyColorTop = Color(0.101960786, 0.24313726, 0.34509805, 1)
+BodyColorBottom = Color(0.043137256, 0.11764706, 0.17254902, 1)
+BorderColor = Color(0.023529412, 0.043137256, 0.07058824, 1)
+AccentColor = Color(0.95686275, 0.78039217, 0.37254903, 1)
+CornerRadius = 26.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
 [node name="右栏" type="Container" parent="." unique_id=798002761]
@@ -794,8 +817,13 @@ offset_right = 1553.0
 offset_bottom = 702.0
 scale = Vector2(-1, 1)
 script = ExtResource("24_lakgw")
-BackdropTexture = ExtResource("4_pv7st")
-ScanlineStep = 3.5
+Style = 7
+ContentPadding = 18.0
+BodyColorTop = Color(0.078431375, 0.18431373, 0.26666668, 1)
+BodyColorBottom = Color(0.039215688, 0.101960786, 0.15294118, 1)
+BorderColor = Color(0.023529412, 0.043137256, 0.07058824, 1)
+AccentColor = Color(0.95686275, 0.78039217, 0.37254903, 1)
+CornerRadius = 24.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
 [node name="顶边栏左" type="Container" parent="." unique_id=1732178557]
@@ -805,28 +833,50 @@ offset_top = 13.0
 offset_right = 458.0
 offset_bottom = 73.0
 script = ExtResource("24_lakgw")
-ScanlineStep = 3.5
+Style = 7
+ContentPadding = 12.0
+BodyColorTop = Color(0.96862745, 0.9137255, 0.7882353, 1)
+BodyColorBottom = Color(0.8745098, 0.76862746, 0.56078434, 1)
+BorderColor = Color(0.16862746, 0.10980392, 0.05490196, 1)
+AccentColor = Color(0.78431374, 0.5921569, 0.22745098, 1)
+Inset = 5.0
+CornerRadius = 18.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
+[node name="Label" type="Label" parent="顶边栏左" unique_id=1732178558]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.21176471, 0.13333334, 0.05490196, 1)
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 32
+text = "编辑卡组"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="顶边栏右1" type="Container" parent="." unique_id=1387605993]
+unique_name_in_owner = true
 clip_contents = true
 offset_left = 1102.0
 offset_top = 13.0
 offset_right = 1253.0
 offset_bottom = 73.0
 script = ExtResource("24_lakgw")
-Style = 6
-BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
-ScanlineStep = 3.5
-AccentColor = Color(0, 0, 0, 0)
-Inset = 4.5
-Chamfer = 10.0
-ShowCornerAccent = false
+Style = 7
+ContentPadding = 10.0
+BodyColorTop = Color(0.30980393, 0.6117647, 0.12156863, 1)
+BodyColorBottom = Color(0.18431373, 0.39607844, 0.0627451, 1)
+BorderColor = Color(0.023529412, 0.043137256, 0.07058824, 1)
+AccentColor = Color(0.9843137, 0.8627451, 0.4862745, 1)
+Inset = 5.0
+CornerRadius = 16.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
 [node name="Label" type="Label" parent="顶边栏右1" unique_id=44002751]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 26
 text = "保存"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -838,18 +888,23 @@ offset_top = 13.0
 offset_right = 1088.0
 offset_bottom = 73.0
 script = ExtResource("24_lakgw")
-Style = 6
-BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
-ScanlineStep = 3.5
-AccentColor = Color(0, 0, 0, 0)
-Inset = 4.5
-Chamfer = 10.0
-ShowCornerAccent = false
+Style = 7
+ContentPadding = 10.0
+BodyColorTop = Color(0.09019608, 0.21960784, 0.30980393, 1)
+BodyColorBottom = Color(0.05098039, 0.13725491, 0.2, 1)
+BorderColor = Color(0.023529412, 0.043137256, 0.07058824, 1)
+AccentColor = Color(0.95686275, 0.78039217, 0.37254903, 1)
+Inset = 5.0
+CornerRadius = 16.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
 [node name="Label" type="Label" parent="顶边栏右2" unique_id=753154266]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 24
 text = "排序顺序"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -861,18 +916,23 @@ offset_top = 13.0
 offset_right = 924.0
 offset_bottom = 73.0
 script = ExtResource("24_lakgw")
-Style = 6
-BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
-ScanlineStep = 3.5
-AccentColor = Color(0, 0, 0, 0)
-Inset = 4.5
-Chamfer = 10.0
-ShowCornerAccent = false
+Style = 7
+ContentPadding = 10.0
+BodyColorTop = Color(0.09019608, 0.21960784, 0.30980393, 1)
+BodyColorBottom = Color(0.05098039, 0.13725491, 0.2, 1)
+BorderColor = Color(0.023529412, 0.043137256, 0.07058824, 1)
+AccentColor = Color(0.95686275, 0.78039217, 0.37254903, 1)
+Inset = 5.0
+CornerRadius = 16.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
 [node name="Label" type="Label" parent="顶边栏右3" unique_id=1355812981]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 24
 text = "排序种类"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -884,17 +944,23 @@ offset_top = 13.0
 offset_right = 753.0
 offset_bottom = 73.0
 script = ExtResource("24_lakgw")
-BodyColorTop = Color(0.03137255, 0.07058824, 0.11764706, 1)
-ScanlineStep = 3.5
-Inset = 4.5
-Chamfer = 10.0
-ShowCornerAccent = false
-Shadow = false
+Style = 7
+ContentPadding = 10.0
+BodyColorTop = Color(0.101960786, 0.24313726, 0.34509805, 1)
+BodyColorBottom = Color(0.05098039, 0.13725491, 0.2, 1)
+BorderColor = Color(0.023529412, 0.043137256, 0.07058824, 1)
+AccentColor = Color(0.95686275, 0.78039217, 0.37254903, 1)
+Inset = 5.0
+CornerRadius = 16.0
 metadata/_custom_type_script = "uid://c4r0a8he1jbio"
 
 [node name="Label" type="Label" parent="顶边栏右4" unique_id=901772275]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.972549, 0.90588236, 1)
+theme_override_colors/font_outline_color = Color(0.05490196, 0.043137256, 0.03137255, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("27_zcool")
+theme_override_font_sizes/font_size = 24
 text = "卡组名字"
 horizontal_alignment = 1
 vertical_alignment = 1

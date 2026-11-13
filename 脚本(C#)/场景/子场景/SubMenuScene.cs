@@ -59,10 +59,6 @@ public abstract partial class SubMenuScene : Node2D
 
     public bool IsOpening;
 
-    // ==================================================================
-    // F6 独立运行支持
-    // ==================================================================
-
     /// <summary>
     /// 是否是用 F6 直接把本场景当主场景跑。<br/>
     /// 正常游戏里这一层会被 SceneManager 塞进 %UponScene(CanvasLayer)，

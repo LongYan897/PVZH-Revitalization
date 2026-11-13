@@ -8,8 +8,8 @@ namespace Widgets;
 /// ==================================================================
 /// 定位：一个「好看的容器」——只负责画出底版和边框，里面放什么完全由你决定。
 ///
-/// · 7 种样式：Tech 科技切角 / Frame 厚边框 / Glow 霓虹 / Bracket 四角框
-///              Rounded 圆角弹窗 / Double 双线画框 / Notch 斜切 HUD
+/// · 8 种样式：Tech 科技切角 / Frame 厚边框 / Glow 霓虹 / Bracket 四角框
+///              Rounded 圆角弹窗 / Double 双线画框 / Notch 斜切 HUD / Cartoon 卡通贴纸
 /// · 全部在 _Draw() 里程序化绘制 → 任意尺寸都清晰，不拉伸变形，不依赖贴图
 /// · 继承 Container → 子节点自动铺满内容区（内容不会被边框盖住）
 /// · [Tool] → 编辑器里拖 size 立刻看到效果
@@ -37,7 +37,9 @@ public partial class StylizedPanel : Container
         /// <summary>双线画框：外粗线 + 内细线，古典画框感</summary>
         Double,
         /// <summary>斜切 HUD：只切对角两个大角，科幻界面感</summary>
-        Notch
+        Notch,
+        /// <summary>卡通贴纸：圆角 + 深色粗描边 + 金色内框 + 顶部高光 + 投影（PVZH 风格）</summary>
+        Cartoon
     }
 
     /// <summary>尺寸缩放策略</summary>
@@ -345,6 +347,7 @@ public partial class StylizedPanel : Container
         {
             PanelStyle.Frame => _inset * 1.6f,
             PanelStyle.Rounded => _inset + _cornerRadius * 0.5f,
+            PanelStyle.Cartoon => _inset + 4f,
             _ => _inset,
         };
         float pad = (margin + _contentPadding) * s + _frameWidth * s * 2f;
@@ -375,6 +378,7 @@ public partial class StylizedPanel : Container
             case PanelStyle.Rounded: DrawRounded(full, content, s); break;
             case PanelStyle.Double: DrawDouble(full, content, s); break;
             case PanelStyle.Notch: DrawNotch(full, content, s); break;
+            case PanelStyle.Cartoon: DrawCartoon(full, content, s); break;
         }
 
         if (ShowSizeLabel)
@@ -633,6 +637,81 @@ public partial class StylizedPanel : Container
             float l = Mathf.Min(body.Size.X, body.Size.Y) * 0.1f;
             DrawLine(new Vector2(body.End.X, body.Position.Y), new Vector2(body.End.X - l, body.Position.Y), A(c, 0.65f), w * 0.7f, true);
             DrawLine(new Vector2(body.Position.X, body.End.Y), new Vector2(body.Position.X + l, body.End.Y), A(c, 0.65f), w * 0.7f, true);
+        }
+    }
+
+    // ---------- 8. 卡通贴纸（PVZH） ----------
+    // 视觉拆解：投影 → 深色粗描边 → 深蓝/奶油底版（底部渐暗）→ 金色内框 → 顶部高光
+    // 用 Inset 当描边粗细、CornerRadius 当圆角，都是一次设定全场景通用。
+    private void DrawCartoon(Rect2 full, Rect2 content, float s)
+    {
+        float inset = Mathf.Max(1f, _inset * s);
+        float radius = Mathf.Clamp(_cornerRadius * s, 0f, Mathf.Min(full.Size.X, full.Size.Y) * 0.45f);
+        int r = Mathf.RoundToInt(radius);
+        int band = Mathf.Max(1, Mathf.RoundToInt(inset));
+        Rect2 body = full.Grow(-inset);
+
+        // 1) 投影：往下偏移的柔和暗块（画在控件内，不影响邻居）
+        if (_shadow)
+        {
+            var shadow = new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0f), DrawCenter = false };
+            shadow.SetCornerRadiusAll(r + band);
+            shadow.ShadowColor = new Color(0f, 0f, 0f, 0.42f);
+            shadow.ShadowSize = Mathf.RoundToInt(12f * s);
+            shadow.ShadowOffset = new Vector2(0f, Mathf.Max(2f, 7f * s));
+            DrawStyleBox(shadow, full);
+        }
+
+        // 2) 深色描边 + 底版
+        var baseBox = new StyleBoxFlat
+        {
+            BgColor = _filled ? _bodyTop : new Color(0f, 0f, 0f, 0f),
+            DrawCenter = _filled,
+            BorderColor = _borderColor,
+        };
+        baseBox.SetCornerRadiusAll(r);
+        baseBox.SetBorderWidthAll(band);
+        DrawStyleBox(baseBox, full);
+
+        // 3) 底部渐暗：一层层加厚并跟随圆角，做出版面厚度（不出现硬边）
+        if (_filled)
+        {
+            float fade = Mathf.Min(body.Size.Y * 0.55f, 90f * s);
+            for (int i = 1; i <= 12; i++)
+            {
+                var shade = new StyleBoxFlat { BgColor = new Color(0f, 0f, 0f, 0f), DrawCenter = false };
+                shade.SetCornerRadiusAll(Mathf.Max(0, r - band));
+                shade.BorderColor = A(_bodyBottom, 0.075f);
+                shade.BorderWidthBottom = Mathf.Max(1, Mathf.RoundToInt(fade * i / 12f));
+                DrawStyleBox(shade, body);
+            }
+        }
+
+        // 4) 金色内框 + 顶部高光
+        if (_accent.A > 0.01f)
+        {
+            var rim = new StyleBoxFlat
+            {
+                BgColor = new Color(0f, 0f, 0f, 0f),
+                DrawCenter = false,
+                BorderColor = A(_accent, 1f),
+            };
+            rim.SetCornerRadiusAll(Mathf.Max(0, r - band));
+            rim.SetBorderWidthAll(Mathf.Max(2, Mathf.RoundToInt(3f * s)));
+            DrawStyleBox(rim, body);
+
+            var gloss = new StyleBoxFlat
+            {
+                BgColor = new Color(0f, 0f, 0f, 0f),
+                DrawCenter = false,
+                BorderColor = new Color(1f, 1f, 1f, 0.20f),
+            };
+            gloss.SetCornerRadiusAll(Mathf.Max(0, r - band - 4));
+            int gw = Mathf.Max(1, Mathf.RoundToInt(2f * s));
+            gloss.BorderWidthTop = gw;
+            gloss.BorderWidthLeft = gw;
+            gloss.BorderWidthRight = gw;
+            DrawStyleBox(gloss, body.Grow(-Mathf.Max(4f, 4f * s)));
         }
     }
 
