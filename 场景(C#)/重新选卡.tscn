@@ -17,33 +17,26 @@ base_font = ExtResource("4_tcf8o")
 [node name="重新选卡" type="Node2D" unique_id=2139683625]
 
 [node name="底色" type="ColorRect" parent="." unique_id=347079671]
-offset_left = -278.0
+z_index = -100
+offset_left = -1227.0
 offset_top = -314.0
-offset_right = 1029.0
+offset_right = 1968.0
 offset_bottom = 1603.0
 color = Color(0, 0, 0, 0.36078432)
 
-[node name="C1" type="Marker2D" parent="." unique_id=550313016]
-position = Vector2(96, 307)
-
-[node name="C2" type="Marker2D" parent="." unique_id=990066365]
-position = Vector2(369, 307)
-
-[node name="C3" type="Marker2D" parent="." unique_id=1372955440]
-position = Vector2(96, 596)
-
-[node name="C4" type="Marker2D" parent="." unique_id=1420867697]
-position = Vector2(369, 596)
-
 [node name="刷新卡牌1" type="TextureRect" parent="." unique_id=409406780]
 material = SubResource("ShaderMaterial_i4s63")
-offset_left = 100.0
-offset_top = 378.29
-offset_right = 346.0
-offset_bottom = 632.29004
-scale = Vector2(0.27, 0.27)
+offset_left = 60.0
+offset_top = 338.29
+offset_right = 306.0
+offset_bottom = 592.29004
+scale = Vector2(0.35, 0.35)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("2_wp0en")
+
+[node name="C1" type="Marker2D" parent="刷新卡牌1" unique_id=550313016]
+unique_name_in_owner = true
+position = Vector2(123, -100.97155)
 
 [node name="碰撞" type="Button" parent="刷新卡牌1" unique_id=801489932]
 layout_mode = 0
@@ -55,13 +48,17 @@ flat = true
 
 [node name="刷新卡牌2" type="TextureRect" parent="." unique_id=1660004938]
 material = SubResource("ShaderMaterial_i4s63")
-offset_left = 374.0
-offset_top = 378.29
-offset_right = 620.0
-offset_bottom = 632.29004
-scale = Vector2(0.27, 0.27)
+offset_left = 414.0
+offset_top = 338.29
+offset_right = 660.0
+offset_bottom = 592.29004
+scale = Vector2(0.35, 0.35)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("2_wp0en")
+
+[node name="C2" type="Marker2D" parent="刷新卡牌2" unique_id=990066365]
+unique_name_in_owner = true
+position = Vector2(123, -100.97155)
 
 [node name="碰撞" type="Button" parent="刷新卡牌2" unique_id=681219480]
 layout_mode = 0
@@ -73,13 +70,17 @@ flat = true
 
 [node name="刷新卡牌3" type="TextureRect" parent="." unique_id=714018046]
 material = SubResource("ShaderMaterial_i4s63")
-offset_left = 100.0
+offset_left = 60.0
 offset_top = 666.84
-offset_right = 346.0
+offset_right = 306.0
 offset_bottom = 920.84
-scale = Vector2(0.27, 0.27)
+scale = Vector2(0.35, 0.35)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("2_wp0en")
+
+[node name="C3" type="Marker2D" parent="刷新卡牌3" unique_id=1372955440]
+unique_name_in_owner = true
+position = Vector2(123, -100.97155)
 
 [node name="碰撞" type="Button" parent="刷新卡牌3" unique_id=1638140472]
 layout_mode = 0
@@ -91,13 +92,17 @@ flat = true
 
 [node name="刷新卡牌4" type="TextureRect" parent="." unique_id=121093812]
 material = SubResource("ShaderMaterial_i4s63")
-offset_left = 374.0
+offset_left = 414.0
 offset_top = 666.84
-offset_right = 620.0
+offset_right = 660.0
 offset_bottom = 920.84
-scale = Vector2(0.27, 0.27)
+scale = Vector2(0.35, 0.35)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("2_wp0en")
+
+[node name="C4" type="Marker2D" parent="刷新卡牌4" unique_id=1420867697]
+unique_name_in_owner = true
+position = Vector2(123, -100.97155)
 
 [node name="碰撞" type="Button" parent="刷新卡牌4" unique_id=1179404023]
 layout_mode = 0
@@ -112,7 +117,7 @@ offset_left = 170.0
 offset_top = 925.0
 offset_right = 550.0
 offset_bottom = 1147.5
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.7, 0.7)
 pivot_offset_ratio = Vector2(0.5, 0.4)
 texture = ExtResource("3_wp0en")
 patch_margin_left = 40

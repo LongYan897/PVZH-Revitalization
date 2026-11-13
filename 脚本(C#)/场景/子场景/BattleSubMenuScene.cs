@@ -323,18 +323,29 @@ public partial class BattleSubMenuScene : SubMenuScene
         instance.GetNode<Node2D>("%重新选卡").GetNode<NinePatchRect>("开始战斗").GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
         instance.GetNode<Node2D>("%重新选卡").Visible = false;
     }
+
     public static Dictionary<int, Vector2> GetFreshLocation()
     {
         var dict = new Dictionary<int, Vector2>();
-        foreach (var refloc in instance.GetNode<Node2D>("%重新选卡").GetChildren().OfType<Marker2D>())
+        var root = instance.GetNode<Node2D>("%重新选卡");
+        for (int i = 1; i <= 4; i++)
         {
-            if (refloc.Name.ToString().Contains('C'))
-            {
-                dict.Add(refloc.Name.ToString().Replace("C", "").ToInt(), refloc.GlobalPosition);
-            }
+            var marker = root.GetNodeOrNull<Marker2D>($"%C{i}");
+            if (marker != null)
+                dict[i] = marker.GlobalPosition;
         }
         return dict;
     }
+
+    public static Vector2 GetCardsPos(Player player)
+    {
+        if (instance == null) return Vector2.Zero;
+        var marker = instance.GetNodeOrNull<Marker2D>(
+            player == PlayerManager.HostPlayer ? "%CardsHost" : "%CardsGuest");
+        if (marker == null) return Vector2.Zero;
+        return marker.GlobalPosition;
+    }
+
     private static TaskCompletionSource<bool> freshAwaiters;
     private static readonly List<Task> freshTasks = new();
     public static async Task GetFreshTask()

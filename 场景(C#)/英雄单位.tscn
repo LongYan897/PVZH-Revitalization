@@ -52,6 +52,6 @@ shape = SubResource("RectangleShape2D_nqrbo")
 
 [node name="动画" parent="." unique_id=922182681 instance=ExtResource("3_2tma1")]
 unique_name_in_owner = true
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.8, 0.8)
 
 [editable path="动画"]
