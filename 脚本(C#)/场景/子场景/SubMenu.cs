@@ -44,6 +44,7 @@ public partial class SubMenu : Control
             PivotOffsetRatio = new Vector2(0.5f, 0.5f);
         InitScale = Scale.X;
         GetNode<Button>("Button").Pressed += Enter;
+        GetNode<Button>("Button").MouseDefaultCursorShape = CursorShape.PointingHand;
         ReadyField();
     }
     public sealed override void _EnterTree()

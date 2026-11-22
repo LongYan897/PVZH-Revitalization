@@ -9,7 +9,18 @@ namespace Pack;
 public partial class IconComposer : Node
 {
     public static IconComposer Instance { get; private set; }
+    public static IconComposer EnsureInstance()
+    {
+        if (Instance != null && GodotObject.IsInstanceValid(Instance))
+            return Instance;
 
+        var tree = (SceneTree)Engine.GetMainLoop();
+        if (tree == null) return null;
+
+        var composer = new IconComposer { Name = "IconComposer_Auto" };
+        tree.Root.AddChild(composer);
+        return Instance;
+    }
     private SubViewport _viewport;
     private Label _label;
     private readonly Dictionary<string, Texture2D> _cache = new();

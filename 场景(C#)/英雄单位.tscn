@@ -26,6 +26,7 @@ offset_left = -320.0
 offset_top = -540.0
 offset_right = 320.0
 offset_bottom = 100.0
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="ExSprite" type="Node2D" parent="." unique_id=900614265]

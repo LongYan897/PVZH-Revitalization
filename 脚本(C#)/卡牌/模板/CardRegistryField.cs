@@ -43,8 +43,4 @@ public static class CardRegistryField
     public static string 本回合 => "直到战斗阶段结束。";
     [URL]
     public static string 下回合 => "直到僵尸出牌阶段开始。";
-    [URL]
-    public static string 灼烧 => "在下次自己线上战斗开始之前：对这只僵尸造成=Health={-{#/&:x}}。";
-    [IconText("ffffff")]
-    public const string Fire = "res://素材(C#)/文本图片/Fire.png";
 }

@@ -41,6 +41,7 @@ offset_left = -40.0
 offset_top = -270.0
 offset_right = 40.0
 offset_bottom = 270.0
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="碰撞箱" type="Area2D" parent="." unique_id=1696215677]
@@ -107,6 +108,7 @@ offset_top = 8.0
 offset_right = 100.0
 offset_bottom = 88.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
 flat = true
 metadata/_edit_use_anchors_ = true
 
@@ -148,6 +150,7 @@ offset_top = 112.0
 offset_right = 100.0
 offset_bottom = 192.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="碰撞箱3" type="Area2D" parent="植物_2" unique_id=1383307985]
@@ -247,6 +250,7 @@ offset_top = 8.0
 offset_right = 100.0
 offset_bottom = 88.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
 flat = true
 metadata/_edit_use_anchors_ = true
 
@@ -273,5 +277,6 @@ offset_top = 8.0
 offset_right = 100.0
 offset_bottom = 88.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
 flat = true
 metadata/_edit_use_anchors_ = true
