@@ -24,9 +24,6 @@ public partial class CardPackDetail : SubMenuScene
     private const float CardCellWidth = 150f;
     /// <summary>卡牌之间的间距（横向、纵向都用这个）</summary>
     private const int RowSeparation = 12;
-    /// <summary>卡牌.tscn 根节点的设计尺寸（custom_minimum_size），用来算缩放比</summary>
-    private const float CardNaturalWidth = 255f;
-    private const float CardNaturalHeight = 200f;
     private FlowContainer ItemListNode;
     private Tween _introTween;
     private bool _introPlayed;
@@ -47,7 +44,7 @@ public partial class CardPackDetail : SubMenuScene
         if (Payload is string packName && !string.IsNullOrWhiteSpace(packName))
             _packName = packName;
         FillPackInfo(_packName);
-        await FillCards(_packName);
+        await CardPackPreview.Fill(ItemListNode, _packName, CardsPerRow, CardCellWidth, RowSeparation);
 
         IntroAn();
     }
@@ -67,63 +64,6 @@ public partial class CardPackDetail : SubMenuScene
 
         // 卡池分组也在这里读：json.GetArray<JsonObject>("group") 里每个 group 有
         // Name / Cards / MaxCount / BaseRate / UltimateRate，可以据此在 ItemListNode 里生成下方卡牌列表。
-    }
-
-    /// <summary>
-    /// 按卡包数据生成卡牌：一排 4 张，不够 4 张靠左、后面空着。<br/>
-    /// 注意：卡牌外面必须套一个固定尺寸的"格子"（普通 Control）。Godot 的容器是按子节点的
-    /// custom_minimum_size 排版的，而且 Container 会把子节点的 scale 重置成 1；
-    /// 直接给卡牌设 scale 再塞进 HFlowContainer 是排不下一排 4 张的。
-    /// 格子决定排版尺寸，卡牌在格子里按比例缩放。
-    /// </summary>
-    private async Task FillCards(string packName)
-    {
-        float fit = CardCellWidth / CardNaturalWidth;
-        var cellSize = new Vector2(CardCellWidth, CardNaturalHeight * fit);
-
-        FileJson json = new FileJson().Open(PackDataPath).OpenObject(packName);
-        foreach (JsonObject group in json.GetArray<JsonObject>("group"))
-        {
-            var groupName = group["Name"]?.GetValue<string>();
-            CardBar newPanel = GD.Load<PackedScene>("res://场景(C#)/卡包/横幅.tscn").Instantiate<CardBar>();
-            ItemListNode.AddChild(newPanel);
-            newPanel.IntroduceLabel.Text = groupName ?? "";
-
-
-            var cards = group["Cards"]?.AsArray();
-            if (cards == null) continue;
-            foreach (var item in cards)
-            {
-                string cardName = item?.GetValue<string>();
-                CardModel model = CardModel.GetTemplateByClassName(cardName);
-                if (model == null)
-                {
-                    GD.PushWarning($"[CardPackDetail] 找不到卡牌：{cardName}");
-                    continue;
-                }
-                model.Status = Status.FaceUp;
-
-                var cell = new Control { CustomMinimumSize = cellSize };
-                ItemListNode.AddChild(cell);
-
-                NodeCard card = await NodeCard.DisplayCardAt(model, Vector2.Zero, cell, CardView.Collection, fit);
-
-                // 点击动画以卡牌“中心”为缩放基准。
-                // 注意：Godot 4.7 里实际 pivot = PivotOffset + Size × PivotOffsetRatio（两者相加），
-                // 卡牌.tscn 根节点本来就有 pivot_offset=(128,96.5)，所以必须先把 PivotOffset 清零，
-                // 否则会和 ratio 叠加成 (255.5,193)（跑到右边界外），缩放位置就偏一倍。
-                card.PivotOffset = Vector2.Zero;
-                card.PivotOffsetRatio = new Vector2(0.5f, 0.5f);
-
-                // 位置补偿：以中心缩放会把卡牌视觉左上角往右下推 pivot×(1-scale)，
-                // 这里把 Position 反向偏移同样的距离，保证静止时卡牌的左上角仍贴在格子左上角。
-                Vector2 cardSize = card.GetCombinedMinimumSize();
-                card.Position = -cardSize * 0.5f * (1f - fit);
-                card.AllowExpand = false;
-                card.PreventGray = true;
-                card.SetToBright();
-            }
-        }
     }
 
     public override void _ExitTree()

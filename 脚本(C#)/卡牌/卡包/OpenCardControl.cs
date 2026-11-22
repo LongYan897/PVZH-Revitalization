@@ -64,9 +64,15 @@ public partial class OpenCardControl : SubMenuScene
     private const float CardNaturalWidth = 255f;
     private const float CardNaturalHeight = 200f;
 
-    /// <summary>组名横幅的尺寸（和 横幅.tscn 的 custom_minimum_size 一致）</summary>
-    private const float BannerWidth = 720f;
+    /// <summary>组名横幅的高度</summary>
     private const float BannerHeight = 50f;
+
+    /// <summary>
+    /// 内容栏宽度：横幅按这个宽度居中显示。<br/>
+    /// 不能让它跟着列表铺满整屏（1280 宽会横贯整个屏幕，看着像一条黑带）。
+    /// 一行 4 张卡是 4*150 + 3*12 = 636，720 的栏宽两边各留 42。
+    /// </summary>
+    private const float ContentWidth = 720f;
 
     /// <summary>开卡特效：稀有度 → spine skeleton data 资源</summary>
     private static readonly Dictionary<string, string> EffectPaths = new()
@@ -142,7 +148,7 @@ public partial class OpenCardControl : SubMenuScene
             Card3D card = packScene.Instantiate<Card3D>();
             card3DList.Add(card);
             if (packTexture != null) card.Texture = packTexture;
-            card.UltimatePos = center + randomPos + new Vector2(0, 300f - StackOffset * i);
+            card.UltimatePos = center + randomPos + new Vector2(0, 230f - StackOffset * i);
             float progress = PileCardCount > 1 ? (float)i / (PileCardCount - 1) : 0f;
             float sinValue = Mathf.Sin(progress * Mathf.Pi);
             float currentInterval = StaggerDelay * (baseRatio + SineRatio * (1f - sinValue));
@@ -183,6 +189,9 @@ public partial class OpenCardControl : SubMenuScene
         await this.Wait(1f);
 
         //添加结束按钮
+        if (listScene.NodeList == null)
+            return;   // 场景里没找到 FlowContainer，前面已经 PushError 过了
+
         var endButton = GD.Load<PackedScene>(EndButtonScenePath).Instantiate<EndButton>();
         // 注意：这里不要设 endButton.Scale —— NodeList 是 HFlowContainer，
         // 容器排版会把直接子节点的 scale 重置成 1，设了也没用。
@@ -192,12 +201,21 @@ public partial class OpenCardControl : SubMenuScene
             CustomMinimumSize = new(0, 200)
         };
         listScene.NodeList.AddChild(endPanel);
+
+        // 「收集」按钮要落在屏幕正中：EndButton 自己是 CenterContainer，会把内部按钮摆在
+        // 自己矩形的中心，所以把它的宽度撑成整行（而不是它场景里的 720），内部按钮就居中了。
+        float rowWidth = listScene.NodeList.Size.X;
+        if (rowWidth > 0)
+            endButton.CustomMinimumSize = new Vector2(rowWidth, endButton.CustomMinimumSize.Y);
         listScene.NodeList.AddChild(endButton);
     }
 
     /// <summary>
     /// 把抽到的卡按 cardPack.json 里的分组顺序排列：
-    /// 每组一条组名横幅，接着是该组抽到的卡；一行最多 4 张、靠左（和卡包详情一样）。<br/>
+    /// 每组一条组名横幅（内容栏 720 宽、居中），接着是该组抽到的卡；<b>一行最多 4 张、靠左</b>。<br/>
+    /// 实现方式：HFlowContainer 只会把子节点从左往右排（Alignment 对它没用），
+    /// 所以每一行都套一个和列表等宽的 HBoxContainer（居中），里面再套 720 宽的 HBox（靠左）：
+    /// 整行宽的子节点必然独占一行，内容栏本身居中，卡片则从内容栏左边开始排。<br/>
     /// 注意这里用的是 <see cref="CardPackExtensions.PackDrawResult.ByGroup"/>（按组明细），
     /// 不能用按卡名合并的结果：同一张卡被配在多个组里时，合并后数量会累加，显示就对不上了。
     /// </summary>
@@ -215,11 +233,17 @@ public partial class OpenCardControl : SubMenuScene
             return;
         }
 
+        // 一行的宽度 = 列表自己的宽度：整行宽的格子会独占一行，同时横幅也铺满这个宽度
+        float rowWidth = list.Size.X;
+        if (rowWidth <= 0) rowWidth = GetViewportRect().Size.X;
+
         float fit = CardCellWidth / CardNaturalWidth;
         var cellSize = new Vector2(CardCellWidth, CardNaturalHeight * fit);
 
         string currentGroup = null;
         var shownCards = new HashSet<string>();
+        HBoxContainer row = null;
+        int inRow = 0;
 
         foreach (var (groupName, cardName, count) in drawnByGroup)
         {
@@ -228,7 +252,9 @@ public partial class OpenCardControl : SubMenuScene
             if (groupName != currentGroup)
             {
                 currentGroup = groupName;
-                await AddGroupBar(list, string.IsNullOrEmpty(groupName) ? "其它" : groupName);
+                row = null;      // 新的一组从新的一行开始
+                inRow = 0;
+                await AddGroupBar(list, string.IsNullOrEmpty(groupName) ? "其它" : groupName, rowWidth);
             }
 
             // 数据检查：同一张卡被配在多个组里时，会在多个组下各显示一次，
@@ -240,29 +266,70 @@ public partial class OpenCardControl : SubMenuScene
                     "建议把 cardPack.json 里同一张卡只配在一个 group 中。");
             }
 
-            await AddCardCell(list, cardName, groupName, cellSize, fit, count);
+            if (row == null || inRow >= OpeningCardList.CardsPerRow)
+            {
+                row = NewLine(list, rowWidth);
+                inRow = 0;
+            }
+
+            await AddCardCell(row, cardName, groupName, cellSize, fit, count);
+            inRow++;
         }
     }
 
     /// <summary>
+    /// 造一行：外层是整行宽、居中的 HBox（这样它必然独占 HFlowContainer 的一行），
+    /// 里面再套一个 <see cref="ContentWidth"/> 宽、<b>靠左对齐</b>的 HBox ——
+    /// 卡牌就从这个内容栏的左边缘开始排，不满一行（哪怕只有一张）也靠左。<br/>
+    /// 返回的是内层那个 HBox，往里塞卡片格子即可。
+    /// </summary>
+    private static HBoxContainer NewLine(FlowContainer list, float rowWidth)
+    {
+        var line = new HBoxContainer
+        {
+            Alignment = BoxContainer.AlignmentMode.Center,
+            CustomMinimumSize = new Vector2(rowWidth, 0),
+        };
+        list.AddChild(line);
+
+        var items = new HBoxContainer
+        {
+            Alignment = BoxContainer.AlignmentMode.Begin,
+            CustomMinimumSize = new Vector2(Mathf.Min(ContentWidth, rowWidth), 0),
+        };
+        items.AddThemeConstantOverride("separation", OpeningCardList.Separation);
+        line.AddChild(items);
+        return items;
+    }
+
+    /// <summary>
     /// 加一条组名横幅（复用卡包详情的横幅.tscn）。<br/>
+    /// 格子占满整行（这样它必然独占一行、好居中），但横幅本体只有 <see cref="ContentWidth"/> 宽，
+    /// 左右居中摆在格子里 —— 不要让横幅跟着铺满整屏。<br/>
     /// 注意：横幅不能直接塞进 FlowContainer —— 容器每次排版都会把**直接子节点**的
     /// position/scale 重置成排版值，横幅自己的缩放动画（从左边展开）会被立刻覆盖，
     /// 看起来就是"没有动画"。所以外面套一层普通 Control 当格子，动画加在内层横幅上。
     /// </summary>
-    private static async Task AddGroupBar(FlowContainer list, string text)
+    private static async Task AddGroupBar(Container list, string text, float rowWidth)
     {
-        var cell = new Control { CustomMinimumSize = new Vector2(BannerWidth, BannerHeight) };
+        float width = Mathf.Min(ContentWidth, rowWidth);
+
+        var cell = new Control { CustomMinimumSize = new Vector2(rowWidth, BannerHeight) };
         list.AddChild(cell);
 
         CardBar bar = GD.Load<PackedScene>(BannerScenePath).Instantiate<CardBar>();
+        // 尺寸直接写死成本体宽度。不要用 anchors 铺满 —— 格子刚 AddChild 时还没排版，
+        // 那时候算出来的 offsets 全是 0，横幅会变成 0 尺寸（面板画不出来，只剩文字，就是之前那样）。
+        bar.CustomMinimumSize = new Vector2(width, BannerHeight);
+        bar.Size = new Vector2(width, BannerHeight);
+        bar.Position = new Vector2((rowWidth - width) * 0.5f, 0f);
         cell.AddChild(bar);
         bar.IntroduceLabel.Text = text ?? "";
         await bar.IntroIn(0.5f);
     }
 
     /// <summary>加一张卡牌（外面套固定尺寸的格子，卡牌在格子里按比例缩放）</summary>
-    private async Task AddCardCell(FlowContainer list, string cardName, string groupName, Vector2 cellSize, float fit, int count = 1)
+    private async Task AddCardCell(Container list, string cardName, string groupName, Vector2 cellSize, float fit, int count = 1)
     {
         CardModel model = CardModel.GetTemplateByClassName(cardName);
         if (model == null)

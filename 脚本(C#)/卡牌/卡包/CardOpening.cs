@@ -13,8 +13,8 @@ public partial class CardOpening : Node2D
     public TextureRect Highlight { get; set; }
     //属性
     public Vector2 UltimatePos { get; set; }
-    public float MoveHeight { get; set; } = -1200f;
-    public float SineDistance { get; set; } = 200f;
+    public float MoveHeight { get; set; } = -1000f;
+    public float SineDistance { get; set; } = 100f;
     private bool _isClicked { get; set; }
     public Tween Tween1 { get; set; }
     //委托
@@ -26,7 +26,7 @@ public partial class CardOpening : Node2D
         ExplodeEffect = GetNode<TextureRect>("爆炸特效/爆炸特效");
         CardNode = GetNode<TextureRect>("卡包");
         Highlight = GetNode<TextureRect>("高亮");
-        UltimatePos = GetViewportRect().Size / 2 - new Vector2(0,100);
+        UltimatePos = GetViewportRect().Size / 2 - new Vector2(0,0);
         Crack.Scale = new Vector2(0, 1.242f);
         await IntroAn();
         await IdleAn();

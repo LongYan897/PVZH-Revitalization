@@ -9,10 +9,11 @@ namespace Card;
 /// 生成一个卡包磁贴，需要用到LoadResource方法加载资源。
 /// 所有数值来自 数据(C#)/cardPack.json 中该卡包对应的对象。
 /// </summary>
-public partial class CardTile : CenterContainer
+public partial class CardTile : Control
 {
     private const string PackDataPath = "res://数据(C#)/cardPack.json";
-    private string PackName { get; set; } = "Pack1";
+    /// <summary>cardPack.json 里的对象名（Pack1 / Pack2 …）。公开给「底版」按钮用，它靠这个决定铺哪个卡包。</summary>
+    public string PackName { get; private set; } = "Pack1";
     private string PackTitle { get; set; } = "测试卡包1";
     private string IntroduceText { get; set; } = "这是卡包测试文本，限购4包！\n* 包含1张超稀有卡牌,\n* 3张稀有卡牌。";
     private string PackTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
@@ -27,6 +28,12 @@ public partial class CardTile : CenterContainer
     private Panel Board;
     private Panel TopBanner;
     private Control ButtonGroup;
+    /// <summary>
+    /// 卡包列表右侧详情栏的容器（卡包列表.tscn 的 卡包遮罩/卡包详情/ScrollContainer2/VBoxContainer），
+    /// 由 CardTilesControl 在自己 _Load 里注入 —— 本场景找不到它，必须由外层给。
+    /// 「底版」上的 CardPackButton1 被点击时，会清空它再铺当前卡包的横幅 + 卡牌。
+    /// </summary>
+    public VBoxContainer DetailedCardList;
     public void LoadResource(string packName)
     {
         PackName = packName;
@@ -49,12 +56,12 @@ public partial class CardTile : CenterContainer
             }).ToList();
 
         // ---- 2. 取节点（底版/购买按钮组 是 Control，挂 AutoFitHBoxContainer.gd，不是 BoxContainer）----
-        Board = GetNodeOrNull<Panel>("底版");
-        TopBanner = GetNodeOrNull<Panel>("底版/顶部横幅");
-        PackNameLabel = GetNodeOrNull<Label>("底版/顶部横幅/卡包名字");
-        PackImage = GetNodeOrNull<TextureRect>("底版/卡包图片");
-        IntroduceLabel = GetNodeOrNull<Label>("底版/介绍文本");
-        ButtonGroup = GetNodeOrNull<Control>("底版/购买按钮组");
+        Board = GetNodeOrNull<Panel>("CenterContainer/底版");
+        TopBanner = GetNodeOrNull<Panel>("CenterContainer/底版/顶部横幅");
+        PackNameLabel = GetNodeOrNull<Label>("CenterContainer/底版/顶部横幅/卡包名字");
+        PackImage = GetNodeOrNull<TextureRect>("CenterContainer/底版/卡包图片");
+        IntroduceLabel = GetNodeOrNull<Label>("CenterContainer/底版/介绍文本");
+        ButtonGroup = GetNodeOrNull<Control>("CenterContainer/底版/购买按钮组");
         if (ButtonGroup == null)
         {
             GD.PushError($"[CardTile] 场景中缺少 底版/购买按钮组，请检查 卡包.tscn。当前场景：{SceneFilePath}");
@@ -63,7 +70,7 @@ public partial class CardTile : CenterContainer
 
         // ---- 2.5 把"当前是哪个卡包"挂到详情按钮上 ----
         // 点详情时 SceneManager 会把这个值塞进卡包详情场景的 Payload，详情场景在 _Load 里读它决定显示什么。
-        SubMenu detailButton = GetNodeOrNull<SubMenu>("底版/详情按钮");
+        SubMenu detailButton = GetNodeOrNull<SubMenu>("CenterContainer/底版/详情按钮");
         if (detailButton != null)
             detailButton.Payload = PackName;
         else
@@ -109,9 +116,9 @@ public partial class CardTile : CenterContainer
             button.PackTexturePath = PackOpenTexture;
             ButtonGroup.AddChild(button);
             if (button.IsNodeReady())
-                button.Setup();                 // 已经 ready 的情况直接填
+                button.Setup();  
             else
-                button.Ready += button.Setup;   // 等它的 _Ready 跑完（Label 取到了）再填文本
+                button.Ready += button.Setup;
         }
     }
 

@@ -8,11 +8,17 @@
 script = ExtResource("1_j1k31")
 
 [node name="底版" type="Sprite2D" parent="." unique_id=1798261576]
-position = Vector2(427.80457, 669.12506)
+position = Vector2(629, 86)
 scale = Vector2(2.7842054, 2.7842052)
 texture = ExtResource("1_2gbyw")
-metadata/_edit_lock_ = true
 
 [node name="3D卡包" parent="." unique_id=1847822201 instance=ExtResource("3_pdgjl")]
 visible = false
 position = Vector2(422, 681)
+
+[node name="Control" type="Control" parent="." unique_id=1281534716]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1283.0
+offset_bottom = 716.0
+metadata/_edit_lock_ = true
