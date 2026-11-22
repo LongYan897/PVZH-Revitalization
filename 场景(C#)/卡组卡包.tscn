@@ -75,6 +75,7 @@ metadata/_custom_type_script = "uid://cknnxeoyp5li8"
 layout_mode = 0
 offset_right = 214.0
 offset_bottom = 256.0
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="背景" type="Sprite2D" parent="." unique_id=1756481635]
@@ -230,6 +231,7 @@ offset_right = 440.0
 offset_bottom = 269.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 0
+mouse_default_cursor_shape = 2
 texture = ExtResource("6_wefbc")
 patch_margin_left = 40
 patch_margin_top = 40
@@ -267,6 +269,7 @@ metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 layout_mode = 0
 offset_right = 442.85712
 offset_bottom = 256.71426
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="信息按钮" type="NinePatchRect" parent="背景/内层/按钮/信息" unique_id=920313375]
@@ -313,6 +316,7 @@ metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 layout_mode = 0
 offset_right = 442.85712
 offset_bottom = 256.71426
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="编辑按钮" type="NinePatchRect" parent="背景/内层/按钮/编辑" unique_id=1579867831]
@@ -352,6 +356,7 @@ offset_top = -167.0
 offset_right = 139.0
 offset_bottom = -49.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="Sprite2D" type="Sprite2D" parent="背景/顶层按钮" unique_id=698627606]

@@ -57,4 +57,18 @@ public class Player
     {
         Status.PrefABox(this, HeroModel.Identity(deck.Hero.Data.Title), deck);
     }
+
+    /// <summary>
+    /// 应用一条奖励
+    /// </summary>
+    /// <param name="reward">奖励</param>
+    public void ApplyReward(Reward reward)
+        => Asset.ApplyReward(reward);
+
+    /// <summary>
+    /// 应用多条奖励
+    /// </summary>
+    /// <param name="rewards">奖励</param>
+    public void ApplyRewards(IEnumerable<Reward> rewards)
+        => Asset.ApplyRewards(rewards);
 }

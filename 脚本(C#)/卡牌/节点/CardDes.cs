@@ -2,47 +2,11 @@ using Controller;
 using Godot;
 using Pack;
 using Spine;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Card;
 
-/// <summary>
-/// 用于给卡牌描述的URL提供自定义参数（仅支持 static 方法）<br/>
-/// 方法签名必须为：static string Xxx(CardModel model)<br/>
-/// 占位符 {#/&amp;:方法名} 会调用该方法，用返回值替换<br/>
-/// <para>AcceptEffects：</para>
-/// - true（默认）：接受 <c>#</c> / <c>&amp;</c> 带来的额外效果，<c>#</c> 会包成 <c>$值$</c>，<c>&amp;</c> 直接输出<br/>
-/// - false：忽略此效果，无论 <c>#</c> 还是 <c>&amp;</c> 都输出纯文本<br/>
-/// 无论哪种，占位符必须声明对应分隔符（如 <c>{#/&amp;:Camp}</c>）才会被替换<br/>
-/// 返回 null 时占位符原样保留；n / x 是保留字，不会被覆盖
-/// </summary>
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-public class UrlParamsAttribute : Attribute
-{
-    public bool AcceptEffects { get; }
-    public UrlParamsAttribute(bool acceptEffects = true) => AcceptEffects = acceptEffects;
-}
-
-/// <summary>
-/// 用于给卡牌描述的URL设置描述<br/>
-/// 比如<br/>
-/// 我希望给致命设置描述<br/>
-/// 那么可以在某个类里面写<br/>
-/// [URL]<br/>
-/// public string Lethal => "攻击到的单位立即死亡"<br/>
-/// 这个就代表了 _Lethal_ 这个标签点开后显示 "攻击到的单位立即死亡"<br/>
-/// static的属性也可以这样注册<br/>
-/// </summary>
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-public class URLAttribute : Attribute
-{
-
-}
 /// <summary>
 /// 卡牌描述的可视化部分
 /// </summary>
@@ -234,303 +198,28 @@ public partial class CardDes : Control
             Fresh();
         }
     }
-    private static Dictionary<string, (MethodInfo method, bool acceptEffects)> _urlParamsCache;
-    private static readonly object _urlParamsCacheLock = new();
-
-    private static Dictionary<string, (MethodInfo method, bool acceptEffects)> GetUrlParamsCache()
-    {
-        if (_urlParamsCache != null) return _urlParamsCache;
-
-        lock (_urlParamsCacheLock)
-        {
-            if (_urlParamsCache != null) return _urlParamsCache;
-
-            var flags = BindingFlags.Public | BindingFlags.NonPublic
-                      | BindingFlags.Static | BindingFlags.FlattenHierarchy;
-
-            var cache = new Dictionary<string, (MethodInfo, bool)>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var type in typeof(CardDes).Assembly.GetTypes())
-            {
-                foreach (var method in type.GetMethods(flags))
-                {
-                    if (!Attribute.IsDefined(method, typeof(UrlParamsAttribute))) continue;
-                    if (method.ReturnType != typeof(string)) continue;
-                    if (!method.IsStatic) continue;
-
-                    var ps = method.GetParameters();
-                    if (ps.Length != 1 || ps[0].ParameterType != typeof(CardModel)) continue;
-
-                    if (cache.ContainsKey(method.Name)) continue;
-
-                    var attr = (UrlParamsAttribute)Attribute.GetCustomAttribute(
-                        method, typeof(UrlParamsAttribute));
-                    cache[method.Name] = (method, attr.AcceptEffects);
-                }
-            }
-
-            _urlParamsCache = cache;
-            return _urlParamsCache;
-        }
-    }
-    private static (string value, bool acceptEffects) GetUrlParamValue(string key, CardModel model)
-    {
-        if (string.IsNullOrEmpty(key) || key == "n" || key == "x")
-            return (null, true);
-
-        var cache = GetUrlParamsCache();
-        if (!cache.TryGetValue(key, out var entry))
-            return (null, true);
-
-        var v = entry.method.Invoke(null, new object[] { model }) as string;
-        return (v, entry.acceptEffects);
-    }
-    private static readonly Regex IconRegex =
-    new Regex(@"=([^=#\s]+)(?:#([^#=\s]+)#)?=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
-
-    private static readonly Regex UrlIconRegex =
-        new Regex(@"==([^=]+?)(?:\{([^}]*)\})?==", RegexOptions.Compiled);
-
-    private static readonly Regex LinkRegex =
-        new Regex(@"_([^_]+)_", RegexOptions.Compiled);
-
-    private static readonly Regex LabelRegex =
-        new Regex(@"\$([^$]+)\$", RegexOptions.Compiled);
-
-    private static readonly Regex ArgBeforeRegex =
-        new Regex(@"_([&#])([^&#_]+)\1([^_]+)_", RegexOptions.Compiled);
-
-    private static readonly Regex ArgAfterRegex =
-        new Regex(@"_([^&#_]+)([&#])([^&#_]+)\2_", RegexOptions.Compiled);
-    private static readonly Regex PlaceholderRegex =
-        new Regex(@"\{([#&/]+):(\w+)\}", RegexOptions.Compiled);
-    private static string ConvertLabels(string text) =>
-        LabelRegex.Replace(text,
-            mm => $"[color=#b3ff30][u]{mm.Groups[1].Value}[/u][/color]");
-
-    private static string ConvertLinks(string text)
-    {
-        text = ArgBeforeRegex.Replace(text, mm =>
-        {
-            char sep = mm.Groups[1].Value[0];
-            string arg = mm.Groups[2].Value;
-            string word = mm.Groups[3].Value;
-
-            string meta = $"{word}|{arg}|{sep}|before";
-            return $"[color=#44ffff][url={meta}]{arg}{word}[/url][/color]";
-        });
-
-        text = ArgAfterRegex.Replace(text, mm =>
-        {
-            string word = mm.Groups[1].Value;
-            char sep = mm.Groups[2].Value[0];
-            string arg = mm.Groups[3].Value;
-
-            string meta = $"{word}|{arg}|{sep}|after";
-            return $"[color=#44ffff][url={meta}]{word}{arg}[/url][/color]";
-        });
-
-        text = LinkRegex.Replace(text,
-            mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
-
-        return text;
-    }
-    private static bool TryExtractLinkMeta(string raw, out string meta, out string display)
-    {
-        meta = null;
-        display = null;
-
-        var mb = ArgBeforeRegex.Match(raw);
-        if (mb.Success)
-        {
-            char sep = mb.Groups[1].Value[0];
-            string arg = mb.Groups[2].Value;
-            string word = mb.Groups[3].Value;
-            meta = $"{word}|{arg}|{sep}|before";
-            display = sep == '#' ? $"${arg}${word}" : $"{arg}{word}";
-            return true;
-        }
-
-        var ma = ArgAfterRegex.Match(raw);
-        if (ma.Success)
-        {
-            string word = ma.Groups[1].Value;
-            char sep = ma.Groups[2].Value[0];
-            string arg = ma.Groups[3].Value;
-            meta = $"{word}|{arg}|{sep}|after";
-            display = sep == '#' ? $"{word}${arg}$" : $"{word}{arg}";
-            return true;
-        }
-
-        var ml = LinkRegex.Match(raw);
-        if (ml.Success)
-        {
-            meta = ml.Groups[1].Value;
-            display = ml.Groups[1].Value;
-            return true;
-        }
-
-        return false;
-    }
-
-    private static string ReplacePlaceholders(string rawDesc, string arg, char sep, CardModel model)
-    {
-        if (string.IsNullOrEmpty(rawDesc)) return rawDesc;
-
-        return PlaceholderRegex.Replace(rawDesc, m =>
-        {
-            string allowed = m.Groups[1].Value;
-            string kind = m.Groups[2].Value;
-
-            if (kind == "n")
-            {
-                if (arg == null || !allowed.Contains(sep)) return m.Value;
-                return sep == '#' ? $"${arg}$" : arg;
-            }
-
-            if (kind == "x")
-            {
-                if (arg == null || !allowed.Contains(sep)) return m.Value;
-                return arg;
-            }
-
-            var (custom, acceptEffects) = GetUrlParamValue(kind, model);
-            if (custom == null) return m.Value;
-
-            char useSep = sep;
-            if (useSep == '\0')
-            {
-                if (allowed.Contains('#')) useSep = '#';
-                else if (allowed.Contains('&')) useSep = '&';
-                else return m.Value;
-            }
-            else if (!allowed.Contains(useSep))
-            {
-                return m.Value;
-            }
-
-            if (!acceptEffects) return custom;
-
-            return useSep == '#' ? $"${custom}$" : custom;
-        });
-    }
+    public static string ReplacePlaceholders(string rawDesc, string arg, char sep, CardModel model)
+        => RichTextFormatter.ReplacePlaceholders(rawDesc, arg, sep, model);
+    public static bool TryGetKeywordDescription(
+        CardModel model, string key, string arg, char sep, out string desc)
+        => RichTextFormatter.TryGetKeywordDescription(model, key, arg, sep, out desc);
     /// <summary>
     /// 解析语法并写入。
     /// </summary>
-    public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks, float extraSize = 0f)
-    {
-        label.Clear();
-        label.BbcodeEnabled = true;
-
-        var all = new List<(Match m, bool isUrl)>();
-        foreach (Match m in UrlIconRegex.Matches(raw)) all.Add((m, true));
-        foreach (Match m in IconRegex.Matches(raw))
-        {
-            if (all.Any(t => t.isUrl && m.Index >= t.m.Index && m.Index + m.Length <= t.m.Index + t.m.Length))
-                continue;
-            all.Add((m, false));
-        }
-        all.Sort((a, b) => a.m.Index.CompareTo(b.m.Index));
-
-        int last = 0;
-        foreach (var (m, isUrl) in all)
-        {
-            if (m.Index < last) continue;
-
-            if (m.Index > last)
-            {
-                string seg = raw.Substring(last, m.Index - last);
-                seg = ConvertLabels(seg);
-                label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
-            }
-
-            if (isUrl)
-            {
-                string name = m.Groups[1].Value.Trim();
-                string urlRaw = m.Groups[2].Success ? m.Groups[2].Value : null;
-
-                if (Icon.TryGet(name, out var path, out var attr))
-                {
-                    if (!string.IsNullOrEmpty(urlRaw) && TryExtractLinkMeta(urlRaw, out string meta, out string display))
-                    {
-                        string inner = $"[img={IconSize + extraSize}]{path}[/img]{ConvertLabels(display)}";
-                        label.AppendText($"[color=#44ffff][url={meta}]{inner}[/url][/color]");
-                    }
-                    else
-                    {
-                        string meta2 = string.IsNullOrEmpty(urlRaw) ? name : urlRaw;
-                        bool hasNum = int.TryParse(meta2, out _);
-
-                        if (hasNum)
-                        {
-                            var tex = await IconComposer.Instance.ComposeAsync(
-                                path, meta2, attr.Color, attr.OutlineColor, attr.OutlineSize);
-                            if (tex != null)
-                            {
-                                float scale = (float)(IconSize + extraSize) / tex.GetWidth();
-                                label.AddImage(tex, tex.GetWidth() * scale, tex.GetHeight() * scale);
-                            }
-                        }
-                        else
-                        {
-                            label.AppendText($"[color=#44ffff][url={meta2}][img={IconSize + extraSize}]{path}[/img][/url][/color]");
-                        }
-                    }
-                }
-                else
-                {
-                    label.AppendText(m.Value);
-                }
-            }
-            else
-            {
-                string name = m.Groups[1].Value;
-                bool hasNum = m.Groups[3].Success;
-                string value = hasNum ? m.Groups[3].Value : null;
-
-                if (Icon.TryGet(name, out var path, out var attr))
-                {
-                    if (hasNum)
-                    {
-                        var tex = await IconComposer.Instance.ComposeAsync(
-                            path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
-                        if (tex != null)
-                        {
-                            float scale = (float)(IconSize + extraSize) / tex.GetWidth();
-                            label.AddImage(tex, tex.GetWidth() * scale, tex.GetHeight() * scale);
-                        }
-                    }
-                    else
-                    {
-                        label.AppendText($"[img={IconSize + extraSize}]{path}[/img]");
-                    }
-                }
-            }
-
-            last = m.Index + m.Length;
-        }
-
-        if (last < raw.Length)
-        {
-            string seg = raw.Substring(last);
-            seg = ConvertLabels(seg);
-            label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
-        }
-    }
+    public static Task AppendWithIcons(
+    RichTextLabel label, string raw, bool convertLinks, float extraSize = 0f)
+    => RichTextFormatter.AppendAsync(label, raw, convertLinks, extraSize);
 
     public async Task SetDescription(string raw)
     {
-        var label = GetNode<RichTextLabel>("%介绍Label");
+        var label = GetNode<SpecLabel>("%介绍Label");
 
-        await AppendWithIcons(label, raw, convertLinks: true);
+        await label.SetContentAsync(raw, Model);
     }
-    private bool _keywordClicked = false;
     public override void _Ready()
     {
-        var label = GetNode<RichTextLabel>("%介绍Label");
+        var label = GetNode<SpecLabel>("%介绍Label");
         label.BbcodeEnabled = true;
-        label.MouseFilter = MouseFilterEnum.Stop;
-        label.MetaClicked += OnKeywordClicked;
 
         label.AddThemeFontSizeOverride("normal_font_size", DesFontSize);
         label.AddThemeFontSizeOverride("bold_font_size", DesFontSize);
@@ -553,131 +242,6 @@ public partial class CardDes : Control
         _isEnd = true;
         GetViewport().SetInputAsHandled();
     }
-    private void OnKeywordClicked(Variant metaVariant)
-    {
-        string raw = metaVariant.AsString();
-
-        string key = raw;
-        string arg = null;
-        char sep = '\0';
-
-        int bar = raw.IndexOf('|');
-        if (bar >= 0)
-        {
-            key = raw.Substring(0, bar);
-            var rest = raw.Substring(bar + 1).Split('|');
-            if (rest.Length >= 2)
-            {
-                arg = rest[0];
-                sep = rest[1].Length > 0 ? rest[1][0] : '\0';
-            }
-        }
-
-        if (CardModel.HasTemplate(key))
-        {
-            GetViewport().SetInputAsHandled();
-            _keywordClicked = true;
-
-            var template = CardModel.GetTemplate(key);
-            if (template != null)
-                ExchangeDescription(template);
-            return;
-        }
-
-        if (TryGetKeywordDescription(Model, key, arg, sep, out string desc))
-        {
-            GetViewport().SetInputAsHandled();
-            _keywordClicked = true;
-
-            var label = GetNode<RichTextLabel>("%介绍Label");
-            Vector2 globalPos = label.GlobalPosition + label.GetLocalMousePosition();
-            CardDesPanel.ShowAt(desc, globalPos);
-        }
-    }
-    private static Dictionary<string, PropertyInfo> _urlCache;
-    private static readonly object _urlCacheLock = new();
-    private static Dictionary<string, PropertyInfo> GetURLCache()
-    {
-        if (_urlCache != null) return _urlCache;
-
-        lock (_urlCacheLock)
-        {
-            if (_urlCache != null) return _urlCache;
-
-            var flags = BindingFlags.Public
-                      | BindingFlags.NonPublic
-                      | BindingFlags.Static
-                      | BindingFlags.Instance
-                      | BindingFlags.FlattenHierarchy;
-
-            var cache = new Dictionary<string, PropertyInfo>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var type in typeof(CardDes).Assembly.GetTypes())
-            {
-                foreach (var prop in type.GetProperties(flags))
-                {
-                    if (!Attribute.IsDefined(prop, typeof(URLAttribute))) continue;
-                    if (prop.PropertyType != typeof(string)) continue;
-
-                    var getter = prop.GetGetMethod(true);
-                    if (getter == null) continue;
-
-                    if (!getter.IsStatic) continue;
-
-                    if (!cache.ContainsKey(prop.Name))
-                        cache[prop.Name] = prop;
-                }
-            }
-
-            _urlCache = cache;
-            return _urlCache;
-        }
-    }
-    public static bool TryGetKeywordDescription(
-        CardModel model, string key, string arg, char sep, out string desc)
-    {
-        desc = null;
-        if (string.IsNullOrEmpty(key)) return false;
-
-        if (model != null)
-        {
-            var flags = BindingFlags.Public | BindingFlags.NonPublic
-                      | BindingFlags.Static | BindingFlags.Instance | BindingFlags.IgnoreCase;
-            var prop = model.GetType().GetProperty(key, flags);
-            if (TryGetFromProp(prop, model, out string rawDesc))
-            {
-                desc = ReplacePlaceholders(rawDesc, arg, sep, model);
-                return true;
-            }
-        }
-
-        var cache = GetURLCache();
-        if (cache.TryGetValue(key, out var staticProp) &&
-            TryGetFromProp(staticProp, null, out string staticDesc))
-        {
-            desc = ReplacePlaceholders(staticDesc, arg, sep, model);
-            return true;
-        }
-
-        return false;
-    }
-    private static bool TryGetFromProp(
-    System.Reflection.PropertyInfo prop, object instance, out string desc)
-    {
-        desc = null;
-        if (prop == null) return false;
-        if (!Attribute.IsDefined(prop, typeof(URLAttribute))) return false;
-        if (prop.PropertyType != typeof(string)) return false;
-
-        var getter = prop.GetGetMethod(true);
-        if (getter == null) return false;
-
-        object target = getter.IsStatic ? null : instance;
-        if (!getter.IsStatic && target == null) return false;
-
-        desc = prop.GetValue(target) as string;
-        return !string.IsNullOrEmpty(desc);
-    }
 
     private async void Fresh()
     {
@@ -688,9 +252,10 @@ public partial class CardDes : Control
             cost.Text = $"{Model.Cost.Current}";
             GetNode<Sprite2D>("%花费数值").Texture = Model.CampCostIcon;
             GetNode<Label>("%名字").Text = Model.Title;
-            var exLabel = GetNode<RichTextLabel>("%额外标签");
+            var exLabel = GetNode<SpecLabel>("%额外标签");
             exLabel.BbcodeEnabled = true;
-            await AppendWithIcons(exLabel, Model.ExDescription ?? "", convertLinks: true);
+            exLabel.EnableKeywordClick = false;
+            await exLabel.SetContentAsync(Model.ExDescription ?? "");
             await SetDescription(Model.GetDescription());
             GetNode<RichTextLabel>("%故事标签").Text = Model.Flavor;
             FitStoryFontSize(GetNode<RichTextLabel>("%故事标签"));

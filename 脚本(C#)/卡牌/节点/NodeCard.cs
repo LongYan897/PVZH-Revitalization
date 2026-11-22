@@ -302,23 +302,21 @@ public partial class NodeCard : Control
     }
 
     /// <summary>
-    /// 把这张卡放到同父级下的最高层。
+    /// 把这张卡放到最高层。
     /// </summary>
     public void BringToFront()
     {
         var myParent = GetParent();
-        int maxIndex = -1;
 
         foreach (var node in instances.Keys)
         {
             if (!GodotObject.IsInstanceValid(node)) continue;
-            if (node.GetParent() != myParent) continue;
+            if (node == this) continue;
 
-            int index = (8000) / 40;
-            if (index > maxIndex) maxIndex = index;
+            node.ZIndex = 3960;
         }
 
-        SetIndex(maxIndex);
+        ZIndex = 4000;
     }
 
     /// <summary>
@@ -326,10 +324,19 @@ public partial class NodeCard : Control
     /// </summary>
     private static void ResetAllZIndex()
     {
-        foreach (var node in instances.Keys.ToList())
+        foreach (var group in instances.Keys
+                     .Where(n => GodotObject.IsInstanceValid(n) && n.IsInsideTree())
+                     .GroupBy(n => n.GetParent()))
         {
-            if (!GodotObject.IsInstanceValid(node)) continue;
-            node.ZIndex = -4000;
+            int z = 4000;
+
+            foreach (var node in group
+                         .OrderByDescending(n => n.ZIndex)
+                         .ThenByDescending(n => n.GetIndex()))
+            {
+                node.ZIndex = z;
+                z -= 40;
+            }
         }
     }
     /// <summary>
@@ -497,10 +504,6 @@ public partial class NodeCard : Control
     private const float ClickScaleTime = 0.08f;
     private const float DragThreshold = 10f;
 
-    /// <summary>
-    /// 把鼠标从 viewport 坐标转换到卡牌父级 CanvasLayer 的坐标空间。
-    /// 父级不是 CanvasLayer 时退回 GetGlobalMousePosition。
-    /// </summary>
     private Vector2 MouseInCardLayer()
     {
         if (GetParent() is CanvasLayer cl)
@@ -524,6 +527,7 @@ public partial class NodeCard : Control
         var opBtn = GetNode<NinePatchRect>("%操作按钮");
         BindControlClickAnimation(opBtn, () => OnOperate?.Invoke());
     }
+
     private void BindControlClickAnimation(NinePatchRect control, System.Action onClick = null)
     {
         if (control == null) return;
@@ -572,30 +576,49 @@ public partial class NodeCard : Control
 
         CardDes.DisplayDescription(Model);
     }
+
     public override void _Input(InputEvent @event)
     {
         if (_returning) return;
         if (_openedCard == this && IsInstanceValid(this))
         {
-            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left && mb.Pressed)
+            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
             {
                 var infoBg = GetNodeOrNull<Control>("%信息背景");
-
                 if (infoBg != null && infoBg.Visible)
                 {
-                    if (!infoBg.GetGlobalRect().HasPoint(GetViewport().GetMousePosition()))
+                    Rect2 globalRect = new Rect2(infoBg.GlobalPosition, infoBg.Size * infoBg.Scale);
+
+                    if (globalRect.HasPoint(GetGlobalMousePosition()))
+                    {
+                        GetViewport().SetInputAsHandled();
+
+                        var subViewport = GetNode<SubViewport>("%非战斗/%信息背景/AutoViewportContainer/SubViewport");
+                        var container = GetNode<Control>("%AutoViewportContainer");
+
+                        if (subViewport != null && container != null)
+                        {
+                            Vector2 localPos = container.GetGlobalTransform().AffineInverse() * GetGlobalMousePosition();
+
+                            var newEvent = (InputEventMouseButton)mb.Duplicate();
+                            newEvent.Position = localPos;
+                            newEvent.GlobalPosition = localPos;
+
+                            subViewport.PushInput(newEvent, true);
+                        }
+                    }
+                    else if (mb.Pressed)
                     {
                         CloseNonBattle();
                     }
                 }
-                else
+                else if (mb.Pressed)
                 {
                     CloseNonBattle();
                 }
             }
         }
     }
-
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;

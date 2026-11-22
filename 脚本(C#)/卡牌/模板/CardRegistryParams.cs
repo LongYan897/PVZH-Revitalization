@@ -1,3 +1,5 @@
+using Pack;
+
 namespace Card.String;
 
 public static class CardRegistryParams

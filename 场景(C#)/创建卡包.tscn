@@ -30,6 +30,7 @@ grow_vertical = 2
 anchors_preset = 0
 offset_right = 214.0
 offset_bottom = 256.0
+mouse_default_cursor_shape = 2
 script = ExtResource("1_2onsq")
 SubScene = "res://场景(C#)/定制卡组.tscn"
 CenterPivot = true
@@ -47,24 +48,14 @@ unique_name_in_owner = true
 position = Vector2(107, 128)
 texture = ExtResource("1_1vutn")
 
-[node name="SubMenu" type="Control" parent="Control/背景" unique_id=209924429]
-layout_mode = 3
-anchors_preset = 0
-offset_left = -68.88
-offset_top = -127.0
-offset_right = 68.88
-offset_bottom = 14.679993
-pivot_offset_ratio = Vector2(0.5, 0.5)
-mouse_filter = 2
-
-[node name="Sprite2D" type="Sprite2D" parent="Control/背景/SubMenu" unique_id=1255074461]
-position = Vector2(68.88, 68.84)
+[node name="Sprite2D" type="Sprite2D" parent="Control/背景" unique_id=1255074461]
+position = Vector2(-0.12000275, -58.160004)
 scale = Vector2(0.56, 0.56)
 texture = ExtResource("3_xmf1v")
 
-[node name="Sprite2D2" type="Sprite2D" parent="Control/背景/SubMenu" unique_id=1903149890]
+[node name="Sprite2D2" type="Sprite2D" parent="Control/背景" unique_id=1903149890]
 material = SubResource("ShaderMaterial_xbbtl")
-position = Vector2(68.88, 64.84)
+position = Vector2(-0.12000275, -62.160004)
 scale = Vector2(1.56, 1.56)
 texture = ExtResource("4_xbbtl")
 

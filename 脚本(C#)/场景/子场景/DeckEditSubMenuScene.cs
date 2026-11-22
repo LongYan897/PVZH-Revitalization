@@ -21,7 +21,12 @@ public partial class DeckEditSubMenuScene : SubMenuScene
     public static DeckEditSubMenuScene Instance { get; private set; }
 
     private static readonly Color RemoveColor = new("#E0503C");
-    private static readonly Color AddColor = new("#58C322");
+    private static readonly Color AddColor = new("15ff00");
+
+    private const float OwnerAnimScale = 0.48f;
+    private const float DeckAnimScale = 0.4f;
+    private const float OwnedRotationDeg = 0f;
+    private const float DeckRotationDeg = 0f;
 
     private DIYPack _diy;
     private Control _deckContainer;
@@ -30,6 +35,8 @@ public partial class DeckEditSubMenuScene : SubMenuScene
     private Dictionary<Class, int> _classRank;
     private readonly Dictionary<string, NodeCard> _deckCards = new();
     private Tween _countTween;
+    private Tween _autoBtnTween;
+    private bool? _autoBtnFullState = null;
     private int _focusVersion = 0;
     private bool _isAutoBuilding = false;
     public override void _WhenEnterTree()
@@ -79,6 +86,8 @@ public partial class DeckEditSubMenuScene : SubMenuScene
 
     public override void _ExitTree()
     {
+        if (_countTween != null && _countTween.IsValid()) _countTween.Kill();
+        if (_autoBtnTween != null && _autoBtnTween.IsValid()) _autoBtnTween.Kill();
         if (Instance == this) Instance = null;
         base._ExitTree();
     }
@@ -214,6 +223,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
         {
             autoBtn.Input -= OnAutoBuildInput;
             autoBtn.Input += OnAutoBuildInput;
+            autoBtn.PivotOffsetRatio = VectorS.Half;
         }
     }
 
@@ -221,13 +231,14 @@ public partial class DeckEditSubMenuScene : SubMenuScene
     {
         if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left && !mb.Pressed)
         {
+            if ((_diy?.Cards?.Count ?? 0) == 40) return;
             if (_isAutoBuilding) return;
             var autoBtn = GetNodeOrNull<InputNineRect>("%帮我组完");
             if (autoBtn != null)
             {
                 Tween tween = CreateTween();
-                tween.TweenProperty(autoBtn, "scale", new Vector2(0.6f, 0.6f), 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
-                tween.TweenProperty(autoBtn, "scale", new Vector2(0.7f, 0.7f), 0.1f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
+                tween.TweenProperty(autoBtn, "scale", new Vector2(0.9f, 0.9f), 0.1f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+                tween.TweenProperty(autoBtn, "scale", new Vector2(1f, 1f), 0.1f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Quad);
             }
             await AutoBuildDeck();
         }
@@ -236,6 +247,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
     private async Task AutoBuildDeck()
     {
         if (_diy == null || _isAutoBuilding) return;
+        if ((_diy.Cards?.Count ?? 0) == 40) return;
         _isAutoBuilding = true;
         _focusVersion++;
 
@@ -387,7 +399,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
         {
             ownedNode.SetAmount(ownedNode.ForcedAmount + 1);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            _ = PlayFlyEffect(fromPos, ownedNode.GlobalPosition, template);
+            _ = PlayFlyEffect(fromPos, ownedNode.GlobalPosition, template, DeckAnimScale, OwnerAnimScale, DeckRotationDeg, OwnedRotationDeg);
             FocusCard(ownedNode);
         }
         else if (_ownedContainer != null)
@@ -396,7 +408,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
             SetupOperateButton(newNode, card.Title, isRemove: false);
             await InsertOrdered(_ownedContainer, newNode, template);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            _ = PlayFlyEffect(fromPos, newNode.GlobalPosition, template);
+            _ = PlayFlyEffect(fromPos, newNode.GlobalPosition, template, DeckAnimScale, OwnerAnimScale, DeckRotationDeg, OwnedRotationDeg);
             FocusCard(newNode);
         }
 
@@ -454,7 +466,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
         }
 
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-        _ = PlayFlyEffect(fromPos, deckNode.GlobalPosition, card);
+        _ = PlayFlyEffect(fromPos, deckNode.GlobalPosition, card, OwnerAnimScale, DeckAnimScale, OwnedRotationDeg, DeckRotationDeg);
 
         UpdateDeckCountUI(false);
         FocusCard(deckNode);
@@ -547,43 +559,33 @@ public partial class DeckEditSubMenuScene : SubMenuScene
     {
         if (hero == null) return;
 
-        // 背景特效跟着阵营换色（植物=绿 / 僵尸=紫）
-        GetNodeOrNull<SceneBackdrop>("%背景特效")?.SetCampTheme(hero.Camp);
-        GetNodeOrNull<SceneLightSweep>("%光晕层")?.SetCampTheme(hero.Camp);
-
         bool plant = hero.Camp == Camp.Plant;
 
-        // 底层栏三层描边：深色轮廓 / 亮面 / 高光
         var bar1 = GetNodeOrNull<CanvasItem>("%底层栏");
         var bar2 = GetNodeOrNull<CanvasItem>("%底层栏2");
         var bar3 = GetNodeOrNull<CanvasItem>("%底层栏3");
+        var bar4 = GetNodeOrNull<CanvasItem>("%底层栏4");
+        var bar5 = GetNodeOrNull<CanvasItem>("%底层栏5");
         var bg2 = GetNodeOrNull<CanvasItem>("%Bg2");
 
         if (plant)
         {
-            if (bar1 != null) bar1.SelfModulate = new Color("#123A22");
-            if (bar2 != null) bar2.SelfModulate = new Color("#FFF1C9");
-            if (bar3 != null) bar3.SelfModulate = new Color("#5FAE22");
-            if (bg2 != null) bg2.SelfModulate = new Color("#123A2A");
+            if (bar1 != null) bar1.SelfModulate = new Color("268746");
+            if (bar2 != null) bar2.SelfModulate = new Color("00ff48");
+            if (bar3 != null) bar3.SelfModulate = new Color("23753f");
+            if (bar4 != null) bar4.SelfModulate = new Color("1de089");
+            if (bar5 != null) bar5.SelfModulate = new Color("00a10d");
+            if (bg2 != null) bg2.SelfModulate = new Color("4dff55");
         }
         else
         {
             if (bar1 != null) bar1.SelfModulate = new Color("#241436");
             if (bar2 != null) bar2.SelfModulate = new Color("#F1DFFF");
             if (bar3 != null) bar3.SelfModulate = new Color("#8E4CC9");
+            if (bar4 != null) bar4.SelfModulate = new Color("00a10d");
+            if (bar5 != null) bar5.SelfModulate = new Color("00a10d");
             if (bg2 != null) bg2.SelfModulate = new Color("#1E1638");
         }
-
-        // 主按钮（保存）与「帮我组完」跟着阵营走，别在僵尸卡组上冒绿光
-        var save = GetNodeOrNull<StylizedPanel>("顶边栏右1");
-        if (save != null)
-        {
-            save.BodyColorTop = plant ? new Color("#4F9C1F") : new Color("#8E4CC9");
-            save.BodyColorBottom = plant ? new Color("#2F650F") : new Color("#5B2A85");
-        }
-
-        var auto = GetNodeOrNull<CanvasItem>("%帮我组完");
-        if (auto != null) auto.SelfModulate = plant ? new Color("#5FAE22") : new Color("#8E4CC9");
     }
 
     private void UpdateDeckCountUI(bool animate = true)
@@ -599,16 +601,35 @@ public partial class DeckEditSubMenuScene : SubMenuScene
 
         var autoBtn = GetNodeOrNull<Control>("%帮我组完");
         if (autoBtn != null)
-            autoBtn.Visible = (currentCount < 40);
+        {
+            bool isFull = currentCount == 40;
+            if (_autoBtnFullState != isFull)
+            {
+                _autoBtnFullState = isFull;
+
+                Color targetModulate = isFull ? new Color("#737373") : new Color("#ffffff");
+                Color targetSelfModulate = isFull ? new Color("#ffffff") : new Color("#39e0e3");
+
+                if (_autoBtnTween != null && _autoBtnTween.IsValid())
+                    _autoBtnTween.Kill();
+
+                _autoBtnTween = CreateTween();
+                _autoBtnTween.SetParallel(true);
+                _autoBtnTween.TweenProperty(autoBtn, "modulate", targetModulate, 0.25f)
+                    .SetTrans(Tween.TransitionType.Cubic)
+                    .SetEase(Tween.EaseType.Out);
+                _autoBtnTween.TweenProperty(autoBtn, "self_modulate", targetSelfModulate, 0.25f)
+                    .SetTrans(Tween.TransitionType.Cubic)
+                    .SetEase(Tween.EaseType.Out);
+            }
+        }
 
         bool isPerfect = (currentCount == 40);
         Color startColor = isPerfect ? new Color("#FFE7A3") : new Color("#FFF6E3");
         Color endColor = isPerfect ? new Color("#FFC93C") : new Color("#FFF6E3");
 
         if (_countTween != null && _countTween.IsValid())
-        {
             _countTween.Kill();
-        }
 
         if (animate)
         {
@@ -645,6 +666,9 @@ public partial class DeckEditSubMenuScene : SubMenuScene
             SetTexture(node1, c1.ToPath());
             ApplyIconShader(node1, c1);
 
+            var attr1 = GetNodeOrNull<Node>("%属性1");
+            SetTexture(attr1, c1.ToPath());
+
             var bg1 = GetNodeOrNull<Node>("%属性背景1");
             ApplyBackgroundGradient(bg1, c1, brightAtEnd: true);
         }
@@ -655,21 +679,11 @@ public partial class DeckEditSubMenuScene : SubMenuScene
             SetTexture(node2, c2.ToPath());
             ApplyIconShader(node2, c2);
 
+            var attr2 = GetNodeOrNull<Node>("%属性2");
+            SetTexture(attr2, c2.ToPath());
+
             var bg2 = GetNodeOrNull<Node>("%属性背景2");
             ApplyBackgroundGradient(bg2, c2, brightAtEnd: false);
-        }
-
-        var btn = GetNodeOrNull<Button>("%Button");
-        if (btn != null)
-        {
-            var captured = hero;
-            btn.Pressed += () =>
-            {
-                HeroDes des = HeroDes.Create(captured.GetType().Name);
-                GetTree().Root.GetNode<CanvasLayer>("MainController/Des").AddChild(des);
-                des.Position = new Vector2(360, 640);
-                des.Display();
-            };
         }
     }
 
@@ -906,7 +920,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
         }
 
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-        _ = PlayFlyEffect(fromPos, deckNode.GlobalPosition, template);
+        _ = PlayFlyEffect(fromPos, deckNode.GlobalPosition, template, OwnerAnimScale, DeckAnimScale, OwnedRotationDeg, DeckRotationDeg);
 
         int newAmount = ownedNode.ForcedAmount - 1;
         if (newAmount > 0)
@@ -945,7 +959,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
         {
             ownedNode.SetAmount(ownedNode.ForcedAmount + 1);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            _ = PlayFlyEffect(fromPos, ownedNode.GlobalPosition, template);
+            _ = PlayFlyEffect(fromPos, ownedNode.GlobalPosition, template, DeckAnimScale, OwnerAnimScale, DeckRotationDeg, OwnedRotationDeg);
             FocusCard(ownedNode);
         }
         else if (_ownedContainer != null)
@@ -954,14 +968,14 @@ public partial class DeckEditSubMenuScene : SubMenuScene
             SetupOperateButton(newNode, title, isRemove: false);
             await InsertOrdered(_ownedContainer, newNode, template);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            _ = PlayFlyEffect(fromPos, newNode.GlobalPosition, template);
+            _ = PlayFlyEffect(fromPos, newNode.GlobalPosition, template, DeckAnimScale, OwnerAnimScale, DeckRotationDeg, OwnedRotationDeg);
             FocusCard(newNode);
         }
 
         UpdateDeckCountUI();
     }
 
-    private async Task PlayFlyEffect(Vector2 fromGlobalPos, Vector2 toGlobalPos, CardModel template)
+    private async Task PlayFlyEffect(Vector2 fromGlobalPos, Vector2 toGlobalPos, CardModel template, float startScale, float endScale, float startRotationDeg, float endRotationDeg)
     {
         var temp = await NodeCard.CreateCard(
             template.Clone(),
@@ -969,7 +983,7 @@ public partial class DeckEditSubMenuScene : SubMenuScene
             CardView.Collection,
             Main.CardContainer,
             drawAnimation: false,
-            1f);
+            startScale);
         if (temp == null || !GodotObject.IsInstanceValid(temp)) return;
 
         temp.AllowExpand = false;
@@ -979,14 +993,18 @@ public partial class DeckEditSubMenuScene : SubMenuScene
         temp.Fresh();
         temp.GlobalPosition = fromGlobalPos;
 
-        var startScale = temp.Scale;
-        var endScale = startScale * 0.6f;
+        float startRad = Mathf.DegToRad(startRotationDeg);
+        float deltaDeg = Mathf.Wrap(endRotationDeg - startRotationDeg, -180f, 180f);
+        float targetRad = Mathf.DegToRad(startRotationDeg + deltaDeg);
+
+        temp.Rotation = startRad;
 
         var tween = temp.CreateTween();
         tween.TweenProperty(temp, "global_position", toGlobalPos, 0.3f)
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.Out);
-        tween.Parallel().TweenProperty(temp, "scale", endScale, 0.3f);
+        tween.Parallel().TweenProperty(temp, "scale", new Vector2(endScale, endScale), 0.3f);
+        tween.Parallel().TweenProperty(temp, "rotation", targetRad, 0.3f);
         await temp.ToSignal(tween, Tween.SignalName.Finished);
 
         if (GodotObject.IsInstanceValid(temp))

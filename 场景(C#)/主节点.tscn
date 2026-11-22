@@ -6,11 +6,15 @@
 [ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="3_n74wj"]
 [ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="5_2lx20"]
 [ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_1cjfr"]
+[ext_resource type="Script" uid="uid://dbc5cu5atvore" path="res://脚本(C#)/游戏控制/GemCenter.cs" id="13_00smb"]
+[ext_resource type="PackedScene" uid="uid://dgw0vod6b082d" path="res://场景(C#)/主界面按钮/任务.tscn" id="13_quj4d"]
 [ext_resource type="PackedScene" uid="uid://b5x4veawhq8g4" path="res://场景(C#)/主界面按钮/僵尸任务.tscn" id="14_2lx20"]
 [ext_resource type="PackedScene" uid="uid://btfi7ovrmvcct" path="res://场景(C#)/主界面按钮/设置按钮.tscn" id="15_00smb"]
 [ext_resource type="PackedScene" uid="uid://dy7pegrhba8bu" path="res://场景(C#)/主界面按钮/每日挑战.tscn" id="15_1cjfr"]
+[ext_resource type="Script" uid="uid://b1u3rt0arf1cc" path="res://脚本(C#)/辅助类/DotLabel.cs" id="16_ulybo"]
 [ext_resource type="PackedScene" uid="uid://b82k587le8ukv" path="res://场景(C#)/主界面按钮/对战.tscn" id="18_1pb50"]
 [ext_resource type="PackedScene" uid="uid://d4jtuyxkgf5da" path="res://场景(C#)/主界面按钮/植物任务.tscn" id="19_quj4d"]
+[ext_resource type="Script" uid="uid://dpy81oq8meuvd" path="res://脚本(C#)/辅助类/IconComposer.cs" id="20_1pb50"]
 [ext_resource type="PackedScene" uid="uid://c0yfhr8tvx5fh" path="res://场景(C#)/加载.tscn" id="21_8ffxo"]
 [ext_resource type="PackedScene" uid="uid://cmokbn4rntjp7" path="res://场景(C#)/主界面按钮/返回按钮.tscn" id="21_otykl"]
 [ext_resource type="PackedScene" uid="uid://5hwxyxyj6q0i" path="res://场景(C#)/主界面按钮/活动.tscn" id="21_quj4d"]
@@ -133,6 +137,15 @@ offset_right = -925.0
 offset_bottom = 392.99988
 scale = Vector2(1.25, 1.25)
 
+[node name="任务" parent="Scene/ButtomScene" unique_id=2120193542 instance=ExtResource("13_quj4d")]
+unique_name_in_owner = true
+offset_left = -50.0
+offset_top = 938.0
+offset_right = -50.0
+offset_bottom = 938.0
+scale = Vector2(0.7, 0.7)
+SubScene = "res://场景(C#)/任务栏.tscn面.tscn"
+
 [node name="SubScene" type="CanvasLayer" parent="Scene" unique_id=454554130]
 unique_name_in_owner = true
 layer = 3
@@ -147,7 +160,7 @@ follow_viewport_enabled = true
 layer = 80
 follow_viewport_enabled = true
 
-[node name="钻石" type="Panel" parent="Scene/Button" unique_id=285240468]
+[node name="钻石" type="Panel" parent="Scene/Button" unique_id=1315787887]
 unique_name_in_owner = true
 anchors_preset = 5
 anchor_left = 0.5
@@ -160,6 +173,16 @@ grow_horizontal = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_00smb")
+script = ExtResource("13_00smb")
+metadata/_custom_type_script = "uid://dbc5cu5atvore"
+
+[node name="钻石2" type="TextureRect" parent="Scene/Button/钻石" unique_id=1142997298]
+layout_mode = 0
+offset_left = -22.0
+offset_right = 88.4762
+offset_bottom = 114.53037
+scale = Vector2(0.525, 0.525)
+texture = ExtResource("5_2lx20")
 
 [node name="钻石" type="TextureRect" parent="Scene/Button/钻石" unique_id=120779262]
 layout_mode = 0
@@ -169,15 +192,17 @@ offset_bottom = 114.53037
 scale = Vector2(0.525, 0.525)
 texture = ExtResource("5_2lx20")
 
-[node name="钻石数量" type="Label" parent="Scene/Button/钻石" unique_id=1557627473]
+[node name="钻石数量" type="Label" parent="Scene/Button/钻石" unique_id=300116905]
 layout_mode = 0
 offset_right = 300.0
-offset_bottom = 60.0
+offset_bottom = 61.0
 theme_override_fonts/font = ExtResource("6_1cjfr")
 theme_override_font_sizes/font_size = 54
-text = "100"
+text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("16_ulybo")
+metadata/_custom_type_script = "uid://b1u3rt0arf1cc"
 
 [node name="设置按钮" parent="Scene/Button" unique_id=181554448 instance=ExtResource("15_00smb")]
 unique_name_in_owner = true
@@ -280,3 +305,8 @@ metadata/_edit_lock_ = true
 
 [node name="Controller" type="CanvasLayer" parent="." unique_id=720654669]
 follow_viewport_enabled = true
+
+[node name="IconComposer" type="Node" parent="." unique_id=630336623]
+unique_name_in_owner = true
+script = ExtResource("20_1pb50")
+metadata/_custom_type_script = "uid://dpy81oq8meuvd"

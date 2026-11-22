@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://bhwbw81o6gl03"]
+
+[ext_resource type="Texture2D" uid="uid://dqtbnidxguueu" path="res://素材/ui/任务/QuestBarUp.png" id="1_dtmmf"]
+[ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="3_18tdq"]
+
+[sub_resource type="FontVariation" id="FontVariation_dtmmf"]
+base_font = ExtResource("3_18tdq")
+
+[node name="任务页" type="Control" unique_id=1390346446]
+custom_minimum_size = Vector2(627, 164)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -653.0
+offset_bottom = -556.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="阴影" type="Sprite2D" parent="." unique_id=1680325622]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0.18431373)
+position = Vector2(314, 91)
+texture = ExtResource("1_dtmmf")
+
+[node name="背景" type="Sprite2D" parent="." unique_id=1895128380]
+unique_name_in_owner = true
+position = Vector2(302, 76)
+texture = ExtResource("1_dtmmf")
+
+[node name="Label" type="Label" parent="." unique_id=2113361468]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 623.0
+offset_bottom = 154.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = SubResource("FontVariation_dtmmf")
+theme_override_font_sizes/font_size = 68
+text = "植物任务"
+horizontal_alignment = 1
+vertical_alignment = 1

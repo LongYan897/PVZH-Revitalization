@@ -309,6 +309,7 @@ public static class CardCmd
 
     private static async Task TimingOnCardsCore(CardModel cardModel, Timing timing, object[] paramters)
     {
+        IBattleHook.PushHooks(timing, cardModel, paramters);
         foreach (var card in CardInstances.Where(c => PlayerManager.GetPlayer(c.Camp).Status.HandCards.Contains(c)).ToList())
         {
             if (card != cardModel)
