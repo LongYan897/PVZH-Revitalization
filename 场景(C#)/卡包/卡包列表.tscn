@@ -137,7 +137,7 @@ theme_override_constants/separation = 30
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="顶部占位" type="Panel" parent="卡包遮罩/ScrollContainer/VBoxContainer" unique_id=1757614369]
-custom_minimum_size = Vector2(5, 5)
+custom_minimum_size = Vector2(5, 60)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_bejxu")
