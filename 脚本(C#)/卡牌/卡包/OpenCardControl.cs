@@ -98,12 +98,33 @@ public partial class OpenCardControl : SubMenuScene
             if (payload.PullCount > 0) CardCounts = payload.PullCount;
             if (!string.IsNullOrEmpty(payload.CardTexturePath)) CardTexturePath = payload.CardTexturePath;
         }
-
-        // 关键：开包是"长流程"（飞包 + 等玩家点击撕包 + 展示结果），不能 await 在这里。
-        // _Load() 被 SubMenuScene._EnterTree await，SceneManager 会等 LoadTask 完成才把这一层
-        // 设为 Visible —— 如果这里 await 整个开包流程，界面会一直不可见（看着像卡死）。
+        // 顶部钻石由 SceneManager 管：OptionSlot 建 SubMenu 时把 IsPersistNess 设成 true，
+        // SceneManager 进场景后会调 ShowNess(false) 把它藏起来。
+        // 这里不要自己去藏 —— _Load 是在 AddChild 里跑的，紧接着 SceneManager 就会 ShowNess(true)
+        // 把刚藏的又显示回来（实测过）。
         RunOpeningSafe();
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 显示/隐藏顶部的钻石 HUD。<br/>
+    /// 它不在本场景里，而是常驻在 <see cref="Main.SceneContainer"/> 的 "Scene/Button/钻石" 节点上。
+    /// </summary>
+    private static void SetDiamondVisible(bool visible)
+    {
+        if (Main.SceneContainer == null || !GodotObject.IsInstanceValid(Main.SceneContainer)) return;
+
+        Control diamond = Main.SceneContainer.GetNodeOrNull<Control>("%钻石");
+        if (diamond != null && GodotObject.IsInstanceValid(diamond))
+            diamond.Visible = visible;
+    }
+
+    public override void _ExitTree()
+    {
+        // 离开这个界面时把钻石还回来。
+        // 不能只靠 SceneManager 的 ShowNess：点「收集」走的是 ReturnToSub(null,...)，
+        // 如果它是最后一层（Menus 清空），那条分支不会调 ShowNess，钻石会一直藏着回到主界面。
+        SetDiamondVisible(true);
     }
 
     /// <summary>后台跑开包流程，出错时打日志（fire-and-forget 的异常否则会被静默吞掉）</summary>
@@ -137,7 +158,6 @@ public partial class OpenCardControl : SubMenuScene
         float delay = 0f;
         Random rand = new();
         float baseRatio = 1f - SineRatio;
-        // 卡包封面图（按 Payload 里传的卡包换图，没有就用 3d卡包.tscn 自带的）
         Texture2D packTexture = !string.IsNullOrEmpty(CardTexturePath) && ResourceLoader.Exists(CardTexturePath)
             ? GD.Load<Texture2D>(CardTexturePath)
             : null;
@@ -190,7 +210,7 @@ public partial class OpenCardControl : SubMenuScene
 
         //添加结束按钮
         if (listScene.NodeList == null)
-            return;   // 场景里没找到 FlowContainer，前面已经 PushError 过了
+            return;
 
         var endButton = GD.Load<PackedScene>(EndButtonScenePath).Instantiate<EndButton>();
         // 注意：这里不要设 endButton.Scale —— NodeList 是 HFlowContainer，
@@ -320,8 +340,6 @@ public partial class OpenCardControl : SubMenuScene
         list.AddChild(cell);
 
         CardBar bar = GD.Load<PackedScene>(BannerScenePath).Instantiate<CardBar>();
-        // 尺寸直接写死成本体宽度。不要用 anchors 铺满 —— 格子刚 AddChild 时还没排版，
-        // 那时候算出来的 offsets 全是 0，横幅会变成 0 尺寸（面板画不出来，只剩文字，就是之前那样）。
         bar.CustomMinimumSize = new Vector2(width, BannerHeight);
         bar.Size = new Vector2(width, BannerHeight);
         bar.Position = new Vector2((rowWidth - width) * 0.5f, 0f);
@@ -371,9 +389,6 @@ public partial class OpenCardControl : SubMenuScene
     }
     private async Task CardIntroAn(NodeCard card,string groupName,float fit)
     {
-        // 注意：Tween 必须至少有一个 Tweener 才能启动，
-        // 空的 Tween 会报 "Tween ... started with no Tweeners"，而且 await Finished 永远不会返回（卡死）。
-        // 所以 tween1 只在真正用到时创建，没用到的分组不要 await 它。
         Tween tween = CreateTween();
         Tween tween1 = null;
         if (groupName == "罕见")

@@ -73,6 +73,9 @@ public partial class OptionSlot : Control
             Name = "开包菜单",
             SubScene = "res://场景(C#)/卡包/开包界面.tscn",
             ShowLoading = true,
+            // 开包界面不显示顶部那颗钻石：SceneManager 进场景时会按这个标记调
+            // ShowNess(!IsPersistNess) 把它藏起来，退回上一层时再按上一层的标记恢复。
+            IsPersistNess = true,
         };
         _openMenu.AddChild(new Button { Name = "Button" });
         AddChild(_openMenu);   // 进树时 SubMenu._EnterTree 会向 SceneManager 注册
