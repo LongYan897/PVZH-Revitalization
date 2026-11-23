@@ -103,6 +103,11 @@ public static class CardPackPreview
         // 飞入起点：要偏到屏幕右边外面，否则能看到卡牌"凭空出现"的位置
         float flyOffsetX = CardPackTransition.ComputeFlyOffset(target, cardCellWidth);
 
+        // 内容栏宽度 = 一排卡牌的总宽（3 张 150 + 2 个 12 = 474）。横幅按这个宽度显示，
+        // 正好和下面那排卡左右对齐，也不会被 480 宽的面板切掉。
+        float contentWidth = cardsPerRow * cardCellWidth + (cardsPerRow - 1) * separation;
+        contentWidth = Mathf.Min(contentWidth, target.Size.X);
+
         foreach (JsonObject group in json.GetArray<JsonObject>("group"))
         {
             // ---- 1) 这个分组的横幅 ----
@@ -111,24 +116,25 @@ public static class CardPackPreview
                 var bar = barScene.Instantiate<CardBar>();
                 if (useRows)
                 {
-                    // 行模式：横幅必须套在普通的 Control 格子里。
+                    // 行模式：横幅必须套在普通的 Control 格子里 ——
                     // 直接当 VBox 的子节点的话，容器每次排版都会把它的 scale 重置成 1，
                     // CardPackTransition 里的「压扁 / 长大」动画就看不见了。
-                    // 另外 横幅.tscn 的 custom_minimum_size 是 720 宽，塞进 480 宽的栏里会横向溢出，
-                    // 所以宽度归零、高度用格子固定，靠 anchors 铺满格子。
+                    // 尺寸一律写死，不要用 SetAnchorsPreset：格子刚 AddChild 还没排版时
+                    // offsets 会按 0 算，横幅会变成 0 尺寸（面板画不出来，只剩文字）。
                     var barCell = new Control
                     {
-                        CustomMinimumSize = new Vector2(0, CardPackTransition.BarHeight),
+                        CustomMinimumSize = new Vector2(contentWidth, CardPackTransition.BarHeight),
+                        SizeFlagsHorizontal = Control.SizeFlags.ShrinkBegin,
                         MouseFilter = Control.MouseFilterEnum.Ignore,
                         Name = "横幅格",
                     };
                     target.AddChild(barCell);
 
-                    bar.CustomMinimumSize = Vector2.Zero;
+                    bar.CustomMinimumSize = new Vector2(contentWidth, CardPackTransition.BarHeight);
+                    bar.Size = new Vector2(contentWidth, CardPackTransition.BarHeight);
                     barCell.AddChild(bar);
-                    bar.SetAnchorsPreset(Control.LayoutPreset.FullRect);
 
-                    if (animateIn) CardPackTransition.HideForIn(barCell, bar);
+                    if (animateIn) CardPackTransition.HideForIn(bar);
                 }
                 else
                 {

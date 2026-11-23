@@ -88,11 +88,12 @@ public static class CardPackTransition
         }
     }
 
-    /// <summary>铺卡时先把横幅/卡牌摆到"还没出现"的状态，等 <see cref="InAsync"/> 统一飞进来。</summary>
-    public static void HideForIn(Control barCell, CardBar bar)
+    /// <summary>
+    /// 铺卡时先把横幅摆到"还没出现"的状态（压扁 + 透明），等 <see cref="InAsync"/> 统一长大飞进来。<br/>
+    /// 只动视觉（scale / modulate），不动它的尺寸 —— 尺寸归 Fill 决定。
+    /// </summary>
+    public static void HideForIn(CardBar bar)
     {
-        if (barCell != null)
-            barCell.CustomMinimumSize = new Vector2(0, BarHeight);   // 高度不变，避免整列跳动
         if (bar == null) return;
 
         bar.Scale = new Vector2(BarHiddenScaleX, BarHiddenScaleY);

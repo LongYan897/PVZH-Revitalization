@@ -204,7 +204,7 @@ public partial class OpenCardControl : SubMenuScene
 
         // 「收集」按钮要落在屏幕正中：EndButton 自己是 CenterContainer，会把内部按钮摆在
         // 自己矩形的中心，所以把它的宽度撑成整行（而不是它场景里的 720），内部按钮就居中了。
-        float rowWidth = listScene.NodeList.Size.X;
+        float rowWidth = listScene.VisibleWidth;
         if (rowWidth > 0)
             endButton.CustomMinimumSize = new Vector2(rowWidth, endButton.CustomMinimumSize.Y);
         listScene.NodeList.AddChild(endButton);
@@ -233,8 +233,10 @@ public partial class OpenCardControl : SubMenuScene
             return;
         }
 
-        // 一行的宽度 = 列表自己的宽度：整行宽的格子会独占一行，同时横幅也铺满这个宽度
-        float rowWidth = list.Size.X;
+        // 一行的宽度 = 滚动可视区的宽度（不是 FlowContainer 自己的宽度）。
+        // FlowContainer 在 ScrollContainer 里会被撑到比可视区宽得多（730 的可视区里它是 1280），
+        // 按它来居中，内容会被整体推到面板外面。
+        float rowWidth = listScene.VisibleWidth;
         if (rowWidth <= 0) rowWidth = GetViewportRect().Size.X;
 
         float fit = CardCellWidth / CardNaturalWidth;

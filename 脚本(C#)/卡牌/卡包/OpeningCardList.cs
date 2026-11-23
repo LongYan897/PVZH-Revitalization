@@ -14,6 +14,21 @@ public partial class OpeningCardList : Node2D
     /// <summary>每个格子/卡牌之间的间距</summary>
     public const int Separation = 12;
 
+    /// <summary>
+    /// 列表的<b>可视宽度</b>：外层有 ScrollContainer 就取它的宽度，否则退回 FlowContainer 自己的。<br/>
+    /// 不能直接用 NodeList.Size.X —— FlowContainer 在 ScrollContainer 里会被撑得比可视区还宽
+    /// （实测 730 的可视区里它自己算出来 1280），按它居中会把内容整体推到面板外面去。
+    /// </summary>
+    public float VisibleWidth
+    {
+        get
+        {
+            if (NodeList == null) return 0f;
+            if (NodeList.GetParent() is Control scroll && scroll.Size.X > 0f) return scroll.Size.X;
+            return NodeList.Size.X;
+        }
+    }
+
     public override void _Ready()
     {
         FitToViewport();

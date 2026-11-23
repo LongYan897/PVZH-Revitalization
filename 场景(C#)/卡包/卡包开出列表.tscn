@@ -81,7 +81,7 @@ layout_mode = 2
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="Panel" type="Panel" parent="底版/Panel/SmoothScrollContainer/HFlowContainer" unique_id=1773986769]
-custom_minimum_size = Vector2(0, 25)
+custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBox_cc15e")
