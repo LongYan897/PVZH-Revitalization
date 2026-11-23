@@ -27,11 +27,11 @@ script = ExtResource("2_c3mtk")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 
 [node name="占位符" type="Control" parent="." unique_id=528918769]
-custom_minimum_size = Vector2(1152, 16)
+custom_minimum_size = Vector2(2024, 16)
 layout_mode = 2
 
 [node name="底板" type="TextureRect" parent="." unique_id=1429923300]
-custom_minimum_size = Vector2(1152, 64)
+custom_minimum_size = Vector2(2024, 64)
 layout_mode = 2
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_2ufvv")
@@ -56,16 +56,16 @@ theme_override_font_sizes/font_size = 30
 text = "健壮"
 
 [node name="占位符3" type="Control" parent="." unique_id=106486525]
-custom_minimum_size = Vector2(1152, 8)
+custom_minimum_size = Vector2(2024, 8)
 layout_mode = 2
 
 [node name="排列" type="HFlowContainer" parent="." unique_id=2126167542]
-custom_minimum_size = Vector2(1152, 0)
+custom_minimum_size = Vector2(2024, 0)
 layout_mode = 2
 theme = SubResource("Theme_c3mtk")
 script = ExtResource("2_c3mtk")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 
 [node name="占位符2" type="Control" parent="." unique_id=1300091936]
-custom_minimum_size = Vector2(1152, 8)
+custom_minimum_size = Vector2(2024, 8)
 layout_mode = 2

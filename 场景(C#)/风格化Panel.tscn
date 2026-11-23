@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dr0d1u7h2vmfc"]
+
+[ext_resource type="Texture2D" uid="uid://djhsp8lhqkjnq" path="res://素材(C#)/其他/bg.png" id="1_d16i0"]
+
+[node name="风格化Panel" type="Control" unique_id=701768119]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="底版" type="Panel" parent="." unique_id=1010086168]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 300.0
+
+[node name="背景" type="TextureRect" parent="底版" unique_id=2034122343]
+self_modulate = Color(0.06692132, 0.24234074, 0.34134257, 1)
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 300.0
+texture = ExtResource("1_d16i0")
+
+[node name="Line2D" type="Line2D" parent="底版" unique_id=196717198]
+points = PackedVector2Array(0, 0, 0, 300, 500, 300, 500, 0, 0, 0)
+width = 3.0
+default_color = Color(0.5489626, 0.5489626, 0.54896253, 1)
+joint_mode = 2

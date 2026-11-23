@@ -1,0 +1,17 @@
+传说.png
+size:537,236
+filter:Linear,Linear
+PackOpen_Fat_Rays
+bounds:444,121,113,91
+offsets:2,3,119,96
+rotate:90
+basic_glow
+bounds:2,2,240,232
+offsets:11,7,258,252
+decktitlebarbg #154677
+bounds:244,33,1,167
+offsets:1,1,3,169
+rotate:90
+superpower_glow_round
+bounds:244,36,198,198
+offsets:3,2,204,203

@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://d1vssnn06y37n"]
+
+[ext_resource type="Script" uid="uid://bgkita6gk382n" path="res://脚本(C#)/卡牌/卡包/CardCost.cs" id="1_6gn1w"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="1_mm6y4"]
+[ext_resource type="Texture2D" uid="uid://drug7js2jfb4v" path="res://素材(C#)/文本图片/inhnd_sun_gb.png" id="2_6gn1w"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_svpll"]
+shader = ExtResource("1_mm6y4")
+shader_parameter/color = Color(0, 0, 0, 0.5803922)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = -1.0
+shader_parameter/saturation = 1.4790000702525
+shader_parameter/contrast = 1.0
+
+[node name="卡组费用" type="Control" unique_id=2076975413]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -694.0
+offset_bottom = -1253.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6gn1w")
+metadata/_custom_type_script = "uid://bgkita6gk382n"
+
+[node name="花费" type="Sprite2D" parent="." unique_id=1627266283]
+material = SubResource("ShaderMaterial_svpll")
+position = Vector2(14, 15.000001)
+scale = Vector2(0.20901638, 0.20901632)
+texture = ExtResource("2_6gn1w")
+
+[node name="图标" type="Sprite2D" parent="花费" unique_id=1614960755]
+position = Vector2(-4.784314, -9.56864)
+texture = ExtResource("2_6gn1w")

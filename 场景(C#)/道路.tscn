@@ -5,12 +5,22 @@
 [ext_resource type="Texture2D" uid="uid://cimvexb4n4idx" path="res://素材/ui/地图高亮/选择框3.png" id="3_x76yt"]
 [ext_resource type="Texture2D" uid="uid://d4ihrs2s4rf4q" path="res://素材/对象高亮框/单位.png" id="4_ewqbq"]
 [ext_resource type="Texture2D" uid="uid://weos2ou5dc6" path="res://素材(C#)/场地/coffee_lane_base.png" id="4_qclkx"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="5_aps02"]
+[ext_resource type="Texture2D" uid="uid://dvew56a14pa1h" path="res://素材/对象高亮框/战斗高亮.png" id="5_o6ctq"]
 [ext_resource type="Texture2D" uid="uid://b6d5gpkrnfa43" path="res://素材(C#)/其他/lane arrow.png" id="6_rx7a3"]
 [ext_resource type="Texture2D" uid="uid://i6cd35dh347r" path="res://素材(C#)/其他/fight.png" id="7_y6tdo"]
 [ext_resource type="Texture2D" uid="uid://cbfebewepeb55" path="res://素材(C#)/其他/arrow_small.png" id="8_ojbca"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qclkx"]
 size = Vector2(80, 540)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o6ctq"]
+shader = ExtResource("5_aps02")
+shader_parameter/color = Color(0, 1, 0.5333333, 0.7764706)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 0.0
+shader_parameter/saturation = 1.0
+shader_parameter/contrast = 1.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rx7a3"]
 size = Vector2(89.99999, 80)
@@ -31,6 +41,7 @@ offset_left = -40.0
 offset_top = -270.0
 offset_right = 40.0
 offset_bottom = 270.0
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="碰撞箱" type="Area2D" parent="." unique_id=1696215677]
@@ -57,16 +68,27 @@ expand_mode = 1
 
 [node name="环境高亮" type="Sprite2D" parent="." unique_id=381365032]
 unique_name_in_owner = true
+visible = false
 modulate = Color(0.46666667, 0.81960785, 0.54901963, 1)
 z_index = 24
 position = Vector2(0, -36.499992)
 scale = Vector2(0.33, 0.35394323)
 texture = ExtResource("3_x76yt")
 
+[node name="战斗高亮" type="Sprite2D" parent="." unique_id=1690327809]
+unique_name_in_owner = true
+visible = false
+z_index = 25
+material = SubResource("ShaderMaterial_o6ctq")
+position = Vector2(-1.66893e-06, -5)
+scale = Vector2(0.9565217, 1.2064632)
+texture = ExtResource("5_o6ctq")
+
 [node name="植物_僵尸1" type="Node2D" parent="." unique_id=545167542]
 unique_name_in_owner = true
+visible = false
 z_index = 10
-position = Vector2(-55, 123)
+position = Vector2(-55, 90)
 
 [node name="单位高亮" type="TextureRect" parent="植物_僵尸1" unique_id=1842500548]
 unique_name_in_owner = true
@@ -86,6 +108,7 @@ offset_top = 8.0
 offset_right = 100.0
 offset_bottom = 88.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
 flat = true
 metadata/_edit_use_anchors_ = true
 
@@ -106,8 +129,9 @@ position = Vector2(0, 119)
 
 [node name="植物_2" type="Node2D" parent="." unique_id=503027257]
 unique_name_in_owner = true
+visible = false
 z_index = 10
-position = Vector2(-55, -19)
+position = Vector2(-55, -52)
 
 [node name="单位高亮2" type="TextureRect" parent="植物_2" unique_id=1021507255]
 unique_name_in_owner = true
@@ -126,6 +150,7 @@ offset_top = 112.0
 offset_right = 100.0
 offset_bottom = 192.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
 flat = true
 
 [node name="碰撞箱3" type="Area2D" parent="植物_2" unique_id=1383307985]
@@ -189,6 +214,10 @@ position = Vector2(0, -219)
 unique_name_in_owner = true
 position = Vector2(0, -118)
 
+[node name="Pos3" type="Marker2D" parent="." unique_id=1060324421]
+unique_name_in_owner = true
+position = Vector2(0, -167)
+
 [node name="Hero" type="Marker2D" parent="." unique_id=2103997853]
 unique_name_in_owner = true
 position = Vector2(0, 263)
@@ -196,3 +225,58 @@ position = Vector2(0, 263)
 [node name="Hero2" type="Marker2D" parent="." unique_id=773338379]
 unique_name_in_owner = true
 position = Vector2(0, -321)
+
+[node name="植物_3" type="Node2D" parent="." unique_id=624693695]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+position = Vector2(-55, -128)
+
+[node name="单位高亮4" type="TextureRect" parent="植物_3" unique_id=1220320731]
+unique_name_in_owner = true
+z_index = 7
+offset_right = 110.0
+offset_bottom = 96.0
+scale = Vector2(1.0000001, 1.0000001)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("4_ewqbq")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="碰撞4" type="Button" parent="植物_3" unique_id=109464427]
+unique_name_in_owner = true
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 100.0
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
+flat = true
+metadata/_edit_use_anchors_ = true
+
+[node name="植物_僵尸2" type="Node2D" parent="." unique_id=2071820117]
+unique_name_in_owner = true
+visible = false
+z_index = 10
+position = Vector2(-55, -270)
+
+[node name="单位高亮3" type="TextureRect" parent="植物_僵尸2" unique_id=832598762]
+unique_name_in_owner = true
+z_index = 7
+offset_right = 110.0
+offset_bottom = 96.0
+scale = Vector2(1.0000001, 1.0000001)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("4_ewqbq")
+expand_mode = 1
+
+[node name="碰撞5" type="Button" parent="植物_僵尸2" unique_id=1073585242]
+unique_name_in_owner = true
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 100.0
+offset_bottom = 88.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_default_cursor_shape = 2
+flat = true
+metadata/_edit_use_anchors_ = true

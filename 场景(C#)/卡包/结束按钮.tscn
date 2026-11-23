@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://brgbbuhw1sseu"]
+
+[ext_resource type="Script" uid="uid://b3icshx0jq2l0" path="res://脚本(C#)/卡牌/卡包/EndButton.cs" id="1_lbiu6"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="1_rjxgr"]
+[ext_resource type="Texture2D" uid="uid://cf5j0uhck2mym" path="res://素材(C#)/卡包/button_tint #186351.png" id="2_lbiu6"]
+[ext_resource type="FontFile" uid="uid://rm3h54fev3jd" path="res://素材/字体/拙黑拼贴体.ttf" id="3_kse8q"]
+
+[node name="结束按钮" type="CenterContainer" unique_id=2026720127]
+custom_minimum_size = Vector2(720, 123)
+script = ExtResource("1_lbiu6")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="结束按钮" type="Control" parent="." unique_id=153180833]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Button" type="Button" parent="结束按钮" unique_id=1090576700]
+layout_mode = 0
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 144.0
+offset_bottom = 53.0
+flat = true
+
+[node name="购买按钮" type="NinePatchRect" parent="结束按钮/Button" unique_id=895298604]
+self_modulate = Color(0.039215688, 0.8784314, 0.28235295, 1)
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 0
+offset_right = 488.0
+offset_bottom = 206.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_lbiu6")
+region_rect = Rect2(0, 0, 255, 250)
+patch_margin_left = 32
+patch_margin_top = 34
+patch_margin_right = 32
+patch_margin_bottom = 42
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="按钮文本" type="Label" parent="结束按钮/Button/购买按钮" unique_id=309020083]
+layout_mode = 0
+offset_right = 488.3333
+offset_bottom = 205.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_kse8q")
+theme_override_font_sizes/font_size = 90
+text = "收集"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true

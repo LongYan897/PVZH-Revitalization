@@ -43,3 +43,23 @@ public enum Rarity
     /// </summary>
     Token
 }
+
+public static class RarityExtension
+{
+    public static string ToName(this Rarity rarity)
+    {
+        return rarity switch
+        {
+            Rarity.Activity => "活动",
+            Rarity.Basic => "基础",
+            Rarity.Common => "常见",
+            Rarity.Uncommon => "罕见",
+            Rarity.Legend => "传奇",
+            Rarity.None => "无",
+            Rarity.Rare => "稀有",
+            Rarity.SuperRare => "超稀有",
+            Rarity.Token => "令牌",
+            _ => ""
+        };
+    }
+}

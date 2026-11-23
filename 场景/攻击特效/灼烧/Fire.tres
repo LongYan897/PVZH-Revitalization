@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://bd12o6igkqyok"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://drfygxffyhps3" path="res://场景/攻击特效/灼烧/Fire.atlas" id="1_dk221"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://p3a2cfkxe70d" path="res://场景/攻击特效/灼烧/Fire.skel" id="2_7dwje"]
+
+[resource]
+atlas_res = ExtResource("1_dk221")
+skeleton_file_res = ExtResource("2_7dwje")

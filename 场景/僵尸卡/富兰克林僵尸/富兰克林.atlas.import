@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dnwe8hy810uek"
+path="res://.godot/imported/富兰克林.atlas-d2faa010254a093589cbf03bac2258cd.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/富兰克林僵尸/富兰克林.atlas"
+dest_files=["res://.godot/imported/富兰克林.atlas-d2faa010254a093589cbf03bac2258cd.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

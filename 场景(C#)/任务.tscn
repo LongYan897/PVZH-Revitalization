@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://cfa0f28jwmw2k"]
+
+[ext_resource type="Script" uid="uid://bhag8gno3qtns" path="res://脚本(C#)/场景/子场景/QuestSubMenuScene.cs" id="1_mhv6j"]
+[ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="1_ss37m"]
+[ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="2_vs4h6"]
+[ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="3_ymu33"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0ggpv"]
+shader = ExtResource("1_ss37m")
+shader_parameter/direction = Vector2(11.112687, -11.112687)
+shader_parameter/speed_scale = 0.0
+shader_parameter/canvas_scaling = Vector2(2, 2)
+shader_parameter/canvas_rotation = 0.0
+shader_parameter/texture_spacing_x = 0.0
+shader_parameter/texture_spacing_y = 0.0
+shader_parameter/texture_scaling = Vector2(1, 1)
+shader_parameter/texture_rotation = 0.0
+shader_parameter/tint_color = Color(0.13725491, 0.53333336, 0.6745098, 1)
+
+[node name="Quest" type="Node2D" unique_id=495180766]
+script = ExtResource("1_mhv6j")
+metadata/_custom_type_script = "uid://bhag8gno3qtns"
+
+[node name="Bg" type="Sprite2D" parent="." unique_id=171691481]
+modulate = Color(0.13725491, 0.53333336, 0.6745098, 1)
+material = SubResource("ShaderMaterial_0ggpv")
+position = Vector2(360, 640)
+texture = ExtResource("2_vs4h6")
+script = ExtResource("3_ymu33")
+Color = Color(0.3896998, 0.17099999, 0.9, 1)
+metadata/_custom_type_script = "uid://c4d6enygyoawb"
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true

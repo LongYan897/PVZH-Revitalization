@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://6a74i0io1l35"
+path="res://.godot/imported/skeleton .skel-4ffaa7ed3a8cebfbfecf801643584f2d.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/火爆辣椒/skeleton .skel"
+dest_files=["res://.godot/imported/skeleton .skel-4ffaa7ed3a8cebfbfecf801643584f2d.spskel"]
+
+[params]
+

@@ -1,0 +1,150 @@
+using FileExtension;
+using Godot;
+using Scene;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Nodes;
+namespace Card;
+/// <summary>
+/// 生成一个卡包磁贴，需要用到LoadResource方法加载资源。
+/// 所有数值来自 数据(C#)/cardPack.json 中该卡包对应的对象。
+/// </summary>
+public partial class CardTile : Control
+{
+    private const string PackDataPath = "res://数据(C#)/cardPack.json";
+    /// <summary>cardPack.json 里的对象名（Pack1 / Pack2 …）。公开给「底版」按钮用，它靠这个决定铺哪个卡包。</summary>
+    public string PackName { get; private set; } = "Pack1";
+    private string PackTitle { get; set; } = "测试卡包1";
+    private string IntroduceText { get; set; } = "这是卡包测试文本，限购4包！\n* 包含1张超稀有卡牌,\n* 3张稀有卡牌。";
+    private string PackTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
+    private string PackOpenTexture { get; set; } = "res://素材(C#)/卡包/卡包封面/pack_dawnofthelawn.png";
+    private string MainColor { get; set; } = "477fff";
+    private string TopColor { get; set; } = "007190";
+    private List<CardTileOption> Options = new();
+    // 场景节点
+    private Label PackNameLabel;
+    private TextureRect PackImage;
+    private Label IntroduceLabel;
+    private Panel Board;
+    private Panel TopBanner;
+    private Control ButtonGroup;
+    /// <summary>
+    /// 卡包列表右侧详情栏的容器（卡包列表.tscn 的 卡包遮罩/卡包详情/ScrollContainer2/VBoxContainer），
+    /// 由 CardTilesControl 在自己 _Load 里注入 —— 本场景找不到它，必须由外层给。
+    /// 「底版」上的 CardPackButton1 被点击时，会清空它再铺当前卡包的横幅 + 卡牌。
+    /// </summary>
+    public VBoxContainer DetailedCardList;
+    public void LoadResource(string packName)
+    {
+        PackName = packName;
+
+        // ---- 1. 把 Pack1 / Pack2 这一层里的数值全部读出来 ----
+        FileJson json = new FileJson().Open(PackDataPath).OpenObject(PackName);
+        PackTitle = json.GetVariable("PackName", PackTitle);
+        IntroduceText = json.GetVariable("IntroduceText", IntroduceText);
+        PackTexture = json.GetVariable("PackTexture", PackTexture);
+        PackOpenTexture = json.GetVariable("PackOpenTexture", PackTexture);
+        MainColor = json.GetVariable("MainColor", MainColor);
+        TopColor = json.GetVariable("TopColor", TopColor);
+        Options = json.GetArray<JsonObject>("Options")
+            .Select(option => new CardTileOption
+            {
+                ButtonText = option["ButtonText"]?.GetValue<string>() ?? "1包",
+                PriceType = option["PriceType"]?.GetValue<string>() ?? "Gem",
+                Price = option["Price"]?.GetValue<int>() ?? 0,
+                PullCount = option["PullCount"]?.GetValue<int>() ?? 1
+            }).ToList();
+
+        // ---- 2. 取节点（底版/购买按钮组 是 Control，挂 AutoFitHBoxContainer.gd，不是 BoxContainer）----
+        Board = GetNodeOrNull<Panel>("CenterContainer/底版");
+        TopBanner = GetNodeOrNull<Panel>("CenterContainer/底版/顶部横幅");
+        PackNameLabel = GetNodeOrNull<Label>("CenterContainer/底版/顶部横幅/卡包名字");
+        PackImage = GetNodeOrNull<TextureRect>("CenterContainer/底版/卡包图片");
+        IntroduceLabel = GetNodeOrNull<Label>("CenterContainer/底版/介绍文本");
+        ButtonGroup = GetNodeOrNull<Control>("CenterContainer/底版/购买按钮组");
+        if (ButtonGroup == null)
+        {
+            GD.PushError($"[CardTile] 场景中缺少 底版/购买按钮组，请检查 卡包.tscn。当前场景：{SceneFilePath}");
+            return;
+        }
+
+        // ---- 2.5 把"当前是哪个卡包"挂到详情按钮上 ----
+        // 点详情时 SceneManager 会把这个值塞进卡包详情场景的 Payload，详情场景在 _Load 里读它决定显示什么。
+        SubMenu detailButton = GetNodeOrNull<SubMenu>("CenterContainer/底版/详情按钮");
+        if (detailButton != null)
+            detailButton.Payload = PackName;
+        else
+            GD.PushWarning("[CardTile] 场景中缺少 底版/详情按钮");
+
+        // ---- 3. 把数值写进界面 ----
+        if (PackNameLabel != null) PackNameLabel.Text = PackTitle;
+        if (IntroduceLabel != null) IntroduceLabel.Text = IntroduceText;
+        if (PackImage != null && !string.IsNullOrWhiteSpace(PackTexture))
+        {
+            if (ResourceLoader.Exists(PackTexture))
+                PackImage.Texture = GD.Load<Texture2D>(PackTexture);
+            else
+                GD.PushWarning($"[CardTile] {PackName} 的 PackTexture 路径不存在：{PackTexture}");
+        }
+        SetPanelColor(Board, MainColor);
+        SetPanelColor(TopBanner, TopColor);
+
+        // ---- 4. 按 Options 生成购买按钮 ----
+        foreach (var Child in ButtonGroup.GetChildren())
+        {
+            // 先摘出树再释放，避免本帧新旧按钮同时参与 AutoFit 布局
+            ButtonGroup.RemoveChild(Child);
+            Child.QueueFree();
+        }
+        var OptionSlot = GD.Load<PackedScene>("res://场景(C#)/卡包/购买按钮槽.tscn");
+        if (OptionSlot == null)
+        {
+            GD.PushError("[CardTile] 无法加载 res://场景(C#)/卡包/购买按钮槽.tscn");
+            return;
+        }
+        foreach (var Option in Options)
+        {
+            var button = OptionSlot.Instantiate<OptionSlot>();
+            // 先塞数据再 AddChild：这里是从 _Load() 里调过来的，整棵子树还在 _EnterTree 阶段，
+            // OptionSlot 的 _Ready 还没跑（Godot 会把 ready 推迟到子树全部进入之后），
+            // 此时它的 IntroduceLabel / PriceLabel 都是 null，直接 Setup() 会 NRE。
+            button.IntroduceText = Option.ButtonText;
+            button.PriceCount = Option.Price;
+            // 开包界面需要知道：开哪个卡包、这个档位抽几张、卡包封面图
+            button.PackName = PackName;
+            button.PullCount = Option.PullCount;
+            button.PackTexturePath = PackOpenTexture;
+            ButtonGroup.AddChild(button);
+            if (button.IsNodeReady())
+                button.Setup();  
+            else
+                button.Ready += button.Setup;
+        }
+    }
+
+    /// <summary>
+    /// 把面板样式里的颜色换成 MainColor / TopColor。
+    /// StyleBoxFancy 是 GDScript 资源（addons/StyleboxFancy/StyleBoxFancy.gd），C# 没有强类型，
+    /// 只能通过 Variant 接口读写它的 color 字段。
+    /// </summary>
+    private static void SetPanelColor(Panel panel, string htmlColor)
+    {
+        if (panel == null || string.IsNullOrWhiteSpace(htmlColor)) return;
+        StyleBox style = panel.GetThemeStylebox("panel");
+        if (style == null)
+        {
+            GD.PushWarning($"[CardTile] {panel.Name} 没有 panel 样式，跳过染色");
+            return;
+        }
+        // 场景里的样式是共享子资源，先复制一份再改，避免连带改掉别的节点
+        StyleBox copy = (StyleBox)style.Duplicate();
+        // StyleBoxFlat 的字段叫 bg_color，只有 StyleBoxFancy 才叫 color
+        if (copy.Get("color").VariantType != Variant.Type.Color)
+        {
+            GD.PushWarning($"[CardTile] {panel.Name} 的样式不是 StyleBoxFancy，跳过染色");
+            return;
+        }
+        copy.Set("color", new Color(htmlColor));
+        panel.AddThemeStyleboxOverride("panel", copy);
+    }
+}

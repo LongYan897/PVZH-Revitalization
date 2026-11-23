@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b5sxy5mtu7go6"]
+
+[ext_resource type="Texture2D" uid="uid://beciykqgqiipo" path="res://场景/植物卡组/枝繁叶茂/3fbd38c3-b5ab-4988-8e60-64791b88d931.png" id="1_24qoo"]
+
+[node name="卡面" type="Control" unique_id=1909878214]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=217914236]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 21.0
+offset_right = 245.0
+offset_bottom = 179.0
+texture = ExtResource("1_24qoo")
+expand_mode = 1
+stretch_mode = 3

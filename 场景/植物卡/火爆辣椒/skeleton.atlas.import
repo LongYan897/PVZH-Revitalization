@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://l0g47nrgfcxu"
+path="res://.godot/imported/skeleton.atlas-43cb6f4f2ee569749cfb34693572c608.spatlas"
+
+[deps]
+
+source_file="res://场景/植物卡/火爆辣椒/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-43cb6f4f2ee569749cfb34693572c608.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

@@ -26,6 +26,7 @@ namespace Card.String;
 ///     特别描述 : 使用 "Flavor" 当作Json的键<br/>
 ///     骨骼 : 使用 "Animation" 当作Json的键<br/>
 ///     骨骼场景 : 使用 "Scene" 当作Json的键 需要tscn的场景 该场景内部使用相对位置确定动画位置<br/>
+///     序列化代码 : 使用 "Id" 当作Json的键<br/>
 ///     <br/>
 ///     ***<br/>
 ///     Marker2D *Collection(Marker2D) 代表图鉴中动画位置 Collection2(SpineSprite)是土坑位置 Marker2D *Battle(Marker2D)  代表战斗中动画位置 Battle2(SpineSprite)是土坑位置 <br/>
@@ -45,6 +46,7 @@ namespace Card.String;
 ///         文本中使用 _#ABC#XXX_ 或者 _&amp;ABC&amp;XXX_ 可以实现修改参数对应区域注册的 {#/&amp;:n} 例如 注册了 融合 => "在这个单位上打出{#/&amp;:n}来使用此能力。" 然后写 _&amp;僵尸&amp;融合_ 显示 (url)僵尸融合 点击后显示 在这个单位上打出僵尸来使用此能力。<br/>
 ///         文本中使用 _XXX#ABC#_ 或者 _XXX&amp;ABC&amp;_ 可以实现修改参数对应区域注册的 {#/&amp;:x} 例如 注册了 融合 => "在这个单位上打出{#/&amp;:x}来使用此能力。" 然后写 _融合&amp;2&amp;_ 显示 (url)融合2 点击后显示 在这个单位上打出2来使用此能力。<br/>
 ///         {#/&amp;:n}语法中 #ABC# 在描述中会实现 $ABC$ 的效果 而 &amp;ABC&amp; 在描述中直接显示 ABC<br/>
+///         文本中使用 ==XXX== 或 ==XXX{_#ABC#YYY_}== 可以实现带 url 的图标显示 点击触发 { } 内链接提取出的关键字/参数<br/>
 ///     ***<br/>
 ///     <br/>
 /// 例如:<br/>
@@ -96,6 +98,10 @@ public class CardString
     /// 卡面路径
     /// </summary>
     public string IconPath { get; private set; }
+    /// <summary>
+    /// 卡牌的序列化代码
+    /// </summary>
+    public uint Id { get; private set; }
     /// <summary>
     /// 血量
     /// </summary>
@@ -200,6 +206,14 @@ public class CardString
         {
             cardString.IconPath = GetData(cardTitle, "Icon").AsString();
         }
+        if (GetData(cardTitle, "Icon").VariantType != Variant.Type.Nil)
+        {
+            cardString.IconPath = GetData(cardTitle, "Icon").AsString();
+        }
+        if (GetData(cardTitle, "Id").VariantType != Variant.Type.Nil)
+        {
+            cardString.Id = GetData(cardTitle, "Id").AsUInt16();
+        }
         if (GetData(cardTitle, "Camp").VariantType != Variant.Type.Nil)
         {
             var camp = GetData(cardTitle, "Camp").AsString();
@@ -246,6 +260,10 @@ public class CardString
             if (GetData(cardTitle, "Tag").AsStringArray().Contains("Amphibious") || GetData(cardTitle, "Tag").AsStringArray().Contains("两栖"))
             {
                 tag |= CardTag.Amphibious;
+            }
+            if (GetData(cardTitle, "Tag").AsStringArray().Contains("GraveStone") || GetData(cardTitle, "Tag").AsStringArray().Contains("墓碑"))
+            {
+                tag |= CardTag.GraveStone;
             }
             cardString.CardTag = tag;
         }

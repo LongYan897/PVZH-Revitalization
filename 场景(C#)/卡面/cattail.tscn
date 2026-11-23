@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bekgbhyr6wn6i"]
+
+[ext_resource type="Texture2D" uid="uid://c41y3ks5xt4kr" path="res://场景/植物卡组/猫尾草植物/867a395d-ca39-40a0-a967-6db7fb160bf9.png" id="1_g3kht"]
+
+[node name="卡面" type="Control" unique_id=1848954600]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1529046066]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 16.0
+offset_right = 197.0
+offset_bottom = 200.0
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("1_g3kht")
+expand_mode = 1
+stretch_mode = 3

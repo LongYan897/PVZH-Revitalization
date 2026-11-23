@@ -1,0 +1,15 @@
+稀有.png
+size:236,603
+filter:Linear,Linear
+PackOpen_SharpRays
+bounds:2,2,115,125
+offsets:1,2,119,130
+rotate:90
+basic_glow
+bounds:2,361,240,232
+offsets:10,6,258,252
+rotate:90
+verus_glow
+bounds:2,119,240,232
+offsets:11,6,258,252
+rotate:90

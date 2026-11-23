@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://bltse8rjd88kf"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://cu6bc45b28qgw" path="res://场景/植物卡/枝繁叶茂/繁枝叶茂.atlas" id="1_y41o1"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://bmerajj1v3du" path="res://场景/植物卡/枝繁叶茂/繁枝叶茂.skel" id="2_0a2pg"]
+
+[resource]
+atlas_res = ExtResource("1_y41o1")
+skeleton_file_res = ExtResource("2_0a2pg")

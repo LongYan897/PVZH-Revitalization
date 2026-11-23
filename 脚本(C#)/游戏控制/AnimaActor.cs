@@ -25,4 +25,56 @@ public static class AnimaActor
         sp.LoadSkeletonData(skelPath);
         await sp.SetAnimationAndFreeOnEndTask(0, name);
     }
+    public static async Task PlayInstantAnimationAmmoTask(string skelPath, Vector2 pos, string name)
+    {
+        var sp = SpineHandler.Get();
+        sp.Position = pos;
+        Main.AmmoAnimator.AddChild(sp);
+        sp.LoadSkeletonData(skelPath);
+        await sp.SetAnimationAndFreeOnEndTask(0, name);
+    }
+    public static async void PlayInstantAnimationAmmo(string skelPath, Vector2 pos, string name)
+    {
+        var sp = SpineHandler.Get();
+        sp.Position = pos;
+        Main.AmmoAnimator.AddChild(sp);
+        sp.LoadSkeletonData(skelPath);
+        await sp.SetAnimationAndFreeOnEndTask(0, name);
+    }
+    public static async Task PlayInstantAnimationTask(string skelPath, Vector2 pos, string name, Vector2 scale)
+    {
+        var sp = SpineHandler.Get();
+        sp.Scale *= scale;
+        sp.Position = pos;
+        Main.Animator.AddChild(sp);
+        sp.LoadSkeletonData(skelPath);
+        await sp.SetAnimationAndFreeOnEndTask(0, name);
+    }
+    public static async void PlayInstantAnimation(string skelPath, Vector2 pos, string name, Vector2 scale)
+    {
+        var sp = SpineHandler.Get();
+        sp.Scale *= scale;
+        sp.Position = pos;
+        Main.Animator.AddChild(sp);
+        sp.LoadSkeletonData(skelPath);
+        await sp.SetAnimationAndFreeOnEndTask(0, name);
+    }
+    public static async Task PlayInstantAnimationAmmoTask(string skelPath, Vector2 pos, string name, Vector2 scale)
+    {
+        var sp = SpineHandler.Get();
+        sp.Scale *= scale;
+        sp.Position = pos;
+        Main.AmmoAnimator.AddChild(sp);
+        sp.LoadSkeletonData(skelPath);
+        await sp.SetAnimationAndFreeOnEndTask(0, name);
+    }
+    public static async void PlayInstantAnimationAmmo(string skelPath, Vector2 pos, string name, Vector2 scale)
+    {
+        var sp = SpineHandler.Get();
+        sp.Scale *= scale;
+        sp.Position = pos;
+        Main.AmmoAnimator.AddChild(sp);
+        sp.LoadSkeletonData(skelPath);
+        await sp.SetAnimationAndFreeOnEndTask(0, name);
+    }
 }

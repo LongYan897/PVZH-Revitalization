@@ -2,30 +2,11 @@ using Controller;
 using Godot;
 using Pack;
 using Spine;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Card;
 
-/// <summary>
-/// 用于给卡牌描述的URL设置描述<br/>
-/// 比如<br/>
-/// 我希望给致命设置描述<br/>
-/// 那么可以在某个类里面写<br/>
-/// [URL]<br/>
-/// public string Lethal => "攻击到的单位立即死亡"<br/>
-/// 这个就代表了 _Lethal_ 这个标签点开后显示 "攻击到的单位立即死亡"<br/>
-/// static的属性也可以这样注册<br/>
-/// </summary>
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-public class URLAttribute : Attribute
-{
-
-}
 /// <summary>
 /// 卡牌描述的可视化部分
 /// </summary>
@@ -35,6 +16,10 @@ public partial class CardDes : Control
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌界面.tscn");
     private CardModel Model;
     public static CardDes instance { get; private set; }
+    /// <summary>卡牌描述字号</summary>
+    private const int DesFontSize = 24;
+    /// <summary>描述图标尺寸</summary>
+    private const int IconSize = 36;
     /// <summary>
     /// 创建卡牌的描述
     /// </summary>
@@ -63,9 +48,9 @@ public partial class CardDes : Control
             }
 
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     /// <summary>
@@ -87,9 +72,9 @@ public partial class CardDes : Control
             }
 
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     /// <summary>
@@ -114,9 +99,9 @@ public partial class CardDes : Control
         {
             if (instance.Visible == true) return;
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     /// <summary>
@@ -132,29 +117,35 @@ public partial class CardDes : Control
         else
         {
             instance.Model = card;
-            instance.Visible = true;
             instance.Open();
             instance.Fresh();
+            instance.Visible = true;
         }
     }
     private Tween _tween;
     private bool _isEnd = false;
     private Node2D _target;
     private bool _targetCanScale = false;
-
+    public static void Close()
+    {
+        instance?.Clear();
+        if (instance != null)
+            instance._isEnd = true;
+    }
     private void Open()
     {
         _isEnd = false;
         GetNode<Polygon2D>("%底色").TopLevel = true;
         GetNode<Control>("%单位容器").ZIndex = 1036;
-        GetNode<Control>("%单位容器").Position = new(360f, 305f);
+        GetNode<Control>("%单位容器").Position = new(360f, 335f);
         GetNode<Control>("%单位容器").TopLevel = true;
+        GetNode<Control>("%单位容器").Scale = Vector2.One;
         Scale = Vector2.Zero;
         GetNode<Polygon2D>("%底色").Modulate = new Color(0, 0, 0, 0);
         _tween = CreateTween();
         _tween.SetTrans(Tween.TransitionType.Back);
         _tween.SetEase(Tween.EaseType.Out);
-        _tween.Parallel().TweenProperty(this, "scale", Vector2.One, 0.5f);
+        _tween.Parallel().TweenProperty(this, "scale", Vector2.One * 0.8f, 0.5f);
         _tween.Parallel().TweenProperty(GetNode<Polygon2D>("%底色"), "modulate", new Color(0, 0, 0, 0.5f), 0.5f);
     }
 
@@ -167,8 +158,10 @@ public partial class CardDes : Control
             _tween.Kill();
         }
         GetNode<Control>("%单位容器").ZIndex = 12;
-        GetNode<Control>("%单位容器").Position = new(0f, -325f);
         GetNode<Control>("%单位容器").TopLevel = false;
+        GetNode<Control>("%单位容器").Position = new(0f, -378f);
+        GetNode<Control>("%单位容器").Scale = new Vector2(1.25f, 1.25f);
+
         var sprite = GetNode<SpineHandler>("%动画");
         sprite.ClearTrack(0);
         _tween = CreateTween();
@@ -195,7 +188,7 @@ public partial class CardDes : Control
         }
     }
 
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("fc1e1e"));
     private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     public void CardTryFresh(CardModel cardModel)
     {
@@ -205,133 +198,35 @@ public partial class CardDes : Control
             Fresh();
         }
     }
-    private static readonly Regex IconRegex =
-        new Regex(@"=(\w+)=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
-
-    private static readonly Regex LinkRegex =
-        new Regex(@"_([^_]+)_", RegexOptions.Compiled);
-
-    private static readonly Regex LabelRegex =
-        new Regex(@"\$([^$]+)\$", RegexOptions.Compiled);
-
-    private static readonly Regex ArgBeforeRegex =
-        new Regex(@"_([&#])([^&#_]+)\1([^_]+)_", RegexOptions.Compiled);
-
-    private static readonly Regex ArgAfterRegex =
-        new Regex(@"_([^&#_]+)([&#])([^&#_]+)\2_", RegexOptions.Compiled);
-
-    private static string ConvertLabels(string text) =>
-        LabelRegex.Replace(text,
-            mm => $"[color=#b3ff30][u]{mm.Groups[1].Value}[/u][/color]");
-
-    private static string ConvertLinks(string text)
-    {
-        text = ArgBeforeRegex.Replace(text, mm =>
-        {
-            char sep = mm.Groups[1].Value[0];
-            string arg = mm.Groups[2].Value;
-            string word = mm.Groups[3].Value;
-
-            string meta = $"{word}|{arg}|{sep}|before";
-            return $"[color=#44ffff][url={meta}]{arg}{word}[/url][/color]";
-        });
-
-        text = ArgAfterRegex.Replace(text, mm =>
-        {
-            string word = mm.Groups[1].Value;
-            char sep = mm.Groups[2].Value[0];
-            string arg = mm.Groups[3].Value;
-
-            string meta = $"{word}|{arg}|{sep}|after";
-            return $"[color=#44ffff][url={meta}]{word}{arg}[/url][/color]";
-        });
-
-        text = LinkRegex.Replace(text,
-            mm => $"[color=#44ffff][url={mm.Groups[1].Value}]{mm.Groups[1].Value}[/url][/color]");
-
-        return text;
-    }
-    private static readonly Regex PlaceholderRegex =
-    new Regex(@"\{([#&/]+):([nx])\}", RegexOptions.Compiled);
-
-    private static string ReplacePlaceholders(string rawDesc, string arg, char sep)
-    {
-        if (arg == null) return rawDesc;
-
-        string nameInsert = sep == '#' ? $"${arg}$" : arg;
-        string numInsert = arg;
-
-        return PlaceholderRegex.Replace(rawDesc, m =>
-        {
-            string allowed = m.Groups[1].Value;
-            string kind = m.Groups[2].Value;
-
-            if (!allowed.Contains(sep)) return m.Value;
-
-            return kind == "x" ? numInsert : nameInsert;
-        });
-    }
+    public static string ReplacePlaceholders(string rawDesc, string arg, char sep, CardModel model)
+        => RichTextFormatter.ReplacePlaceholders(rawDesc, arg, sep, model);
+    public static bool TryGetKeywordDescription(
+        CardModel model, string key, string arg, char sep, out string desc)
+        => RichTextFormatter.TryGetKeywordDescription(model, key, arg, sep, out desc);
     /// <summary>
     /// 解析语法并写入。
     /// </summary>
-    public static async Task AppendWithIcons(RichTextLabel label, string raw, bool convertLinks)
-    {
-        label.Clear();
-        label.BbcodeEnabled = true;
-
-        int last = 0;
-        foreach (Match m in IconRegex.Matches(raw))
-        {
-            if (m.Index > last)
-            {
-                string seg = raw.Substring(last, m.Index - last);
-                seg = ConvertLabels(seg);
-                label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
-            }
-
-            string name = m.Groups[1].Value;
-            bool hasNum = m.Groups[2].Success;
-            string value = hasNum ? m.Groups[2].Value : null;
-
-            if (Icon.TryGet(name, out var path, out var attr))
-            {
-                if (hasNum)
-                {
-                    var tex = await IconComposer.Instance.ComposeAsync(
-                        path, value, attr.Color, attr.OutlineColor, attr.OutlineSize);
-                    if (tex != null)
-                        label.AddImage(tex, tex.GetWidth(), tex.GetHeight());
-                }
-                else
-                {
-                    label.AppendText($"[img=32]{path}[/img]");
-                }
-            }
-
-            last = m.Index + m.Length;
-        }
-
-        if (last < raw.Length)
-        {
-            string seg = raw.Substring(last);
-            seg = ConvertLabels(seg);
-            label.AppendText(convertLinks ? ConvertLinks(seg) : seg);
-        }
-    }
+    public static Task AppendWithIcons(
+    RichTextLabel label, string raw, bool convertLinks, float extraSize = 0f)
+    => RichTextFormatter.AppendAsync(label, raw, convertLinks, extraSize);
 
     public async Task SetDescription(string raw)
     {
-        var label = GetNode<RichTextLabel>("%介绍Label");
+        var label = GetNode<SpecLabel>("%介绍Label");
 
-        await AppendWithIcons(label, raw, convertLinks: true);
+        await label.SetContentAsync(raw, Model);
     }
-    private bool _keywordClicked = false;
     public override void _Ready()
     {
-        var label = GetNode<RichTextLabel>("%介绍Label");
+        var label = GetNode<SpecLabel>("%介绍Label");
         label.BbcodeEnabled = true;
-        label.MouseFilter = MouseFilterEnum.Stop;
-        label.MetaClicked += OnKeywordClicked;
+
+        label.AddThemeFontSizeOverride("normal_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("bold_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("italics_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("bold_italics_font_size", DesFontSize);
+        label.AddThemeFontSizeOverride("mono_font_size", DesFontSize);
+
         var contr = GetNode<Control>("%额外区域");
         contr.GuiInput += ControlInput;
     }
@@ -347,149 +242,23 @@ public partial class CardDes : Control
         _isEnd = true;
         GetViewport().SetInputAsHandled();
     }
-    private void OnKeywordClicked(Variant metaVariant)
-    {
-        string raw = metaVariant.AsString();
-
-        string key = raw;
-        string arg = null;
-        char sep = '\0';
-
-        int bar = raw.IndexOf('|');
-        if (bar >= 0)
-        {
-            key = raw.Substring(0, bar);
-            var rest = raw.Substring(bar + 1).Split('|');
-            if (rest.Length >= 2)
-            {
-                arg = rest[0];
-                sep = rest[1].Length > 0 ? rest[1][0] : '\0';
-            }
-        }
-
-        if (CardModel.HasTemplate(key))
-        {
-            GetViewport().SetInputAsHandled();
-            _keywordClicked = true;
-
-            var template = CardModel.GetTemplate(key);
-            if (template != null)
-                ExchangeDescription(template);
-            return;
-        }
-
-        if (TryGetKeywordDescription(Model, key, arg, sep, out string desc))
-        {
-            GetViewport().SetInputAsHandled();
-            _keywordClicked = true;
-
-            var label = GetNode<RichTextLabel>("%介绍Label");
-            Vector2 globalPos = label.GlobalPosition + label.GetLocalMousePosition();
-            CardDesPanel.ShowAt(desc, globalPos);
-        }
-    }
-    private static Dictionary<string, PropertyInfo> _urlCache;
-    private static readonly object _urlCacheLock = new();
-
-    /// <summary>
-    /// 扫描当前程序集，缓存所有带 [URL] 的静态属性：key -> PropertyInfo
-    /// </summary>
-    private static Dictionary<string, PropertyInfo> GetURLCache()
-    {
-        if (_urlCache != null) return _urlCache;
-
-        lock (_urlCacheLock)
-        {
-            if (_urlCache != null) return _urlCache;
-
-            var flags = BindingFlags.Public
-                      | BindingFlags.NonPublic
-                      | BindingFlags.Static
-                      | BindingFlags.Instance
-                      | BindingFlags.FlattenHierarchy;
-
-            var cache = new Dictionary<string, PropertyInfo>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var type in typeof(CardDes).Assembly.GetTypes())
-            {
-                foreach (var prop in type.GetProperties(flags))
-                {
-                    if (!Attribute.IsDefined(prop, typeof(URLAttribute))) continue;
-                    if (prop.PropertyType != typeof(string)) continue;
-
-                    var getter = prop.GetGetMethod(true);
-                    if (getter == null) continue;
-
-                    if (!getter.IsStatic) continue;
-
-                    if (!cache.ContainsKey(prop.Name))
-                        cache[prop.Name] = prop;
-                }
-            }
-
-            _urlCache = cache;
-            return _urlCache;
-        }
-    }
-    public static bool TryGetKeywordDescription(
-        CardModel model, string key, string arg, char sep, out string desc)
-    {
-        desc = null;
-        if (string.IsNullOrEmpty(key)) return false;
-
-        if (model != null)
-        {
-            var flags = BindingFlags.Public | BindingFlags.NonPublic
-                      | BindingFlags.Static | BindingFlags.Instance | BindingFlags.IgnoreCase;
-            var prop = model.GetType().GetProperty(key, flags);
-            if (TryGetFromProp(prop, model, out string rawDesc))
-            {
-                desc = ReplacePlaceholders(rawDesc, arg, sep);
-                return true;
-            }
-        }
-
-        var cache = GetURLCache();
-        if (cache.TryGetValue(key, out var staticProp) &&
-            TryGetFromProp(staticProp, null, out string staticDesc))
-        {
-            desc = ReplacePlaceholders(staticDesc, arg, sep);
-            return true;
-        }
-
-        return false;
-    }
-    private static bool TryGetFromProp(
-    System.Reflection.PropertyInfo prop, object instance, out string desc)
-    {
-        desc = null;
-        if (prop == null) return false;
-        if (!Attribute.IsDefined(prop, typeof(URLAttribute))) return false;
-        if (prop.PropertyType != typeof(string)) return false;
-
-        var getter = prop.GetGetMethod(true);
-        if (getter == null) return false;
-
-        object target = getter.IsStatic ? null : instance;
-        if (!getter.IsStatic && target == null) return false;
-
-        desc = prop.GetValue(target) as string;
-        return !string.IsNullOrEmpty(desc);
-    }
 
     private async void Fresh()
     {
         if (Model != null)
         {
+            Position = new(360, 640);
             var cost = GetNode<Label>("%花费数值Label");
             cost.Text = $"{Model.Cost.Current}";
             GetNode<Sprite2D>("%花费数值").Texture = Model.CampCostIcon;
             GetNode<Label>("%名字").Text = Model.Title;
-            var exLabel = GetNode<RichTextLabel>("%额外标签");
+            var exLabel = GetNode<SpecLabel>("%额外标签");
             exLabel.BbcodeEnabled = true;
-            await AppendWithIcons(exLabel, Model.ExDescription ?? "", convertLinks: true);
+            exLabel.EnableKeywordClick = false;
+            await exLabel.SetContentAsync(Model.ExDescription ?? "");
             await SetDescription(Model.GetDescription());
             GetNode<RichTextLabel>("%故事标签").Text = Model.Flavor;
+            FitStoryFontSize(GetNode<RichTextLabel>("%故事标签"));
             if (Model.Cost.HasChanged)
             {
                 if (Model.Cost.PositiveChanged)
@@ -507,8 +276,9 @@ public partial class CardDes : Control
                 var col1 = scene.GetNode<Node2D>("Collection").Position;
                 var col2 = scene.GetNode<Node2D>("Collection2").Position;
                 var cols1 = scene.GetNode<Node2D>("Collection").Scale;
-                GetNode<SpineHandler>("%动画").Position = (col1 - col2) + GetNode<SpineHandler>("%土坑").Position;
-                GetNode<SpineHandler>("%动画").Scale = cols1;
+                Vector2 originalPos = (col1 - col2) + GetNode<SpineHandler>("%土坑").Position;
+                GetNode<SpineHandler>("%动画").Position = originalPos + new Vector2(0f, 12f);
+                GetNode<SpineHandler>("%动画").Scale = cols1 * 0.8f;
                 if (scene.GetChildren().Any(c => c.Name.ToString().Contains("Saved")))
                 {
                     GetNode<SubViewport>("%裁剪").AddChild(scene);
@@ -529,8 +299,8 @@ public partial class CardDes : Control
             }
             else
             {
-                GetNode<SpineHandler>("%动画").Position = new(5f, 140.0f);
-                GetNode<SpineHandler>("%动画").Scale = new(1, 1);
+                GetNode<SpineHandler>("%动画").Position = new(5f, 140.0f + 12f);
+                GetNode<SpineHandler>("%动画").Scale = new Vector2(1, 1) * 0.8f;
             }
             if (Model is FighterCardModel fighterCard)
             {
@@ -542,9 +312,9 @@ public partial class CardDes : Control
                     GetNode<SpineHandler>("%等级").LoadSkeletonData(fighterCard.StarType.IconSkelPath);
                     GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
                 }
-                if (fighterCard.Hp.HasChanged)
+                if (fighterCard.MaxHp.HasChanged || fighterCard.Hp.Current != fighterCard.MaxHp.Current)
                 {
-                    if (fighterCard.Hp.PositiveChanged)
+                    if (fighterCard.MaxHp.PositiveChanged && fighterCard.MaxHp.Current == fighterCard.Hp.Current)
                         GetNode<Label>("%血量数值").SelfModulate = _colorBox.ColorB;
                     else
                     {
@@ -562,7 +332,7 @@ public partial class CardDes : Control
                     if (fighterCard.Atk.PositiveChanged)
                         GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorB;
                     else
-                        GetNode<Label>("%伤害数值").SelfModulate = _colorBox2.Default;
+                        GetNode<Label>("%伤害数值").SelfModulate = _colorBox.ColorC;
                 }
                 else
                     GetNode<Label>("%伤害数值").SelfModulate = _colorBox.Default;
@@ -732,12 +502,29 @@ public partial class CardDes : Control
             };
             var sprite = GetNode<SpineHandler>("%动画");
             sprite.LoadSkeletonData(Model.AnimationPath);
-            sprite.SetAnimation(0, "intro", false);
-            if (!Model.CardType.HasFlag(CardType.Trick))
+            if (sprite.HasAnimation("intro"))
+                sprite.SetAnimation(0, "intro", false);
+            if (sprite.HasAnimation("idle"))
                 sprite.AddAnimation(0, "idle", true);
 
             Visible = true;
         }
+    }
+    private static void FitStoryFontSize(RichTextLabel label, int baseSize = 38, int minSize = 12, int maxChars = 20)
+    {
+        int length = label.GetParsedText().Length;
+        if (length <= 0) return;
+
+        float ratio = length <= maxChars
+            ? 1f
+            : Mathf.Sqrt((float)maxChars / length);
+        int size = Mathf.Clamp(Mathf.RoundToInt(baseSize * ratio), minSize, baseSize);
+
+        label.AddThemeFontSizeOverride("normal_font_size", size);
+        label.AddThemeFontSizeOverride("bold_font_size", size);
+        label.AddThemeFontSizeOverride("italics_font_size", size);
+        label.AddThemeFontSizeOverride("bold_italics_font_size", size);
+        label.AddThemeFontSizeOverride("mono_font_size", size);
     }
     private Tween _tweenAtk;
     private Tween _tweenHp;

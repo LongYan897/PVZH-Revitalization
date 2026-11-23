@@ -1,0 +1,116 @@
+[gd_scene format=3 uid="uid://tk2k0cvd2p43"]
+
+[ext_resource type="Script" uid="uid://bq4oqpa3i6d7n" path="res://脚本(C#)/任务/节点/NodeQuest.cs" id="1_wfbyv"]
+[ext_resource type="Shader" uid="uid://vujnln08wd8c" path="res://素材(C#)/其他/Test/高亮.gdshader" id="3_opjxv"]
+[ext_resource type="Texture2D" uid="uid://cbk25jehwcagf" path="res://素材/ui/段位/段位标志/rankicon_1.png" id="3_vimmu"]
+[ext_resource type="Texture2D" uid="uid://bh4lvssc2j1mm" path="res://素材/ui/任务/QuestWood1.png" id="3_wfbyv"]
+[ext_resource type="Texture2D" uid="uid://n8d7v68l4e5y" path="res://素材/ui/段位/frame_0.png" id="4_y8sah"]
+[ext_resource type="FontFile" uid="uid://wmq6fa8dsbw" path="res://素材/字体/SF-Pro.ttf" id="8_l0rdu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e3bgc"]
+shader = ExtResource("3_opjxv")
+shader_parameter/color = Color(0, 1, 0.5333333, 1)
+shader_parameter/strength = 1.0
+shader_parameter/brightness = 1.0
+shader_parameter/saturation = 2.0
+shader_parameter/contrast = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y8sah"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_opjxv"]
+bg_color = Color(0.083333254, 1, 0, 1)
+
+[node name="任务便签" type="Control" unique_id=441583057]
+custom_minimum_size = Vector2(644, 141)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -293.0
+offset_top = -111.0
+offset_right = -929.0
+offset_bottom = -690.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wfbyv")
+metadata/_custom_type_script = "uid://bq4oqpa3i6d7n"
+
+[node name="背景2" type="Sprite2D" parent="." unique_id=1878226755]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_e3bgc")
+position = Vector2(324, 76)
+scale = Vector2(1.0334928, 1.135484)
+texture = ExtResource("3_wfbyv")
+
+[node name="Button" type="Button" parent="." unique_id=361576177]
+layout_mode = 0
+offset_left = 15.5
+offset_top = -6.3963165
+offset_right = 639.5
+offset_bottom = 128.60368
+mouse_default_cursor_shape = 2
+flat = true
+
+[node name="Panel" type="Panel" parent="." unique_id=1617515993]
+layout_mode = 0
+offset_left = 130.34322
+offset_top = 11.04081
+offset_right = 616.9715
+offset_bottom = 115.45059
+rotation = 0.023352569
+theme_override_styles/panel = SubResource("StyleBoxFlat_y8sah")
+
+[node name="Panel" type="Panel" parent="Panel" unique_id=1997415526]
+layout_mode = 0
+offset_left = 9.258301
+offset_top = 68.55904
+offset_right = 176.40683
+offset_bottom = 107.5598
+rotation = -0.020926034
+theme_override_styles/panel = SubResource("StyleBoxFlat_opjxv")
+
+[node name="背景" type="Sprite2D" parent="." unique_id=857754135]
+unique_name_in_owner = true
+position = Vector2(321.5, 63.603683)
+rotation = -0.02272508
+texture = ExtResource("3_wfbyv")
+
+[node name="主图标" type="TextureRect" parent="." unique_id=1001956069]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 33.0
+offset_top = 19.903687
+offset_right = 161.0
+offset_bottom = 147.90369
+scale = Vector2(0.75, 0.75)
+mouse_filter = 2
+texture = ExtResource("3_vimmu")
+
+[node name="图标" type="Sprite2D" parent="." unique_id=1077739843]
+unique_name_in_owner = true
+position = Vector2(81, 69.90369)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("4_y8sah")
+
+[node name="标题" type="Label" parent="." unique_id=88194377]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 141.0
+offset_top = 19.0
+offset_right = 333.0
+offset_bottom = 77.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("8_l0rdu")
+theme_override_font_sizes/font_size = 48
+text = "英雄克星"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1763508720]
+clip_children = 2
+color = Color(1, 1, 1, 0)
+polygon = PackedVector2Array(29, 7, 23, 14, 21, 129, 26, 134, 620, 120, 617, 18)

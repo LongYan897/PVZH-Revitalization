@@ -5,6 +5,8 @@ using Card.String;
 using Godot;
 using Hero;
 using Play;
+using Spine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,21 +18,147 @@ namespace Card;
 /// <summary>
 /// 单位类型的卡牌
 /// </summary>
-public class FighterCardModel : CardModel
+public class FighterCardModel : CardModel, IDamageCard, IHealthCard
 {
+    /// <summary>
+    /// 僵尸是否隐藏在墓碑之中
+    /// </summary>
+    public bool Hiding => Camp == Camp.Zombie && (Fighter.GetNode(this) ?? null) != null && Fighter.GetNode(this).IsHiding;
     private readonly List<FighterCardModel> additiveCards = new();
     /// <summary>
     /// 隐藏单位的数值,并销毁单位
     /// </summary>
     /// <param name="Icon">融合的特殊图像</param>
-    public static void Overlay(FighterCardModel fighter, Texture2D Icon)
+    public static async Task Overlay(FighterCardModel fighter, Texture2D Icon)
     {
-        Fighter.Overlay(fighter, Icon);
+        await Fighter.Overlay(fighter, Icon);
+    }
+    /// <summary>
+    /// 修改单位的动画节点的属性 (比如缩小,移动...)
+    /// </summary>
+    /// <param name="func">修改节点的函数</param>
+    /// <returns></returns>
+    public async Task ShapeMe(Func<Node2D, Task> func)
+    {
+        if (IsPlaced)
+            await func(Fighter.GetNode(this).AnimationNode);
+    }
+    /// <summary>
+    /// 移动到一条线上的位置
+    /// </summary>
+    /// <param name="road">移到的线路</param>
+    /// <param name="location">移动的位置</param>
+    /// <returns></returns>
+    public async Task MoveTo(Road road, Location location)
+    {
+        if (!IsPlaced) return;
+        await Fighter.MoveTo(this, road, location);
+        await FireTiming(Timing.WhenMoved, road, this);
+        await CardCmd.TimingOnCards(this, Timing.WhenMoved, road, this);
+    }
+
+    /// <summary>
+    /// 把该单位变化为其他单位
+    /// </summary>
+    /// <param name="fighterCard"></param>
+    /// <returns></returns>
+    public async Task TransformMe(FighterCardModel fighterCard)
+    {
+        if (IsPlaced)
+        {
+            await Fighter.GetNode(this).TransformTo(fighterCard);
+            await FireTiming(Timing.WhenTransformed, this, fighterCard);
+            await CardCmd.TimingOnCards(this, Timing.WhenTransformed, this, fighterCard);
+        }
+        else
+        {
+            await TransformTo(fighterCard);
+        }
+    }
+
+    protected sealed override void AfterClone()
+    {
+        Atk = new(this, "Attack", Atk.Current);
+        Hp = new(this, "Health", Hp.Current);
+        MaxHp = new(this, "HealthMax", MaxHp.Current);
+        AtkType = new(this, "AttackType", AtkType.Current.Clone());
+        HpType = new(this, "HealthType", HpType.Current.Clone());
+        RegistBuff(new HpBuff());
+        RegistBuff(AtkType.Current.Buff);
+        RegistBuff(HpType.Current.Buff);
+    }
+
+    /// <summary>
+    /// 修改单位的动画节点,改变单位颜色
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
+    public async Task ColorMe(Color color, float duration = 0.3f)
+    {
+        if (!IsPlaced) return;
+
+        var fighter = Fighter.GetNode(this);
+        var anim = fighter.AnimationNode;
+
+        Tween tween = fighter.CreateTween();
+        tween.TweenProperty(anim, "modulate", color, duration);
+        await fighter.ToSignal(tween, Tween.SignalName.Finished);
+    }
+    /// <summary>
+    /// 修改单位的动画节点,缩小该单位
+    /// </summary>
+    /// <param name="scale">缩小的倍率</param>
+    /// <returns></returns>
+    public async Task ScaleMe(Vector2 scale, float duration = 0.3f)
+    {
+        if (!IsPlaced) return;
+
+        var fighter = Fighter.GetNode(this);
+        var anim = fighter.AnimationNode;
+        var pit = fighter.GetNode<SpineHandler>("%土坑");
+
+        Vector2 offset = anim.Position - pit.Position;
+        Vector2 targetPos = pit.Position + offset * scale;
+
+        Tween tween = fighter.CreateTween();
+        tween.SetParallel(true);
+        tween.TweenProperty(anim, "scale", scale, duration);
+        tween.TweenProperty(anim, "position", targetPos, duration);
+        await fighter.ToSignal(tween, Tween.SignalName.Finished);
+    }
+    /// <summary>
+    /// 对一名敌人发射子弹(无伤害)
+    /// </summary>
+    /// <param name="texture">子弹的图标</param>
+    /// <param name="from">从哪里开始</param>
+    /// <param name="to">到哪里去</param>
+    /// <param name="duration">飞行的时间</param>
+    /// <returns></returns>
+    public async Task SpawnAmmo(Texture2D texture, Vector2 from, Vector2 to, float duration)
+    {
+        if (!IsPlaced) return;
+        await Fighter.GetNode(this).CreateAmmon(texture, from, to, duration);
+    }
+    /// <summary>
+    /// 对一名敌人发射子弹并播放攻击动画(无伤害)
+    /// </summary>
+    /// <param name="texture">子弹的图标</param>
+    /// <param name="from">从哪里开始</param>
+    /// <param name="to">到哪里去</param>
+    /// <param name="duration">飞行的时间</param>
+    /// <returns></returns>
+    public async Task Attack(IAttackable target)
+    {
+        if (!IsPlaced) return;
+        if (target == null) return;
+        var stack = new AtkStack(this, [target], Road, Atk.Current, false);
+        stack.AddShot(target);
+        await Fighter.GetNode(this).Battle(stack.Shots, InstantAmmo);
     }
     /// <summary>
     /// 把一个单位归类到自己的子类
     /// </summary>
-    public void AddGroup(FighterCardModel fighter)
+    private void AddGroup(FighterCardModel fighter)
     {
         Fighter.GetNode(this).GroupWith(fighter);
     }
@@ -38,8 +166,25 @@ public class FighterCardModel : CardModel
     /// 检测该单位是否在场上
     /// </summary>
     public bool IsPlaced => Fighter.GetNode(this) != null;
+    /// <summary>
+    /// 获取这个单位的坐标 如果没有返回(0,0)
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 Locating() => IsPlaced ? GlobalPosition : new();
     protected Vector2 GlobalPosition => Fighter.GetNode(this).GlobalPosition;
-    protected override CardModel LoadData(CardString cardString)
+    /// <summary>
+    /// 把这张卡牌弹回手牌
+    /// </summary>
+    /// <returns></returns>
+    public async Task Bounced()
+    {
+        if (IsPlaced)
+        {
+            await Fighter.GetNode(this).ReturnCard();
+            await Reset();
+        }
+    }
+    protected sealed override CardModel LoadData(CardString cardString)
     {
         Atk = new(this, "Attack", cardString.Attack);
         BornWithAtk = Atk.Current > 0;
@@ -49,7 +194,9 @@ public class FighterCardModel : CardModel
         HpType = new(this, "HealthType", cardString.HpType ?? new NormalHpType());
         CardTag = cardString.CardTag;
         StarType = cardString.StarType;
-        _ = AddBuff(new HpBuff(), VariableReason.Self);
+        RegistBuff(new HpBuff());
+        RegistBuff(AtkType.Current.Buff);
+        RegistBuff(HpType.Current.Buff);
         return LoadCustomData(cardString);
     }
     /// <summary>
@@ -72,10 +219,11 @@ public class FighterCardModel : CardModel
             }
 
             if (fighter.Hp.Current > fighter.MaxHp.Current)
-                await fighter.Hp.Set(fighter.MaxHp.Current, VariableReason.Reset);
+                await fighter.Hp.Set(fighter.MaxHp.Current, VariableReason.Rule);
         }
     }
     public ITarget Targeting() => Fighter.GetNode(this);
+    public IAttackable Attacking() => Fighter.GetNode(this);
     /// <summary>
     /// 所处的道路
     /// </summary>
@@ -85,39 +233,91 @@ public class FighterCardModel : CardModel
     /// </summary>
     public Location Location { get; internal set; }
     /// <summary>
-    /// 创建一个攻击堆栈
+    /// 创建一个攻击堆栈(攻击者是这个单位)
     /// </summary>
     /// <returns></returns>
     private AtkStack CreateOwnedStack()
-    => new(this, [], Road, Atk.Current);
+    => new(this, [], Road, Atk.Current, false);
     /// <summary>
     /// 额外攻击一次
     /// </summary>
     /// <returns></returns>
     public async Task Battle(bool kill = true) => await Battle(CreateOwnedStack(), kill);
+
     /// <summary>
-    /// 开始战斗
+    /// 获取该线上可行的单位
     /// </summary>
-    public async Task Battle(AtkStack atkStack, bool kill = false)
+    /// <param name="atkStack"></param>
+    /// <returns></returns>
+    public async Task GetTarget(AtkStack atkStack)
     {
-        if (Atk.Current <= 0) return;
-        Variable<bool> stop = new("Stop", false);
-        await FireTiming(Timing.TryStopAttack, stop, this);
-        await CardCmd.TimingOnCards(this, Timing.TryStopAttack, stop, this);
-        if (stop.Current)
-        {
-            await FireTiming(Timing.AfterAttack, atkStack);
-            await CardCmd.TimingOnCards(this, Timing.AfterAttack, atkStack);
-            if (atkStack.ExtraAttacks > 0)
+        if (atkStack.Road == null) return;
+
+        var fighters = atkStack.Road.GetFighters();
+
+        var target = (IAttackable)fighters.FirstOrDefault(
+            f =>
             {
-                atkStack.ExtraAttacks -= 1;
-                await Battle(atkStack);
-                return;
+                if (Camp == Camp.Zombie)
+                {
+                    if (fighters.Count > 2)
+                        return !f.Model.IsDie && f.Plant1 && f.Model.Camp == Camp.Plant;
+                    else
+                        return !f.Model.IsDie && f.Model.Camp == Camp.Plant;
+                }
+                else
+                    return !f.Model.IsDie && f.Model.Camp == Camp.Zombie;
+            }
+            );
+        target ??= PlayerManager.GetPlayer(Camp switch { Camp.Zombie => Camp.Plant, Camp.Plant => Camp.Zombie, _ => 0 })?.Status?.AtkMe();
+        if (target != null)
+            atkStack.Targeting(target);
+
+        await FireTiming(Timing.ModifyTarget, atkStack);
+        await CardCmd.TimingOnCards(this, Timing.ModifyTarget, atkStack);
+
+        if (atkStack.Pierce && !atkStack.TargetsRedirected)
+            ExpandPierceTargets(atkStack);
+    }
+
+    private void ExpandPierceTargets(AtkStack atkStack)
+    {
+        var expanded = new List<IAttackable>();
+        var seen = new HashSet<IAttackable>();
+
+        foreach (var t in atkStack.Targets)
+        {
+            if (t is Fighter f && f.Road != null)
+            {
+                foreach (var enemy in f.Road.GetFighters())
+                {
+                    if (enemy?.Model == null) continue;
+                    if (enemy.Model.IsDie) continue;
+                    if (enemy.Model.Camp == Camp) continue;
+                    if (seen.Add(enemy))
+                        expanded.Add(enemy);
+                }
             }
             else
-                return;
+            {
+                if (seen.Add(t))
+                    expanded.Add(t);
+            }
         }
-        var fighters = atkStack.Road.GetFighters();
+
+        if (expanded.Count > 0)
+            atkStack.Targeting([.. expanded]);
+    }
+    /// <summary>
+    /// 获取一条线上的可选择目标
+    /// </summary>
+    /// <param name="road">线</param>
+    /// <returns></returns>
+    public IEnumerable<IAttackable> GetTarget(Road road)
+    {
+        if (road == null) return Array.Empty<IAttackable>();
+
+        var fighters = road.GetFighters();
         var target = (IAttackable)fighters.FirstOrDefault(
             f =>
             {
@@ -132,72 +332,158 @@ public class FighterCardModel : CardModel
                     return f.Model.Camp == Camp.Zombie;
             }
             );
-        target ??= PlayerManager.GetPlayer(Camp switch { Camp.Zombie => Camp.Plant, Camp.Plant => Camp.Zombie, _ => 0 }).Status.AtkMe();
-        atkStack.Targeting(target);
+        target ??= PlayerManager.GetPlayer(Camp switch { Camp.Zombie => Camp.Plant, Camp.Plant => Camp.Zombie, _ => 0 })?.Status?.AtkMe();
 
-        await FireTiming(Timing.ModifyTarget, atkStack);
-        await CardCmd.TimingOnCards(this, Timing.ModifyTarget, atkStack);
+        return target != null ? new[] { target } : Array.Empty<IAttackable>();
+    }
+    /// <summary>
+    /// 开始战斗
+    /// </summary>
+    public async Task Battle(AtkStack atkStack, bool kill = false)
+    {
+        if (Atk.Current <= 0) return;
+        Variable<bool> stop = new("Stop", false);
+        await FireTiming(Timing.TryStopAttack, stop, this);
+        await CardCmd.TimingOnCards(this, Timing.TryStopAttack, stop, this);
+        if (stop.Current)
+        {
+            await FireTiming(Timing.AfterAttack, atkStack);
+            await CardCmd.TimingOnCards(this, Timing.AfterAttack, atkStack);
+            return;
+        }
+        await FireTiming(Timing.BeforeAttack, atkStack);
+        await CardCmd.TimingOnCards(this, Timing.BeforeAttack, atkStack);
+        await GetTarget(atkStack);
         await FireTiming(Timing.ModifyDamage, atkStack);
         await CardCmd.TimingOnCards(this, Timing.ModifyDamage, atkStack);
 
-        await Fighter.GetNode(this).Battle(atkStack.Targets, InstantAmmo);
+        if (Fighter.GetNode(this) is { } self)
+        {
+            foreach (var t in atkStack.Targets)
+            {
+                if (t == null) continue;
+                if (!atkStack.Shots.ContainsKey(t))
+                    atkStack.AddShot(t);
+            }
+            await self.Battle(atkStack.Shots, InstantAmmo);
+        }
 
         await FireTiming(Timing.OnAttack, atkStack);
         await CardCmd.TimingOnCards(this, Timing.OnAttack, atkStack);
+
         var finalTgs = atkStack.Targets.ToList();
+        var tasks = new List<Task<IAttackable>>();
         foreach (var itg in finalTgs)
-        {
-            if (itg is Fighter fighter)
-            {
-                atkStack.FinalDamage = atkStack.BaseDamage;
-
-                await FireTiming(Timing.WhenAttacked, atkStack);
-                await CardCmd.TimingOnCards(fighter.Model, Timing.WhenAttacked, atkStack);
-
-                await fighter.Model.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, atkStack, true, false);
-
-                await fighter.Model.FireTiming(Timing.AfterAttacked, atkStack);
-                await CardCmd.TimingOnCards(fighter.Model, Timing.AfterAttacked, atkStack);
-                await FireTiming(Timing.ApplyTarget, atkStack);
-                await CardCmd.TimingOnCards(this, Timing.ApplyTarget, atkStack);
-            }
-            else if (itg is HeroInstance hero)
-            {
-                atkStack.FinalDamage = atkStack.BaseDamage;
-
-                await CardCmd.TimingOnCards(null, Timing.WhenAttacked, atkStack);
-
-                await hero.Hero.ApplyDamage(atkStack.FinalDamage, Variable.VariableReason.Fighter, this, atkStack);
-
-                await CardCmd.TimingOnCards(null, Timing.AfterAttacked, atkStack);
-
-                await FireTiming(Timing.ApplyTarget, atkStack);
-                await CardCmd.TimingOnCards(this, Timing.ApplyTarget, atkStack);
-            }
-        }
+            tasks.Add(HitOne(itg, atkStack));
+        var hitTargets = (await Task.WhenAll(tasks))
+            .Where(t => t != null)
+            .ToList();
 
         await FireTiming(Timing.AfterAttack, atkStack);
         await CardCmd.TimingOnCards(this, Timing.AfterAttack, atkStack);
         if (kill)
         {
-            foreach (var itg in finalTgs)
+            foreach (var itg in hitTargets)
             {
                 if (itg is Fighter fighter)
                 {
                     if (fighter.Model.IsDie)
-                        await fighter.Model.Kill(VariableReason.Fighter);
+                        await fighter.Model.Die(VariableReason.Fighter | VariableReason.Damaged, atkStack);
                 }
             }
         }
-        if (atkStack.ExtraAttacks > 0)
+    }
+    private async Task<IAttackable> HitOne(IAttackable itg, AtkStack parent)
+    {
+        var stack = parent.ForTarget(itg);
+
+        if (itg is Fighter fighter)
         {
-            atkStack.ExtraAttacks -= 1;
-            await Battle(atkStack);
+            if (fighter.IsHiding) return null;
+
+            await FireTiming(Timing.WhenAttacked, stack);
+            await CardCmd.TimingOnCards(fighter.Model, Timing.WhenAttacked, stack);
+
+            await fighter.Model.ApplyDamage(stack.FinalDamage, Variable.VariableReason.Fighter | VariableReason.Damaged, stack, true, false);
+
+            await fighter.Model.FireTiming(Timing.AfterAttacked, stack);
+            await CardCmd.TimingOnCards(fighter.Model, Timing.AfterAttacked, stack);
+            await FireTiming(Timing.ApplyTarget, stack);
+            await CardCmd.TimingOnCards(this, Timing.ApplyTarget, stack);
+            return itg;
+        }
+        else if (itg is HeroInstance hero)
+        {
+            await CardCmd.TimingOnCards(null, Timing.WhenAttacked, stack);
+
+            await hero.Hero.ApplyDamage(stack.FinalDamage, Variable.VariableReason.Fighter | VariableReason.Damaged, this, stack, !stack.IgnoreShield);
+
+            await CardCmd.TimingOnCards(null, Timing.AfterAttacked, stack);
+
+            await FireTiming(Timing.ApplyTarget, stack);
+            await CardCmd.TimingOnCards(this, Timing.ApplyTarget, stack);
+            return itg;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 是否正在处理死亡
+    /// </summary>
+    public bool IsDying { get; private set; }
+
+    /// <summary>
+    /// 触发死亡时点并播放死亡动画。
+    /// 道路战斗期间自动挂到 Road 的拦截门上，由 Road.Start 结束时统一放行；
+    /// 其余情况立即执行。
+    /// </summary>
+    /// <param name="reason">死亡原因</param>
+    /// <param name="stack">攻击上下文，非攻击致死可传 null</param>
+    public async Task Die(Variable.VariableReason reason, AtkStack stack = null, bool immediate = false)
+    {
+        if (IsDying) return;
+
+        IsDying = true;
+
+        if (!immediate && Road != null && Road.IsPreventingDie)
+        {
+            Road.ScheduleDie(() => DieCore(reason, stack));
+            return;
+        }
+
+        await DieCore(reason, stack);
+    }
+
+    private async Task DieCore(Variable.VariableReason reason, AtkStack stack)
+    {
+        try
+        {
+            bool isDamage = reason.HasFlag(Variable.VariableReason.Fighter)
+                         || reason.HasFlag(Variable.VariableReason.Damaged);
+
+            if (isDamage && stack?.Attacker != null)
+            {
+                await FireTiming(Timing.OnKilled, stack);
+                await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
+            }
+            else
+            {
+                stack ??= new AtkStack(null, [Attacking()], Road, 0, false);
+                await FireTiming(Timing.OnDeath, stack);
+                await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
+            }
+        }
+        finally
+        {
+            var fighter = Fighter.GetNode(this);
+            if (fighter != null)
+                await fighter.Die();
         }
     }
 
     /// <summary>
-    /// 统一伤害入口
+    /// 伤害入口
     /// </summary>
     /// <param name="amount">伤害量</param>
     /// <param name="reason">原因</param>
@@ -209,7 +495,7 @@ public class FighterCardModel : CardModel
     bool playHurtAnim = true,
     bool immediateDeath = true)
     {
-        stack ??= new(null, [Targeted()], null, amount);
+        stack ??= new(null, [Targeted()], null, amount, false);
         int before = Hp.Current;
         await FireTiming(Timing.ModifyCardDamage, stack);
         await CardCmd.TimingOnCards(this, Timing.ModifyCardDamage, stack);
@@ -221,42 +507,14 @@ public class FighterCardModel : CardModel
         if (playHurtAnim && actual > 0)
             await Fighter.GetNode(this).Hurt(stack.FinalDamage);
 
-        if (Hp.Current <= 0)
-        {
-            bool isDamage = reason.HasFlag(Variable.VariableReason.Damaged);
-
-            if (isDamage && stack.Attacker != null)
-            {
-                await FireTiming(Timing.OnKilled, stack);
-                await CardCmd.TimingOnCards(this, Timing.OnKilled, stack);
-            }
-            else
-            {
-                await FireTiming(Timing.OnDeath, stack);
-                await CardCmd.TimingOnCards(this, Timing.OnDeath, stack);
-            }
-
-            if (immediateDeath)
-            {
-                var fighter = Fighter.GetNode(this);
-                if (fighter != null)
-                    await fighter.Die();
-            }
-        }
-    }
-
-
-    /// <summary>
-    /// 直接消灭（扣光血）
-    /// </summary>
-    public async Task Kill(Variable.VariableReason reason, AtkStack stack = null, bool immediateDeath = true)
-    {
-        await ApplyDamage(Hp.Current, reason, stack, false, immediateDeath);
+        if (IsDie)
+            await Die(VariableReason.Damaged | reason, stack, immediateDeath);
     }
     /// <summary>
     /// 是否有初始血量
     /// </summary>
     public bool BornWithAtk { get; private set; }
+
     /// <summary>
     /// 是否已死亡（Hp ≤ 0）
     /// </summary>
@@ -394,12 +652,62 @@ public class FighterCardModel : CardModel
     /// 子弹是否是瞬间到达目标的
     /// </summary>
     public virtual bool InstantAmmo { get; } = false;
+    /// <summary>
+    /// 子弹是否带方向(会指向目标,需要子弹图标/动画的正方向向下)
+    /// </summary>
+    public virtual bool ArrowAmmo { get; } = false;
 
     public async Task IntroPlayed()
     {
         await PlayFighterAnimationTask("intro");
     }
-
+    public sealed override async Task Changed<T>(string key, T valueAfter, T valueBefore, VariableReason reason)
+    {
+        if (reason.HasFlag(VariableReason.Reset)) return;
+        if (key == "AttackType" && valueAfter is AtkType newAtk && valueBefore is AtkType oldAtk)
+        {
+            if (!ReferenceEquals(newAtk.Buff, oldAtk.Buff))
+            {
+                if (oldAtk.Buff != null && Buffs.Contains(oldAtk.Buff))
+                    await RemoveBuff(oldAtk.Buff, reason);
+                if (newAtk.Buff != null && !Buffs.Contains(newAtk.Buff))
+                    RegistBuff(newAtk.Buff);
+            }
+        }
+        else if (key == "HealthType" && valueAfter is HpType newHp && valueBefore is HpType oldHp)
+        {
+            if (!ReferenceEquals(newHp.Buff, oldHp.Buff))
+            {
+                if (oldHp.Buff != null && Buffs.Contains(oldHp.Buff))
+                    await RemoveBuff(oldHp.Buff, reason);
+                if (newHp.Buff != null && !Buffs.Contains(newHp.Buff))
+                    RegistBuff(newHp.Buff);
+            }
+        }
+        if (IsPlaced)
+        {
+            if (key == "Health" || key == "MaxHealth")
+            {
+                if (valueAfter is int t && valueBefore is int tb)
+                {
+                    if (t - tb > 0)
+                    {
+                        Fighter.GetNode(this).Boost();
+                    }
+                }
+            }
+            if (key == "Attack")
+            {
+                if (valueAfter is int t && valueBefore is int tb)
+                {
+                    if (t - tb > 0)
+                    {
+                        Fighter.GetNode(this).BoostAtk();
+                    }
+                }
+            }
+        }
+    }
     public sealed override TargetType TargetType
     {
         get
@@ -438,15 +746,18 @@ public class FighterCardModel : CardModel
             if (fighter.CanFusion(this, out var icon))
             {
                 await CardCmd.Fuse(this, fighter);
-                Overlay(fighter, icon);
+                await Overlay(fighter, icon);
             }
             if (CanEvolution(fighter))
             {
-                await CardCmd.Evolve(this, fighter);
-                Overlay(fighter, null);
+                await Overlay(fighter, null);
             }
             await CardCmd.FighterGenerate(this, fighter.Road, fighter.Location);
             AddGroup(fighter);
+            if (CanEvolution(fighter))
+            {
+                await CardCmd.Evolve(this, fighter);
+            }
             return;
         }
     }
@@ -479,5 +790,79 @@ public class FighterCardModel : CardModel
     private IAttackable Targeted()
     {
         return Fighter.GetNode(this);
+    }
+
+    /// <summary>动画容器类型</summary>
+    public enum AnimSlot { Main, Atk, Hp }
+
+    /// <summary>
+    /// 往指定动画容器下挂一个子节点。
+    /// </summary>
+    public T AddAnimChild<T>(AnimSlot slot, T node, Vector2? position = null) where T : Node
+    {
+        if (!IsPlaced || node == null) return null;
+
+        var fighter = Fighter.GetNode(this);
+        var container = slot switch
+        {
+            AnimSlot.Main => fighter.AnimationNode,
+            AnimSlot.Atk => fighter.GetAtkAnimNode(),
+            AnimSlot.Hp => fighter.GetHpAnimNode(),
+            _ => null
+        };
+        if (container == null) return null;
+
+        if (node is Control c)
+            c.MouseFilter = Control.MouseFilterEnum.Ignore;
+        if (node is Node2D n2 && position.HasValue)
+            n2.Position = position.Value;
+
+        if (node.GetParent() != container)
+            container.AddChild(node);
+
+        return node;
+    }
+
+    /// <summary>
+    /// 异步修改指定动画槽的染色。
+    /// </summary>
+    public async Task ModifyTint(AnimSlot slot, Func<ShaderMaterial, Task> modifier)
+    {
+        if (!IsPlaced || modifier == null) return;
+
+        var fighter = Fighter.GetNode(this);
+        var handler = slot switch
+        {
+            AnimSlot.Main => fighter.AnimationNode,
+            AnimSlot.Atk => fighter.GetAtkAnimNode(),
+            AnimSlot.Hp => fighter.GetHpAnimNode(),
+            _ => null
+        };
+        if (handler == null) return;
+
+        await handler.ModifyShader(modifier);
+    }
+
+    /// <summary>
+    /// 清空指定动画容器里的额外子节点。
+    /// </summary>
+    public void ClearAnimChildren(AnimSlot slot, Func<Node, bool> predicate = null)
+    {
+        if (!IsPlaced) return;
+        var fighter = Fighter.GetNode(this);
+        var container = slot switch
+        {
+            AnimSlot.Main => fighter.AnimationNode,
+            AnimSlot.Atk => fighter.GetAtkAnimNode(),
+            AnimSlot.Hp => fighter.GetHpAnimNode(),
+            _ => null
+        };
+        container?.Clear(predicate);
+    }
+
+    protected override async Task ResetData()
+    {
+        await Hp.Reset();
+        await Atk.Reset();
     }
 }

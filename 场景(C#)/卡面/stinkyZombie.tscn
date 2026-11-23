@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://crssxrcfweysp"]
+
+[ext_resource type="Texture2D" uid="uid://bhou7ay4ggxgx" path="res://场景/僵尸卡组/臭臭僵尸/d49ce1c8-b66a-400a-84e6-4eb2acc1bd96.png" id="1_f1ors"]
+
+[node name="卡面" type="Control" unique_id=553254253]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1643635814]
+layout_mode = 0
+offset_left = 18.0
+offset_right = 264.0
+offset_bottom = 184.0
+texture = ExtResource("1_f1ors")
+expand_mode = 1
+stretch_mode = 3

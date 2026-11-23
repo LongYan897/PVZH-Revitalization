@@ -25,6 +25,9 @@ func _on_animation_event(_sprite, _anim_state, track_entry, evt):
 
 func _ready():
 	connect("animation_event", _on_animation_event)
+	
+func rebind_time_scale(multiple:float = 1.3):
+	get_animation_state().set_time_scale(multiple)
 
 func clear_track(track:int):
 	get_animation_state().clear_track(track)
@@ -56,3 +59,28 @@ func pause_all_tracks() -> void:
 
 func has_animation(Name:String) -> bool:
 	return get_skeleton().get_data().find_animation(Name) != null
+
+func get_bone_global_transform(bone_name: String) -> Transform2D:
+	return get_global_bone_transform(bone_name)
+
+func get_bone_world_scale(bone_name:String) -> Vector2:
+	return get_global_bone_transform(bone_name).get_scale()
+
+func get_bone_scale(bone_name:String) -> Vector2:
+	var bone = get_skeleton().find_bone(bone_name)
+	if bone == null:
+		return Vector2.ONE
+	return Vector2(bone.get_scale_x(), bone.get_scale_y())
+
+func get_bone_local_pos(bone_name:String) -> Vector2:
+	var bone = get_skeleton().find_bone(bone_name)
+	if bone == null:
+		return Vector2.ZERO
+	return Vector2(bone.get_x(), bone.get_y())
+
+func get_tint_material() -> ShaderMaterial:
+	return get_normal_material() as ShaderMaterial
+
+func set_tint_material(shader:ShaderMaterial):
+	if (shader != null):
+		self.normal_material = shader;

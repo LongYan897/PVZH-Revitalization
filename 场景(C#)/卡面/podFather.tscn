@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://kphapo2g03fn"]
+
+[ext_resource type="Texture2D" uid="uid://bvwa1y6aww27t" path="res://场景/植物卡组/豆荚教父植物/e1ec49b6-5c00-4c82-954d-0ddc17705d7c.png" id="1_inxiw"]
+
+[node name="卡面" type="Control" unique_id=1908846509]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1632437208]
+layout_mode = 0
+offset_left = 19.0
+offset_top = -2.0
+offset_right = 203.0
+offset_bottom = 182.0
+texture = ExtResource("1_inxiw")
+expand_mode = 1
+stretch_mode = 3

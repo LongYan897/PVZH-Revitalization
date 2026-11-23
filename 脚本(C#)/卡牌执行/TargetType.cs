@@ -28,4 +28,8 @@ public enum TargetType
     /// 以英雄为目标
     /// </summary>
     Hero = 1 << 4,
+    /// <summary>
+    /// 以墓碑为目标
+    /// </summary>
+    GraveStone = 1 << 5
 }

@@ -3,6 +3,11 @@
 [ext_resource type="SpineAtlasResource" uid="uid://b27p12n211us0" path="res://场景/局内Ui/回合按钮/回合按钮.atlas" id="1_lvl1x"]
 [ext_resource type="SpineSkeletonFileResource" uid="uid://go5ja7pbph6e" path="res://场景/局内Ui/回合按钮/回合按钮.skel" id="2_lv25b"]
 
+[sub_resource type="SpineAnimationMix" id="SpineAnimationMix_lvl1x"]
+from = "blink"
+to = "blink"
+
 [resource]
 atlas_res = ExtResource("1_lvl1x")
 skeleton_file_res = ExtResource("2_lv25b")
+animation_mixes = [SubResource("SpineAnimationMix_lvl1x")]

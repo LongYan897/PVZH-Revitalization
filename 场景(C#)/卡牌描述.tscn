@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://sfx727dg4nvy" path="res://脚本(C#)/卡牌/节点/CardDesPanel.cs" id="1_6m622"]
 [ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="2_6m622"]
+[ext_resource type="Script" uid="uid://h2i6yqcy4wfu" path="res://脚本(C#)/辅助类/SpecLabel.cs" id="3_nucr5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2sttn"]
 bg_color = Color(0.06, 0.06, 0.06, 0.8666667)
@@ -40,7 +41,7 @@ offset_top = -348.0
 offset_right = 1083.0
 offset_bottom = 1647.0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control" unique_id=793589948]
+[node name="RichTextLabel" type="RichTextLabel" parent="Control" unique_id=155138770]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -65,3 +66,5 @@ text = "2222"
 fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("3_nucr5")
+metadata/_custom_type_script = "uid://h2i6yqcy4wfu"

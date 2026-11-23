@@ -16,17 +16,22 @@ public interface ITarget
     /// <summary>卡牌能否选中本目标</summary>
     Func<CardModel, Func<ITarget, bool>, bool, bool> CanBeTarget { get; }
 
-    /// <summary>开始高亮（等待玩家选择）</summary>
-    void OnCallTargeted(TargetType type);
+    /// <summary>开始高亮。</summary>
+    void OnCallTargeted(TargetType type, CardModel card, Camp? camp = null);
 
-    /// <summary>结束高亮</summary>
-    void OnDeleteTargeted(TargetType type);
+    /// <summary>结束高亮。</summary>
+    void OnDeleteTargeted(TargetType type, Camp? camp = null);
 
     /// <summary>鼠标悬停/进入时的高亮</summary>
     void OnTargeted(TargetContext ctx);
 
     /// <summary>鼠标离开时的恢复</summary>
     void OnDistargeted(TargetContext ctx);
+
+    /// <summary>被自动打出的卡牌选中后</summary>
+    void AutoTargeted(TargetContext ctx);
+    /// <summary>被自动打出的卡牌选中后</summary>
+    void AutoDistargeted(TargetContext ctx);
 }
 
 public static class TargetExtension

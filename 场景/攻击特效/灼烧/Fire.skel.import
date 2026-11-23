@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://p3a2cfkxe70d"
+path="res://.godot/imported/Fire.skel-ab1549ebff115db46b5b5c45860ae65a.spskel"
+
+[deps]
+
+source_file="res://场景/攻击特效/灼烧/Fire.skel"
+dest_files=["res://.godot/imported/Fire.skel-ab1549ebff115db46b5b5c45860ae65a.spskel"]
+
+[params]
+

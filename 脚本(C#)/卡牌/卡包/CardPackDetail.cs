@@ -1,0 +1,114 @@
+using FileExtension;
+using Godot;
+using Scene;
+using System.Text.Json.Nodes;
+using System.Threading.Tasks;
+
+namespace Card;
+
+/// <summary>
+/// 卡包详情：从卡包列表的「详情」按钮打开，根节点必须是 SubMenuScene 的子类，
+/// 否则 SubMenu.Instantiate() 里的 Instantiate&lt;SubMenuScene&gt;() 会抛 InvalidCastException。<br/>
+/// 进入场景树时 SubMenuScene._EnterTree() 会先调 BackButton.JoinScene(HideReturnButton)，
+/// 再 await _Load()，所以节点初始化写在这里，不要放 _Ready。<br/>
+/// 注意：_Load() 执行期间场景还是 Visible = false，要等 LoadTask 完成后 SceneManager 才显示它，
+/// 所以入场动画只能“点火即走”（不 await），否则动画会在屏幕外播完。<br/>
+/// 显示哪个卡包由 <see cref="SubMenuScene.Payload"/> 决定（卡包磁贴点详情时把卡包名传进来）。
+/// </summary>
+public partial class CardPackDetail : SubMenuScene
+{
+    private const string PackDataPath = "res://数据(C#)/cardPack.json";
+    /// <summary>一排几张卡</summary>
+    private const int CardsPerRow = 4;
+    /// <summary>每张卡占的格子宽度：720 的可用宽度里放 4 个（150*4 + 12*3 = 636，左右留白）</summary>
+    private const float CardCellWidth = 150f;
+    /// <summary>卡牌之间的间距（横向、纵向都用这个）</summary>
+    private const int RowSeparation = 12;
+    private FlowContainer ItemListNode;
+    private Tween _introTween;
+    private bool _introPlayed;
+    /// <summary>点进来的是哪个卡包</summary>
+    private string _packName = "Pack1";
+
+    public override async Task _Load()
+    {
+        ItemListNode = GetNode<FlowContainer>("遮罩/滚动条/FlowContainer");
+        // 卡牌之间的间距由容器的 theme 常量决定（HFlowContainer 默认只有 4）
+        ItemListNode.AddThemeConstantOverride("h_separation", RowSeparation);
+        ItemListNode.AddThemeConstantOverride("v_separation", RowSeparation);
+        // 一排 4 张，靠左排列（不满 4 张也靠左，空出来的位置留在右边）
+        ItemListNode.Alignment = FlowContainer.AlignmentMode.Begin;
+        ItemListNode.LastWrapAlignment = FlowContainer.LastWrapAlignmentMode.Begin;
+
+        // 由点开它的人决定内容：卡包磁贴的「详情」按钮会把卡包名放进 Payload
+        if (Payload is string packName && !string.IsNullOrWhiteSpace(packName))
+            _packName = packName;
+        FillPackInfo(_packName);
+        await CardPackPreview.Fill(ItemListNode, _packName, CardsPerRow, CardCellWidth, RowSeparation);
+
+        IntroAn();
+    }
+
+    /// <summary>按卡包名把数据填进详情界面（数据来自 数据(C#)/cardPack.json 里对应的对象）。</summary>
+    private void FillPackInfo(string packName)
+    {
+        FileJson json = new FileJson().Open(PackDataPath).OpenObject(packName);
+        string title = json.GetVariable("PackName", packName);
+        string intro = json.GetVariable("IntroduceText", "");
+
+        Label topLabel = GetNodeOrNull<Label>("遮罩/顶部/顶部文本");
+        if (topLabel != null) topLabel.Text = $"{title} 可能包含:";
+
+        Label introLabel = GetNodeOrNull<Label>("遮罩/滚动条/FlowContainer/横幅/介绍文本");
+        if (introLabel != null) introLabel.Text = intro;
+
+        // 卡池分组也在这里读：json.GetArray<JsonObject>("group") 里每个 group 有
+        // Name / Cards / MaxCount / BaseRate / UltimateRate，可以据此在 ItemListNode 里生成下方卡牌列表。
+    }
+
+    public override void _ExitTree()
+    {
+        if (_introTween != null && _introTween.IsValid())
+            _introTween.Kill();
+    }
+
+    /// <summary>
+    /// Godot 4 的 Tween 不能直接 new，必须用 CreateTween()（否则 is_valid() 恒为 false，
+    /// TweenProperty 会报 "Tween invalid" 且不推进）。已结束/被杀掉的 Tween 要先用 IsValid() 判断，
+    /// 同时字段初始为 null，不能直接对 null 调 IsValid()。
+    /// </summary>
+    private Tween QuickTween()
+    {
+        if (_introTween != null && _introTween.IsValid())
+            _introTween.Kill();
+        _introTween = CreateTween();
+        return _introTween;
+    }
+
+    /// <summary>从屏幕下方滑入：先把根节点挪到屏幕外一屏，再补间回原位。</summary>
+    private void IntroAn()
+    {
+        if (_introPlayed) return;
+        _introPlayed = true;
+        Vector2 restPos = Position;
+        Position = new Vector2(restPos.X, GetViewportRect().Size.Y);
+        QuickTween()
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.Out)
+            .TweenProperty(this, "position", restPos, 0.5f);
+    }
+
+    /// <summary>
+    /// 离场动画：滑回屏幕下方。SceneManager.ReturnToSub() 会 await 它，
+    /// 播完才释放本层场景，所以返回动画写在这里。
+    /// </summary>
+    public override async Task Outro()
+    {
+        Vector2 outPos = new Vector2(Position.X, GetViewportRect().Size.Y);
+        Tween tween = QuickTween();
+        tween.TweenProperty(this, "position", outPos, 0.3f)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.In);
+        await ToSignal(tween, Tween.SignalName.Finished);
+    }
+}

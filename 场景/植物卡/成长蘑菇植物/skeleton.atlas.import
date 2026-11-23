@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://bqd87p5sj67lr"
+path="res://.godot/imported/skeleton.atlas-4f0922b289c5cdf50d41cd577e408ce5.spatlas"
+
+[deps]
+
+source_file="res://场景/植物卡/成长蘑菇植物/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-4f0922b289c5cdf50d41cd577e408ce5.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

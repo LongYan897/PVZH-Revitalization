@@ -1,0 +1,582 @@
+[gd_scene format=3 uid="uid://cccliyfgnngy8"]
+
+[ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="1_gf1jq"]
+[ext_resource type="Texture2D" uid="uid://dc6ikwv36qptw" path="res://素材/ui/任务/QuestBoardWood.png" id="1_qehtt"]
+[ext_resource type="PackedScene" uid="uid://tk2k0cvd2p43" path="res://场景(C#)/任务便签.tscn" id="2_8iu1j"]
+[ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="2_rtb1n"]
+[ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="3_a2tjb"]
+[ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="3_c0f2v"]
+[ext_resource type="Texture2D" uid="uid://cbk25jehwcagf" path="res://素材/ui/段位/段位标志/rankicon_1.png" id="3_cbxt8"]
+[ext_resource type="Script" uid="uid://b7h0k2h2qwlqv" path="res://addons/SmoothScroll/scroll_damper/expo_scroll_damper.gd" id="4_g8d3h"]
+[ext_resource type="Texture2D" uid="uid://n8d7v68l4e5y" path="res://素材/ui/段位/frame_0.png" id="4_xqkfi"]
+[ext_resource type="Script" uid="uid://djw2uav0wcgkd" path="res://脚本(C#)/辅助类/MinimumHFlowContainer.cs" id="5_g8d3h"]
+[ext_resource type="Script" uid="uid://bcd08d064sm24" path="res://脚本(C#)/辅助类/MinimumVFlowContainer.cs" id="6_a3nih"]
+[ext_resource type="Texture2D" uid="uid://ddh53raukwl2s" path="res://素材/ui/任务/底边.png" id="6_c84qc"]
+[ext_resource type="PackedScene" uid="uid://c818mqun8ep53" path="res://场景(C#)/任务描述.tscn" id="6_eiv5o"]
+[ext_resource type="PackedScene" uid="uid://bhwbw81o6gl03" path="res://场景(C#)/任务页.tscn" id="7_mh3l0"]
+[ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="10_qehtt"]
+[ext_resource type="Texture2D" uid="uid://bxjqu4jh232xp" path="res://素材/ui/段位/star_0.png" id="11_plssu"]
+[ext_resource type="Texture2D" uid="uid://m4877pe2lgwp" path="res://素材/ui/任务/QuestIron.png" id="12_410ol"]
+[ext_resource type="Texture2D" uid="uid://cxiuknmdetafv" path="res://素材/ui/任务/QuestClue.png" id="13_uxopb"]
+[ext_resource type="Texture2D" uid="uid://dqtbnidxguueu" path="res://素材/ui/任务/QuestBarUp.png" id="14_410ol"]
+[ext_resource type="Texture2D" uid="uid://kj3ei6bbae6x" path="res://素材/ui/任务/QuestStar.png" id="14_qyi1x"]
+[ext_resource type="Script" uid="uid://h2i6yqcy4wfu" path="res://脚本(C#)/辅助类/SpecLabel.cs" id="14_xqkfi"]
+[ext_resource type="Texture2D" uid="uid://bo1ucxfgbw6ol" path="res://素材/ui/段位/段位标志/rankicon_12.png" id="16_jhyom"]
+[ext_resource type="Texture2D" uid="uid://cmwscsjipnpgi" path="res://素材/ui/段位/段位标志/rankicon_10.png" id="17_2yl0b"]
+[ext_resource type="Texture2D" uid="uid://dlmhp02h2gwff" path="res://素材/ui/段位/段位标志/rankicon_2.png" id="18_7qwa5"]
+[ext_resource type="Texture2D" uid="uid://cmbl7sxiiyuyw" path="res://素材/ui/任务/QuestLegend.png" id="21_jhyom"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7qwa5"]
+shader = ExtResource("1_gf1jq")
+shader_parameter/direction = Vector2(11.112687, -11.112687)
+shader_parameter/speed_scale = 0.0
+shader_parameter/canvas_scaling = Vector2(2, 2)
+shader_parameter/canvas_rotation = 0.0
+shader_parameter/texture_spacing_x = 0.0
+shader_parameter/texture_spacing_y = 0.0
+shader_parameter/texture_scaling = Vector2(1, 1)
+shader_parameter/texture_rotation = 0.0
+shader_parameter/tint_color = Color(0.13725491, 0.53333336, 0.6745098, 1)
+
+[sub_resource type="Shader" id="Shader_qyi1x"]
+code = "shader_type canvas_item;
+
+uniform float hue_shift : hint_range(0.0, 1.0) = 0.0;
+uniform float contrast : hint_range(0.0, 2.0) = 0.0;
+uniform float brightness : hint_range(0.0, 2.0) = 1.0;
+
+vec3 rgb_to_hsv(vec3 c) {
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+vec3 hsv_to_rgb(vec3 c) {
+    vec3 p = abs(fract(c.xxx + vec3(0.0, 2.0 / 3.0, 1.0 / 3.0)) * 6.0 - 3.0);
+    return c.z * mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), c.y);
+}
+
+float luma(vec3 c) {
+    return dot(c, vec3(0.2126, 0.7152, 0.0722));
+}
+
+void fragment() {
+    vec4 tex_color = texture(TEXTURE, UV);
+    vec3 rgb = tex_color.rgb;
+
+    vec3 hsv = rgb_to_hsv(rgb);
+    hsv.x = mod(hsv.x + hue_shift, 1.0);
+    rgb = hsv_to_rgb(hsv);
+
+    rgb *= brightness;
+
+    float L = luma(rgb);
+    float L_new = mix(L, smoothstep(0.0, 1.0, L), contrast);
+    L_new = clamp(L_new, 0.0, 1.0);
+
+    float scale = (L > 1e-5) ? (L_new / L) : 1.0;
+    rgb = rgb * scale;
+
+    rgb = clamp(rgb, 0.0, 1.0);
+
+    COLOR = vec4(rgb, tex_color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uxopb"]
+shader = SubResource("Shader_qyi1x")
+shader_parameter/hue_shift = 0.0
+shader_parameter/contrast = 0.0
+shader_parameter/brightness = 1.0
+
+[sub_resource type="Resource" id="Resource_c84qc"]
+script = ExtResource("4_g8d3h")
+
+[sub_resource type="Resource" id="Resource_a3nih"]
+script = ExtResource("4_g8d3h")
+
+[sub_resource type="Resource" id="Resource_xqkfi"]
+script = ExtResource("4_g8d3h")
+
+[sub_resource type="Resource" id="Resource_eiv5o"]
+script = ExtResource("4_g8d3h")
+
+[sub_resource type="Resource" id="Resource_g8d3h"]
+script = ExtResource("4_g8d3h")
+
+[sub_resource type="Resource" id="Resource_mh3l0"]
+script = ExtResource("4_g8d3h")
+
+[node name="任务栏" type="Node2D" unique_id=261983100]
+
+[node name="Bg" type="Sprite2D" parent="." unique_id=255586613]
+unique_name_in_owner = true
+modulate = Color(0.19, 0.7299999, 1, 1)
+z_index = -15
+material = SubResource("ShaderMaterial_7qwa5")
+position = Vector2(641, 424)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_rtb1n")
+script = ExtResource("3_a2tjb")
+Color = Color(0.14799999, 0.5426666, 0.74, 1)
+metadata/_custom_type_script = "uid://c4d6enygyoawb"
+
+[node name="Sprite2D9" type="Sprite2D" parent="." unique_id=1696177713]
+visible = false
+self_modulate = Color(1, 1, 1, 0.6392157)
+material = SubResource("ShaderMaterial_uxopb")
+position = Vector2(185.99998, 669.3346)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("14_410ol")
+
+[node name="颜色" type="ColorRect" parent="." unique_id=1174064761]
+z_index = -4044
+offset_right = 1303.0
+offset_bottom = 740.0
+color = Color(0, 0, 0, 0.49411765)
+
+[node name="SmoothScrollContainer2" type="ScrollContainer" parent="." unique_id=18135413]
+offset_left = 9.000001
+offset_top = 123.0
+offset_right = 653.0
+offset_bottom = 875.8571
+scale = Vector2(0.6, 0.6)
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+script = ExtResource("3_c0f2v")
+wheel_scroll_damper = SubResource("Resource_c84qc")
+dragging_scroll_damper = SubResource("Resource_a3nih")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="MinimumHFlowContainer" type="HFlowContainer" parent="SmoothScrollContainer2" unique_id=1735134651]
+custom_minimum_size = Vector2(397, 0)
+layout_mode = 2
+script = ExtResource("5_g8d3h")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=441583057 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签2" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=136873229 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="1" unique_id=361576177]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="2" unique_id=1617515993]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2/Panel" index="0" unique_id=1997415526]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="3" unique_id=857754135]
+texture = ExtResource("12_410ol")
+
+[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="4" unique_id=1001956069]
+texture = ExtResource("16_jhyom")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="6" unique_id=88194377]
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签3" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=990040009 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="1" unique_id=361576177]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="2" unique_id=1617515993]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3/Panel" index="0" unique_id=1997415526]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="3" unique_id=857754135]
+texture = ExtResource("13_uxopb")
+
+[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="4" unique_id=1001956069]
+texture = ExtResource("17_2yl0b")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="6" unique_id=88194377]
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签4" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=1419775552 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="背景2" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="0" unique_id=1878226755]
+texture = ExtResource("14_qyi1x")
+
+[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="1" unique_id=361576177]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="2" unique_id=1617515993]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4/Panel" index="0" unique_id=1997415526]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="3" unique_id=857754135]
+texture = ExtResource("14_qyi1x")
+
+[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="4" unique_id=1001956069]
+texture = ExtResource("18_7qwa5")
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="6" unique_id=88194377]
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签5" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=62999005 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="1" unique_id=361576177]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="2" unique_id=1617515993]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5/Panel" index="0" unique_id=1997415526]
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="3" unique_id=857754135]
+texture = ExtResource("21_jhyom")
+
+[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="4" unique_id=1001956069]
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="6" unique_id=88194377]
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="SmoothScrollContainer" type="ScrollContainer" parent="." unique_id=1364036502]
+offset_left = 392.00003
+offset_top = 119.00001
+offset_right = 1042.0
+offset_bottom = 1050.7582
+scale = Vector2(0.65, 0.65)
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+script = ExtResource("3_c0f2v")
+wheel_scroll_damper = SubResource("Resource_c84qc")
+dragging_scroll_damper = SubResource("Resource_a3nih")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="MinimumHFlowContainer" type="HFlowContainer" parent="SmoothScrollContainer" unique_id=835266837]
+custom_minimum_size = Vector2(397, 0)
+layout_mode = 2
+script = ExtResource("5_g8d3h")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1110904886 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签2" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1886042463 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签3" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=827908572 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签4" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1585077162 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签5" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=813468638 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签6" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=644944581 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签7" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1719300714 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务便签8" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=31044940 instance=ExtResource("2_8iu1j")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Node2D" type="Node2D" parent="." unique_id=522907422]
+position = Vector2(121.00001, 34)
+scale = Vector2(0.9, 0.9)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D" unique_id=2109982273]
+position = Vector2(1023, 413.00003)
+scale = Vector2(0.91651785, 0.8416667)
+texture = ExtResource("1_qehtt")
+
+[node name="标题" type="Label" parent="Node2D/Sprite2D" unique_id=756018143]
+offset_left = -116.74625
+offset_top = -329.10892
+offset_right = 253.13199
+offset_bottom = -205.54457
+scale = Vector2(1, 1.1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("10_qehtt")
+theme_override_font_sizes/font_size = 58
+text = "英雄克星"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="任务" type="ScrollContainer" parent="Node2D" unique_id=1493162793]
+offset_left = 797.77783
+offset_top = 369.0
+offset_right = 1247.7778
+offset_bottom = 560.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
+script = ExtResource("3_c0f2v")
+wheel_scroll_damper = SubResource("Resource_xqkfi")
+dragging_scroll_damper = SubResource("Resource_eiv5o")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="MinimumHFlowContainer" type="HFlowContainer" parent="Node2D/任务" unique_id=741014772]
+layout_mode = 2
+script = ExtResource("5_g8d3h")
+metadata/_custom_type_script = "uid://djw2uav0wcgkd"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Control" type="Control" parent="Node2D/任务/MinimumHFlowContainer" unique_id=1452910826]
+custom_minimum_size = Vector2(345, 10)
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务" parent="Node2D/任务/MinimumHFlowContainer" unique_id=1529898007 instance=ExtResource("6_eiv5o")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务2" parent="Node2D/任务/MinimumHFlowContainer" unique_id=1652457183 instance=ExtResource("6_eiv5o")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务3" parent="Node2D/任务/MinimumHFlowContainer" unique_id=955354487 instance=ExtResource("6_eiv5o")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Label" type="Label" parent="Node2D" unique_id=1330610601]
+offset_left = 795.0
+offset_top = 546.0
+offset_right = 1253.0
+offset_bottom = 595.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("10_qehtt")
+theme_override_font_sizes/font_size = 36
+text = "奖励"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="副描述" type="RichTextLabel" parent="Node2D" unique_id=1801496386]
+offset_left = 802.0
+offset_top = 255.0
+offset_right = 1247.0
+offset_bottom = 308.0
+theme_override_colors/default_color = Color(0.23099999, 0.29715, 0.42, 1)
+theme_override_font_sizes/normal_font_size = 38
+theme_override_font_sizes/bold_font_size = 38
+theme_override_font_sizes/bold_italics_font_size = 38
+theme_override_font_sizes/italics_font_size = 38
+theme_override_font_sizes/mono_font_size = 38
+text = "让英雄看看"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_xqkfi")
+metadata/_custom_type_script = "uid://h2i6yqcy4wfu"
+
+[node name="副描述2" type="RichTextLabel" parent="Node2D" unique_id=1855694039]
+offset_left = 802.0
+offset_top = 292.0
+offset_right = 1247.0
+offset_bottom = 345.0
+theme_override_colors/default_color = Color(0.23099999, 0.29715, 0.42, 1)
+theme_override_font_sizes/normal_font_size = 38
+theme_override_font_sizes/bold_font_size = 38
+theme_override_font_sizes/bold_italics_font_size = 38
+theme_override_font_sizes/italics_font_size = 38
+theme_override_font_sizes/mono_font_size = 38
+text = "让英雄看看"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_xqkfi")
+metadata/_custom_type_script = "uid://h2i6yqcy4wfu"
+
+[node name="副描述3" type="RichTextLabel" parent="Node2D" unique_id=882799947]
+offset_left = 802.0
+offset_top = 329.0
+offset_right = 1247.0
+offset_bottom = 382.0
+theme_override_colors/default_color = Color(0.23099999, 0.29715, 0.42, 1)
+theme_override_font_sizes/normal_font_size = 38
+theme_override_font_sizes/bold_font_size = 38
+theme_override_font_sizes/bold_italics_font_size = 38
+theme_override_font_sizes/italics_font_size = 38
+theme_override_font_sizes/mono_font_size = 38
+text = "让英雄看看"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("14_xqkfi")
+metadata/_custom_type_script = "uid://h2i6yqcy4wfu"
+
+[node name="主图标" type="TextureRect" parent="Node2D" unique_id=1872861492]
+unique_name_in_owner = true
+offset_left = 809.60004
+offset_top = 146.75256
+offset_right = 937.60004
+offset_bottom = 274.75256
+scale = Vector2(0.75, 0.75)
+mouse_filter = 2
+texture = ExtResource("3_cbxt8")
+
+[node name="图标" type="Sprite2D" parent="Node2D" unique_id=849182823]
+unique_name_in_owner = true
+position = Vector2(857.6, 196.75255)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("4_xqkfi")
+
+[node name="Sprite2D4" type="Sprite2D" parent="Node2D" unique_id=606358723]
+position = Vector2(1223.3334, 684.44446)
+scale = Vector2(0.88888896, 0.88888896)
+texture = ExtResource("11_plssu")
+
+[node name="Sprite2D3" type="Sprite2D" parent="." unique_id=137844873]
+position = Vector2(210, 75)
+scale = Vector2(0.6000001, 0.6000001)
+texture = ExtResource("14_410ol")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Sprite2D3" unique_id=1369341577]
+self_modulate = Color(1, 1, 1, 0.38039216)
+z_index = -2
+position = Vector2(5.714279, 9.999998)
+texture = ExtResource("14_410ol")
+
+[node name="Label" type="Label" parent="Sprite2D3" unique_id=337710435]
+offset_left = -284.2857
+offset_top = -67.14286
+offset_right = 284.2857
+offset_bottom = 66.85714
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_fonts/font = ExtResource("10_qehtt")
+theme_override_font_sizes/font_size = 86
+text = "当前任务"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="SmoothScrollContainer3" type="ScrollContainer" parent="." unique_id=1460176909]
+offset_left = 428.0
+offset_top = 43.0
+offset_right = 2595.1426
+offset_bottom = 218.0
+scale = Vector2(0.5, 0.5)
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
+script = ExtResource("3_c0f2v")
+wheel_scroll_damper = SubResource("Resource_g8d3h")
+dragging_scroll_damper = SubResource("Resource_mh3l0")
+metadata/_custom_type_script = "uid://bgqglerkcylxx"
+
+[node name="MinimumVFlowContainer" type="VFlowContainer" parent="SmoothScrollContainer3" unique_id=1458248392]
+custom_minimum_size = Vector2(0, 175)
+layout_mode = 2
+script = ExtResource("6_a3nih")
+metadata/_custom_type_script = "uid://bcd08d064sm24"
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务页" parent="SmoothScrollContainer3/MinimumVFlowContainer" unique_id=1390346446 instance=ExtResource("7_mh3l0")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务页2" parent="SmoothScrollContainer3/MinimumVFlowContainer" unique_id=1918338712 instance=ExtResource("7_mh3l0")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="任务页3" parent="SmoothScrollContainer3/MinimumVFlowContainer" unique_id=1740603595 instance=ExtResource("7_mh3l0")]
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=463833805]
+visible = false
+self_modulate = Color(0.8509804, 0.96862745, 1, 1)
+position = Vector2(390, 671)
+scale = Vector2(1.0756942, 0.4099999)
+texture = ExtResource("6_c84qc")
+
+[node name="Sprite2D6" type="Sprite2D" parent="." unique_id=428343094]
+position = Vector2(576, 75)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("14_410ol")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Sprite2D6" unique_id=875086117]
+self_modulate = Color(1, 1, 1, 0.22745098)
+z_index = -2
+position = Vector2(5.714279, 9.999998)
+texture = ExtResource("14_410ol")
+
+[node name="Label" type="Label" parent="Sprite2D6" unique_id=1348901632]
+offset_left = -284.2857
+offset_top = -67.14286
+offset_right = 284.2857
+offset_bottom = 66.85714
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_fonts/font = ExtResource("10_qehtt")
+theme_override_font_sizes/font_size = 86
+text = "任务"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2"]
+[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3"]
+[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4"]
+[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5"]

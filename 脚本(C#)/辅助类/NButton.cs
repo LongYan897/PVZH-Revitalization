@@ -12,14 +12,19 @@ public partial class NButton : TextureButton
         ButtonUp += OnNButtonUp;
         Size = Scale;
     }
+    protected virtual void OnDown()
+    { }
+    protected virtual void OnUp() { }
     private void OnNButtonDown()
     {
         Tween tween = CreateTween();
         tween.TweenProperty(this, "scale", Size * 0.9f, 0.1f);
+        OnDown();
     }
     private void OnNButtonUp()
     {
         Tween tween = CreateTween();
         tween.TweenProperty(this, "scale", Size, 0.1f);
+        OnUp();
     }
 }

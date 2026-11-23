@@ -23,7 +23,7 @@ public class FinalMission : CardModel
 
             await PlayInstantAnimation("intro", target);
 
-            await zomb.Kill(Variable.VariableReason.Trick);
+            await zomb.Die(Variable.VariableReason.Zombie | Variable.VariableReason.Trick);
 
             if (plant != null)
             {

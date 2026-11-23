@@ -9,7 +9,18 @@ namespace Pack;
 public partial class IconComposer : Node
 {
     public static IconComposer Instance { get; private set; }
+    public static IconComposer EnsureInstance()
+    {
+        if (Instance != null && GodotObject.IsInstanceValid(Instance))
+            return Instance;
 
+        var tree = (SceneTree)Engine.GetMainLoop();
+        if (tree == null) return null;
+
+        var composer = new IconComposer { Name = "IconComposer_Auto" };
+        tree.Root.AddChild(composer);
+        return Instance;
+    }
     private SubViewport _viewport;
     private Label _label;
     private readonly Dictionary<string, Texture2D> _cache = new();
@@ -40,15 +51,23 @@ public partial class IconComposer : Node
     }
 
     public async Task<Texture2D> ComposeAsync(
-        string iconPath,
-        string text,
-        Color? color = null,
-        Color? outlineColor = null,
-        int outlineSize = 0)
+    string iconPath,
+    string text,
+    Color? color = null,
+    Color? outlineColor = null,
+    int outlineSize = 0,
+    int size = 42)
     {
-        string key = $"{iconPath}#{text}#{color}#{outlineColor}#{outlineSize}";
+        string key = $"{iconPath}#{text}#{color}#{outlineColor}#{outlineSize}#{size}";
         if (_cache.TryGetValue(key, out var cached))
             return cached;
+
+        int fontSize = Mathf.Max(1, Mathf.RoundToInt(size * 0.75f));
+
+        _viewport.Size = new Vector2I(size, size);
+        _label.Size = new Vector2(size, size);
+        _label.Position = new Vector2(0, size / 32f * 1f);
+        _label.AddThemeFontSizeOverride("font_size", fontSize);
 
         _label.AddThemeColorOverride("font_color", color ?? Colors.White);
         _label.AddThemeColorOverride("font_outline_color", outlineColor ?? Colors.Transparent);
@@ -64,7 +83,7 @@ public partial class IconComposer : Node
         Image icon = iconTex.GetImage();
         if (icon.GetFormat() != Image.Format.Rgba8)
             icon.Convert(Image.Format.Rgba8);
-        icon.Resize(32, 32, Image.Interpolation.Bilinear);
+        icon.Resize(size, size, Image.Interpolation.Bilinear);
 
         int x = (icon.GetWidth() - textTex.GetWidth()) / 2;
         int y = (icon.GetHeight() - textTex.GetHeight()) / 2;

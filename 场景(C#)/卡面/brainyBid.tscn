@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://0md8ie55rggu"]
+
+[ext_resource type="Texture2D" uid="uid://ckqnl6nxs7otq" path="res://场景/僵尸卡组/有脑竞猜/BrainBid.png" id="1_8u63l"]
+
+[node name="卡面" type="Control" unique_id=1762432926]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=160563564]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 11.0
+offset_right = 1030.0
+offset_bottom = 731.0
+scale = Vector2(0.24, 0.24)
+texture = ExtResource("1_8u63l")
+expand_mode = 1
+stretch_mode = 3

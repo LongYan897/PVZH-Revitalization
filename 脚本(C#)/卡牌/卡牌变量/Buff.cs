@@ -12,11 +12,15 @@ public abstract class Buff
     /// <summary>
     /// 能否被转移到其他卡牌上
     /// </summary>
-    public virtual bool IsTransferable => true;
+    public virtual bool IsTransferable => false;
     /// <summary>
     /// 是否只有在卡牌以单位形式存在时才调用
     /// </summary>
-    public bool OnlyPlaced { get; init; } = false;
+    public bool OnlyPlaced { get; init; } = true;
+    /// <summary>
+    /// 优先级
+    /// </summary>
+    public virtual int Priority { get; } = 1;
     /// <summary>
     /// 关心的时点
     /// </summary>
@@ -37,14 +41,22 @@ public class CustomBuff : Buff
 {
     private readonly Timing[] _timings;
     private readonly Func<Timing, CardModel, object[], Task> _callback;
-
-    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback)
+    private readonly int _priority;
+    private readonly bool _isTransferable;
+    public CustomBuff(Timing[] timings, Func<Timing, CardModel, object[], Task> callback, int priority = 1, bool isPlaced = true, bool isTransferable = false)
     {
         _timings = timings ?? Array.Empty<Timing>();
         _callback = callback;
+        _priority = priority;
+        OnlyPlaced = isPlaced;
+        _isTransferable = isTransferable;
     }
 
+    public override int Priority => _priority;
+
     public override Timing[] Timings => _timings;
+
+    public override bool IsTransferable => _isTransferable;
 
     public override Task OnTiming(Timing timing, CardModel card, params object[] parameters)
     {
@@ -53,22 +65,76 @@ public class CustomBuff : Buff
         return _callback(timing, card, parameters);
     }
 }
+/// <summary>
+/// 可叠加的 Buff 基类。
+/// </summary>
+public abstract class StackableBuff(int stackInit) : Buff
+{
+    /// <summary>
+    /// 当前层数/数值。
+    /// </summary>
+    public int Stacks { get; protected set; } = stackInit;
 
+    /// <summary>
+    /// 同类型才叠加。
+    /// </summary>
+    public virtual bool CanStackWith(Buff other)
+        => other != null && other.GetType() == GetType();
+
+    /// <summary>
+    /// 叠加逻辑
+    /// </summary>
+    /// <param name="other"></param>
+    public virtual void StackWith(StackableBuff other)
+    {
+        if (!CanStackWith(other))
+            throw new InvalidOperationException($"Cannot stack {other.GetType()} with {GetType()}");
+        Stacks += other.Stacks;
+    }
+
+    /// <summary>
+    /// 减少逻辑
+    /// </summary>
+    /// <param name="other"></param>
+    public virtual void DestackWith(StackableBuff other)
+    {
+        if (!CanStackWith(other))
+            throw new InvalidOperationException($"Cannot stack {other.GetType()} with {GetType()}");
+        Stacks -= other.Stacks;
+    }
+}
+
+public static class BuffExtensions
+{
+    /// <summary>
+    /// 叠加逻辑。
+    /// 返回 true 表示已合并。
+    /// </summary>
+    public static bool Stack<T>(this T oncoming, T incoming) where T : StackableBuff
+    {
+        if (incoming is not T || !oncoming.CanStackWith(incoming))
+            return false;
+
+        oncoming.StackWith(incoming);
+        return true;
+    }
+}
 /// <summary>
 /// 效果关心的时点
 /// </summary>
 public enum Timing
 {
     /// <summary>
-    /// 当卡牌进化时
-    /// 参数：[0] FighterCardModel 被进化的卡牌 [1] FighterCardModel 进化的卡牌
+    /// 当Buff被叠加时
+    /// 参数：[0] int 叠加的数量 [1] VariableReason Buff叠加的原因
     /// </summary>
-    WhenEvolve,
+    WhenStack,
     /// <summary>
-    /// 当卡牌进化时
-    /// 参数：[0] FighterCardModel 被融合的卡牌 [1] FighterCardModel 融合的卡牌
+    /// 当Buff被减少时
+    /// 参数：[0] int 减少的数量 [1] VariableReason Buff减少的原因
     /// </summary>
-    WhenFuse,
+    WhenDestack,
+
     /// <summary>
     /// 效果/类型被赋予卡牌时
     /// 参数：[0] VariableReason 赋予原因
@@ -80,6 +146,57 @@ public enum Timing
     /// 参数：[0] VariableReason 移除原因
     /// </summary>
     WhenRemove,
+    /// <summary>
+    /// 当Buff被叠加时
+    /// 参数：[0] Buff 叠加的Buff [1] int 叠加的数量 [2]CardModel 叠加的卡牌 [3] VariableReason Buff叠加的原因
+    /// </summary>
+    BuffStack,
+    /// <summary>
+    /// 当Buff被减少时
+    /// 参数：[0] Buff 减少的Buff [1] int 减少的数量 [2]CardModel 减少的卡牌 [3] VariableReason Buff减少的原因
+    /// </summary>
+    BuffDestack,
+    /// <summary>
+    /// 效果/类型被赋予卡牌时
+    /// 参数：[0] Buff 赋予的Buff [1]CardModel 赋予的卡牌 [2] VariableReason Buff赋予的原因
+    /// </summary>
+    BuffApply,
+
+    /// <summary>
+    /// 效果/类型被移除时
+    /// 参数：[0] Buff 移除的Buff [1]CardModel 移除的卡牌 [2] VariableReason Buff移除的原因
+    /// </summary>
+    BuffRemove,
+    /// <summary>
+    /// 当单位被移动时
+    /// 参数：[0] Road 移到的路线 [1] FighterCardModel 移动的卡牌
+    /// </summary>
+    WhenMoved,
+    /// <summary>
+    /// 当僵尸现身时
+    /// 参数：[0] FighterCardModel 现身的卡牌 [1] bool 是否是强迫(死亡)现身
+    /// </summary>
+    WhenRevealed,
+    /// <summary>
+    /// 当僵尸现身后
+    /// 参数：[0] FighterCardModel 现身的卡牌 [1] bool 是否是强迫(死亡)现身
+    /// </summary>
+    AfterRevealed,
+    /// <summary>
+    /// 当卡牌弹回时
+    /// 参数：[0] FighterCardModel 被弹回的卡牌
+    /// </summary>
+    WhenBounce,
+    /// <summary>
+    /// 当卡牌进化时
+    /// 参数：[0] FighterCardModel 被进化的卡牌 [1] FighterCardModel 进化的卡牌
+    /// </summary>
+    WhenEvolve,
+    /// <summary>
+    /// 当卡牌进化时
+    /// 参数：[0] FighterCardModel 被融合的卡牌 [1] FighterCardModel 融合的卡牌
+    /// </summary>
+    WhenFuse,
 
     /// <summary>
     /// 卡牌被克隆后

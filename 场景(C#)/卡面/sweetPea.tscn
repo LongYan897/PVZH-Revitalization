@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bpb34f6u11im8"]
+
+[ext_resource type="Texture2D" uid="uid://ddurhd5uyu7x1" path="res://场景/植物卡组/甜豌豆植物/Sweet Pea.png" id="1_lyclj"]
+
+[node name="卡面" type="Control" unique_id=1421929380]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1256635828]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 205.0
+offset_bottom = 196.0
+texture = ExtResource("1_lyclj")
+expand_mode = 1
+stretch_mode = 3

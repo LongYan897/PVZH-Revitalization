@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://caigbw8t167sy"]
+
+[ext_resource type="Texture2D" uid="uid://b0ikhvxc3d5sf" path="res://场景/植物卡组/机枪豌豆植物/Gatling Pea.png" id="1_hsuj5"]
+
+[node name="卡面" type="Control" unique_id=1271087883]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1984548939]
+layout_mode = 0
+offset_left = 20.0
+offset_top = -15.0
+offset_right = 204.0
+offset_bottom = 169.0
+texture = ExtResource("1_hsuj5")
+expand_mode = 1
+stretch_mode = 3

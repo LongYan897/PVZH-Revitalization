@@ -9,6 +9,7 @@ public readonly struct TargetContext
     public bool Line { get; init; }
     public bool Grid { get; init; }
     public bool CoopGrid { get; init; }
+    public Camp? Camp { get; init; }
     public FighterCardModel FighterCard { get; init; }
     public static TargetContext Line1 => new() { Line = true };
     public static TargetContext Grid1 => new() { Grid = true };
@@ -23,4 +24,14 @@ public readonly struct TargetContext
             FighterCard = card,
         };
     }
+    public static TargetContext From(TargetType type, FighterCardModel card = null, Camp? camp = null)
+        => new()
+        {
+            Line = type.HasFlag(TargetType.Lines),
+            Grid = type.HasFlag(TargetType.Grids),
+            CoopGrid = type.HasFlag(TargetType.CoopGrids),
+            FighterCard = card,
+            Camp = camp,
+        };
+
 }

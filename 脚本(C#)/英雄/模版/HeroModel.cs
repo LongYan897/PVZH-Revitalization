@@ -1,6 +1,7 @@
 using Battle;
 using Card;
 using Card.Cmd;
+using Godot;
 using Hero.String;
 using Play;
 using Scene;
@@ -17,6 +18,25 @@ namespace Hero.Model;
 /// </summary>
 public abstract class HeroModel
 {
+    /// <summary>
+    /// 是否是英雄实例 , 用于区分是局内使用的英雄还是英雄的身份
+    /// </summary>
+    public bool IsIdentity { get; private set; } = false;
+    /// <summary>
+    /// 获取英雄的身份
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static HeroModel Identity<T>() where T : HeroModel, new()
+    {
+        var hero = Load<T>();
+        hero.IsIdentity = true;
+        return hero;
+    }
+    /// <summary>
+    /// 是否已经死亡 
+    /// </summary>
+    public bool IsDie => Health.Current <= 0;
     /// <summary>
     /// 超能力
     /// </summary>
@@ -55,12 +75,11 @@ public abstract class HeroModel
     /// <returns></returns>
     public async Task Changed(string sign, int before, int after, int delta, VariableReason reason, CardModel cardModel, params object[] objects)
     {
-        if (reason == VariableReason.None) return;
         if (sign == "MaxHealth")
         {
             if (Health.Current > after)
             {
-                await Health.Set(after, VariableReason.None, null);
+                await Health.Set(after, VariableReason.Rule, null);
             }
         }
         else if (sign == "Cost")
@@ -95,15 +114,19 @@ public abstract class HeroModel
     int amount,
     Variable.VariableReason reason,
     CardModel cardModel = null,
-    AtkStack stack = null)
+    AtkStack stack = null,
+    bool isShieldGain = true)
     {
         Random random = new();
         int shield = random.Next(1, 4);
+        if (!isShieldGain) shield = 0;
         Variable<bool> stop = new("HeroDamaged", false);
-        stack ??= new(null, [Targeted()], null, amount);
+        stack ??= new(null, [Targeted()], null, amount, false);
         await CardCmd.TimingOnCards(null, Timing.TryStopHeroTakeDamage, stop, this);
         PlayAnimation("hit", true);
-        await BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield, cardModel);
+        if (amount > Health.Current)
+            amount = Health.Current;
+        await BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield);
         if (shield + Shield.Current >= 8)
         {
             await Shield.Reset(null);
@@ -113,12 +136,28 @@ public abstract class HeroModel
         await CardCmd.TimingOnCards(null, Timing.ModifyCardDamage, stack);
         await Health.Lose(stack.FinalDamage, reason, cardModel ?? stack.Attacker);
         await CardCmd.TimingOnCards(null, Timing.OnDamaged, stack);
-        await Shield.Gain(shield, Variable.VariableReason.Damaged, cardModel);
+        if (shield > 0)
+            await Shield.Gain(shield, Variable.VariableReason.Damaged, cardModel);
 
         if (Health.Current <= 0)
         {
-
+            await BattleSubMenuScene.Win(PlayerManager.GetPlayer(Camp.Plant() ? Camp.Zombie : Camp.Plant));
         }
+    }
+    /// <summary>
+    /// 失去护盾值
+    /// </summary>
+    /// <param name="amount">失去的数量</param>
+    /// <returns></returns>
+    public async Task LoseShield(int amount,
+    Variable.VariableReason reason,
+    CardModel cardModel = null)
+    {
+        if (amount <= 0) return;
+        if (amount > Shield.Current)
+            amount = Shield.Current;
+        await BattleSubMenuScene.PlayLoseShield(PlayerManager.GetFromHero(this), amount);
+        await Shield.Lose(amount, reason, cardModel);
     }
     /// <summary>
     /// 加载英雄
@@ -170,5 +209,39 @@ public abstract class HeroModel
             }
         }
         return heroModels;
+    }
+    /// <summary>
+    /// 通过英雄类名或中文名获取英雄的身份
+    /// </summary>
+    public static HeroModel Identity(string typeName)
+    {
+        if (string.IsNullOrEmpty(typeName)) return null;
+
+        var types = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => t.IsSubclassOf(typeof(HeroModel)) && !t.IsAbstract)
+            .ToList();
+
+        var type = types.FirstOrDefault(t => t.FullName == typeName || t.Name == typeName);
+
+        if (type == null)
+        {
+            type = types.FirstOrDefault(t =>
+            {
+                var title = HeroString.GetData(t.Name, "Title").AsString();
+                return title == typeName;
+            });
+        }
+
+        if (type == null)
+        {
+            GD.PushWarning($"HeroModel.Identity 未找到英雄: {typeName}");
+            return null;
+        }
+
+        var method = typeof(HeroModel)
+            .GetMethod(nameof(Identity), BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null)
+            .MakeGenericMethod(type);
+
+        return (HeroModel)method.Invoke(null, null);
     }
 }

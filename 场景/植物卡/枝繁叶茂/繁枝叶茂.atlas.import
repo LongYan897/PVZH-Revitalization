@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://cu6bc45b28qgw"
+path="res://.godot/imported/繁枝叶茂.atlas-3cd359c978525020a8c7a287d85dfe7f.spatlas"
+
+[deps]
+
+source_file="res://场景/植物卡/枝繁叶茂/繁枝叶茂.atlas"
+dest_files=["res://.godot/imported/繁枝叶茂.atlas-3cd359c978525020a8c7a287d85dfe7f.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

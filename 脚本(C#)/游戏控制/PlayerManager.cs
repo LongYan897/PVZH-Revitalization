@@ -37,12 +37,7 @@ public static class PlayerManager
     {
         if (!PhraseManager.IsInBattle)
             return null;
-        return camp switch
-        {
-            Camp.Plant => P2,
-            Camp.Zombie => P1,
-            _ => null
-        };
+        return P1.Status.Hero.Camp == camp ? P1 : P2;
     }
     public static void Hosting(Player host)
     {
@@ -65,4 +60,10 @@ public static class PlayerManager
     /// 当前视角的玩家
     /// </summary>
     public static Player HostPlayer { get; private set; }
+
+
+    /// <summary>
+    /// 当前客方玩家
+    /// </summary>
+    public static Player GuestPlayer => P1 != HostPlayer ? P1 : P2;
 }

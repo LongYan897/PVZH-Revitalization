@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://crp82234ul3o3"
+path="res://.godot/imported/香蕉皮.skel-973d05ca659c8b0e35a295a93384786b.spskel"
+
+[deps]
+
+source_file="res://场景/植物卡/香蕉皮/香蕉皮.skel"
+dest_files=["res://.godot/imported/香蕉皮.skel-973d05ca659c8b0e35a295a93384786b.spskel"]
+
+[params]
+

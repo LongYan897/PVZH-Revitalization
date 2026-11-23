@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bcvr0dbmh7klj"]
+
+[ext_resource type="Texture2D" uid="uid://ccci84pgs1gx6" path="res://场景/植物卡组/香蕉皮/Banana Peel.png" id="1_hlbqc"]
+
+[node name="卡面" type="Control" unique_id=1892854026]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1337231927]
+layout_mode = 0
+offset_top = 10.0
+offset_right = 256.0
+offset_bottom = 194.0
+scale = Vector2(0.95, 0.95)
+texture = ExtResource("1_hlbqc")
+expand_mode = 1
+stretch_mode = 3

@@ -1,0 +1,33 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Card.Pea;
+
+public class PodFather : FighterCardModel
+{
+    private class PodBuff : Buff
+    {
+        public override Timing[] Timings => [Timing.OnFighterEnter];
+        public override int Priority => 10;
+        public override bool IsTransferable => false;
+        public override async Task OnTiming(Timing timing, CardModel card, params object[] parameters)
+        {
+            if (card is FighterCardModel fighter)
+            {
+                if (parameters[1] is FighterCardModel fighter1)
+                {
+                    if (fighter == fighter1) return;
+                    if (fighter1.HasLabel("豌豆"))
+                    {
+                        await Task.WhenAll(
+                            fighter1.Atk.Gain(card.GetSignInt("Strength"), Variable.VariableReason.Plant),
+                            fighter1.GainHp(card.GetSignInt("Health"), Variable.VariableReason.Plant));
+                    }
+                }
+            }
+        }
+    }
+    protected override List<Buff> InitBuffs => [
+        new PodBuff()
+        ];
+}

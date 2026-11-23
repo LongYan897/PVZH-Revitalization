@@ -4,10 +4,17 @@
 [ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="2_d5m1c"]
 [ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="2_n74wj"]
 [ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="3_n74wj"]
+[ext_resource type="Texture2D" uid="uid://bq12i1lmf6wk3" path="res://素材(C#)/卡包/HUD_gem_1.png" id="5_2lx20"]
+[ext_resource type="FontFile" uid="uid://dn6al23n2nvrj" path="res://素材/字体/CAFBD___.ttf" id="6_1cjfr"]
+[ext_resource type="Script" uid="uid://dbc5cu5atvore" path="res://脚本(C#)/游戏控制/GemCenter.cs" id="13_00smb"]
+[ext_resource type="PackedScene" uid="uid://dgw0vod6b082d" path="res://场景(C#)/主界面按钮/任务.tscn" id="13_quj4d"]
 [ext_resource type="PackedScene" uid="uid://b5x4veawhq8g4" path="res://场景(C#)/主界面按钮/僵尸任务.tscn" id="14_2lx20"]
+[ext_resource type="PackedScene" uid="uid://btfi7ovrmvcct" path="res://场景(C#)/主界面按钮/设置按钮.tscn" id="15_00smb"]
 [ext_resource type="PackedScene" uid="uid://dy7pegrhba8bu" path="res://场景(C#)/主界面按钮/每日挑战.tscn" id="15_1cjfr"]
+[ext_resource type="Script" uid="uid://b1u3rt0arf1cc" path="res://脚本(C#)/辅助类/DotLabel.cs" id="16_ulybo"]
 [ext_resource type="PackedScene" uid="uid://b82k587le8ukv" path="res://场景(C#)/主界面按钮/对战.tscn" id="18_1pb50"]
 [ext_resource type="PackedScene" uid="uid://d4jtuyxkgf5da" path="res://场景(C#)/主界面按钮/植物任务.tscn" id="19_quj4d"]
+[ext_resource type="Script" uid="uid://dpy81oq8meuvd" path="res://脚本(C#)/辅助类/IconComposer.cs" id="20_1pb50"]
 [ext_resource type="PackedScene" uid="uid://c0yfhr8tvx5fh" path="res://场景(C#)/加载.tscn" id="21_8ffxo"]
 [ext_resource type="PackedScene" uid="uid://cmokbn4rntjp7" path="res://场景(C#)/主界面按钮/返回按钮.tscn" id="21_otykl"]
 [ext_resource type="PackedScene" uid="uid://5hwxyxyj6q0i" path="res://场景(C#)/主界面按钮/活动.tscn" id="21_quj4d"]
@@ -27,109 +34,193 @@ shader_parameter/texture_scaling = Vector2(1, 1)
 shader_parameter/texture_rotation = 0.0
 shader_parameter/tint_color = Color(0.13725491, 0.53333336, 0.6745098, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00smb"]
+bg_color = Color(0, 0, 0, 0.6117647)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
 [node name="MainController" type="Node" unique_id=2010804404]
 script = ExtResource("1_u0aj0")
 metadata/_custom_type_script = "uid://ccaq7lefsnojt"
 
 [node name="Scene" type="CanvasLayer" parent="." unique_id=2006048324]
 layer = 5
+follow_viewport_enabled = true
 
 [node name="ButtomScene" type="CanvasLayer" parent="Scene" unique_id=1049355677]
 layer = -80
+follow_viewport_enabled = true
 
 [node name="Bg" type="Sprite2D" parent="Scene/ButtomScene" unique_id=929997243]
-modulate = Color(0.13725491, 0.53333336, 0.6745098, 1)
+unique_name_in_owner = true
+modulate = Color(0.19, 0.7299999, 1, 1)
 material = SubResource("ShaderMaterial_hddma")
 position = Vector2(360, 640)
 texture = ExtResource("3_n74wj")
 script = ExtResource("2_d5m1c")
-Color = Color(0.13725491, 0.53333336, 0.6745098, 1)
+Color = Color(0.14799999, 0.5426666, 0.74, 1)
 metadata/_custom_type_script = "uid://c4d6enygyoawb"
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
-offset_left = 360.0
-offset_top = 838.0
-offset_right = -51.000244
-offset_bottom = 742.0
-scale = Vector2(0.5, 0.5)
-metadata/_edit_group_ = true
-metadata/_edit_lock_ = true
+[node name="Polygon2D" type="Polygon2D" parent="Scene/ButtomScene" unique_id=67270828]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(69, 374, 659, 373, 740, 631, 745, 631, 755, 785, -27, 786, -17, 633, -12, 633)
 
 [node name="卡包" parent="Scene/ButtomScene" unique_id=1529838576 instance=ExtResource("22_sjdq6")]
-offset_left = 447.0
-offset_top = 1205.0
-offset_right = 447.0
-offset_bottom = 1205.0
+unique_name_in_owner = true
+offset_left = 448.0001
+offset_top = 938.0
+offset_right = 448.0001
+offset_bottom = 938.0
 scale = Vector2(0.7, 0.7)
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
+ShowLoading = false
 
 [node name="好友" parent="Scene/ButtomScene" unique_id=1873132708 instance=ExtResource("23_otykl")]
-offset_left = 623.0
-offset_top = 1205.0
-offset_right = 623.0
-offset_bottom = 1205.0
+unique_name_in_owner = true
+offset_left = 613.0
+offset_top = 938.0
+offset_right = 613.0
+offset_bottom = 938.0
 scale = Vector2(0.7, 0.7)
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
 [node name="活动" parent="Scene/ButtomScene" unique_id=1799033756 instance=ExtResource("21_quj4d")]
-offset_left = 91.0
-offset_top = 1205.0
-offset_right = 91.0
-offset_bottom = 1205.0
+unique_name_in_owner = true
+offset_left = 115.0
+offset_top = 938.0
+offset_right = 115.0
+offset_bottom = 938.0
 scale = Vector2(0.7, 0.7)
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
 [node name="图鉴" parent="Scene/ButtomScene" unique_id=1802827930 instance=ExtResource("21_sjdq6")]
-offset_left = 276.0
-offset_top = 1205.0
-offset_right = 276.0
-offset_bottom = 1205.0
+unique_name_in_owner = true
+offset_left = 287.0
+offset_top = 938.0
+offset_right = 287.0
+offset_bottom = 938.0
 scale = Vector2(0.7, 0.7)
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
-[node name="植物任务" parent="Scene/ButtomScene" unique_id=1509446347 instance=ExtResource("19_quj4d")]
-offset_left = 244.0
-offset_top = 240.0
-offset_right = -476.0
-offset_bottom = -1040.0
-metadata/_edit_group_ = true
-metadata/_edit_lock_ = true
+[node name="植物任务" parent="Scene/ButtomScene" unique_id=1591753121 instance=ExtResource("19_quj4d")]
+unique_name_in_owner = true
+offset_left = -266.0
+offset_top = -35.49991
+offset_right = 214.0
+offset_bottom = 787.0
+scale = Vector2(0.4, 0.4)
+pivot_offset_ratio = Vector2(1, 1)
+SubScene = "res://场景(C#)/任务.tscn"
 
-[node name="僵尸任务" parent="Scene/ButtomScene" unique_id=443452423 instance=ExtResource("14_2lx20")]
-offset_left = 476.0
-offset_top = 240.0
-offset_right = -244.0
-offset_bottom = -1040.0
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
+[node name="僵尸任务" parent="Scene/ButtomScene" unique_id=1153394981 instance=ExtResource("14_2lx20")]
+unique_name_in_owner = true
+offset_left = 514.0
+offset_top = -36.49991
+offset_right = 994.0
+offset_bottom = 786.0
+scale = Vector2(0.4, 0.4)
+pivot_offset_ratio = Vector2(0, 1)
+SubScene = "res://场景(C#)/任务.tscn"
+
+[node name="对战" parent="Scene/ButtomScene" unique_id=260714909 instance=ExtResource("18_1pb50")]
+unique_name_in_owner = true
+offset_left = 365.0
+offset_top = 176.0
+offset_right = -915.0
+offset_bottom = -72.0
+scale = Vector2(0.25, 0.25)
+pivot_offset_ratio = Vector2(0, 1)
 
 [node name="每日挑战" parent="Scene/ButtomScene" unique_id=687317841 instance=ExtResource("15_1cjfr")]
-offset_left = 360.0
-offset_top = 569.0
-offset_right = -360.0
-offset_bottom = -711.0
+unique_name_in_owner = true
+offset_left = 355.0
+offset_top = 1112.9999
+offset_right = -925.0
+offset_bottom = 392.99988
 scale = Vector2(1.25, 1.25)
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
+
+[node name="任务" parent="Scene/ButtomScene" unique_id=2120193542 instance=ExtResource("13_quj4d")]
+unique_name_in_owner = true
+offset_left = -50.0
+offset_top = 938.0
+offset_right = -50.0
+offset_bottom = 938.0
+scale = Vector2(0.7, 0.7)
+
+[node name="SubScene" type="CanvasLayer" parent="Scene" unique_id=454554130]
+unique_name_in_owner = true
+layer = 3
+follow_viewport_enabled = true
 
 [node name="UponScene" type="CanvasLayer" parent="Scene" unique_id=552437376]
 unique_name_in_owner = true
-layer = 0
+layer = 5
 follow_viewport_enabled = true
 
 [node name="Button" type="CanvasLayer" parent="Scene" unique_id=948884562]
 layer = 80
+follow_viewport_enabled = true
 
-[node name="返回按钮" parent="Scene/Button" unique_id=68017161 instance=ExtResource("21_otykl")]
+[node name="钻石" type="Panel" parent="Scene/Button" unique_id=1315787887]
 unique_name_in_owner = true
-offset_left = -112.0
-offset_right = -720.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -425.0
+offset_top = 288.0
+offset_right = -125.0
+offset_bottom = 348.0
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_00smb")
+script = ExtResource("13_00smb")
+metadata/_custom_type_script = "uid://dbc5cu5atvore"
+
+[node name="钻石2" type="TextureRect" parent="Scene/Button/钻石" unique_id=1142997298]
+layout_mode = 0
+offset_left = -22.0
+offset_right = 88.4762
+offset_bottom = 114.53037
+scale = Vector2(0.525, 0.525)
+texture = ExtResource("5_2lx20")
+
+[node name="钻石" type="TextureRect" parent="Scene/Button/钻石" unique_id=120779262]
+layout_mode = 0
+offset_left = -22.000004
+offset_right = 88.4762
+offset_bottom = 114.53037
+scale = Vector2(0.525, 0.525)
+texture = ExtResource("5_2lx20")
+
+[node name="钻石数量" type="Label" parent="Scene/Button/钻石" unique_id=300116905]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 61.0
+theme_override_fonts/font = ExtResource("6_1cjfr")
+theme_override_font_sizes/font_size = 54
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("16_ulybo")
+metadata/_custom_type_script = "uid://b1u3rt0arf1cc"
+
+[node name="设置按钮" parent="Scene/Button" unique_id=181554448 instance=ExtResource("15_00smb")]
+unique_name_in_owner = true
+offset_left = 924.0
+offset_top = 289.0
+offset_right = 1049.0
+offset_bottom = 416.0
+scale = Vector2(0.5, 0.5)
+
+[node name="Return" type="CanvasLayer" parent="Scene" unique_id=139761091]
+layer = 85
+follow_viewport_enabled = true
+
+[node name="返回按钮" parent="Scene/Return" unique_id=68017161 instance=ExtResource("21_otykl")]
+unique_name_in_owner = true
+offset_left = -392.0
+offset_top = 888.0
+offset_right = -1560.0
+offset_bottom = 280.0
 
 [node name="Hero2" type="CanvasLayer" parent="." unique_id=1735385839]
 layer = 15
@@ -137,31 +228,41 @@ follow_viewport_enabled = true
 
 [node name="Fighters" type="CanvasLayer" parent="." unique_id=627124979]
 layer = 0
+follow_viewport_enabled = true
 
 [node name="Up" type="CanvasLayer" parent="Fighters" unique_id=1827987908]
 layer = 25
+follow_viewport_enabled = true
 
 [node name="FrontUp" type="CanvasLayer" parent="Fighters" unique_id=211827059]
 layer = 27
+follow_viewport_enabled = true
+
+[node name="Ammo" type="CanvasLayer" parent="Fighters" unique_id=1230131499]
+layer = 29
 
 [node name="FrontDown" type="CanvasLayer" parent="Fighters" unique_id=789388824]
-layer = 25
+layer = 31
+follow_viewport_enabled = true
 
 [node name="Down" type="CanvasLayer" parent="Fighters" unique_id=1944813616]
-layer = 27
+layer = 33
+follow_viewport_enabled = true
 
 [node name="Animators" type="CanvasLayer" parent="." unique_id=1250929900]
-layer = 100
+layer = 120
+follow_viewport_enabled = true
 
 [node name="Des" type="CanvasLayer" parent="." unique_id=1151842865]
 layer = 1000
+follow_viewport_enabled = true
 
 [node name="Hero" type="CanvasLayer" parent="." unique_id=1536272334]
 layer = 40
 follow_viewport_enabled = true
 
 [node name="Cards" type="CanvasLayer" parent="." unique_id=1406632363]
-layer = 50
+layer = 95
 follow_viewport_enabled = true
 
 [node name="Audios" type="Node2D" parent="." unique_id=95414566]
@@ -171,27 +272,40 @@ metadata/_edit_group_ = true
 [node name="SceneAnimF" type="CanvasLayer" parent="." unique_id=846727921]
 unique_name_in_owner = true
 layer = 15
+follow_viewport_enabled = true
 
 [node name="SceneAnimFToC" type="CanvasLayer" parent="." unique_id=952960160]
 unique_name_in_owner = true
-layer = 40
+layer = 50
+follow_viewport_enabled = true
 
 [node name="SceneAnimCToA" type="CanvasLayer" parent="." unique_id=401318343]
 unique_name_in_owner = true
-layer = 75
+layer = 105
+follow_viewport_enabled = true
 
 [node name="SceneAnimAToD" type="CanvasLayer" parent="." unique_id=1035361643]
 unique_name_in_owner = true
 layer = 150
+follow_viewport_enabled = true
 
 [node name="Load" type="CanvasLayer" parent="." unique_id=1189937301]
 layer = 1020
+follow_viewport_enabled = true
 
 [node name="Load" parent="Load" unique_id=2051238835 instance=ExtResource("21_8ffxo")]
 unique_name_in_owner = true
-visible = false
+position = Vector2(10, -361)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1316371348]
 offset = Vector2(360, 640)
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
+
+[node name="Controller" type="CanvasLayer" parent="." unique_id=720654669]
+follow_viewport_enabled = true
+
+[node name="IconComposer" type="Node" parent="." unique_id=630336623]
+unique_name_in_owner = true
+script = ExtResource("20_1pb50")
+metadata/_custom_type_script = "uid://dpy81oq8meuvd"

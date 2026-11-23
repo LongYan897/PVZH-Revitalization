@@ -18,7 +18,7 @@ config/icon="uid://cbfvp0frn80qp"
 
 [audio]
 
-buses/default_bus_layout="uid://b0bcsxeewyscg"
+buses/default_bus_layout=""
 
 [autoload]
 
@@ -26,8 +26,8 @@ MainController="*uid://bveho05qklxli"
 
 [display]
 
-window/size/viewport_width=720
-window/size/viewport_height=1280
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/size/initial_position_type=5
 window/size/resizable=false
 window/stretch/mode="canvas_items"
@@ -44,7 +44,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/pvzh_card_creator/plugin.cfg", "res://addons/pvzh_card_frame_editor/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/shader_library/plugin.cfg")
+enabled=PackedStringArray("res://addons/SmoothScroll/plugin.cfg", "res://addons/StyleboxFancy/plugin.cfg", "res://addons/pvzh_card_creator/plugin.cfg", "res://addons/pvzh_card_frame_editor/plugin.cfg", "res://addons/quick_folds/plugin.cfg", "res://addons/shader_library/plugin.cfg")
 
 [gui]
 

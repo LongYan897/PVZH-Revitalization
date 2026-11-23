@@ -1,8 +1,12 @@
+using Battle;
+using Battle.Entity;
 using Card.Cmd;
 using Controller;
 using Godot;
+using Hero;
 using Logger;
 using Pack;
+using Play;
 using Spine;
 using System;
 using System.Linq;
@@ -35,6 +39,63 @@ public enum CardView
 [GlobalClass]
 public partial class NodeCard : Control
 {
+    /// <summary>
+    /// 操作按钮点击时触发的事件
+    /// </summary>
+    public Action OnOperate { get; set; }
+
+    /// <summary>
+    /// 是否强制显示卡牌数量。<br/>
+    /// 注意：这是普通属性，赋值不会自动刷新界面，需要调用 <see cref="RefreshAmount"/>，
+    /// 或者在 <see cref="NodeCard.DisplayCardAt"/> 之前设置好。
+    /// </summary>
+    public bool ForceShowAmount { get; set; } = false;
+
+    /// <summary>
+    /// 是否强制隐藏卡牌数量。
+    /// </summary>
+    public bool ForceHideAmount { get; set; } = false;
+
+    /// <summary>
+    /// 强制显示的卡牌数量。
+    /// </summary>
+    public int ForcedAmount { get; set; } = 0;
+
+    /// <summary>
+    /// 强制显示数量并立即刷新界面（推荐用这个，而不是直接改上面两个属性）。
+    /// </summary>
+    public void SetAmount(int amount)
+    {
+        ForcedAmount = amount;
+        ForceShowAmount = true;
+        RefreshAmount();
+    }
+
+    /// <summary>立即按当前 ForceShowAmount / ForcedAmount 刷新数量显示</summary>
+    public void RefreshAmount()
+    {
+        if (!IsInsideTree()) return;
+        FreshAmount();
+    }
+    /// <summary>
+    /// 是否禁止卡牌被置灰。
+    /// 置为 true 会立即清除已应用的灰度；置回 false 会按当前数量重新判断。
+    /// </summary>
+    public bool PreventGray
+    {
+        get => _preventGray;
+        set
+        {
+            if (_preventGray == value) return;
+            _preventGray = value;
+
+            if (_preventGray)
+                SetGray(false);
+            else if (Model != null && CardViewMode != CardView.Battle)
+                FreshAmount();
+        }
+    }
+    private bool _preventGray;
     public static void Clear()
     {
         foreach (var inst in instances.ToList())
@@ -52,6 +113,12 @@ public partial class NodeCard : Control
     private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌.tscn");
     public static NodeCard ChoiceCard { get; private set; }
     public CardModel Model { get; private set; }
+    /// <summary>
+    /// 是否允许点卡展开信息背景。<br/>
+    /// 纯展示的列表（如卡包详情）把它设成 false：点卡只弹 <see cref="CardDes"/> 说明面板，
+    /// 不展开、不改 ZIndex，避免网格布局里出现点不到/卡被遮住的问题。
+    /// </summary>
+    public bool AllowExpand { get; set; } = true;
     private static readonly System.Collections.Generic.Dictionary<NodeCard, CardModel> instances = new();
     private const int maxInstance = int.MaxValue;
     /// <summary>
@@ -61,7 +128,7 @@ public partial class NodeCard : Control
     /// <summary>
     /// 卡牌初始大小
     /// </summary>
-    private const float BaseScaleFactor = 0.5f;
+    private const float BaseScaleFactor = 0.56f;
     private Vector2 _baseScale;
 
     /// <summary>
@@ -72,36 +139,40 @@ public partial class NodeCard : Control
     /// <param name="parent">父节点，为 null 时使用 Main.CardContainer</param>
     /// <param name="drawAnimation">是否播放抽卡动画</param>
     /// <param name="scaleFactor">缩放系数，默认 BaseScaleFactor</param>
-    public static NodeCard CreateCard(
-        CardModel cardModel,
-        Vector2 position,
-        CardView cardView = CardView.Battle,
-        Node parent = null,
-        bool drawAnimation = false,
-        float scaleFactor = BaseScaleFactor)
+    /// <param name="drawScale">抽卡动画期间的临时缩放，为 null 时使用 scaleFactor</param>
+    public static async Task<NodeCard> CreateCard(
+    CardModel cardModel,
+    Vector2 position,
+    CardView cardView = CardView.Battle,
+    Node parent = null,
+    bool drawAnimation = false,
+    float scaleFactor = BaseScaleFactor,
+    float? drawScale = null)
     {
         parent ??= Main.CardContainer;
+        var initial = new Vector2(drawScale ?? scaleFactor, drawScale ?? scaleFactor);
 
         if (instances.Count < maxInstance)
         {
             var node = Scene.Instantiate<NodeCard>();
             node.Model = cardModel;
-            node.Position = position;
+            node.Position = position ;
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
-            node.Scale = node._baseScale;
+            node.Scale = initial;
             node.CardViewMode = cardView;
+            node.Visible = false;
             parent.AddChild(node);
+            instances.Add(node, cardModel);
+            node.BringToFront();
             if (drawAnimation)
-                node.DrawAnimation();
+                await node.DrawAnimation();
             else
                 node.Fresh();
-            instances.Add(node, cardModel);
             return node;
         }
         else
         {
             var node = instances.First(p => p.Key.Model == null).Key;
-
             if (node.GetParent() != parent)
             {
                 node.Reparent(parent, true);
@@ -110,13 +181,20 @@ public partial class NodeCard : Control
             node.Model = cardModel;
             node.Position = position;
             node._baseScale = new Vector2(scaleFactor, scaleFactor);
-            node.Scale = node._baseScale;
+            node.Scale = initial;
             node.CardViewMode = cardView;
-            if (drawAnimation)
-                node.DrawAnimation();
-            else
-                node.Fresh();
+            node.Visible = false;
             instances[node] = cardModel;
+            node.BringToFront();
+            node.GetNode<Button>("碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
+            if (drawAnimation)
+                await node.DrawAnimation();
+            else
+            {
+                var drawFrame = node.GetNode<Sprite2D>("%特效");
+                drawFrame.Visible = false;
+                node.Fresh();
+            }
             return node;
         }
     }
@@ -131,13 +209,15 @@ public partial class NodeCard : Control
     /// <param name="cardView">预览模式</param>
     /// <param name="drawAnimation">是否播放抽卡动画</param>
     /// <param name="scaleFactor">缩放系数</param>
-    public static NodeCard CreateCardInGroup(
+    /// <param name="drawScale">抽卡动画期间的临时缩放</param>
+    public static Task<NodeCard> CreateCardInGroup(
         CardModel cardModel,
         Vector2 position,
         CanvasLayer group,
         CardView cardView = CardView.Battle,
         bool drawAnimation = false,
-        float scaleFactor = BaseScaleFactor)
+        float scaleFactor = BaseScaleFactor,
+        float? drawScale = null)
     {
         Node parent = group;
 
@@ -145,7 +225,7 @@ public partial class NodeCard : Control
         if (container != null)
             parent = container;
 
-        return CreateCard(cardModel, position, cardView, parent, drawAnimation, scaleFactor);
+        return CreateCard(cardModel, position, cardView, parent, drawAnimation, scaleFactor, drawScale);
     }
 
     /// <summary>
@@ -153,31 +233,31 @@ public partial class NodeCard : Control
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, parent, drawAnimation: false, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DisplayCardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, parent, drawAnimation: false, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, parent, drawAnimation: true, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DrawACardAt(CardModel cardModel, Vector2 position, Node parent, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, parent, drawAnimation: true, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点
     /// </summary>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, null, drawAnimation: false, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DisplayCard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, null, drawAnimation: false, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 从一个卡牌中创建一个卡牌节点并自动挂载到父节点(播放抽卡动画)
     /// </summary>
     /// <param name="parent">父节点</param>
     /// <param name="cardModel">卡牌</param>
-    public static NodeCard DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor)
-        => CreateCard(cardModel, position, cardView, null, drawAnimation: true, scaleFactor: scaleFactor);
+    public static Task<NodeCard> DrawACard(CardModel cardModel, Vector2 position, CardView cardView = CardView.Battle, float scaleFactor = BaseScaleFactor, float? drawScale = null)
+        => CreateCard(cardModel, position, cardView, null, drawAnimation: true, scaleFactor: scaleFactor, drawScale: drawScale);
 
     /// <summary>
     /// 暂时隐藏一个卡牌节点
@@ -188,7 +268,77 @@ public partial class NodeCard : Control
         var node = instances.FirstOrDefault(n => n.Value == card);
         await node.Key?.Close();
     }
+    /// <summary>
+    /// 设置卡牌层级，每个 index 对应 40 的 ZIndex。
+    /// 同一父级下同一 index 只允许一张卡，已在该层的其它卡顺移到下一层。
+    /// </summary>
+    public void SetIndex(int index)
+    {
+        int target = -4000 + index * 40;
+        var myParent = GetParent();
 
+        NodeCard occupant = null;
+        foreach (var node in instances.Keys.ToList())
+        {
+            if (node == this) continue;
+            if (!GodotObject.IsInstanceValid(node)) continue;
+            if (node.GetParent() != myParent) continue;
+
+            if (node.ZIndex == target)
+            {
+                occupant = node;
+                break;
+            }
+        }
+
+        if (occupant == null)
+        {
+            ZIndex = target;
+            return;
+        }
+
+        occupant.SetIndex(index - 1);
+        ZIndex = target;
+    }
+
+    /// <summary>
+    /// 把这张卡放到最高层。
+    /// </summary>
+    public void BringToFront()
+    {
+        var myParent = GetParent();
+
+        foreach (var node in instances.Keys)
+        {
+            if (!GodotObject.IsInstanceValid(node)) continue;
+            if (node == this) continue;
+
+            node.ZIndex = 3960;
+        }
+
+        ZIndex = 4000;
+    }
+
+    /// <summary>
+    /// 把所有卡牌的 ZIndex 重置为最底层
+    /// </summary>
+    private static void ResetAllZIndex()
+    {
+        foreach (var group in instances.Keys
+                     .Where(n => GodotObject.IsInstanceValid(n) && n.IsInsideTree())
+                     .GroupBy(n => n.GetParent()))
+        {
+            int z = 4000;
+
+            foreach (var node in group
+                         .OrderByDescending(n => n.ZIndex)
+                         .ThenByDescending(n => n.GetIndex()))
+            {
+                node.ZIndex = z;
+                z -= 40;
+            }
+        }
+    }
     /// <summary>
     /// 获得当前卡牌对应的节点
     /// </summary>
@@ -200,35 +350,71 @@ public partial class NodeCard : Control
     }
 
     /// <summary>
-    /// 把这张卡提到它所在父节点下的最顶层
+    /// 绑定的初始位置
     /// </summary>
-    public void BringToFront()
+    private Vector2? _boundOriginPos;
+
+    /// <summary>
+    /// 绑定初始位置，拖动结束后会回到这里
+    /// </summary>
+    public void BindOrigin(Vector2 position, float duration = 0.9f)
     {
-        var parent = GetParent();
-        if (parent == null) return;
-
-        var siblings = parent.GetChildren().OfType<NodeCard>().ToList();
-        if (siblings.Count == 0) return;
-
-        int maxZ = 0;
-        foreach (var s in siblings)
-        {
-            if (s == this) continue;
-            if (s.ZIndex > maxZ) maxZ = s.ZIndex;
-        }
-
-        ZIndex = maxZ + 20;
+        _boundOriginPos = position + new Vector2(-404.4f, 195.2f);
+        _cardOriginPos = position + new Vector2(-404.4f, 195.2f);
+        ReturnToOrigin(duration);
     }
-
-    private async void DrawAnimation()
+    /// <summary>
+    /// 绑定初始位置，拖动结束后会回到这里
+    /// </summary>
+    public async Task BindOriginTask(Vector2 position, float duration = 0.9f)
+    {
+        _boundOriginPos = position + new Vector2(-404.4f, 195.2f);
+        _cardOriginPos = position + new Vector2(-404.4f, 195.2f);
+        await ReturnToOriginTask(duration);
+    }
+    /// <summary>
+    /// 绑定当前坐标作为初始位置
+    /// </summary>
+    public void BindOrigin()
+    {
+        BindOrigin(Position);
+    }
+    /// <summary>
+    /// 点亮该卡牌但是不会改变卡牌是否可打出状态
+    /// </summary>
+    public void SetToBright()
+    {
+        DarkenLight();
+    }
+    /// <summary>
+    /// 重抽一张卡牌
+    /// </summary>
+    /// <param name="cardModel">替换卡牌</param>
+    /// <param name="position">新的坐标(不输入默认不换坐标)</param>
+    public async Task RedrawCard(CardModel cardModel, Vector2 position = new())
+    {
+        CardCmd.PushStop();
+        Model = cardModel;
+        if (position != new Vector2())
+            Position = position;
+        await DrawAnimation();
+        DarkenLight();
+        instances[this] = cardModel;
+        CardCmd.PopStop();
+    }
+    private async Task DrawAnimation()
     {
         var drawFrame = GetNode<Sprite2D>("%特效");
         drawFrame.Visible = true;
+        Fresh(true);
+        DarkenLight();
         GetNode<Node2D>("正面卡牌").Visible = false;
-        GetNode<TextureRect>("牌背").Visible = false;
+        GetNode<TextureRect>("%牌背").Visible = false;
         drawFrame.Modulate = new Color(0, 0, 0, 0);
         drawFrame.Rotation = 0;
-        drawFrame.Scale = new Vector2(2.8f, 2.8f);
+        drawFrame.Scale = new Vector2(1.5f, 1.5f);
+
+        Visible = true;
 
         var tween = drawFrame.CreateTween();
         var tween1 = drawFrame.CreateTween();
@@ -260,11 +446,53 @@ public partial class NodeCard : Control
             .SetTrans(Tween.TransitionType.Quad)
             .SetEase(Tween.EaseType.Out);
 
-        await ToSignal(tween, Tween.SignalName.Finished);
+        await ToSignal(GetTree().CreateTimer(0.15f), Timer.SignalName.Timeout);
         drawFrame.Visible = false;
+        GetNode<Node2D>("正面卡牌").Visible = true;
+        GetNode<TextureRect>("牌背").Visible = true;
         Fresh();
+        DarkenLight();
+        var cannonical = Scale;
+        Scale = new Vector2();
+        Tween tween3 = CreateTween();
+        tween3.TweenProperty(
+        this, "scale", cannonical, 0.15f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);
+        tween3.TweenProperty(
+        this, "scale", cannonical * 1.2f, 0.05f);
+        tween3.TweenProperty(
+        this, "scale", _baseScale, 0.05f);
+        await ToSignal(tween3, Tween.SignalName.Finished);
     }
+    /// <summary>
+    /// 将该单位变化为另一个单位
+    /// </summary>
+    public async Task TransformTo(CardModel newModel)
+    {
+        if (newModel == null) return;
+        if (Model == null || Model == newModel) return;
+        if (newModel.Status == Status.FaceDown || Model.Status == Status.FaceDown) return;
 
+        Model = newModel;
+        instances[this] = newModel;
+        Fresh();
+
+        var cannonical = Scale;
+
+        var tween = CreateTween();
+        tween.TweenProperty(this, "scale", cannonical * 0.6f, 0.12f)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.In);
+        await ToSignal(tween, Tween.SignalName.Finished);
+
+        tween = CreateTween();
+        tween.TweenProperty(this, "scale", cannonical * 1.15f, 0.1f)
+            .SetTrans(Tween.TransitionType.Back)
+            .SetEase(Tween.EaseType.Out);
+        tween.TweenProperty(this, "scale", cannonical, 0.1f)
+            .SetTrans(Tween.TransitionType.Back)
+            .SetEase(Tween.EaseType.Out);
+        await ToSignal(tween, Tween.SignalName.Finished);
+    }
     private bool _isDragging;
     private Vector2 _cardOriginPos;
     private Vector2 _mouseDownGlobal;
@@ -276,9 +504,19 @@ public partial class NodeCard : Control
     private const float ClickScaleTime = 0.08f;
     private const float DragThreshold = 10f;
 
+    private Vector2 MouseInCardLayer()
+    {
+        if (GetParent() is CanvasLayer cl)
+            return cl.GetFinalTransform().AffineInverse() * GetViewport().GetMousePosition();
+        return GetGlobalMousePosition();
+    }
+
     public override void _Ready()
     {
-        var hitBtn = GetNode<Button>("碰撞");
+        if (_baseScale == Vector2.Zero)
+            _baseScale = Scale;
+
+        var hitBtn = GetNode<Button>("%碰撞");
         hitBtn.GuiInput += OnHitButtonGuiInput;
         GetNode<Area2D>("碰撞箱").AreaEntered += AreaEntered;
         GetNode<Area2D>("碰撞箱").AreaExited += AreaExited;
@@ -287,49 +525,48 @@ public partial class NodeCard : Control
         BindControlClickAnimation(infoBtn, OnInfoButtonPressed);
 
         var opBtn = GetNode<NinePatchRect>("%操作按钮");
-        BindControlClickAnimation(opBtn);
+        BindControlClickAnimation(opBtn, () => OnOperate?.Invoke());
     }
-    private void BindControlClickAnimation(Control control, System.Action onClick = null)
+
+    private void BindControlClickAnimation(NinePatchRect control, System.Action onClick = null)
     {
         if (control == null) return;
         SetupPivot(control);
+
         var originScale = control.Scale;
-        bool pressing = false;
 
-        control.GuiInput += (@event) =>
+        if (control is InputNineRect inputRect)
         {
-            if (!control.Visible) return;
-            if (control.MouseFilter == Control.MouseFilterEnum.Ignore) return;
-
-            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
+            inputRect.Input += (InputEvent @event) =>
             {
-                if (mb.Pressed)
+                if (@event is InputEventMouseButton mb)
                 {
-                    pressing = true;
-                    var tween = control.CreateTween();
-                    tween.TweenProperty(control, "scale", originScale * 0.9f, 0.06f)
-                        .SetTrans(Tween.TransitionType.Quad)
-                        .SetEase(Tween.EaseType.Out);
-                }
-                else
-                {
-                    if (pressing)
+                    if (mb.Pressed)
                     {
-                        pressing = false;
-                        var tween = control.CreateTween();
-                        tween.TweenProperty(control, "scale", originScale, 0.08f)
+                        if (!inputRect.Visible) return;
+
+                        var tween = inputRect.CreateTween();
+                        tween.TweenProperty(inputRect, "scale", originScale * 0.9f, 0.06f)
+                            .SetTrans(Tween.TransitionType.Quad)
+                            .SetEase(Tween.EaseType.Out);
+                    }
+                    else
+                    {
+                        var tween = inputRect.CreateTween();
+                        tween.TweenProperty(inputRect, "scale", originScale, 0.08f)
                             .SetTrans(Tween.TransitionType.Back)
                             .SetEase(Tween.EaseType.Out);
 
+                        if (!inputRect.Visible) return;
                         onClick?.Invoke();
                     }
                 }
-            }
-        };
+            };
+        }
     }
 
     private bool currentPlayable = true;
-    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("bf1717"));
+    private ColorBox _colorBox = new ColorBox(new("f4f4d5"), new("20ff07"), new("94ff42"), new("fc1e1e"));
     private ColorBox _colorBox2 = new ColorBox(new("bf3b3b"), default, default, default);
     private bool _isOpen = true;
     private void OnInfoButtonPressed()
@@ -339,17 +576,53 @@ public partial class NodeCard : Control
 
         CardDes.DisplayDescription(Model);
     }
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event is not InputEventMouseButton mb) return;
-        if (_openedCard != null && _openedCard != this && IsInstanceValid(_openedCard))
-            _openedCard.CloseNonBattle();
-    }
 
+    public override void _Input(InputEvent @event)
+    {
+        if (_returning) return;
+        if (_openedCard == this && IsInstanceValid(this))
+        {
+            if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
+            {
+                var infoBg = GetNodeOrNull<Control>("%信息背景");
+                if (infoBg != null && infoBg.Visible)
+                {
+                    Rect2 globalRect = new Rect2(infoBg.GlobalPosition, infoBg.Size * infoBg.Scale);
+
+                    if (globalRect.HasPoint(GetGlobalMousePosition()))
+                    {
+                        GetViewport().SetInputAsHandled();
+
+                        var subViewport = GetNode<SubViewport>("%非战斗/%信息背景/AutoViewportContainer/SubViewport");
+                        var container = GetNode<Control>("%AutoViewportContainer");
+
+                        if (subViewport != null && container != null)
+                        {
+                            Vector2 localPos = container.GetGlobalTransform().AffineInverse() * GetGlobalMousePosition();
+
+                            var newEvent = (InputEventMouseButton)mb.Duplicate();
+                            newEvent.Position = localPos;
+                            newEvent.GlobalPosition = localPos;
+
+                            subViewport.PushInput(newEvent, true);
+                        }
+                    }
+                    else if (mb.Pressed)
+                    {
+                        CloseNonBattle();
+                    }
+                }
+                else if (mb.Pressed)
+                {
+                    CloseNonBattle();
+                }
+            }
+        }
+    }
     private async void OnHitButtonGuiInput(InputEvent @event)
     {
         if (!_isOpen) return;
-        if (CardViewMode == CardView.Battle && !isCallDragging) return;
+        if (_returning) return;
         if (@event is InputEventMouseButton mb)
         {
             if (mb.ButtonIndex == MouseButton.Left)
@@ -359,8 +632,8 @@ public partial class NodeCard : Control
                     KillReturnTween();
                     KillClickTween();
 
-                    _mouseDownGlobal = GetGlobalMousePosition();
-                    _cardOriginPos = Position;
+                    _mouseDownGlobal = MouseInCardLayer();
+                    _cardOriginPos = _boundOriginPos ?? Position;
                     _isDragging = false;
                     _clickAnimationPlayed = false;
 
@@ -377,7 +650,7 @@ public partial class NodeCard : Control
                     }
                     else
                     {
-                        float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
+                        float dist = (_mouseDownGlobal - MouseInCardLayer()).Length();
 
                         if (dist < DragThreshold)
                         {
@@ -410,12 +683,9 @@ public partial class NodeCard : Control
             if (!Input.IsMouseButtonPressed(MouseButton.Left))
                 return;
 
-            if (!Model.CanPlay()) return;
-            if (!isCallDragging) return;
-
             if (!_isDragging)
             {
-                float dist = (_mouseDownGlobal - GetGlobalMousePosition()).Length();
+                float dist = (_mouseDownGlobal - MouseInCardLayer()).Length();
                 if (dist > DragThreshold)
                 {
                     _isDragging = true;
@@ -428,14 +698,15 @@ public partial class NodeCard : Control
                     KillClickTween();
                     Scale = _baseScale;
 
-                    Drag();
+                    if (Model.CanPlay())
+                        Drag();
                 }
             }
 
             if (_isDragging)
             {
-                Vector2 delta = GetGlobalMousePosition() - _mouseDownGlobal;
-                Position = _cardOriginPos + delta;
+                Vector2 delta = MouseInCardLayer() - _mouseDownGlobal;
+                Position = (_cardOriginPos + delta);
 
                 RefreshNearestTarget();
             }
@@ -448,6 +719,7 @@ public partial class NodeCard : Control
         GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
         GetNode<Node2D>("正面卡牌").Visible = false;
         GetNode<TextureRect>("牌背").Visible = false;
+        GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
         KillReturnTween();
         KillClickTween();
         _overlappingAreas.Clear();
@@ -459,7 +731,8 @@ public partial class NodeCard : Control
 
     private void Drag()
     {
-        TargetRegistry.CallTargeted(Model, Model.TargetType, false);
+        if (!Model.CanPlay()) return;
+        TargetRegistry.CallTargeted(Model, Model.TargetType, false, Model.Camp);
     }
     private void SetNode2DVisible(Node2D node, bool visible)
     {
@@ -475,10 +748,28 @@ public partial class NodeCard : Control
         control.MouseFilter = visible
             ? Control.MouseFilterEnum.Stop
             : Control.MouseFilterEnum.Ignore;
+
+        if (control is NinePatchRect nine)
+        {
+            var button = nine.GetNodeOrNull<Button>("Button");
+            if (button != null)
+                button.MouseFilter = visible
+                    ? Control.MouseFilterEnum.Stop
+                    : Control.MouseFilterEnum.Ignore;
+        }
     }
 
     private void OnCardClick()
     {
+        // 有些界面（比如卡包详情）只想要“点卡看说明”，不想要展开信息背景：
+        // 展开会改动 ZIndex、盖住后面的节点，在网格布局里很容易出现点不到、卡消失的问题。
+        // 关掉 AllowExpand 后直接弹说明面板，不动卡牌本身的布局和层级。
+        if (!AllowExpand)
+        {
+            CardDes.DisplayDescription(Model);
+            return;
+        }
+
         ChoiceCard = this;
         ResetAllZIndex();
         BringToFront();
@@ -495,22 +786,11 @@ public partial class NodeCard : Control
         ToggleNonBattle();
     }
     /// <summary>
-    /// 把所有卡牌的 ZIndex 重置为 0
-    /// </summary>
-    private static void ResetAllZIndex()
-    {
-        foreach (var node in instances.Keys.ToList())
-        {
-            if (!GodotObject.IsInstanceValid(node)) continue;
-            node.ZIndex = 0;
-        }
-    }
-    /// <summary>
     /// 关闭信息背景
     /// </summary>
     public void CloseNonBattle()
     {
-        var nonBattle = GetNode<Node2D>("%非战斗");
+        var nonBattle = GetNode<Control>("%非战斗");
         if (!nonBattle.Visible) return;
 
         _ = ToggleNonBattleAsync(false);
@@ -520,13 +800,13 @@ public partial class NodeCard : Control
 
     private void ToggleNonBattle()
     {
-        var nonBattle = GetNode<Node2D>("%非战斗");
+        var nonBattle = GetNode<Control>("%非战斗");
         _ = ToggleNonBattleAsync(!nonBattle.Visible);
     }
 
     private async Task ToggleNonBattleAsync(bool willOpen)
     {
-        var nonBattle = GetNode<Node2D>("%非战斗");
+        var nonBattle = GetNode<Control>("%非战斗");
         if (willOpen == nonBattle.Visible) return;
 
         var infoBg = GetNode<Control>("%信息背景");
@@ -545,6 +825,8 @@ public partial class NodeCard : Control
         {
             _openedCard = this;
             nonBattle.Visible = true;
+            nonBattle.MouseFilter = Control.MouseFilterEnum.Stop;
+            GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
 
             if (isCollection)
             {
@@ -582,6 +864,9 @@ public partial class NodeCard : Control
         else
         {
             if (_openedCard == this) _openedCard = null;
+
+            GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Stop;
+            nonBattle.MouseFilter = Control.MouseFilterEnum.Ignore;
 
             if (isCollection)
             {
@@ -651,28 +936,75 @@ public partial class NodeCard : Control
 
         var savedTarget = target;
         if (ChoiceCard == this) ChoiceCard = null;
-        TargetRegistry.DeleteTargeted(Model.TargetType);
-        ClearTarget();
+        TargetRegistry.DeleteTargeted(Model.TargetType, Model.Camp);
+        ClearTarget(true);
         if (savedTarget == null)
+        {
             ReturnToOrigin();
+        }
         else
         {
-            await DiscallDragging();
+            var playedModel = Model;
+            if (playedModel != null)
+                PlayerManager.GetPlayer(playedModel.Camp)?.Status?.HandRemoveCard(playedModel);
+            Model = null;
             Visible = false;
-            await CardCmd.PlayedCard(Model, savedTarget);
-            await Model.DestroyMe();
+            PlayerBox.StuffCard();
+            await DiscallDragging();
+            if (GodotObject.IsInstanceValid(this) && HasNode("碰撞"))
+                GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+            try
+            {
+                if (playedModel != null)
+                {
+                    await playedModel.DestroyMe();
+                    await CardCmd.PlayedCard(playedModel, savedTarget);
+                }
+            }
+            finally
+            {
+                instances.Remove(this);
+                _isOpen = false;
+                if (GodotObject.IsInstanceValid(this))
+                    QueueFree();
+            }
         }
     }
+    private bool _returning;
+    private void ReturnToOrigin(float duration = 0.9f)
+    {
+        _ = ReturnToOriginAsync(duration);
+    }
 
-    private void ReturnToOrigin()
+    private async Task ReturnToOriginTask(float duration = 0.9f)
+    {
+        await ReturnToOriginAsync(duration);
+    }
+
+    private async Task ReturnToOriginAsync(float duration = 0.9f)
     {
         KillReturnTween();
+        KillClickTween();
+
+        _returning = true;
+        _isDragging = false;
+
+        _clickTween = CreateTween();
+        _clickTween.TweenProperty(this, "scale", _baseScale, ClickScaleTime)
+            .SetTrans(Tween.TransitionType.Quad)
+            .SetEase(Tween.EaseType.Out);
+
         _returnTween = CreateTween();
         _returnTween.SetEase(Tween.EaseType.Out);
         _returnTween.SetTrans(Tween.TransitionType.Quad);
-        _returnTween.TweenProperty(this, "position", _cardOriginPos, 0.2f);
-    }
+        _returnTween.TweenProperty(this, "position", _cardOriginPos, duration);
 
+        await ToSignal(_returnTween, Tween.SignalName.Finished);
+
+        Position = _cardOriginPos;
+
+        _returning = false;
+    }
     private ITarget target;
     private Area2D _currentTargetArea;
 
@@ -681,6 +1013,10 @@ public partial class NodeCard : Control
     private void AreaEntered(Area2D area)
     {
         if (CardViewMode != CardView.Battle) return;
+        if (Model == null)
+        {
+            return;
+        }
         if (!Model.CanPlay()) return;
 
         _overlappingAreas.Add(area);
@@ -707,7 +1043,7 @@ public partial class NodeCard : Control
         if (!Model.CanPlay()) return;
         if (!_isDragging) return;
 
-        var myPos = GetGlobalMousePosition();
+        var myPos = MouseInCardLayer();
 
         Area2D bestArea = null;
         ITarget bestTarget = null;
@@ -747,12 +1083,14 @@ public partial class NodeCard : Control
             _currentTargetArea = bestArea;
 
             var kind = (string)bestArea.GetMeta("TargetType");
-            var fighter = Model as FighterCardModel;
+            FighterCardModel fighter = null;
+            if (Model is FighterCardModel fighterCard)
+                fighter = fighterCard;
             var ctx = kind switch
             {
-                "Road" => new TargetContext { Line = true, FighterCard = fighter },
-                "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
-                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+                "Road" => new TargetContext { Line = true, FighterCard = fighter, Camp = Model.Camp },
+                "Grid" => new TargetContext { Grid = true, FighterCard = fighter, Camp = Model.Camp },
+                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter, Camp = Model.Camp },
                 _ => default
             };
 
@@ -761,22 +1099,25 @@ public partial class NodeCard : Control
         }
     }
 
-    private void ClearTarget()
+    private void ClearTarget(bool isPlayed = false)
     {
         if (target == null) return;
 
-        var fighter = Model as FighterCardModel;
+        FighterCardModel fighter = null;
+        if (Model is FighterCardModel fighterCard)
+            fighter = fighterCard;
         if (_currentTargetArea != null && IsInstanceValid(_currentTargetArea))
         {
             var kind = (string)_currentTargetArea.GetMeta("TargetType");
             var ctx = kind switch
             {
-                "Road" => new TargetContext { Line = true, FighterCard = fighter },
-                "Grid" => new TargetContext { Grid = true, FighterCard = fighter },
-                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter },
+                "Road" => new TargetContext { Line = true, FighterCard = fighter, Camp = Model.Camp },
+                "Grid" => new TargetContext { Grid = true, FighterCard = fighter, Camp = Model.Camp },
+                "CoopGrid" => new TargetContext { CoopGrid = true, FighterCard = fighter, Camp = Model.Camp },
                 _ => default
             };
-            target.OnDistargeted(ctx);
+            if (!isPlayed)
+                target.OnDistargeted(ctx);
         }
 
         target = null;
@@ -912,16 +1253,26 @@ public partial class NodeCard : Control
     /// <summary>
     /// 每次修改卡牌时调用 用于刷新卡牌属性
     /// </summary>
-    public void Fresh()
+    public void Fresh(bool anim = false)
     {
         try
         {
             if (Model != null)
             {
 
+                GetNode<TextureRect>("%卡框").Visible = true;
+                GetNode<TextureRect>("%卡牌发光背景").Visible = true;
+                GetNode<TextureRect>("%卡牌底板").Visible = true;
+                GetNode<Node2D>("%费用容器").Visible = true;
+                GetNode<Node2D>("%攻击力容器").Visible = true;
+                GetNode<Node2D>("%生命值容器").Visible = true;
+                GetNode<Node2D>("%等级").Visible = true;
+                GetNode<Node2D>("正面卡牌").Visible = true;
+                GetNode<TextureRect>("牌背").Visible = false;
+
                 if (CardViewMode == CardView.Battle)
                 {
-                    GetNode<Node2D>("%非战斗").Visible = false;
+                    GetNode<Control>("%非战斗").Visible = false;
                 }
                 else
                 {
@@ -931,7 +1282,7 @@ public partial class NodeCard : Control
                     var infoBtn = GetNode<NinePatchRect>("%信息按钮");
                     SetControlVisible(infoBtn, false);
 
-                    var nonBattle = GetNode<Node2D>("%非战斗");
+                    var nonBattle = GetNode<Control>("%非战斗");
                     nonBattle.Visible = false;
 
                     var infoBg = GetNode<Control>("%信息背景");
@@ -1086,7 +1437,14 @@ public partial class NodeCard : Control
                     }
                     else
                     {
-                        control = GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First();
+                        GetNode<Node2D>("%卡面容器").GetChildren().OfType<Control>().First().QueueFree();
+                        control = Model.Icon.Instantiate<Control>();
+                        control.MouseFilter = MouseFilterEnum.Ignore;
+                        GetNode<Node2D>("%卡面容器").AddChild(control);
+                        foreach (var cot in control.GetChildren().OfType<Control>())
+                        {
+                            cot.MouseFilter = MouseFilterEnum.Ignore;
+                        }
                     }
                     if (Model.CardType.HasFlag(CardType.Fighter))
                     {
@@ -1115,10 +1473,8 @@ public partial class NodeCard : Control
                         GetNode<Node2D>("%等级").Visible = true;
                         atks.GetNode<RichTextLabel>("%伤害数值").Text = $"[center]{fighter.Atk.Current}[/center]";
                         hps.GetNode<RichTextLabel>("%血量数值").Text = $"[center]{fighter.Hp.Current}[/center]";
-                        GetNode<SpineHandler>("%伤害动画").Scale = new(0.28f, 0.28f);
-                        GetNode<SpineHandler>("%伤害动画").LoadSkeletonData(fighter.AtkType.Current.IconSkelPath);
-                        GetNode<SpineHandler>("%血量动画").Scale = new(0.28f, 0.28f);
-                        GetNode<SpineHandler>("%血量动画").LoadSkeletonData(fighter.HpType.Current.IconSkelPath);
+                        GetNode<TextureRect>("%伤害动画").Texture = fighter.AtkType.Current.Icon;
+                        GetNode<TextureRect>("%血量动画").Texture = fighter.HpType.Current.Icon;
                         if (fighter.StarType != null)
                         {
                             GetNode<SpineHandler>("%等级").LoadSkeletonData(fighter.StarType.IconSkelPath);
@@ -1126,9 +1482,9 @@ public partial class NodeCard : Control
                             GetNode<SpineHandler>("%等级").SetAnimation(0, $"intro", false);
                         }
 
-                        if (fighter.Hp.HasChanged)
+                        if (fighter.MaxHp.HasChanged || fighter.Hp.Current != fighter.MaxHp.Current)
                         {
-                            if (fighter.Hp.PositiveChanged)
+                            if (fighter.MaxHp.PositiveChanged && fighter.MaxHp.Current == fighter.Hp.Current)
                                 GetNode<RichTextLabel>("%血量数值").SelfModulate = _colorBox.ColorB;
                             else
                             {
@@ -1146,7 +1502,7 @@ public partial class NodeCard : Control
                             if (fighter.Atk.PositiveChanged)
                                 GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.ColorB;
                             else
-                                GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox2.Default;
+                                GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.ColorC;
                         }
                         else
                             GetNode<RichTextLabel>("%伤害数值").SelfModulate = _colorBox.Default;
@@ -1165,14 +1521,20 @@ public partial class NodeCard : Control
                 {
                     GetNode<Node2D>("正面卡牌").Visible = false;
                     GetNode<TextureRect>("牌背").Visible = true;
+
+                    GetNode<TextureRect>("%卡框").Visible = false;
+                    GetNode<TextureRect>("%卡牌发光背景").Visible = false;
+                    GetNode<TextureRect>("%卡牌底板").Visible = false;
+                    GetNode<Node2D>("%费用容器").Visible = false;
+                    GetNode<Node2D>("%攻击力容器").Visible = false;
+                    GetNode<Node2D>("%生命值容器").Visible = false;
+                    GetNode<Node2D>("%等级").Visible = false;
+                    GetNode<GpuParticles2D>("%粒子特效").Emitting = false;
+
+                    DarkenLight();
+
                     GetNode<TextureRect>("牌背").Texture = Model.CardType switch
                     {
-                        CardType.None | CardType.Trick => Model.Camp switch
-                        {
-                            Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants_trick.png"),
-                            Camp.Zombie => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_zombies_trick.png"),
-                            _ => null
-                        },
                         _ => Model.Camp switch
                         {
                             Camp.Plant => GD.Load<Texture2D>("res://素材/牌背、卡面/cardback_plants.png"),
@@ -1181,6 +1543,7 @@ public partial class NodeCard : Control
                         }
                     };
                 }
+                Visible = !anim;
             }
         }
         catch (Exception ex)
@@ -1194,8 +1557,14 @@ public partial class NodeCard : Control
     public void JustFresh()
     {
         if (Model == null) return;
+        if (Model.Status == Status.FaceDown)
+        {
+            DarkenLight();
+            return;
+        }
         if (CardViewMode == CardView.Battle)
         {
+            FreshAmount();
             if (Model.CanPlay())
                 Darken();
             else
@@ -1203,7 +1572,14 @@ public partial class NodeCard : Control
         }
         else
         {
-            DarkenLight();
+            int amount = Mathf.Min(
+                PlayerManager.HostPlayer?.Asset?.GetAmount(Model.Title) ?? 0,
+                4);
+            if (amount == 0)
+                Darkest();
+            else
+                DarkenLight();
+            FreshAmount();
         }
     }
     public override void _ExitTree()
@@ -1218,5 +1594,316 @@ public partial class NodeCard : Control
             _nonBattleScaleTween.Kill();
         if (_colorTween != null && _colorTween.IsValid())
             _colorTween.Kill();
+    }
+    /// <summary>
+    /// 翻转卡牌
+    /// </summary>
+    public void Filp()
+    {
+        if (Model.Status == Status.FaceDown)
+        {
+            Model.Status = Status.FaceUp;
+            Fresh();
+        }
+        else if (Model.Status == Status.FaceUp)
+        {
+            Model.Status = Status.FaceDown;
+            Fresh();
+        }
+    }
+    /// <summary>
+    /// 刷新卡牌数量显示。
+    /// </summary>
+    private void FreshAmount()
+    {
+        var amountRoot = GetNodeOrNull<CanvasItem>("%卡牌数容器");
+        var amountLabel = GetNodeOrNull<Label>("%数量");
+
+        if (ForceHideAmount)
+        {
+            if (amountRoot != null) amountRoot.Visible = false;
+            SetGray(false);
+            return;
+        }
+
+        if (CardViewMode == CardView.Battle || Model == null)
+        {
+            if (amountRoot != null) amountRoot.Visible = false;
+            SetGray(false);
+            return;
+        }
+
+        int amount;
+        if (ForceShowAmount)
+        {
+            amount = Mathf.Max(ForcedAmount, 1);
+        }
+        else
+        {
+            int raw = PlayerManager.HostPlayer?.Asset?.GetAmount(Model.Title) ?? 0;
+            amount = Mathf.Min(raw, 4);
+        }
+
+        if (amountLabel != null)
+            amountLabel.Text = $"x{amount}";
+        if (amountRoot != null)
+            amountRoot.Visible = amount > 0;
+
+        SetGray(!_preventGray && (amount == 0 || ForceShowAmount));
+    }
+    private static readonly string[] GrayNodePaths =
+    [
+    "%卡牌底板",
+    "%血量数值",
+    "%伤害数值",
+    "%血量动画",
+    "%伤害动画",
+    "%费用",
+    "%数值",
+    ];
+
+    private const float FrameGraySaturation = 0.75f;
+    private const float NormalGraySaturation = 0.05f;
+
+    private static Shader _desaturateShader;
+    private static Shader DesaturateShader
+    {
+        get
+        {
+            if (_desaturateShader != null) return _desaturateShader;
+            _desaturateShader = GD.Load<Shader>("res://着色器/desaturate.gdshader");
+            if (_desaturateShader == null)
+                GD.PushError("desaturate.gdshader 加载失败");
+            return _desaturateShader;
+        }
+    }
+
+    private readonly Godot.Collections.Dictionary<CanvasItem, ShaderMaterial> _grayMaterials = new();
+
+    private void EnsureGrayMaterials()
+    {
+        EnsureGrayMaterialFor("%卡框", FrameGraySaturation);
+
+        foreach (var path in GrayNodePaths)
+            EnsureGrayMaterialFor(path, NormalGraySaturation);
+    }
+
+    private void EnsureGrayMaterialFor(string path, float defaultSaturation)
+    {
+        var node = GetNodeOrNull<CanvasItem>(path);
+        if (node == null) return;
+
+        if (_grayMaterials.TryGetValue(node, out var exist) && IsInstanceValid(exist))
+            return;
+
+        var sm = new ShaderMaterial { Shader = DesaturateShader };
+        sm.SetShaderParameter("saturation", defaultSaturation);
+        node.Material = sm;
+        _grayMaterials[node] = sm;
+    }
+
+    private void SetGray(bool on)
+    {
+        if (on)
+            EnsureGrayMaterials();
+
+        SetMaterial("%卡框", on, FrameGraySaturation);
+
+        foreach (var path in GrayNodePaths)
+            SetMaterial(path, on, NormalGraySaturation);
+
+        SetCardFaceGray(on);
+    }
+
+    private void SetMaterial(string path, bool on, float graySaturation)
+    {
+        var node = GetNodeOrNull<CanvasItem>(path);
+        if (node == null) return;
+
+        if (!on)
+        {
+            node.Material = null;
+            return;
+        }
+
+        if (_grayMaterials.TryGetValue(node, out var sm) && IsInstanceValid(sm))
+        {
+            sm.SetShaderParameter("saturation", graySaturation);
+            return;
+        }
+
+        sm = new ShaderMaterial { Shader = DesaturateShader };
+        sm.SetShaderParameter("saturation", graySaturation);
+        node.Material = sm;
+        _grayMaterials[node] = sm;
+    }
+
+    private void SetCardFaceGray(bool on)
+    {
+        var container = GetNodeOrNull<Node>("%卡面容器");
+        if (container == null) return;
+
+        var tex = FindDeepestTextureRect(container);
+        if (tex == null) return;
+
+        if (!on)
+        {
+            tex.Material = null;
+            return;
+        }
+
+        if (_grayMaterials.TryGetValue(tex, out var sm) && IsInstanceValid(sm))
+        {
+            sm.SetShaderParameter("saturation", NormalGraySaturation);
+            return;
+        }
+
+        sm = new ShaderMaterial { Shader = DesaturateShader };
+        sm.SetShaderParameter("saturation", NormalGraySaturation);
+        tex.Material = sm;
+        _grayMaterials[tex] = sm;
+    }
+
+    private static TextureRect FindDeepestTextureRect(Node node)
+    {
+        TextureRect result = null;
+        foreach (var child in node.GetChildren())
+        {
+            if (child is TextureRect tr)
+                result = tr;
+
+            var deeper = FindDeepestTextureRect(child);
+            if (deeper != null)
+                result = deeper;
+        }
+        return result;
+    }
+    //专门用于远程同步或者Ai的区域
+    /// <summary>
+    /// 对一个对象打出该卡牌
+    /// </summary>
+    /// <param name="target">打出的对象</param>
+    /// <returns></returns>
+    public async Task PlayMe(PlayContext ctx)
+    {
+        CardCmd.PushStop();
+        try
+        {
+            if (ctx.Target == null) return;
+
+            if (Model is FighterCardModel fighterCard && fighterCard.CardTag.HasFlag(CardTag.GraveStone))
+            {
+                Model.Status = Status.FaceDown;
+            }
+            else
+                Model.Status = Status.FaceUp;
+
+            Fresh();
+            DarkenLight();
+
+            Vector2 CardCenterOffset() => new Vector2(256f, 193f) * Scale + new Vector2(0, 60);
+
+            Vector2 ToCardPos(Vector2 targetGlobal)
+            {
+                var parent2D = GetParent() as Node2D;
+                Vector2 local = parent2D != null ? parent2D.ToLocal(targetGlobal) : targetGlobal;
+                return local - CardCenterOffset() + new Vector2(-32.4f, 15f);
+            }
+            var fighterm = Model as FighterCardModel;
+            var ctx2 = ctx.RoadKind switch
+            {
+                RoadTargetKind.Line => new TargetContext { Line = true, FighterCard = fighterm },
+                RoadTargetKind.Grid => new TargetContext { Grid = true, FighterCard = fighterm },
+                RoadTargetKind.CoopGrid => new TargetContext { CoopGrid = true, FighterCard = fighterm },
+                _ => new TargetContext { FighterCard = fighterm }
+            };
+
+            var cannoncial = Scale;
+            Tween tween = CreateTween();
+            tween.TweenProperty(this, "scale", Scale * 1f, 0.5f);
+            tween.TweenProperty(this, "scale", Scale * 1.1f, 0.1f);
+            tween.TweenProperty(this, "scale", Scale * 1f, 0.1f);
+            tween.TweenProperty(this, "scale", Scale * 1f, 0.3f);
+            await BindOriginTask(ToCardPos(new Vector2(360f, 430f) - new Vector2(-404.4f, 195.2f)), 0.6f);
+            ctx.Target.AutoTargeted(ctx2);
+            await ToSignal(GetTree().CreateTimer(0.5f), Timer.SignalName.Timeout);
+            if (ctx.Target is Fighter fighter)
+                await BindOriginTask(ToCardPos(fighter.GlobalPosition - new Vector2(-404.4f, 195.2f)));
+            else if (ctx.Target is HeroInstance instance)
+                await BindOriginTask(ToCardPos(instance.GlobalPosition - new Vector2(-404.4f, 195.2f)));
+            else if (ctx.Target is NodeRoad road)
+            {
+                road.CallTargetKind(ctx.RoadKind);
+
+                switch (road.LastTargetKind)
+                {
+                    case RoadTargetKind.Line:
+                        await BindOriginTask(ToCardPos(road.GlobalPosition) - new Vector2(-404.4f, 195.2f));
+                        break;
+
+                    case RoadTargetKind.Grid:
+                        if (Model is FighterCardModel && Model.Camp.Plant())
+                            road.SwapForGrid();
+                        await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie)) - new Vector2(-404.4f, 195.2f)));
+                        break;
+
+                    case RoadTargetKind.CoopGrid:
+                        if (Model.Camp.Plant())
+                        {
+                            if (Model is FighterCardModel)
+                                road.SwapForCoopGrid();
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant) - new Vector2(-404.4f, 195.2f)));
+                        }
+                        break;
+
+                    default:
+                        if (ctx.TargetType.HasFlag(TargetType.CoopGrids) && Model.Camp.Plant())
+                        {
+                            if (Model is FighterCardModel)
+                                road.SwapForCoopGrid();
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Location.Plant) - new Vector2(-404.4f, 195.2f)));
+                        }
+                        else if (ctx.TargetType.HasFlag(TargetType.Grids))
+                        {
+                            if (Model is FighterCardModel && Model.Camp.Plant())
+                                road.SwapForGrid();
+                            await BindOriginTask(ToCardPos(road.GetFighterLocation(Model.Camp.Switch(Location.Plant, Location.Zombie)) - new Vector2(-404.4f, 195.2f)));
+                        }
+                        else
+                        {
+                            await BindOriginTask(ToCardPos(road.GlobalPosition) - new Vector2(-404.4f, 195.2f));
+                        }
+                        break;
+                }
+            }
+
+            PlayerManager.GetPlayer(Model.Camp).Status.HandRemoveCard(Model);
+            PlayerBox.StuffCard();
+            await DiscallDragging();
+            var model = Model;
+            Visible = false;
+            Model = null;
+            GetNode<Button>("%碰撞").MouseFilter = Control.MouseFilterEnum.Ignore;
+            ctx.Target.AutoDistargeted(ctx2);
+            try
+            {
+                if (model != null)
+                {
+                    await model.DestroyMe();
+                    await CardCmd.PlayedCard(model, ctx.Target);
+                }
+            }
+            finally
+            {
+                instances.Remove(this);
+                _isOpen = false;
+                if (GodotObject.IsInstanceValid(this))
+                    QueueFree();
+            }
+        }
+        finally
+        {
+            CardCmd.PopStop();
+        }
     }
 }

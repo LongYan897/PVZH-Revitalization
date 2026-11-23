@@ -1,5 +1,6 @@
 using Controller;
 using Godot;
+using Pack;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,21 +16,19 @@ public partial class CardDesPanel : Panel
 
     private const float PanelScale = 0.8f;
 
-    private RichTextLabel _rtl;
+    private SpecLabel _rtl;
     private Control _blocker;
     private bool _closing;
 
     public override void _Ready()
     {
-        _rtl = GetNode<RichTextLabel>("Control/RichTextLabel");
+        _rtl = GetNode<SpecLabel>("Control/RichTextLabel");
         _blocker = GetNode<Control>("Control");
 
         MouseFilter = MouseFilterEnum.Ignore;
-        _rtl.MouseFilter = MouseFilterEnum.Stop;
-        _rtl.MetaClicked += OnKeywordClicked;
-
         _blocker.MouseFilter = MouseFilterEnum.Ignore;
 
+        _rtl.ExtraSize = 12f;
         _rtl.FitContent = true;
         _rtl.ScrollActive = false;
 
@@ -45,48 +44,17 @@ public partial class CardDesPanel : Panel
         if (_closing) return;
         if (@event is not InputEventMouseButton mb || !mb.Pressed) return;
         if (OpenPanels[^1] != this) return;
-        if (GetGlobalRect().HasPoint(mb.GlobalPosition)) return;
+
+        Vector2 mousePos = GetGlobalMousePosition();
+
+        Rect2 panelRect = new Rect2(GlobalPosition, Size * Scale);
+        if (panelRect.HasPoint(mousePos)) return;
+
+        Rect2 rtlRect = new Rect2(_rtl.GlobalPosition, _rtl.Size * _rtl.Scale);
+        if (rtlRect.HasPoint(mousePos)) return;
 
         GetViewport().SetInputAsHandled();
         Close();
-    }
-
-    private void OnKeywordClicked(Variant metaVariant)
-    {
-        string raw = metaVariant.AsString();
-
-        string key = raw;
-        string arg = null;
-        char sep = '\0';
-
-        int bar = raw.IndexOf('|');
-        if (bar >= 0)
-        {
-            key = raw.Substring(0, bar);
-            var rest = raw.Substring(bar + 1).Split('|');
-            if (rest.Length >= 2)
-            {
-                arg = rest[0];
-                sep = rest[1].Length > 0 ? rest[1][0] : '\0';
-            }
-        }
-
-        if (CardModel.HasTemplate(key))
-        {
-            GetViewport().SetInputAsHandled();
-            var template = CardModel.GetTemplate(key);
-            if (template != null)
-                CardDes.ExchangeDescription(template);
-            return;
-        }
-
-        if (CardDes.TryGetKeywordDescription(null, key, arg, sep, out string desc))
-        {
-            GetViewport().SetInputAsHandled();
-
-            var globalPos = _rtl.GlobalPosition + _rtl.GetLocalMousePosition();
-            ShowAt(desc, globalPos);
-        }
     }
 
     private const float MaxTextWidth = 400f;
@@ -152,7 +120,8 @@ public partial class CardDesPanel : Panel
 
     public async Task SetContent(string desc)
     {
-        await CardDes.AppendWithIcons(_rtl, desc, convertLinks: true);
+        await _rtl.SetContentAsync(desc);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         FitToContent();
     }
 

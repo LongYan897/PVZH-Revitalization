@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dvq5ifclxtpb6"
+path="res://.godot/imported/skeleton.atlas-36f15057eeae7f1eeee67efb6d619c8b.spatlas"
+
+[deps]
+
+source_file="res://场景/通用特效/火焰/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-36f15057eeae7f1eeee67efb6d619c8b.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

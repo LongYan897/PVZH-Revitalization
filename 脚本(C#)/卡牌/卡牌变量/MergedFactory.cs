@@ -1,0 +1,27 @@
+namespace Card;
+
+
+public static class MergedFactory
+{
+    /// <summary>
+    /// 合并数个攻击力类型
+    /// </summary>
+    /// <param name="atkType">被合并的对象</param>
+    /// <param name="types">要合并的对象</param>
+    /// <returns></returns>
+    public static MergedAtkType Merge(this AtkType atkType, params AtkType[] types) => new([atkType, .. types]);
+    /// <summary>
+    /// 合并数个攻击力类型
+    /// </summary>
+    /// <param name="atkType">被合并的对象</param>
+    /// <param name="types">要合并的对象</param>
+    /// <returns></returns>
+    public static MergedHpType Merge(this HpType atkType, params HpType[] types) => new([atkType, .. types]);
+    /// <summary>
+    /// 合并数个Buff
+    /// </summary>
+    /// <param name="buff">被合并的对象</param>
+    /// <param name="buffs">要合并的对象</param>
+    /// <returns></returns>
+    public static MergedBuff Merge(this Buff buff, params Buff[] buffs) => new([buff, .. buffs]);
+}
