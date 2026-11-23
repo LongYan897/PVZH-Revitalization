@@ -14,6 +14,8 @@ public static class RichTextFormatter
 {
     public const int IconSize = 36;
 
+    private enum ParamKind { None, String, Int, Bool }
+
     private static readonly Regex IconRegex =
         new Regex(@"=([^=#\s]+)(?:#([^#=\s]+)#)?=(?:\{([+-]?\d+)\})?", RegexOptions.Compiled);
 
@@ -32,8 +34,15 @@ public static class RichTextFormatter
     private static readonly Regex ArgAfterRegex =
         new Regex(@"_([^&#_]+)([&#])([^&#_]+)\2_", RegexOptions.Compiled);
 
+    // 修复：禁止跨越 } 和 +，防止贪婪吃掉普通文本
     private static readonly Regex PlaceholderRegex =
-        new Regex(@"\{([#&/]+):(\w+)\}", RegexOptions.Compiled);
+        new Regex(@"\{([#&/]+):([^}|+]+)(?:\+([^}|]+))?(?:\|([^}]*))?\}", RegexOptions.Compiled);
+
+    private static readonly Regex UnderlineRegex =
+        new Regex(@"~([^~]+)~", RegexOptions.Compiled);
+
+    public static string ConvertUnderlines(string text) =>
+        UnderlineRegex.Replace(text, mm => $"[u]{mm.Groups[1].Value}[/u]");
 
     public static string ConvertLabels(string text) =>
         LabelRegex.Replace(text,
@@ -41,13 +50,19 @@ public static class RichTextFormatter
 
     public static string ConvertLinks(string text)
     {
+        text = ConvertUnderlines(text);
+
         text = ArgBeforeRegex.Replace(text, mm =>
         {
             char sep = mm.Groups[1].Value[0];
             string arg = mm.Groups[2].Value;
             string word = mm.Groups[3].Value;
+            bool isNullArg = arg == "null";
+            if (isNullArg) arg = null;
             string meta = $"{word}|{arg}|{sep}|before";
-            return $"[color=#44ffff][url={meta}]{arg}{word}[/url][/color]";
+            // 修复：内部如果带#，转为绿色标签
+            string showText = isNullArg ? word : (sep == '#' ? $"{ConvertLabels(arg)}{word}" : $"{arg}{word}");
+            return $"[color=#44ffff][url={meta}]{showText}[/url][/color]";
         });
 
         text = ArgAfterRegex.Replace(text, mm =>
@@ -55,8 +70,12 @@ public static class RichTextFormatter
             string word = mm.Groups[1].Value;
             char sep = mm.Groups[2].Value[0];
             string arg = mm.Groups[3].Value;
+            bool isNullArg = arg == "null";
+            if (isNullArg) arg = null;
             string meta = $"{word}|{arg}|{sep}|after";
-            return $"[color=#44ffff][url={meta}]{word}{arg}[/url][/color]";
+            // 修复：内部如果带#，转为绿色标签
+            string showText = isNullArg ? word : (sep == '#' ? $"{word}{ConvertLabels(arg)}" : $"{word}{arg}");
+            return $"[color=#44ffff][url={meta}]{showText}[/url][/color]";
         });
 
         text = LinkRegex.Replace(text,
@@ -76,8 +95,10 @@ public static class RichTextFormatter
             char sep = mb.Groups[1].Value[0];
             string arg = mb.Groups[2].Value;
             string word = mb.Groups[3].Value;
+            bool isNullArg = arg == "null";
+            if (isNullArg) arg = null;
             meta = $"{word}|{arg}|{sep}|before";
-            display = sep == '#' ? $"${arg}${word}" : $"{arg}{word}";
+            display = isNullArg ? word : (sep == '#' ? $"${arg}${word}" : $"{arg}{word}");
             return true;
         }
 
@@ -87,8 +108,10 @@ public static class RichTextFormatter
             string word = ma.Groups[1].Value;
             char sep = ma.Groups[2].Value[0];
             string arg = ma.Groups[3].Value;
+            bool isNullArg = arg == "null";
+            if (isNullArg) arg = null;
             meta = $"{word}|{arg}|{sep}|after";
-            display = sep == '#' ? $"{word}${arg}$" : $"{word}{arg}";
+            display = isNullArg ? word : (sep == '#' ? $"{word}${arg}$" : $"{word}{arg}");
             return true;
         }
 
@@ -103,10 +126,19 @@ public static class RichTextFormatter
         return false;
     }
 
-    private static Dictionary<string, (MethodInfo method, bool acceptEffects)> _urlParamsCache;
+    private static Dictionary<string, (MethodInfo method, bool acceptEffects, ParamKind kind1, ParamKind kind2)> _urlParamsCache;
     private static readonly object _urlParamsCacheLock = new();
 
-    private static Dictionary<string, (MethodInfo method, bool acceptEffects)> GetUrlParamsCache()
+    private static bool TryMapKind(Type t, out ParamKind kind)
+    {
+        if (t == typeof(string)) { kind = ParamKind.String; return true; }
+        if (t == typeof(int)) { kind = ParamKind.Int; return true; }
+        if (t == typeof(bool)) { kind = ParamKind.Bool; return true; }
+        kind = ParamKind.None;
+        return false;
+    }
+
+    private static Dictionary<string, (MethodInfo method, bool acceptEffects, ParamKind kind1, ParamKind kind2)> GetUrlParamsCache()
     {
         if (_urlParamsCache != null) return _urlParamsCache;
 
@@ -117,7 +149,7 @@ public static class RichTextFormatter
             var flags = BindingFlags.Public | BindingFlags.NonPublic
                       | BindingFlags.Static | BindingFlags.FlattenHierarchy;
 
-            var cache = new Dictionary<string, (MethodInfo, bool)>(StringComparer.OrdinalIgnoreCase);
+            var cache = new Dictionary<string, (MethodInfo, bool, ParamKind, ParamKind)>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var type in typeof(RichTextFormatter).Assembly.GetTypes())
             {
@@ -128,13 +160,18 @@ public static class RichTextFormatter
                     if (!method.IsStatic) continue;
 
                     var ps = method.GetParameters();
-                    if (ps.Length != 1 || ps[0].ParameterType != typeof(CardModel)) continue;
+                    if (ps.Length < 1 || ps.Length > 3) continue;
+                    if (ps[0].ParameterType != typeof(CardModel)) continue;
+
+                    ParamKind kind1 = ParamKind.None, kind2 = ParamKind.None;
+                    if (ps.Length >= 2 && !TryMapKind(ps[1].ParameterType, out kind1)) continue;
+                    if (ps.Length == 3 && !TryMapKind(ps[2].ParameterType, out kind2)) continue;
 
                     if (cache.ContainsKey(method.Name)) continue;
 
                     var attr = (UrlParamsAttribute)Attribute.GetCustomAttribute(
                         method, typeof(UrlParamsAttribute));
-                    cache[method.Name] = (method, attr.AcceptEffects);
+                    cache[method.Name] = (method, attr.AcceptEffects, kind1, kind2);
                 }
             }
 
@@ -143,17 +180,104 @@ public static class RichTextFormatter
         }
     }
 
-    private static (string value, bool acceptEffects) GetUrlParamValue(string key, CardModel model)
+    private static bool TryParseBool(string s, out bool value)
+    {
+        if (bool.TryParse(s, out value)) return true;
+        switch (s.Trim())
+        {
+            case "1": case "是": case "真": value = true; return true;
+            case "0": case "否": case "假": value = false; return true;
+        }
+        value = false;
+        return false;
+    }
+
+    private static bool TryConvertArg(string s, ParamKind kind, out object value)
+    {
+        value = null;
+
+        if (kind == ParamKind.String)
+        {
+            value = s ?? "";
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(s)) return false;
+
+        switch (kind)
+        {
+            case ParamKind.Int:
+                if (int.TryParse(s.Trim(), out int i)) { value = i; return true; }
+                return false;
+            case ParamKind.Bool:
+                if (TryParseBool(s, out bool b)) { value = b; return true; }
+                return false;
+            default:
+                return false;
+        }
+    }
+
+    private static bool TrySplitTwoArgs(string arg, out string a, out string b)
+    {
+        a = b = null;
+        if (string.IsNullOrWhiteSpace(arg)) return false;
+        int idx = arg.IndexOf(',');
+        if (idx < 0) return false;
+        a = arg.Substring(0, idx).Trim();
+        b = arg.Substring(idx + 1).Trim();
+        return a.Length > 0 && b.Length > 0;
+    }
+
+    private static (string value, bool acceptEffects) GetUrlParamValue(string key, CardModel model, string arg)
     {
         if (string.IsNullOrEmpty(key) || key == "n" || key == "x")
             return (null, true);
 
+        // 修复：自动处理掉误写的圆括号
+        string cleanKey = key.Trim().Trim('(', ')');
+
         var cache = GetUrlParamsCache();
-        if (!cache.TryGetValue(key, out var entry))
+        if (!cache.TryGetValue(cleanKey, out var entry))
             return (null, true);
 
-        var v = entry.method.Invoke(null, new object[] { model }) as string;
-        return (v, entry.acceptEffects);
+        bool hasArg = !string.IsNullOrWhiteSpace(arg);
+
+        try
+        {
+            if (entry.kind1 == ParamKind.None)
+            {
+                if (model == null) return (null, entry.acceptEffects);
+                var v0 = entry.method.Invoke(null, new object[] { model }) as string;
+                return (v0, entry.acceptEffects);
+            }
+
+            if (entry.kind2 == ParamKind.None)
+            {
+                if (!hasArg && entry.kind1 != ParamKind.String) return (null, entry.acceptEffects);
+                if (!TryConvertArg(arg, entry.kind1, out object a1))
+                    return (null, entry.acceptEffects);
+                if (model == null) return (null, entry.acceptEffects);
+
+                var v1 = entry.method.Invoke(null, new object[] { model, a1 }) as string;
+                return (v1, entry.acceptEffects);
+            }
+
+            if (!hasArg) return (null, entry.acceptEffects);
+            if (!TrySplitTwoArgs(arg, out string s1, out string s2))
+                return (null, entry.acceptEffects);
+            if (!TryConvertArg(s1, entry.kind1, out object a2))
+                return (null, entry.acceptEffects);
+            if (!TryConvertArg(s2, entry.kind2, out object a3))
+                return (null, entry.acceptEffects);
+            if (model == null) return (null, entry.acceptEffects);
+
+            var v2 = entry.method.Invoke(null, new object[] { model, a2, a3 }) as string;
+            return (v2, entry.acceptEffects);
+        }
+        catch
+        {
+            return (null, entry.acceptEffects);
+        }
     }
 
     public static string ReplacePlaceholders(string rawDesc, string arg, char sep, CardModel model)
@@ -163,38 +287,47 @@ public static class RichTextFormatter
         return PlaceholderRegex.Replace(rawDesc, m =>
         {
             string allowed = m.Groups[1].Value;
-            string kind = m.Groups[2].Value;
+            string left = m.Groups[2].Value;
+            bool hasPlus = m.Groups[3].Success;
+            string right = m.Groups[3].Value;
 
-            if (kind == "n")
+            // 修复：如果没写 |fallback，失败时保留原样，不再乱删字
+            string fallback = m.Groups[4].Success ? m.Groups[4].Value : m.Value;
+
+            string EvalSingle(string key, string inArg, out bool ok)
             {
-                if (arg == null || !allowed.Contains(sep)) return m.Value;
-                return sep == '#' ? $"${arg}$" : arg;
+                ok = false;
+                if (string.IsNullOrWhiteSpace(inArg)) inArg = null;
+
+                char workingSep = sep;
+                if (workingSep == '\0')
+                {
+                    if (allowed.Contains('#')) workingSep = '#';
+                    else if (allowed.Contains('&')) workingSep = '&';
+                    else return null;
+                }
+                if (!allowed.Contains(workingSep)) return null;
+
+                if (key == "n" || key == "x")
+                {
+                    ok = true;
+                    return inArg ?? "";
+                }
+
+                if (model == null) return null;
+
+                var (v, acceptEffects) = GetUrlParamValue(key, model, inArg);
+                if (v == null) return null;
+                ok = true;
+                if (!acceptEffects) return v;
+                return workingSep == '#' ? $"${v}$" : v;
             }
 
-            if (kind == "x")
-            {
-                if (arg == null || !allowed.Contains(sep)) return m.Value;
-                return arg;
-            }
-
-            var (custom, acceptEffects) = GetUrlParamValue(kind, model);
-            if (custom == null) return m.Value;
-
-            char useSep = sep;
-            if (useSep == '\0')
-            {
-                if (allowed.Contains('#')) useSep = '#';
-                else if (allowed.Contains('&')) useSep = '&';
-                else return m.Value;
-            }
-            else if (!allowed.Contains(useSep))
-            {
-                return m.Value;
-            }
-
-            if (!acceptEffects) return custom;
-
-            return useSep == '#' ? $"${custom}$" : custom;
+            string valL = EvalSingle(left, arg, out bool lOk);
+            if (!lOk) return fallback;
+            if (!hasPlus) return valL;
+            string valR = EvalSingle(right, valL, out bool rOk);
+            return rOk ? valR : fallback;
         });
     }
 
@@ -301,8 +434,7 @@ public static class RichTextFormatter
         label.Clear();
         if (string.IsNullOrEmpty(raw)) return;
 
-        if (model != null)
-            raw = ReplacePlaceholders(raw, placeholderArg, placeholderSep, model);
+        raw = ReplacePlaceholders(raw, placeholderArg, placeholderSep, model);
 
         var composer = IconComposer.EnsureInstance();
         if (composer == null) return;

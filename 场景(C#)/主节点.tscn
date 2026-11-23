@@ -99,6 +99,7 @@ offset_top = 938.0
 offset_right = 287.0
 offset_bottom = 938.0
 scale = Vector2(0.7, 0.7)
+IsPersistNess = true
 
 [node name="植物任务" parent="Scene/ButtomScene" unique_id=1591753121 instance=ExtResource("19_quj4d")]
 unique_name_in_owner = true

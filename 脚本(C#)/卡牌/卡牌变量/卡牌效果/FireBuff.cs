@@ -51,7 +51,7 @@ public class FireBuff(int amount) : StackableBuff(amount)
     }
 
     [URL]
-    public static string 灼烧 => "在下次自己线上战斗开始之前：对这只僵尸造成=Health={-{#/&:x}}。";
+    public static string 灼烧 => "在_下一次_自己线上战斗开始之前：对这只僵尸造成=Health={#/&:n+FBNgx}。";
     [IconText("ffffff")]
     public const string Fire = "res://素材(C#)/文本图片/Fire.png";
 }

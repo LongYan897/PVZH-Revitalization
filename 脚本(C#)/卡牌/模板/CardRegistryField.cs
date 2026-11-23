@@ -40,6 +40,8 @@ public static class CardRegistryField
     [URL]
     public static string 墓碑 => "躲在墓碑下，直到锦囊牌阶段。";
     [URL]
+    public static string 回合开始 => "僵尸出牌阶段开始。";
+    [URL]
     public static string 本回合 => "直到战斗阶段结束。";
     [URL]
     public static string 下回合 => "直到僵尸出牌阶段开始。";

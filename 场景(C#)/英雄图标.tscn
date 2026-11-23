@@ -31,6 +31,7 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.8, 0.8)
 pivot_offset = Vector2(113.5, 113.5)
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("2_78vrb")
 script = ExtResource("3_4p3gn")
 metadata/_custom_type_script = "uid://bhqnh1uogwt06"
