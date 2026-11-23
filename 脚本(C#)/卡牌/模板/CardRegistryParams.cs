@@ -44,4 +44,9 @@ public static class CardRegistryParams
             _ => "株"
         };
     }
+    [UrlParams(false)]
+    public static string FBNgx(CardModel cardModel,string back)
+    {
+        return int.TryParse(back,out int var) ? $"{{-{var}}}" : "";
+    }
 }

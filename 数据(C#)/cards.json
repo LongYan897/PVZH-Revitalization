@@ -152,7 +152,7 @@
   "CardboardBoat.Id": 8,
 
   "Firefighter.Title": "消防员僵尸",
-  "Firefighter.Des": "_现身_：_弹射_另一只僵尸。",
+  "Firefighter.Des": "_现身_：_弹射_另一只僵尸。\n这只僵尸和相邻线上的僵尸获得=Fire=_灼烧&null&_时，使其失去=Fire=_灼烧&null&_。",
   "Firefighter.Cost": 4,
   "Firefighter.Camp": "僵尸",
   "Firefighter.Type": "单位",

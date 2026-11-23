@@ -18,7 +18,7 @@ public partial class DeckSubMenuScene : SubMenuScene
     private const float SearchCollapsedWidth = 255f;
     private const float SearchExpandDeltaX = 255f;
     private const float SearchOpenMoveX = -81.6f;
-    private const int HeroesPerRow = 5;
+    private const int HeroesPerRow = 8;
 
     private Sprite2D BackGround;
     private Sprite2D Top1;

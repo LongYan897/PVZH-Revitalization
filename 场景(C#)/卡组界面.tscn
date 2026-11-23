@@ -97,8 +97,8 @@ script = ExtResource("1_28go4")
 
 [node name="背景图" type="Sprite2D" parent="Joint" unique_id=402899454]
 z_index = -4022
-position = Vector2(636, 360.00003)
-scale = Vector2(5.9722223, 2.8125002)
+position = Vector2(636, 374.5)
+scale = Vector2(5.9722223, 2.9257813)
 texture = ExtResource("2_6s3qr")
 
 [node name="cardLibrary" type="Node2D" parent="Joint" unique_id=25129087]
@@ -107,12 +107,13 @@ scale = Vector2(0.99999994, 0.99999994)
 
 [node name="图鉴信息" type="ScrollContainer" parent="Joint" unique_id=1948426428]
 unique_name_in_owner = true
-offset_left = 8.99997
-offset_top = 210.0
-offset_right = 2033.0
-offset_bottom = 1025.9999
+offset_left = 6.0
+offset_top = 110.0
+offset_right = 2030.0
+offset_bottom = 1116.3999
 scale = Vector2(0.625, 0.625)
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 script = ExtResource("3_p80pg")
 wheel_scroll_damper = SubResource("Resource_p80pg")
 dragging_scroll_damper = SubResource("Resource_5056d")
@@ -156,6 +157,12 @@ script = ExtResource("3_yg71g")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
+[node name="Control" type="Control" parent="Joint/图鉴信息/容器/标志栏" unique_id=1434364942]
+custom_minimum_size = Vector2(86, 96)
+layout_mode = 2
+mouse_filter = 1
+metadata/_smooth_scroll_default_mouse_filter_set = true
+
 [node name="卡牌标志" type="ColorRect" parent="Joint/图鉴信息/容器" unique_id=760249681]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(2024, 64)
@@ -189,7 +196,7 @@ horizontal_alignment = 2
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="占位符" type="Control" parent="Joint/图鉴信息/容器" unique_id=204688436]
-custom_minimum_size = Vector2(1152, 32)
+custom_minimum_size = Vector2(1152, 0)
 layout_mode = 2
 mouse_filter = 1
 metadata/_smooth_scroll_default_mouse_filter_set = true
@@ -211,12 +218,12 @@ metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="顶部遮挡" type="Sprite2D" parent="Joint" unique_id=392940115]
 z_index = 1
-position = Vector2(642, 150)
+position = Vector2(642, 59.249996)
 scale = Vector2(9.382354, 1.46875)
 texture = ExtResource("3_loyiy")
 
 [node name="顶部遮挡1" type="Sprite2D" parent="Joint" unique_id=944711103]
-position = Vector2(640.25, 67.875)
+position = Vector2(640.25, -22.875004)
 scale = Vector2(0.62475586, 0.07043456)
 texture = ExtResource("4_5hsp2")
 
@@ -228,10 +235,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -72.000015
-offset_top = 27.0
-offset_right = 182.99998
-offset_bottom = 277.0
+offset_left = 554.0
+offset_top = -62.0
+offset_right = 809.0
+offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.32, 0.32)
@@ -273,10 +280,10 @@ texture = ExtResource("10_loyiy")
 [node name="僵尸按钮" type="TextureButton" parent="Joint" unique_id=704216351]
 self_modulate = Color(0.87058824, 0.42745098, 0.93333334, 1)
 z_index = 30
-offset_left = 1100.0
-offset_top = 27.0
-offset_right = 1355.0
-offset_bottom = 277.0
+offset_left = 643.0
+offset_top = -61.300003
+offset_right = 898.0
+offset_bottom = 188.7
 scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(127.5, 122.5)
 mouse_default_cursor_shape = 2
@@ -317,10 +324,10 @@ texture = ExtResource("9_5056d")
 unique_name_in_owner = true
 self_modulate = Color(0, 1, 1, 1)
 z_index = 5
-offset_left = 378.99994
-offset_top = 27.0
-offset_right = 634.0
-offset_bottom = 277.0
+offset_left = 288.3
+offset_top = -63.75001
+offset_right = 543.30005
+offset_bottom = 186.24998
 scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(127.5, 125)
 mouse_default_cursor_shape = 2
@@ -386,10 +393,10 @@ unique_name_in_owner = true
 z_index = 20
 layout_mode = 3
 anchors_preset = 0
-offset_left = 379.0
-offset_top = 27.0
-offset_right = 899.0
-offset_bottom = 267.0
+offset_left = 288.30005
+offset_top = -63.75001
+offset_right = 808.30005
+offset_bottom = 176.24998
 scale = Vector2(0.32, 0.32)
 pivot_offset = Vector2(260, 125)
 mouse_filter = 1
@@ -425,7 +432,7 @@ text = "牌组"
 [node name="搜索框" type="ColorRect" parent="Joint" unique_id=484898784]
 unique_name_in_owner = true
 visible = false
-z_index = 100
+z_index = 4040
 offset_right = 1281.0
 offset_bottom = 1280.0
 color = Color(0, 0, 0, 0.52400005)
