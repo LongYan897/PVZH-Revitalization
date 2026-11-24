@@ -521,7 +521,7 @@ texture = ExtResource("26_i53qi")
 [node name="角色" type="Sprite2D" parent="Control" unique_id=798629962]
 unique_name_in_owner = true
 z_index = 4096
-position = Vector2(916, 130)
+position = Vector2(1033, 75)
 texture = ExtResource("2_8svqr")
 
 [node name="属性1" type="TextureRect" parent="Control" unique_id=2036792205]
@@ -580,10 +580,10 @@ stretch_mode = 2
 unique_name_in_owner = true
 z_index = 4096
 layout_mode = 0
-offset_left = 1060.0
-offset_top = 262.0
-offset_right = 1243.0
-offset_bottom = 344.0
+offset_left = 1025.0
+offset_top = 260.0
+offset_right = 1257.0
+offset_bottom = 380.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 4
@@ -788,3 +788,16 @@ patch_margin_left = 40
 patch_margin_top = 40
 patch_margin_right = 40
 patch_margin_bottom = 40
+
+[node name="名称" type="LineEdit" parent="Control" unique_id=1910850005]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 804.0
+offset_top = 191.0
+offset_right = 1263.0
+offset_bottom = 244.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
+alignment = 1
+virtual_keyboard_enabled = false

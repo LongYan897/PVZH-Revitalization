@@ -1,0 +1,16 @@
+skeleton.png
+size:267,169
+filter:Linear,Linear
+pma:true
+whackazombie_mallet
+bounds:2,6,161,177
+offsets:1,1,163,180
+rotate:90
+whackazombie_smash
+bounds:181,2,38,84
+offsets:1,1,40,86
+rotate:90
+whackazombie_stick
+bounds:181,42,125,79
+offsets:1,1,128,81
+rotate:90

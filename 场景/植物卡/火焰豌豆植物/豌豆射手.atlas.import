@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://cgtiadxg0that"
+path="res://.godot/imported/豌豆射手.atlas-b2b6a07d28e932b104bacdcc4f1d8ac9.spatlas"
+
+[deps]
+
+source_file="res://场景/植物卡/火焰豌豆植物/豌豆射手.atlas"
+dest_files=["res://.godot/imported/豌豆射手.atlas-b2b6a07d28e932b104bacdcc4f1d8ac9.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

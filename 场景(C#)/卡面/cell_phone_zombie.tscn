@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bh6xynuamf2u3"]
+
+[ext_resource type="Texture2D" uid="uid://cos374cj1pmc" path="res://场景/僵尸卡组/大哥大僵尸/2fe49558-6272-4d39-9e19-614141e9deb3.png" id="1_1xspb"]
+
+[node name="卡面" type="Control" unique_id=1867815421]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=804807435]
+layout_mode = 0
+offset_left = -19.0
+offset_top = -8.0
+offset_right = 171.0
+offset_bottom = 176.0
+texture = ExtResource("1_1xspb")
+expand_mode = 1
+stretch_mode = 3

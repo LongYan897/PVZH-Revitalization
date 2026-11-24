@@ -511,7 +511,7 @@ public class FighterCardModel : CardModel, IDamageCard, IHealthCard
             await Die(VariableReason.Damaged | reason, stack, immediateDeath);
     }
     /// <summary>
-    /// 是否有初始血量
+    /// 是否有初始攻击力
     /// </summary>
     public bool BornWithAtk { get; private set; }
 

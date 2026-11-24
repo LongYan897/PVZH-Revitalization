@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bc3cwby63nqqy"]
+
+[ext_resource type="Texture2D" uid="uid://dqvhhbswhkcir" path="res://场景/僵尸卡组/狗仔僵尸/2046244f-4138-4f18-99b4-b53d55795579.png" id="1_c6xxf"]
+
+[node name="卡面" type="Control" unique_id=2024781796]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1271364134]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 262.0
+offset_bottom = 184.0
+texture = ExtResource("1_c6xxf")
+expand_mode = 1
+stretch_mode = 3
