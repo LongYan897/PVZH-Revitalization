@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://dflvd76lge0wh"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://dodyi5u8aou1w" path="res://场景/植物卡/小种子植物/skeleton.atlas" id="1_a2821"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://bb5bhlca1t5mv" path="res://场景/植物卡/小种子植物/skeleton.skel" id="2_cusoa"]
+
+[resource]
+atlas_res = ExtResource("1_a2821")
+skeleton_file_res = ExtResource("2_cusoa")

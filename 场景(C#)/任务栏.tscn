@@ -21,10 +21,10 @@
 [ext_resource type="Texture2D" uid="uid://dqtbnidxguueu" path="res://素材/ui/任务/QuestBarUp.png" id="14_410ol"]
 [ext_resource type="Texture2D" uid="uid://kj3ei6bbae6x" path="res://素材/ui/任务/QuestStar.png" id="14_qyi1x"]
 [ext_resource type="Script" uid="uid://h2i6yqcy4wfu" path="res://脚本(C#)/辅助类/SpecLabel.cs" id="14_xqkfi"]
+[ext_resource type="Texture2D" uid="uid://cc3ayc7axofhr" path="res://素材/ui/任务/QuestDiamond.png" id="15_7qwa5"]
 [ext_resource type="Texture2D" uid="uid://bo1ucxfgbw6ol" path="res://素材/ui/段位/段位标志/rankicon_12.png" id="16_jhyom"]
 [ext_resource type="Texture2D" uid="uid://cmwscsjipnpgi" path="res://素材/ui/段位/段位标志/rankicon_10.png" id="17_2yl0b"]
 [ext_resource type="Texture2D" uid="uid://dlmhp02h2gwff" path="res://素材/ui/段位/段位标志/rankicon_2.png" id="18_7qwa5"]
-[ext_resource type="Texture2D" uid="uid://cmbl7sxiiyuyw" path="res://素材/ui/任务/QuestLegend.png" id="21_jhyom"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7qwa5"]
 shader = ExtResource("1_gf1jq")
@@ -264,7 +264,7 @@ mouse_filter = 1
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="3" unique_id=857754135]
-texture = ExtResource("21_jhyom")
+texture = ExtResource("15_7qwa5")
 
 [node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="4" unique_id=1001956069]
 metadata/_smooth_scroll_default_mouse_filter_set = true
@@ -510,10 +510,10 @@ vertical_alignment = 1
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="SmoothScrollContainer3" type="ScrollContainer" parent="." unique_id=1460176909]
-offset_left = 428.0
-offset_top = 43.0
-offset_right = 2595.1426
-offset_bottom = 218.0
+offset_left = 430.0
+offset_top = 38.0
+offset_right = 2319.0
+offset_bottom = 213.0
 scale = Vector2(0.5, 0.5)
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 0

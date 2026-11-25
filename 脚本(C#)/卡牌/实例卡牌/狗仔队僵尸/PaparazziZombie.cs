@@ -27,5 +27,6 @@ public class PaparazziZombie : FighterCardModel
             }
         }
     }
-    protected override List<Buff> InitBuffs => [];
+    protected override List<Buff> InitBuffs => [
+        new PaparazziBuff()];
 }
