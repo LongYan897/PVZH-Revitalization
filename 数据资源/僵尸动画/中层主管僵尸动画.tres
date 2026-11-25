@@ -1,0 +1,9 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://b3horvaqxklcj"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://dydotfdl4q1wa" path="res://场景/僵尸卡/中层主管僵尸/Zombie.atlas" id="1_j3gef"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://c55ns172m5swa" path="res://场景/僵尸卡/中层主管僵尸/Zombie.skel" id="2_wpjxq"]
+
+[resource]
+atlas_res = ExtResource("1_j3gef")
+skeleton_file_res = ExtResource("2_wpjxq")
+default_mix = 0.5

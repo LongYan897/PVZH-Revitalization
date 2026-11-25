@@ -506,5 +506,25 @@
   "PaparazziZombie.Atk": 1,
   "PaparazziZombie.AtkType": "普通",
   "PaparazziZombie.Flavor": "他照片里的人怎么都一副尖叫着逃开的样子？",
-  "PaparazziZombie.Id": 28
+  "PaparazziZombie.Id": 28,
+
+  "ZombieMiddleManager.Title": "中层主管僵尸",
+  "ZombieMiddleManager.Des": "当其他职业僵尸收到伤害时，这张牌获得=Strength={+2},\n打出:_召唤_一只职业僵尸",
+  "ZombieMiddleManager.Cost": 1,
+  "ZombieMiddleManager.Camp": "僵尸",
+  "ZombieMiddleManager.Type": "单位",
+  "ZombieMiddleManager.Rarity": "罕见",
+  "ZombieMiddleManager.Category": "健壮",
+  "ZombieMiddleManager.Icon": "res://场景(C#)/卡面/zombieMiddleManager.tscn",
+  "ZombieMiddleManager.Animation": "res://数据资源/僵尸动画/中层主管僵尸动画.tres",
+  "ZombieMiddleManager.Label": [ "职业" ],
+  "ZombieMiddleManager.Tag": [],
+  "ZombieMiddleManager.Hp": 2,
+  "ZombieMiddleManager.HpType": "普通",
+  "ZombieMiddleManager.Atk": 1,
+  "ZombieMiddleManager.AtkType": "普通",
+  "ZombieMiddleManager.Pack": "巨大",
+  "ZombieMiddleManager.Flavor": "和大多数经理一样，让员工痛不欲生是他的力量源泉。",
+  "ZombieMiddleManager.Id": 29
+
 }

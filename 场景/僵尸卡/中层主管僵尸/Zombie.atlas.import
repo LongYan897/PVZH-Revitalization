@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dydotfdl4q1wa"
+path="res://.godot/imported/Zombie.atlas-313b8127ed0db675c94c2fa83192257c.spatlas"
+
+[deps]
+
+source_file="res://场景/僵尸卡/中层主管僵尸/Zombie.atlas"
+dest_files=["res://.godot/imported/Zombie.atlas-313b8127ed0db675c94c2fa83192257c.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"
