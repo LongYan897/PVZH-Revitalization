@@ -532,7 +532,7 @@
   "Nut.Camp": "植物",
   "Nut.Type": "单位",
   "Nut.Rarity": "基础",
-  "Nut.Category": "猛长",
+  "Nut.Category": "守卫",
   "Nut.Animation": "res://数据资源/植物动画/坚果植物动画.tres",
   "Nut.Icon": "res://场景(C#)/卡面/nut.tscn",
   "Nut.Label": [ "坚果" ],
@@ -545,7 +545,7 @@
   "Nut.Id": 30,
 
   "ZombieMiddleManager.Title": "中层主管僵尸",
-  "ZombieMiddleManager.Des": "当其他职业僵尸收到伤害时，这张牌获得=Strength={+2},\n打出:_召唤_一只职业僵尸",
+  "ZombieMiddleManager.Des": "当其他$职业$僵尸_收到伤害_时，这张牌获得=Strength={+2}。\n_打出_：_召唤_一只职业僵尸。",
   "ZombieMiddleManager.Cost": 1,
   "ZombieMiddleManager.Camp": "僵尸",
   "ZombieMiddleManager.Type": "单位",

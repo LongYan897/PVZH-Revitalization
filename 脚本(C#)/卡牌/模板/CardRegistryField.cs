@@ -47,4 +47,6 @@ public static class CardRegistryField
     public static string 本回合 => "直到战斗阶段结束。";
     [URL]
     public static string 下回合 => "直到僵尸出牌阶段开始。";
+    [URL]
+    public static string 收到伤害 => "卡牌对_单位_造成=Health=。";
 }
