@@ -1,0 +1,9 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://tgextclxjgja"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://1lrrkm4wxvqk" path="res://素材(C#)/卡牌/举旗僵尸/Zombie.atlas" id="1_cuevg"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://moe4q7p1u8vm" path="res://素材(C#)/卡牌/举旗僵尸/Zombie.skel" id="2_0f400"]
+
+[resource]
+atlas_res = ExtResource("1_cuevg")
+skeleton_file_res = ExtResource("2_0f400")
+default_mix = 0.5

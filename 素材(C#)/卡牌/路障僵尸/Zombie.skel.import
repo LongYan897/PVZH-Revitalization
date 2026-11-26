@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://dt527m04o41m4"
+path="res://.godot/imported/Zombie.skel-4078ba7fe31a1f2ef693980cda638d56.spskel"
+
+[deps]
+
+source_file="res://素材(C#)/卡牌/路障僵尸/Zombie.skel"
+dest_files=["res://.godot/imported/Zombie.skel-4078ba7fe31a1f2ef693980cda638d56.spskel"]
+
+[params]
+
