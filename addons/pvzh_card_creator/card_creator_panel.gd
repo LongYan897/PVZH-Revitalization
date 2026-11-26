@@ -6,6 +6,7 @@ const WindowScript := preload("res://addons/pvzh_card_creator/card_frame_editor_
 
 const CARDS_JSON_PATH := "res://数据(C#)/cards.json"
 const FRAME_EXPORT_DIR := "res://场景(C#)/卡面/"
+const CS_SCRIPT_ROOT := "res://脚本(C#)/卡牌/实例卡牌/"
 
 var editor_plugin: EditorPlugin
 var root: VBoxContainer
@@ -35,10 +36,10 @@ var star_type_box: VBoxContainer
 var pack_box: VBoxContainer
 
 var hp_spin: SpinBox
-var hp_type_option: OptionButton
+var hp_type_rows: VBoxContainer
 var atk_spin: SpinBox
-var atk_type_option: OptionButton
-var star_type_option: OptionButton
+var atk_type_rows: VBoxContainer
+var star_type_rows: VBoxContainer
 var pack_edit: LineEdit
 var flavor_edit: TextEdit
 var id_edit: LineEdit
@@ -50,6 +51,9 @@ var tag_checks: Dictionary = {}
 var bool_section: VBoxContainer
 var bool_props_box: VBoxContainer
 var bool_prop_checks: Dictionary = {}
+
+var targets_section: VBoxContainer
+var target_checks: Dictionary = {}
 
 var auto_clear_check: CheckBox
 var status_label: Label
@@ -65,6 +69,14 @@ const RARITIES := ["基础", "普通", "罕见", "稀有", "超稀有", "传说"
 const CATEGORIES_PLANT := ["猛长", "光能", "守卫", "爆花", "聪明"]
 const CATEGORIES_ZOMBIE := ["有脑", "疯狂", "狡猾", "野兽", "健壮"]
 const CARD_TYPE_TEXTS := ["单位", "锦囊", "环境"]
+const TARGET_OPTIONS := [
+	{"key": "Fighters", "label": "战斗单位"},
+	{"key": "Lines", "label": "行"},
+	{"key": "Grids", "label": "格子"},
+	{"key": "CoopGrids", "label": "组队格子"},
+	{"key": "Hero", "label": "英雄"},
+	{"key": "GraveStone", "label": "墓碑"}
+]
 
 func _ready() -> void:
 	Config.ensure_loaded()
@@ -178,25 +190,21 @@ func _ready() -> void:
 	hp_box.add_theme_constant_override("separation", 6)
 	root.add_child(hp_box)
 
-	var row_hp := HBoxContainer.new()
-	row_hp.add_theme_constant_override("separation", 6)
-	hp_box.add_child(row_hp)
-
-	var col_hp := VBoxContainer.new()
-	col_hp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row_hp.add_child(col_hp)
-	_add_label_to(col_hp, "生命值")
+	_add_label_to(hp_box, "生命值")
 	hp_spin = SpinBox.new()
 	hp_spin.min_value = 0
 	hp_spin.max_value = 999
-	col_hp.add_child(hp_spin)
+	hp_box.add_child(hp_spin)
 
-	var col_hpt := VBoxContainer.new()
-	col_hpt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row_hp.add_child(col_hpt)
-	_add_label_to(col_hpt, "生命值类型")
-	hp_type_option = OptionButton.new()
-	col_hpt.add_child(hp_type_option)
+	_add_label_to(hp_box, "生命值类型")
+	hp_type_rows = VBoxContainer.new()
+	hp_type_rows.add_theme_constant_override("separation", 2)
+	hp_box.add_child(hp_type_rows)
+
+	var hp_add_btn := Button.new()
+	hp_add_btn.text = "+ 添加类型"
+	hp_add_btn.pressed.connect(func(): _add_type_row(hp_type_rows, Config.get_hp_types()))
+	hp_box.add_child(hp_add_btn)
 
 	include_atk = CheckBox.new()
 	include_atk.text = "有伤害"
@@ -208,25 +216,21 @@ func _ready() -> void:
 	atk_box.add_theme_constant_override("separation", 6)
 	hp_box.add_child(atk_box)
 
-	var row_atk := HBoxContainer.new()
-	row_atk.add_theme_constant_override("separation", 6)
-	atk_box.add_child(row_atk)
-
-	var col_atk := VBoxContainer.new()
-	col_atk.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row_atk.add_child(col_atk)
-	_add_label_to(col_atk, "攻击力")
+	_add_label_to(atk_box, "攻击力")
 	atk_spin = SpinBox.new()
 	atk_spin.min_value = 0
 	atk_spin.max_value = 999
-	col_atk.add_child(atk_spin)
+	atk_box.add_child(atk_spin)
 
-	var col_atkt := VBoxContainer.new()
-	col_atkt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row_atk.add_child(col_atkt)
-	_add_label_to(col_atkt, "攻击力类型")
-	atk_type_option = OptionButton.new()
-	col_atkt.add_child(atk_type_option)
+	_add_label_to(atk_box, "攻击力类型")
+	atk_type_rows = VBoxContainer.new()
+	atk_type_rows.add_theme_constant_override("separation", 2)
+	atk_box.add_child(atk_type_rows)
+
+	var atk_add_btn := Button.new()
+	atk_add_btn.text = "+ 添加类型"
+	atk_add_btn.pressed.connect(func(): _add_type_row(atk_type_rows, Config.get_atk_types()))
+	atk_box.add_child(atk_add_btn)
 
 	include_star_type = CheckBox.new()
 	include_star_type.text = "有等级"
@@ -239,8 +243,14 @@ func _ready() -> void:
 	hp_box.add_child(star_type_box)
 
 	_add_label_to(star_type_box, "等级类型")
-	star_type_option = OptionButton.new()
-	star_type_box.add_child(star_type_option)
+	star_type_rows = VBoxContainer.new()
+	star_type_rows.add_theme_constant_override("separation", 2)
+	star_type_box.add_child(star_type_rows)
+
+	var star_add_btn := Button.new()
+	star_add_btn.text = "+ 添加类型"
+	star_add_btn.pressed.connect(func(): _add_type_row(star_type_rows, Config.get_star_types()))
+	star_type_box.add_child(star_add_btn)
 
 	include_pack = CheckBox.new()
 	include_pack.text = "有卡包"
@@ -302,6 +312,7 @@ func _ready() -> void:
 	bool_props_box.add_theme_constant_override("separation", 2)
 	bool_section.add_child(bool_props_box)
 
+	_build_targets_section()
 	_build_frame_section()
 
 	_add_section("其它")
@@ -345,7 +356,7 @@ func _ready() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(status_label)
 
-	_refresh_type_options()
+	_add_default_type_rows()
 	_on_faction_selected(faction.selected)
 	_on_card_type_selected(card_type.selected)
 
@@ -358,6 +369,38 @@ func _add_section(text: String, with_sep: bool = true) -> void:
 	l.add_theme_font_size_override("font_size", 15)
 	l.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	root.add_child(l)
+
+func _build_targets_section() -> void:
+	targets_section = VBoxContainer.new()
+	targets_section.add_theme_constant_override("separation", 6)
+	root.add_child(targets_section)
+
+	var sep := HSeparator.new()
+	targets_section.add_child(sep)
+
+	var title := Label.new()
+	title.text = "目标"
+	title.add_theme_font_size_override("font_size", 15)
+	title.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	targets_section.add_child(title)
+
+	var hint := Label.new()
+	hint.text = "仅非单位卡生效 单位卡目标由融合与进化规则决定"
+	hint.add_theme_font_size_override("font_size", 11)
+	hint.add_theme_color_override("font_color", Color(1, 1, 1, 0.5))
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	targets_section.add_child(hint)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 2)
+	targets_section.add_child(box)
+
+	for opt in TARGET_OPTIONS:
+		var cb := CheckBox.new()
+		cb.text = str(opt["label"])
+		cb.button_pressed = (str(opt["key"]) == "Fighters")
+		box.add_child(cb)
+		target_checks[str(opt["key"])] = cb
 
 func _build_frame_section() -> void:
 	_add_section("卡面")
@@ -406,6 +449,95 @@ func _build_frame_section() -> void:
 	icon_file_dialog.title = "选择卡面 PNG"
 	icon_file_dialog.confirmed.connect(_on_icon_file_confirmed)
 	add_child(icon_file_dialog)
+
+func _add_type_row(rows_box: VBoxContainer, types: Array) -> void:
+	if rows_box == null:
+		return
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+
+	var opt := OptionButton.new()
+	opt.name = "TypeOption"
+	opt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for t in types:
+		opt.add_item(str(t))
+	row.add_child(opt)
+
+	var num := LineEdit.new()
+	num.name = "NumEdit"
+	num.placeholder_text = "数字"
+	num.custom_minimum_size = Vector2(64, 0)
+	row.add_child(num)
+
+	var del := Button.new()
+	del.text = "×"
+	del.pressed.connect(func():
+		if is_instance_valid(row):
+			rows_box.remove_child(row)
+			row.queue_free()
+	)
+	row.add_child(del)
+
+	rows_box.add_child(row)
+
+func _add_default_type_rows() -> void:
+	_clear_type_rows(hp_type_rows)
+	_clear_type_rows(atk_type_rows)
+	_clear_type_rows(star_type_rows)
+	_add_type_row(hp_type_rows, Config.get_hp_types())
+	_add_type_row(atk_type_rows, Config.get_atk_types())
+
+func _clear_type_rows(rows_box: VBoxContainer) -> void:
+	if rows_box == null:
+		return
+	for c in rows_box.get_children():
+		rows_box.remove_child(c)
+		c.queue_free()
+
+func _sync_type_row_options(rows_box: VBoxContainer, types: Array) -> void:
+	if rows_box == null:
+		return
+	for row in rows_box.get_children():
+		var opt = row.get_node_or_null("TypeOption")
+		if opt == null:
+			continue
+		var prev := ""
+		if opt.item_count > 0 and opt.selected >= 0:
+			prev = opt.get_item_text(opt.selected)
+		opt.clear()
+		for t in types:
+			opt.add_item(str(t))
+		if types.is_empty():
+			continue
+		var idx := -1
+		for i in types.size():
+			if str(types[i]) == prev:
+				idx = i
+				break
+		opt.select(idx if idx >= 0 else 0)
+
+func _collect_type_array(rows_box: VBoxContainer, fallback: String) -> String:
+	if rows_box == null:
+		return fallback
+	var parts := []
+	for row in rows_box.get_children():
+		var opt = row.get_node_or_null("TypeOption")
+		if opt == null or opt.item_count == 0:
+			continue
+		var t : String = opt.get_item_text(opt.selected).strip_edges()
+		if t.is_empty():
+			continue
+		var num = row.get_node_or_null("NumEdit")
+		var n := ""
+		if num != null:
+			n = num.text.strip_edges()
+		if n.is_empty():
+			parts.append(t)
+		else:
+			parts.append("%s:%s" % [t, n])
+	if parts.is_empty():
+		return fallback
+	return ",".join(parts)
 
 func _on_import_icon_pressed() -> void:
 	icon_file_dialog.popup_centered_ratio(0.6)
@@ -598,27 +730,9 @@ func refresh_from_config() -> void:
 	_refresh_bool_props()
 
 func _refresh_type_options() -> void:
-	_fill_option(hp_type_option, Config.get_hp_types())
-	_fill_option(atk_type_option, Config.get_atk_types())
-	_fill_option(star_type_option, Config.get_star_types())
-
-func _fill_option(option: OptionButton, items: Array) -> void:
-	if option == null:
-		return
-	var prev := ""
-	if option.selected >= 0 and option.selected < option.item_count:
-		prev = option.get_item_text(option.selected)
-	option.clear()
-	for it in items:
-		option.add_item(str(it))
-	if items.is_empty():
-		return
-	var idx := -1
-	for i in items.size():
-		if str(items[i]) == prev:
-			idx = i
-			break
-	option.select(idx if idx >= 0 else 0)
+	_sync_type_row_options(hp_type_rows, Config.get_hp_types())
+	_sync_type_row_options(atk_type_rows, Config.get_atk_types())
+	_sync_type_row_options(star_type_rows, Config.get_star_types())
 
 func _refresh_tags() -> void:
 	if tags_box == null or tags_section == null:
@@ -745,15 +859,21 @@ func _on_card_type_selected(index: int) -> void:
 		include_star_type.button_pressed = false
 		atk_box.visible = false
 		star_type_box.visible = false
+	if targets_section:
+		targets_section.visible = (index != 0)
 	_refresh_tags()
 	_refresh_bool_props()
 	_refresh_scene_editor()
 
 func _on_include_atk_toggled(pressed: bool) -> void:
 	atk_box.visible = pressed
+	if pressed and atk_type_rows.get_child_count() == 0:
+		_add_type_row(atk_type_rows, Config.get_atk_types())
 
 func _on_include_star_type_toggled(pressed: bool) -> void:
 	star_type_box.visible = pressed
+	if pressed and star_type_rows.get_child_count() == 0:
+		_add_type_row(star_type_rows, Config.get_star_types())
 
 func _on_include_pack_toggled(pressed: bool) -> void:
 	pack_box.visible = pressed
@@ -764,14 +884,24 @@ func _build_type_text() -> String:
 		return base_text + ";英雄"
 	return base_text
 
+func _collect_targets() -> Array:
+	var out := []
+	for opt in TARGET_OPTIONS:
+		var key := str(opt["key"])
+		if target_checks.has(key):
+			var cb: CheckBox = target_checks[key]
+			if is_instance_valid(cb) and cb.button_pressed:
+				out.append(key)
+	return out
+
 func _create() -> void:
 	var raw := key_name_edit.text.strip_edges()
 	if raw.is_empty():
-		_show_error("请输入名称")
+		_show_error("请输入类名")
 		return
 	var clean := _sanitize(raw)
 	if clean.is_empty():
-		_show_error("名称包含无效字符")
+		_show_error("类名包含无效字符")
 		return
 
 	var side: String = faction.get_item_text(faction.selected)
@@ -791,13 +921,18 @@ func _create() -> void:
 	var final_id := _save_to_cards(clean, entry)
 	_print_entry(clean, entry)
 
+	var cs_path := _create_csharp_script(clean, type_text)
+
 	if editor_plugin:
 		editor_plugin.get_editor_interface().get_resource_filesystem().scan()
 
 	if auto_clear_check.button_pressed:
 		_clear_all()
 
-	_show_success("已写入 cards.json：%s Id=%d" % [clean, final_id])
+	if cs_path.is_empty():
+		_show_success("已写入 cards.json：%s Id=%d" % [clean, final_id])
+	else:
+		_show_success("已写入 cards.json：%s Id=%d\n已创建 C# 脚本：%s" % [clean, final_id, cs_path])
 
 func _build_entry(clean: String, side: String, type_text: String) -> Dictionary:
 	var is_zombie := side == "僵尸"
@@ -831,17 +966,17 @@ func _build_entry(clean: String, side: String, type_text: String) -> Dictionary:
 
 	if card_type.selected == 0:
 		entry["%s.Hp" % clean] = int(hp_spin.value)
-		entry["%s.HpType" % clean] = _option_text(hp_type_option, "普通")
+		entry["%s.HpType" % clean] = _collect_type_array(hp_type_rows, "普通")
 
 		if include_atk.button_pressed:
 			entry["%s.Atk" % clean] = int(atk_spin.value)
-			entry["%s.AtkType" % clean] = _option_text(atk_type_option, "普通")
+			entry["%s.AtkType" % clean] = _collect_type_array(atk_type_rows, "普通")
 		else:
 			entry["%s.Atk" % clean] = 0
 			entry["%s.AtkType" % clean] = "普通"
 
 		if include_star_type.button_pressed:
-			entry["%s.StarType" % clean] = _option_text(star_type_option, "星星")
+			entry["%s.StarType" % clean] = _collect_type_array(star_type_rows, "星星")
 
 	if include_pack.button_pressed:
 		entry["%s.Pack" % clean] = pack_edit.text
@@ -941,23 +1076,22 @@ func _clear_all() -> void:
 	des_edit.text = ""
 	cost_spin.value = 0
 	hp_spin.value = 0
-	if hp_type_option.item_count > 0:
-		hp_type_option.select(0)
 	include_atk.button_pressed = false
 	atk_spin.value = 0
-	if atk_type_option.item_count > 0:
-		atk_type_option.select(0)
 	include_star_type.button_pressed = false
-	if star_type_option.item_count > 0:
-		star_type_option.select(0)
 	include_pack.button_pressed = false
 	pack_edit.text = ""
+	_add_default_type_rows()
 	for cb in tag_checks.values():
 		if is_instance_valid(cb):
 			cb.button_pressed = false
 	for cb in bool_prop_checks.values():
 		if is_instance_valid(cb):
 			cb.button_pressed = false
+	for k in target_checks:
+		var cb: CheckBox = target_checks[k]
+		if is_instance_valid(cb):
+			cb.button_pressed = (k == "Fighters")
 	flavor_edit.text = ""
 	id_edit.text = ""
 	rarity_option.select(0)
@@ -973,6 +1107,82 @@ func _clear_all() -> void:
 	if frame_status_label:
 		frame_status_label.text = ""
 	status_label.text = ""
+
+func _create_csharp_script(clean: String, type_text: String) -> String:
+	var _class_name := _to_cs_class_name(clean)
+	var folder_name := _sanitize(name_edit.text.strip_edges())
+	if folder_name.is_empty():
+		folder_name = _class_name
+	var dir := CS_SCRIPT_ROOT + folder_name + "/"
+	var path := dir + _class_name + ".cs"
+	if FileAccess.file_exists(path):
+		return path
+	if not DirAccess.dir_exists_absolute(dir):
+		DirAccess.make_dir_recursive_absolute(dir)
+	var is_fighter := type_text.begins_with("单位")
+	var targets: Array = [] if is_fighter else _collect_targets()
+	var content := _build_cs_template(_class_name, is_fighter, targets)
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		push_error("[PVZH] 无法创建 C# 脚本：" + path)
+		return ""
+	f.store_string(content)
+	f.close()
+	return path
+
+func _build_cs_template(_class_name: String, is_fighter: bool, targets: Array) -> String:
+	if is_fighter:
+		return """using System.Threading.Tasks;
+using Battle;
+using Battle.Entity;
+using Play;
+
+namespace Card;
+
+public class %s : FighterCardModel
+{
+    public override async Task AnimationWhenPlayed(Road road)
+    {
+        await base.AnimationWhenPlayed(road);
+    }
+}
+""" % _class_name
+
+	var target_line := ""
+	if not targets.is_empty():
+		var parts := []
+		for t in targets:
+			parts.append("Target.TargetType.%s" % str(t))
+		target_line = "    public override TargetType TargetType => %s;\n\n" % " | ".join(parts)
+
+	return """using System.Threading.Tasks;
+using Target;
+
+namespace Card;
+
+public class %s : CardModel
+{
+%s    public override async Task Play(ITarget target)
+    {
+        await base.Play(target);
+    }
+}
+""" % [_class_name, target_line]
+
+func _to_cs_class_name(raw: String) -> String:
+	var result := ""
+	for i in raw.length():
+		var ch := raw[i]
+		var code := ch.unicode_at(0)
+		if (code >= 65 and code <= 90) or (code >= 97 and code <= 122) or (code >= 48 and code <= 57) or ch == "_":
+			result += ch
+		else:
+			result += "_"
+	if result.replace("_", "").is_empty():
+		return "NewCard"
+	if result[0] >= "0" and result[0] <= "9":
+		result = "_" + result
+	return result
 
 func _sanitize(value: String) -> String:
 	var result := ""
