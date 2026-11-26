@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dv7cmfmnwpr24"]
+
+[ext_resource type="Texture2D" uid="uid://dj8nwp4c0cl7v" path="res://素材(C#)/卡牌/栅栏僵尸/Screen Door Zombie #81124.png" id="1_oudlx"]
+
+[node name="卡面" type="Control" unique_id=772943286]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="卡牌图标" type="TextureRect" parent="." unique_id=1502339739]
+layout_mode = 0
+offset_left = 40.0
+offset_top = -9.0
+offset_right = 224.0
+offset_bottom = 175.0
+texture = ExtResource("1_oudlx")
+expand_mode = 1
+stretch_mode = 3

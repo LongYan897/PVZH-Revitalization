@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://1lrrkm4wxvqk"
+path="res://.godot/imported/Zombie.atlas-1e2d5c323c2f11ede9cf1b52610faae9.spatlas"
+
+[deps]
+
+source_file="res://素材(C#)/卡牌/举旗僵尸/Zombie.atlas"
+dest_files=["res://.godot/imported/Zombie.atlas-1e2d5c323c2f11ede9cf1b52610faae9.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"
