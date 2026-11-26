@@ -194,6 +194,32 @@ public static class CardCmd
     }
 
     /// <summary>
+    /// 获得一张随机卡牌
+    /// </summary>
+    /// <param name="selectors">选择器</param>
+    /// <returns></returns>
+    public static List<CardModel> RandomCard(params (Func<CardModel, bool> Filter, int Amount)[] selectors)
+    {
+        var cards = new List<CardModel>();
+        if (selectors == null || selectors.Length == 0) return cards;
+
+        foreach (var (filter, amount) in selectors)
+        {
+            if (filter == null || amount <= 0) continue;
+
+            var matched = CardModel.AllCards.Where(filter).ToList();
+            if (matched.Count == 0) continue;
+
+            for (int i = 0; i < amount; i++)
+            {
+                var template = matched[_makeRng.Next(matched.Count)];
+                cards.Add(template.Clone());
+            }
+        }
+        return cards;
+    }
+
+    /// <summary>
     /// 创建指定类型的卡牌并加入玩家手牌。
     /// </summary>
     /// <typeparam name="T">要创建的卡牌类型</typeparam>

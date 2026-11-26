@@ -28,6 +28,8 @@ public static class CardRegistryField
     [URL]
     public static string 召唤 => "把随机卡牌加入手牌。";
     [URL]
+    public static string 变化 => "使_单位_变成其他_单位_。";
+    [URL]
     public static string 额外战斗 => "使一条线上的所有_单位_额外进行攻击。";
     [URL]
     public static string 融合 => "在这{#/&:Campifier}{#/&:Camp}上打出{#/&:n}来使用此能力。";

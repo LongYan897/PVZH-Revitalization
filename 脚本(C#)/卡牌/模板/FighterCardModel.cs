@@ -796,6 +796,17 @@ public class FighterCardModel : CardModel, IDamageCard, IHealthCard
     public enum AnimSlot { Main, Atk, Hp }
 
     /// <summary>
+    /// 切换插槽
+    /// </summary>
+    public void SwitchAttachment(string id,string attachment)
+    {
+        if (!IsPlaced) return;
+
+        var fighter = Fighter.GetNode(this);
+        fighter.AnimationNode.SetAttachment(id,attachment);
+    }
+
+    /// <summary>
     /// 往指定动画容器下挂一个子节点。
     /// </summary>
     public T AddAnimChild<T>(AnimSlot slot, T node, Vector2? position = null) where T : Node
