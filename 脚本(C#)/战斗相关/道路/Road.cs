@@ -54,7 +54,7 @@ public class Road
     /// <summary>
     /// 最近一次被选中的类型
     /// </summary>
-    public RoadTargetKind LastTargetKind { get; public set; } = RoadTargetKind.None;
+    public RoadTargetKind LastTargetKind { get; internal set; } = RoadTargetKind.None;
 
     /// <summary>
     /// 该道路存储的战斗单位
