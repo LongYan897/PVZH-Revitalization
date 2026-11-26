@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Quest;
 
@@ -13,8 +14,33 @@ public static class QuestManager
     /// </summary>
     public const int MaxAccepted = 5;
 
+    /// <summary>
+    /// 取消拒绝任务收听
+    /// </summary>
+    public static void DeleteBanQuest()
+    {
+        foreach (var qu in _ready.ToList())
+        {
+            if (qu.Accept())
+                _ready.Remove(qu);
+        }
+    }
+
+    /// <summary>
+    /// 拒绝任务收听
+    /// </summary>
+    public static void BanQuest()
+    {
+        foreach (var qu in Accepted)
+        {
+            qu.Cancel(false);
+            _ready.Add(qu);
+        }
+    }
+
     private static readonly List<Quest> _accepted = new();
 
+    private static readonly List<Quest> _ready = new();
     /// <summary>
     /// 当前已接取的任务
     /// </summary>
@@ -30,7 +56,7 @@ public static class QuestManager
     /// </summary>
     /// <param name="quest">任务</param>
     /// <returns>是否成功</returns>
-    internal static bool TryAccept(Quest quest)
+    public static bool TryAccept(Quest quest)
     {
         if (quest == null) return false;
         if (_accepted.Count >= MaxAccepted) return false;
@@ -43,7 +69,7 @@ public static class QuestManager
     /// 从收听列表移除
     /// </summary>
     /// <param name="quest">任务</param>
-    internal static void Remove(Quest quest)
+    public static void Remove(Quest quest)
     {
         if (quest == null) return;
         _accepted.Remove(quest);

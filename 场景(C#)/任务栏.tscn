@@ -2,7 +2,6 @@
 
 [ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="1_gf1jq"]
 [ext_resource type="Texture2D" uid="uid://dc6ikwv36qptw" path="res://素材/ui/任务/QuestBoardWood.png" id="1_qehtt"]
-[ext_resource type="PackedScene" uid="uid://tk2k0cvd2p43" path="res://场景(C#)/任务便签.tscn" id="2_8iu1j"]
 [ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="2_rtb1n"]
 [ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="3_a2tjb"]
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="3_c0f2v"]
@@ -16,15 +15,8 @@
 [ext_resource type="PackedScene" uid="uid://bhwbw81o6gl03" path="res://场景(C#)/任务页.tscn" id="7_mh3l0"]
 [ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="10_qehtt"]
 [ext_resource type="Texture2D" uid="uid://bxjqu4jh232xp" path="res://素材/ui/段位/star_0.png" id="11_plssu"]
-[ext_resource type="Texture2D" uid="uid://m4877pe2lgwp" path="res://素材/ui/任务/QuestIron.png" id="12_410ol"]
-[ext_resource type="Texture2D" uid="uid://cxiuknmdetafv" path="res://素材/ui/任务/QuestClue.png" id="13_uxopb"]
 [ext_resource type="Texture2D" uid="uid://dqtbnidxguueu" path="res://素材/ui/任务/QuestBarUp.png" id="14_410ol"]
-[ext_resource type="Texture2D" uid="uid://kj3ei6bbae6x" path="res://素材/ui/任务/QuestStar.png" id="14_qyi1x"]
 [ext_resource type="Script" uid="uid://h2i6yqcy4wfu" path="res://脚本(C#)/辅助类/SpecLabel.cs" id="14_xqkfi"]
-[ext_resource type="Texture2D" uid="uid://cc3ayc7axofhr" path="res://素材/ui/任务/QuestDiamond.png" id="15_7qwa5"]
-[ext_resource type="Texture2D" uid="uid://bo1ucxfgbw6ol" path="res://素材/ui/段位/段位标志/rankicon_12.png" id="16_jhyom"]
-[ext_resource type="Texture2D" uid="uid://cmwscsjipnpgi" path="res://素材/ui/段位/段位标志/rankicon_10.png" id="17_2yl0b"]
-[ext_resource type="Texture2D" uid="uid://dlmhp02h2gwff" path="res://素材/ui/段位/段位标志/rankicon_2.png" id="18_7qwa5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7qwa5"]
 shader = ExtResource("1_gf1jq")
@@ -157,121 +149,6 @@ script = ExtResource("5_g8d3h")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
-[node name="任务便签" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=441583057 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签2" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=136873229 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="1" unique_id=361576177]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="2" unique_id=1617515993]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2/Panel" index="0" unique_id=1997415526]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="3" unique_id=857754135]
-texture = ExtResource("12_410ol")
-
-[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="4" unique_id=1001956069]
-texture = ExtResource("16_jhyom")
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2" index="6" unique_id=88194377]
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签3" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=990040009 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="1" unique_id=361576177]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="2" unique_id=1617515993]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3/Panel" index="0" unique_id=1997415526]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="3" unique_id=857754135]
-texture = ExtResource("13_uxopb")
-
-[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="4" unique_id=1001956069]
-texture = ExtResource("17_2yl0b")
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3" index="6" unique_id=88194377]
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签4" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=1419775552 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="背景2" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="0" unique_id=1878226755]
-texture = ExtResource("14_qyi1x")
-
-[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="1" unique_id=361576177]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="2" unique_id=1617515993]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4/Panel" index="0" unique_id=1997415526]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="3" unique_id=857754135]
-texture = ExtResource("14_qyi1x")
-
-[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="4" unique_id=1001956069]
-texture = ExtResource("18_7qwa5")
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4" index="6" unique_id=88194377]
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签5" parent="SmoothScrollContainer2/MinimumHFlowContainer" unique_id=62999005 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Button" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="1" unique_id=361576177]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="2" unique_id=1617515993]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="Panel" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5/Panel" index="0" unique_id=1997415526]
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="背景" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="3" unique_id=857754135]
-texture = ExtResource("15_7qwa5")
-
-[node name="主图标" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="4" unique_id=1001956069]
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="标题" parent="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5" index="6" unique_id=88194377]
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
 [node name="SmoothScrollContainer" type="ScrollContainer" parent="." unique_id=1364036502]
 offset_left = 392.00003
 offset_top = 119.00001
@@ -290,46 +167,6 @@ custom_minimum_size = Vector2(397, 0)
 layout_mode = 2
 script = ExtResource("5_g8d3h")
 metadata/_custom_type_script = "uid://djw2uav0wcgkd"
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1110904886 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签2" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1886042463 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签3" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=827908572 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签4" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1585077162 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签5" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=813468638 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签6" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=644944581 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签7" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=1719300714 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
-metadata/_smooth_scroll_default_mouse_filter_set = true
-
-[node name="任务便签8" parent="SmoothScrollContainer/MinimumHFlowContainer" unique_id=31044940 instance=ExtResource("2_8iu1j")]
-layout_mode = 2
-mouse_filter = 1
 metadata/_smooth_scroll_default_mouse_filter_set = true
 
 [node name="Node2D" type="Node2D" parent="." unique_id=522907422]
@@ -575,8 +412,3 @@ theme_override_font_sizes/font_size = 86
 text = "任务"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签2"]
-[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签3"]
-[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签4"]
-[editable path="SmoothScrollContainer2/MinimumHFlowContainer/任务便签5"]

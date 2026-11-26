@@ -107,18 +107,50 @@ public abstract class AtkType
         }
     }
     public static void Init() => GetAtkTypes();
+
     /// <summary>
     /// 解析字符串为AtkType<br/>
     /// Parser输出的第一个bool代表是否要解析该字符串,为false时直接跳过不使用第二个值<br/>
     /// Parser输出的第二个值为AtkType<br/>
-    /// 解析的时候统一格式为输入|AtkType的名称:AtkType的数值|<br/>
+    /// 解析的时候统一格式为输入 AtkType的名称:AtkType的数值<br/>
     /// 例:<br/>
-    ///     输入 |致命|<br/>
+    ///     输入 致命<br/>
     ///     代表致命<br/>
-    /// /// </summary>
+    /// 支持英文逗号分隔多个AtkType，例如 致命,连击，会分别解析后合并为 MergedAtkType
+    /// </summary>
     /// <param name="parserString">解析字符串</param>
     /// <returns>得到的AtkType</returns>
     public static AtkType Parser(string parserString)
+    {
+        if (string.IsNullOrWhiteSpace(parserString))
+            return null;
+
+        var parts = parserString
+            .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(p => p.Trim())
+            .Where(p => p.Length > 0)
+            .ToList();
+
+        if (parts.Count == 0)
+            return null;
+
+        if (parts.Count == 1)
+            return ParseSingle(parts[0]);
+
+        var parsedTypes = new List<AtkType>(parts.Count);
+        foreach (var part in parts)
+        {
+            var atkType = ParseSingle(part);
+            if (atkType == null)
+                return null;
+
+            parsedTypes.Add(atkType);
+        }
+
+        return Merge(parsedTypes);
+    }
+
+    private static AtkType ParseSingle(string parserString)
     {
         if (Parsers == null) return null;
         foreach (var parser in Parsers)

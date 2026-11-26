@@ -51,7 +51,7 @@ public abstract class Hooker : Buff
     }
 }
 
-internal static class HookManager
+public static class HookManager
 {
     private static readonly object SyncRoot = new();
     private static readonly List<IBattleHook> Hooks = new();

@@ -9,9 +9,9 @@ mouse_filter = 2
 
 [node name="卡牌图标" type="TextureRect" parent="." unique_id=1502339739]
 layout_mode = 0
-offset_left = 40.0
+offset_left = 15.0
 offset_top = -9.0
-offset_right = 224.0
+offset_right = 199.0
 offset_bottom = 175.0
 texture = ExtResource("1_oudlx")
 expand_mode = 1

@@ -121,14 +121,45 @@ public abstract class HpType
     /// 解析字符串为HpType<br/>
     /// Parser输出的第一个bool代表是否要解析该字符串,为false时直接跳过不使用第二个值<br/>
     /// Parser输出的第二个值为HpType<br/>
-    /// 解析的时候统一格式为输入|HpType的名称:HpType的数值|<br/>
+    /// 解析的时候统一格式为输入 HpType的名称:HpType的数值<br/>
     /// 例:<br/>
-    ///     输入 |装甲:2|<br/>
+    ///     输入 装甲:2<br/>
     ///     代表装甲2<br/>
+    /// 支持英文逗号分隔多个HpType，例如 装甲:2,闪避，会分别解析后合并为 MergedHpType
     /// </summary>
     /// <param name="parserString">解析字符串</param>
     /// <returns>得到的HpType</returns>
     public static HpType Parser(string parserString)
+    {
+        if (string.IsNullOrWhiteSpace(parserString))
+            return null;
+
+        var parts = parserString
+            .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(p => p.Trim())
+            .Where(p => p.Length > 0)
+            .ToList();
+
+        if (parts.Count == 0)
+            return null;
+
+        if (parts.Count == 1)
+            return ParseSingle(parts[0]);
+
+        var parsedTypes = new List<HpType>(parts.Count);
+        foreach (var part in parts)
+        {
+            var hpType = ParseSingle(part);
+            if (hpType == null)
+                return null;
+
+            parsedTypes.Add(hpType);
+        }
+
+        return Merge(parsedTypes);
+    }
+
+    private static HpType ParseSingle(string parserString)
     {
         if (Parsers == null) return null;
         foreach (var parser in Parsers)

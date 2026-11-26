@@ -160,7 +160,7 @@ public class AtkStack
     /// <summary>
     /// 基础伤害（攻击力）
     /// </summary>
-    public int BaseDamage { get; set; }
+    public int BaseDamage { get; private set; }
 
     /// <summary>
     /// 结算后的最终伤害

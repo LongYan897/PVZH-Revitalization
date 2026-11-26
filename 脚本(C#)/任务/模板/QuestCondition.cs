@@ -18,7 +18,7 @@ public sealed class QuestCondition
     /// <summary>
     /// 重置进度(放弃任务时使用)
     /// </summary>
-    internal void Reset()
+    public void Reset()
     {
         Current = 0;
     }
@@ -89,7 +89,7 @@ public sealed class QuestCondition
     /// <param name="card">触发时点的卡牌</param>
     /// <param name="parameters">触发时点的参数</param>
     /// <returns>是否命中目标</returns>
-    internal bool TryAdvance(Timing timing, CardModel card, object[] parameters)
+    public bool TryAdvance(Timing timing, CardModel card, object[] parameters)
     {
         if (IsCompleted) return false;
         if (!Advance(timing, card, parameters)) return false;

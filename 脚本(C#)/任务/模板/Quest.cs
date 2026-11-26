@@ -71,13 +71,14 @@ public abstract class Quest : IBattleHook
     /// <summary>
     /// 放弃任务：从 Accepted 回到 Pending，停止收听并清零所有目标进度
     /// </summary>
-    public void Cancel()
+    public void Cancel(bool resetQuest = false)
     {
         if (State != QuestState.Accepted) return;
         HookManager.Unregister(this);
         QuestManager.Remove(this);
-        foreach (var condition in Conditions)
-            condition.Reset();
+        if (resetQuest)
+            foreach (var condition in Conditions)
+                condition.Reset();
         State = QuestState.Pending;
     }
 
