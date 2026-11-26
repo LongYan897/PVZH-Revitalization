@@ -325,6 +325,7 @@ func _refresh_preview(entry: Dictionary) -> void:
 	var icon_info := _load_icon_info(_selected_icon_path) if icon_ok else {}
 	var type_text := str(data.get("Type", "单位"))
 	var rarity := str(data.get("Rarity", "普通"))
+	var is_fighter := type_text.begins_with("单位")
 
 	var frame_tex := _frame_texture_for(type_text, rarity) if icon_ok else null
 	var icon_tex: Texture2D = null
@@ -345,7 +346,7 @@ func _refresh_preview(entry: Dictionary) -> void:
 	var has_bounds := false
 
 	if frame_tex != null and frame_tex_size.x > 0 and frame_tex_size.y > 0:
-		var draw_pos: Vector2 = frame_pos + (Vector2.ZERO - frame_tex_size) / 2.0
+		var draw_pos: Vector2 = frame_pos - frame_tex_size / 2.0
 		bounds = Rect2(draw_pos, frame_tex_size)
 		has_bounds = true
 
@@ -389,6 +390,7 @@ func _refresh_preview(entry: Dictionary) -> void:
 		frame_rect.size = Vector2.ZERO
 		frame_rect.scale = frame_scale
 		frame_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		frame_rect.z_index = 0 if is_fighter else 1
 		preview_inner.add_child(frame_rect)
 
 	if icon_tex != null:
@@ -400,6 +402,7 @@ func _refresh_preview(entry: Dictionary) -> void:
 		icon_rect.size = icon_size
 		icon_rect.scale = icon_scale
 		icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		icon_rect.z_index = 1 if is_fighter else 0
 		preview_inner.add_child(icon_rect)
 
 	if _selected_icon_path.is_empty():
