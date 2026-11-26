@@ -1,12 +1,16 @@
 using Godot;
 using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Pack;
 
 [GlobalClass, Tool]
 public partial class DotLabel : Label
 {
+    private static readonly Regex IntSegmentRegex =
+        new Regex(@"(?<!\d)-?\d+", RegexOptions.Compiled);
+
     public event Action<string> TextChanged;
 
     [Export]
@@ -66,13 +70,16 @@ public partial class DotLabel : Label
         if (string.IsNullOrWhiteSpace(raw))
             return new DotInt(0).ToString();
 
-        try
+        return IntSegmentRegex.Replace(raw, match =>
         {
-            return ((DotInt)raw).ToString();
-        }
-        catch (FormatException)
-        {
-            return new DotInt(0).ToString();
-        }
+            if (int.TryParse(match.Value,
+                             NumberStyles.Integer,
+                             CultureInfo.InvariantCulture,
+                             out int value))
+            {
+                return new DotInt(value).ToString();
+            }
+            return match.Value;
+        });
     }
 }

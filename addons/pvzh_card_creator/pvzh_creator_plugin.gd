@@ -1,10 +1,12 @@
 @tool
 extends EditorPlugin
 
+const DockScript := preload("res://addons/pvzh_card_creator/pvzh_creator_dock.gd")
+
 var dock: Control
 
 func _enter_tree() -> void:
-	dock = preload("res://addons/pvzh_card_creator/pvzh_creator_dock.gd").new()
+	dock = DockScript.new()
 	dock.name = "卡牌"
 	dock.editor_plugin = self
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)

@@ -3,6 +3,22 @@
 [ext_resource type="Texture2D" uid="uid://dds5vtrpu6s4w" path="res://素材/ui/任务/QuestBarWood.png" id="1_qiwc7"]
 [ext_resource type="Script" uid="uid://h2i6yqcy4wfu" path="res://脚本(C#)/辅助类/SpecLabel.cs" id="2_nwk31"]
 [ext_resource type="FontFile" uid="uid://badjjkcoivak" path="res://素材/字体/CAFLT___.ttf" id="2_ryf4d"]
+[ext_resource type="FontFile" uid="uid://b61u0diq1brcc" path="res://素材/字体/CAFBL___.ttf" id="4_b8otg"]
+[ext_resource type="Script" uid="uid://b1u3rt0arf1cc" path="res://脚本(C#)/辅助类/DotLabel.cs" id="4_demgc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryf4d"]
+bg_color = Color(0, 0, 0, 0.6156863)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_demgc"]
+bg_color = Color(0.015833318, 0.95, 0, 1)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8otg"]
+bg_color = Color(0.011666656, 0.7, 0, 1)
+corner_radius_bottom_right = 4
 
 [sub_resource type="FontVariation" id="FontVariation_nwk31"]
 base_font = ExtResource("2_ryf4d")
@@ -16,6 +32,30 @@ offset_top = 7.0
 offset_right = 336.0
 offset_bottom = 59.0
 
+[node name="进度" type="Panel" parent="." unique_id=690554057]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 25.0
+offset_right = 442.0
+offset_bottom = 50.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ryf4d")
+
+[node name="Panel" type="Panel" parent="进度" unique_id=1581332470]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 4.0
+offset_right = 40.0
+offset_bottom = 21.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_demgc")
+
+[node name="Panel2" type="Panel" parent="进度" unique_id=676773106]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 14.0
+offset_right = 40.0
+offset_bottom = 21.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_b8otg")
+
 [node name="标签" type="Sprite2D" parent="." unique_id=1679015358]
 position = Vector2(30.5, 24.5)
 scale = Vector2(0.7, 0.7)
@@ -23,16 +63,20 @@ texture = ExtResource("1_qiwc7")
 
 [node name="单行" type="RichTextLabel" parent="." unique_id=346655568]
 layout_mode = 0
-offset_left = 56.0
-offset_top = -15.5
-offset_right = 431.5
-offset_bottom = 65.5
-theme_override_colors/default_color = Color(0, 0, 0, 1)
+offset_left = 49.0
+offset_top = -15.0
+offset_right = 424.5
+offset_bottom = 29.5
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/normal_font = SubResource("FontVariation_nwk31")
-theme_override_font_sizes/normal_font_size = 36
-theme_override_font_sizes/bold_font_size = 36
-theme_override_font_sizes/bold_italics_font_size = 36
-theme_override_font_sizes/mono_font_size = 36
+theme_override_font_sizes/normal_font_size = 30
+theme_override_font_sizes/bold_font_size = 30
+theme_override_font_sizes/bold_italics_font_size = 30
+theme_override_font_sizes/italics_font_size = 30
+theme_override_font_sizes/mono_font_size = 30
 text = "任务是这个啊"
 scroll_active = false
 autowrap_mode = 0
@@ -41,42 +85,19 @@ vertical_alignment = 1
 script = ExtResource("2_nwk31")
 metadata/_custom_type_script = "uid://h2i6yqcy4wfu"
 
-[node name="双行" type="RichTextLabel" parent="." unique_id=1128509458]
+[node name="Label" type="Label" parent="." unique_id=287604067]
 layout_mode = 0
-offset_left = 56.0
-offset_top = -15.5
-offset_right = 431.5
-offset_bottom = 65.5
-theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_fonts/normal_font = SubResource("FontVariation_nwk31")
-theme_override_font_sizes/normal_font_size = 36
-theme_override_font_sizes/bold_font_size = 36
-theme_override_font_sizes/bold_italics_font_size = 36
-theme_override_font_sizes/mono_font_size = 36
-text = "任务是这个啊"
-scroll_active = false
-autowrap_mode = 0
-autowrap_trim_flags = 0
+offset_left = 13.0
+offset_top = 15.0
+offset_right = 442.0
+offset_bottom = 52.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("4_b8otg")
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
 vertical_alignment = 1
-script = ExtResource("2_nwk31")
-metadata/_custom_type_script = "uid://h2i6yqcy4wfu"
-
-[node name="双行2" type="RichTextLabel" parent="." unique_id=1928631870]
-layout_mode = 0
-offset_left = 56.0
-offset_top = -15.5
-offset_right = 431.5
-offset_bottom = 65.5
-theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_fonts/normal_font = SubResource("FontVariation_nwk31")
-theme_override_font_sizes/normal_font_size = 36
-theme_override_font_sizes/bold_font_size = 36
-theme_override_font_sizes/bold_italics_font_size = 36
-theme_override_font_sizes/mono_font_size = 36
-text = "任务是这个啊"
-scroll_active = false
-autowrap_mode = 0
-autowrap_trim_flags = 0
-vertical_alignment = 1
-script = ExtResource("2_nwk31")
-metadata/_custom_type_script = "uid://h2i6yqcy4wfu"
+script = ExtResource("4_demgc")
+metadata/_custom_type_script = "uid://b1u3rt0arf1cc"
