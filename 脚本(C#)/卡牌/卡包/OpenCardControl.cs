@@ -4,6 +4,7 @@ using Controller.WavPlay;
 using Extension;
 using FileExtension;
 using Godot;
+using Pack;
 using Play;
 using Scene;
 using Spine;
@@ -147,7 +148,7 @@ public partial class OpenCardControl : SubMenuScene
         var drawResult = CalculateCards();
         PileCardCount = Math.Max(CardCount - 1, 0);
 
-        var packScene = GD.Load<PackedScene>(PackScenePath);
+        var packScene = PackScenePath.Load<PackedScene>();
         if (packScene == null)
         {
             GD.PushError($"[OpenCardControl] 找不到 {PackScenePath}");

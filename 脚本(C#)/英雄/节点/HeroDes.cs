@@ -1,6 +1,7 @@
 using Card;
 using Godot;
 using Hero.String;
+using Pack;
 using Spine;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Hero;
 [GlobalClass]
 public partial class HeroDes : Control
 {
-    private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/英雄界面.tscn");
+    private static readonly PackedScene Scene = "res://场景(C#)/英雄界面.tscn".Load<PackedScene>();
     private string _heroName;
     private Tween _tween;
     private bool _isEnd;

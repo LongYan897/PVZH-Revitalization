@@ -25,7 +25,7 @@ public partial class HeroSprite : Control
 
     public static HeroSprite Create(string heroName)
     {
-        var scene = GD.Load<PackedScene>("res://场景(C#)/英雄图标.tscn");
+        var scene = "res://场景(C#)/英雄图标.tscn".Load<PackedScene>();
         var instance = scene.Instantiate<HeroSprite>();
         instance._heroName = heroName;
         return instance;

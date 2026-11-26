@@ -1,5 +1,6 @@
 using FileExtension;
 using Godot;
+using Pack;
 using System;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
@@ -96,7 +97,7 @@ public static class CardPackPreview
         bool useRows = target is not FlowContainer;
         if (cardsPerRow < 1) cardsPerRow = 1;
 
-        PackedScene barScene = GD.Load<PackedScene>(BarScenePath);
+        PackedScene barScene = BarScenePath.Load<PackedScene>();
         if (barScene == null)
             GD.PushError($"[CardPackPreview] 无法加载 {BarScenePath}");
 

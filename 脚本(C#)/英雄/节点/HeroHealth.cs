@@ -2,6 +2,7 @@ using Card;
 using Controller;
 using Godot;
 using Hero.Model;
+using Pack;
 using Spine;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,9 +22,9 @@ public partial class HeroHealth : Node2D
         {
             sp.Texture = camp switch
             {
-                Camp.Zombie => GD.Load<Texture2D>("res://素材/ui/护盾/pip_zombie.png"),
-                Camp.Plant => GD.Load<Texture2D>("res://素材/ui/护盾/pip_glow.png"),
-                _ => GD.Load<Texture2D>("res://素材/ui/护盾/pip_glow.png")
+                Camp.Zombie => "res://素材/ui/护盾/pip_zombie.png".Load<Texture2D>(),
+                Camp.Plant => "res://素材/ui/护盾/pip_glow.png".Load<Texture2D>(),
+                _ => "res://素材/ui/护盾/pip_glow.png".Load<Texture2D>()
             };
         }
     }

@@ -178,7 +178,7 @@ public partial class HeroInstance : Control, ITarget, IAttackable
     /// <returns></returns>
     public static async Task<HeroInstance> Create(HeroModel heroModel, Vector2 vector2, bool isGuest)
     {
-        var instance = GD.Load<PackedScene>("res://场景(C#)/英雄单位.tscn").Instantiate<HeroInstance>();
+        var instance = "res://场景(C#)/英雄单位.tscn".Load<PackedScene>().Instantiate<HeroInstance>();
         var node = isGuest ? Main.GuestHeroContainer : Main.HeroContainer;
         node.AddChild(instance);
         instance.Hero = heroModel;

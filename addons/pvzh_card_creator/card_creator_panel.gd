@@ -62,7 +62,6 @@ var scene_editor_window: Window
 var current_icon_texture: Texture2D = null
 var current_icon_path: String = ""
 var icon_file_dialog: FileDialog
-var auto_link_scene: CheckBox
 var frame_status_label: Label
 
 const RARITIES := ["基础", "普通", "罕见", "稀有", "超稀有", "传说", "活动", "令牌"]
@@ -329,7 +328,7 @@ func _ready() -> void:
 
 	_add_label("额外动画场景")
 	animation_extra_edit = LineEdit.new()
-	animation_extra_edit.placeholder_text = "卡面场景会自动填入"
+	animation_extra_edit.placeholder_text = "res://..."
 	root.add_child(animation_extra_edit)
 
 	auto_clear_check = CheckBox.new()
@@ -407,7 +406,7 @@ func _build_frame_section() -> void:
 
 	_add_label("卡面路径")
 	icon_edit = LineEdit.new()
-	icon_edit.placeholder_text = "导入 PNG 后自动填入"
+	icon_edit.placeholder_text = "导入 PNG 后创建会自动导出场景"
 	root.add_child(icon_edit)
 
 	var row := HBoxContainer.new()
@@ -425,17 +424,6 @@ func _build_frame_section() -> void:
 	open_scene_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	open_scene_btn.pressed.connect(_on_open_scene_editor)
 	row.add_child(open_scene_btn)
-
-	var export_btn := Button.new()
-	export_btn.text = "导出场景"
-	export_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	export_btn.pressed.connect(_on_export_frame_scene)
-	row.add_child(export_btn)
-
-	auto_link_scene = CheckBox.new()
-	auto_link_scene.text = "导出后自动引用到场景字段"
-	auto_link_scene.button_pressed = true
-	root.add_child(auto_link_scene)
 
 	frame_status_label = Label.new()
 	frame_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -501,15 +489,15 @@ func _sync_type_row_options(rows_box: VBoxContainer, types: Array) -> void:
 		var opt = row.get_node_or_null("TypeOption")
 		if opt == null:
 			continue
-		var prev := ""
+		var prev: String = ""
 		if opt.item_count > 0 and opt.selected >= 0:
-			prev = opt.get_item_text(opt.selected)
+			prev = str(opt.get_item_text(opt.selected))
 		opt.clear()
 		for t in types:
 			opt.add_item(str(t))
 		if types.is_empty():
 			continue
-		var idx := -1
+		var idx: int = -1
 		for i in types.size():
 			if str(types[i]) == prev:
 				idx = i
@@ -519,18 +507,18 @@ func _sync_type_row_options(rows_box: VBoxContainer, types: Array) -> void:
 func _collect_type_array(rows_box: VBoxContainer, fallback: String) -> String:
 	if rows_box == null:
 		return fallback
-	var parts := []
+	var parts: Array = []
 	for row in rows_box.get_children():
 		var opt = row.get_node_or_null("TypeOption")
-		if opt == null or opt.item_count == 0:
+		if opt == null:
 			continue
-		var t : String = opt.get_item_text(opt.selected).strip_edges()
+		var t: String = str(opt.get_item_text(opt.selected)).strip_edges()
 		if t.is_empty():
 			continue
 		var num = row.get_node_or_null("NumEdit")
-		var n := ""
+		var n: String = ""
 		if num != null:
-			n = num.text.strip_edges()
+			n = str(num.text).strip_edges()
 		if n.is_empty():
 			parts.append(t)
 		else:
@@ -552,18 +540,21 @@ func _on_icon_file_confirmed() -> void:
 		return
 	current_icon_path = path
 	current_icon_texture = tex
-	icon_edit.text = path
 	if scene_editor_window and is_instance_valid(scene_editor_window):
 		_refresh_scene_editor()
 	_frame_status("已导入卡面：%s" % path, false)
 
 func _on_open_scene_editor() -> void:
-	if scene_editor_window == null:
+	_ensure_scene_editor()
+	_refresh_scene_editor()
+	scene_editor_window.popup_centered()
+
+func _ensure_scene_editor() -> void:
+	if scene_editor_window == null or not is_instance_valid(scene_editor_window):
 		scene_editor_window = WindowScript.new()
 		scene_editor_window.icon_changed.connect(func(): pass)
 		add_child(scene_editor_window)
-	_refresh_scene_editor()
-	scene_editor_window.popup_centered()
+		_refresh_scene_editor()
 
 func _refresh_scene_editor() -> void:
 	if scene_editor_window == null or not is_instance_valid(scene_editor_window):
@@ -577,22 +568,12 @@ func _refresh_scene_editor() -> void:
 	scene_editor_window.set_icon_texture(current_icon_texture)
 	scene_editor_window.set_frame_on_top(not _is_fighter())
 
-func _on_export_frame_scene() -> void:
-	var save_path := _export_frame_scene_internal()
-	if save_path.is_empty():
-		return
-	if auto_link_scene.button_pressed:
-		animation_extra_edit.text = save_path
-	_frame_status("已导出卡面场景：%s" % save_path, false)
-	if editor_plugin:
-		editor_plugin.get_editor_interface().get_resource_filesystem().scan()
-
 func _export_frame_scene_internal() -> String:
 	if current_icon_texture == null:
 		_frame_status("请先导入卡面 PNG", true)
 		return ""
 	if scene_editor_window == null or not is_instance_valid(scene_editor_window):
-		_frame_status("请先点击打开场景", true)
+		_frame_status("场景编辑器未就绪", true)
 		return ""
 
 	var root_node := Control.new()
@@ -613,13 +594,14 @@ func _export_frame_scene_internal() -> String:
 	var packed := PackedScene.new()
 	packed.pack(root_node)
 
-	var file_base := key_name_edit.text.strip_edges()
+	var file_base := _sanitize(key_name_edit.text.strip_edges())
 	if file_base.is_empty():
 		file_base = "%s_%s" % [_card_type(), _rarity()]
 
 	var save_path := FRAME_EXPORT_DIR + file_base + ".tscn"
 	DirAccess.make_dir_recursive_absolute(save_path.get_base_dir())
 	var err := ResourceSaver.save(packed, save_path)
+	root_node.queue_free()
 	if err != OK:
 		_frame_status("保存失败：%s" % err, true)
 		return ""
@@ -904,20 +886,18 @@ func _create() -> void:
 		_show_error("类名包含无效字符")
 		return
 
+	if current_icon_texture != null:
+		_ensure_scene_editor()
+		var auto_path := _export_frame_scene_internal()
+		if auto_path.is_empty():
+			_show_error("卡面场景导出失败")
+			return
+		icon_edit.text = auto_path
+
 	var side: String = faction.get_item_text(faction.selected)
 	var type_text := _build_type_text()
 
 	var entry := _build_entry(clean, side, type_text)
-
-	if current_icon_texture != null and animation_extra_edit.text.strip_edges().is_empty():
-		var auto_path := _export_frame_scene_internal()
-		if not auto_path.is_empty():
-			animation_extra_edit.text = auto_path
-			entry["%s.Scene" % clean] = auto_path
-			if icon_edit.text.strip_edges().is_empty():
-				icon_edit.text = current_icon_path
-				entry["%s.Icon" % clean] = current_icon_path
-
 	var final_id := _save_to_cards(clean, entry)
 	_print_entry(clean, entry)
 

@@ -76,8 +76,8 @@ public partial class BattleSubMenuScene : SubMenuScene
         flag.Scale = new(1.4f, 1.4f);
         flag.Modulate = new(1, 1, 1, 1);
         flag.Texture = player.Status.Hero.Camp.Switch(
-            GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbon.png"),
-            GD.Load<Texture2D>("res://素材(C#)/战斗胜利/ribbonz.png"));
+            "res://素材(C#)/战斗胜利/ribbon.png".Load<Texture2D>(),
+            "res://素材(C#)/战斗胜利/ribbonz.png".Load<Texture2D>());
         icon.Position = Vector2.Zero;
         icon.Scale = new(0, 0);
         rect.Modulate = new Color(1, 1, 1, 0);

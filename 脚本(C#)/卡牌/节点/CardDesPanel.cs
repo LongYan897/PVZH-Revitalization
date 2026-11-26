@@ -10,7 +10,7 @@ namespace Card;
 public partial class CardDesPanel : Panel
 {
     private static readonly PackedScene Scene =
-        GD.Load<PackedScene>("res://场景(C#)/卡牌描述.tscn");
+        "res://场景(C#)/卡牌描述.tscn".Load<PackedScene>();
 
     private static readonly List<CardDesPanel> OpenPanels = new();
 

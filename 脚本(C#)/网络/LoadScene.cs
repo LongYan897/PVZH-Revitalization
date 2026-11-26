@@ -1,5 +1,6 @@
 using Controller;
 using Godot;
+using Pack;
 using Scene;
 using System.Threading.Tasks;
 /// <summary>
@@ -23,10 +24,9 @@ public partial class LoadScene : SubMenuScene
 
     private void OpenLoginWindow()
     {
-        // 关键：关掉"子窗口嵌入"，否则 Window 会被画进游戏窗口里（就是 A 方案的效果）
         GetTree().Root.GuiEmbedSubwindows = false;
 
-        var scene = GD.Load<PackedScene>("res://场景(C#)/用户信息/登录窗口.tscn");
+        var scene = "res://场景(C#)/用户信息/登录窗口.tscn".Load<PackedScene>();
         if (scene == null)
         {
             GD.PushError("[LoadScene] 找不到 res://场景(C#)/用户信息/登录窗口.tscn");

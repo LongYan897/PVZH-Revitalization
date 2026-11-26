@@ -267,9 +267,9 @@ public class CardModel
         {
             return Camp switch
             {
-                Camp.Plant => GD.Load<Texture2D>("res://素材/卡牌属性图片/inhnd_sun_gb.png"),
-                Camp.Zombie => GD.Load<Texture2D>("res://素材/卡牌属性图片/inhnd_brains.png"),
-                _ => GD.Load<Texture2D>("res://素材/卡牌属性图片/inhnd_sun_gb.png"),
+                Camp.Plant => "res://素材/卡牌属性图片/inhnd_sun_gb.png".Load<Texture2D>(),
+                Camp.Zombie => "res://素材/卡牌属性图片/inhnd_brains.png".Load<Texture2D>(),
+                _ => "res://素材/卡牌属性图片/inhnd_sun_gb.png".Load<Texture2D>(),
             };
         }
     }

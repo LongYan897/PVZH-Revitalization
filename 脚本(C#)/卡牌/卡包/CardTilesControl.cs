@@ -1,6 +1,7 @@
 using Card;
 using Controller;
 using Godot;
+using Pack;
 using Scene;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ public partial class CardTilesControl : SubMenuScene
             GD.PushWarning("[CardTilesControl] 场景里没找到 返回按钮(TextureButton)");
 
         IntroAn(0.6f);
-        var Tile = GD.Load<PackedScene>("res://场景(C#)/卡包/卡包.tscn");
+        var Tile = "res://场景(C#)/卡包/卡包.tscn".Load<PackedScene>();
         for (int i = 1; i <= 5; i++)
         {
             var NewTile = Tile.Instantiate<CardTile>();

@@ -36,7 +36,7 @@ public partial class SelectDeck : SubMenuScene
 
     public override async Task _Load()
     {
-        BallScene = GD.Load<PackedScene>("res://场景(C#)/英雄跳转球.tscn");
+        BallScene = "res://场景(C#)/英雄跳转球.tscn".Load<PackedScene>();
         BallContainer = GetNode<MinimumHFlowContainer>("主容器/英雄图标背景板/滚动框/英雄图标框");
         DeckContainer = GetNode<MinimumHFlowContainer>("%卡组框");
         BallPanel = GetNode<Panel>("主容器/英雄图标背景板");
@@ -45,7 +45,7 @@ public partial class SelectDeck : SubMenuScene
         if (_trashBox != null)
         {
             _trashBox.Input += OnTrashBoxInput;
-            _trashBox.Texture = GD.Load<Texture2D>("res://素材(C#)/其他/trashbutton.png");
+            _trashBox.Texture = "res://素材(C#)/其他/trashbutton.png".Load<Texture2D>();
             _trashBoxOriginalX = _trashBox.Position.X;
         }
 
@@ -237,8 +237,8 @@ public partial class SelectDeck : SubMenuScene
         if (heroName != null) texture = GD.Load<Texture2D>(HeroString.GetData(heroName, "Icon").AsString());
         else
         {
-            if (DeckCamp == Camp.Plant) texture = GD.Load<Texture2D>("res://素材(C#)/英雄图标/cornerimage_plants_create.png");
-            else texture = GD.Load<Texture2D>("res://素材(C#)/英雄图标/cornerimage_zombies_create.png");
+            if (DeckCamp == Camp.Plant) texture = "res://素材(C#)/英雄图标/cornerimage_plants_create.png".Load<Texture2D>();
+            else texture = "res://素材(C#)/英雄图标/cornerimage_zombies_create.png".Load<Texture2D>();
             Image image = texture.GetImage();
             image.Resize(227, 227);
             texture = ImageTexture.CreateFromImage(image);

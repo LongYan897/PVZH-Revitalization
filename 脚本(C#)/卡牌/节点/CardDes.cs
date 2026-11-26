@@ -13,7 +13,7 @@ namespace Card;
 [GlobalClass]
 public partial class CardDes : Control
 {
-    private static readonly PackedScene Scene = GD.Load<PackedScene>("res://场景(C#)/卡牌界面.tscn");
+    private static readonly PackedScene Scene = "res://场景(C#)/卡牌界面.tscn".Load<PackedScene>();
     private CardModel Model;
     public static CardDes instance { get; private set; }
     /// <summary>卡牌描述字号</summary>
@@ -272,7 +272,7 @@ public partial class CardDes : Control
             }
             if (Model.AnimationScenePath != null)
             {
-                var scene = GD.Load<PackedScene>(Model.AnimationScenePath).Instantiate<Node2D>();
+                var scene = Model.AnimationScenePath.Load<PackedScene>().Instantiate<Node2D>();
                 var col1 = scene.GetNode<Node2D>("Collection").Position;
                 var col2 = scene.GetNode<Node2D>("Collection2").Position;
                 var cols1 = scene.GetNode<Node2D>("Collection").Scale;
@@ -455,29 +455,29 @@ public partial class CardDes : Control
             };
             GetNode<TextureRect>("%属性图片").Texture = Model.Class switch
             {
-                Class.Smarty => GD.Load<Texture2D>("res://素材/ui/界面ui/聪明.png"),
-                Class.Solar => GD.Load<Texture2D>("res://素材/ui/界面ui/光能.png"),
-                Class.Guardian => GD.Load<Texture2D>("res://素材/ui/界面ui/守卫.png"),
-                Class.MegaGrow => GD.Load<Texture2D>("res://素材/ui/界面ui/猛长.png"),
-                Class.Kabloom => GD.Load<Texture2D>("res://素材/ui/界面ui/爆花.png"),
-                Class.Brainy => GD.Load<Texture2D>("res://素材/ui/界面ui/有脑.png"),
-                Class.Sneaky => GD.Load<Texture2D>("res://素材/ui/界面ui/狡猾.png"),
-                Class.Beastly => GD.Load<Texture2D>("res://素材/ui/界面ui/野兽.png"),
-                Class.Crazy => GD.Load<Texture2D>("res://素材/ui/界面ui/疯狂.png"),
-                Class.Hearty => GD.Load<Texture2D>("res://素材/ui/界面ui/健壮.png"),
-                _ => GD.Load<Texture2D>("res://素材/ui/界面ui/聪明.png")
+                Class.Smarty => "res://素材/ui/界面ui/聪明.png".Load<Texture2D>(),
+                Class.Solar => "res://素材/ui/界面ui/光能.png".Load<Texture2D>(),
+                Class.Guardian => "res://素材/ui/界面ui/守卫.png".Load<Texture2D>(),
+                Class.MegaGrow => "res://素材/ui/界面ui/猛长.png".Load<Texture2D>(),
+                Class.Kabloom => "res://素材/ui/界面ui/爆花.png".Load<Texture2D>(),
+                Class.Brainy => "res://素材/ui/界面ui/有脑.png".Load<Texture2D>(),
+                Class.Sneaky => "res://素材/ui/界面ui/狡猾.png".Load<Texture2D>(),
+                Class.Beastly => "res://素材/ui/界面ui/野兽.png".Load<Texture2D>(),
+                Class.Crazy => "res://素材/ui/界面ui/疯狂.png".Load<Texture2D>(),
+                Class.Hearty => "res://素材/ui/界面ui/健壮.png".Load<Texture2D>(),
+                _ => "res://素材/ui/界面ui/聪明.png".Load<Texture2D>()
             };
             GetNode<TextureRect>("%稀有标签").Texture = Model.Rarity switch
             {
-                Rarity.Basic => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
-                Rarity.Common => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
-                Rarity.Uncommon => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_1.png"),
-                Rarity.Rare => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_2.png"),
-                Rarity.SuperRare => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_3.png"),
-                Rarity.Legend => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_4.png"),
-                Rarity.Activity => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_E.png"),
-                Rarity.Token => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png"),
-                _ => GD.Load<Texture2D>("res://素材/ui/稀有标签/rarity_0.png")
+                Rarity.Basic => "res://素材/ui/稀有标签/rarity_0.png".Load<Texture2D>(),
+                Rarity.Common => "res://素材/ui/稀有标签/rarity_0.png".Load<Texture2D>(),
+                Rarity.Uncommon => "res://素材/ui/稀有标签/rarity_1.png".Load<Texture2D>(),
+                Rarity.Rare => "res://素材/ui/稀有标签/rarity_2.png".Load<Texture2D>(),
+                Rarity.SuperRare => "res://素材/ui/稀有标签/rarity_3.png".Load<Texture2D>(),
+                Rarity.Legend => "res://素材/ui/稀有标签/rarity_4.png".Load<Texture2D>(),
+                Rarity.Activity => "res://素材/ui/稀有标签/rarity_E.png".Load<Texture2D>(),
+                Rarity.Token => "res://素材/ui/稀有标签/rarity_0.png".Load<Texture2D>(),
+                _ => "res://素材/ui/稀有标签/rarity_0.png".Load<Texture2D>()
             };
             var rarity = GetNode<TextureRect>("%稀有标签");
             rarity.AnchorLeft = 0;

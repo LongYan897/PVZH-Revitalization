@@ -1,5 +1,6 @@
 using FileExtension;
 using Godot;
+using Pack;
 using Scene;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,7 +83,7 @@ public partial class CardTile : Control
         if (PackImage != null && !string.IsNullOrWhiteSpace(PackTexture))
         {
             if (ResourceLoader.Exists(PackTexture))
-                PackImage.Texture = GD.Load<Texture2D>(PackTexture);
+                PackImage.Texture = PackTexture.Load<Texture2D>();
             else
                 GD.PushWarning($"[CardTile] {PackName} 的 PackTexture 路径不存在：{PackTexture}");
         }
@@ -96,7 +97,7 @@ public partial class CardTile : Control
             ButtonGroup.RemoveChild(Child);
             Child.QueueFree();
         }
-        var OptionSlot = GD.Load<PackedScene>("res://场景(C#)/卡包/购买按钮槽.tscn");
+        var OptionSlot = "res://场景(C#)/卡包/购买按钮槽.tscn".Load <PackedScene>();
         if (OptionSlot == null)
         {
             GD.PushError("[CardTile] 无法加载 res://场景(C#)/卡包/购买按钮槽.tscn");
