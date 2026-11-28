@@ -104,7 +104,7 @@ public partial class Main : Node
     }
 
     private readonly System.Text.StringBuilder _cheatBuffer = new();
-    private const string CheatCode = "tx2ex3sx4tx5";
+    private const string CheatCode = "pvzhtest";
     private bool _cheatTriggered;
 
     public override void _UnhandledInput(InputEvent @event)
