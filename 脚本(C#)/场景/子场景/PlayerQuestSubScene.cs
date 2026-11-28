@@ -1,3 +1,4 @@
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace Scene;
 
-public class PlayerQuestSubScene
+[GlobalClass]
+public partial class PlayerQuestSubScene : SubMenuScene
 {
+    public override Task _Load()
+    {
+        return Task.CompletedTask;
+    }
 }

@@ -2,6 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://bv5be4khi3m7r" path="res://着色器/背景.gdshader" id="1_gf1jq"]
 [ext_resource type="Texture2D" uid="uid://dc6ikwv36qptw" path="res://素材/ui/任务/QuestBoardWood.png" id="1_qehtt"]
+[ext_resource type="Script" uid="uid://bwtkopmtxj4dy" path="res://脚本(C#)/场景/子场景/PlayerQuestSubScene.cs" id="1_uxopb"]
 [ext_resource type="Texture2D" uid="uid://ca5340u4hjfsi" path="res://素材/ui/背景图/背景图.png" id="2_rtb1n"]
 [ext_resource type="Script" uid="uid://c4d6enygyoawb" path="res://脚本(C#)/场景/BgFrame.cs" id="3_a2tjb"]
 [ext_resource type="Script" uid="uid://bgqglerkcylxx" path="res://addons/SmoothScroll/smooth_scroll_container.gd" id="3_c0f2v"]
@@ -101,7 +102,9 @@ script = ExtResource("4_g8d3h")
 [sub_resource type="Resource" id="Resource_mh3l0"]
 script = ExtResource("4_g8d3h")
 
-[node name="任务栏" type="Node2D" unique_id=261983100]
+[node name="任务栏" type="Node2D" unique_id=1232846258]
+script = ExtResource("1_uxopb")
+metadata/_custom_type_script = "uid://bwtkopmtxj4dy"
 
 [node name="Bg" type="Sprite2D" parent="." unique_id=255586613]
 unique_name_in_owner = true

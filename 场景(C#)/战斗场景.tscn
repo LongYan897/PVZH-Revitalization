@@ -264,11 +264,9 @@ preview_skin = "Default"
 preview_animation = "plantshield"
 preview_frame = false
 preview_time = 0.0
-visible = false
 
 [node name="护盾2" parent="节点" unique_id=2083661993 instance=ExtResource("9_p8b7g")]
 unique_name_in_owner = true
-visible = false
 modulate = Color(0.0333333, 1, 0, 1)
 z_index = 25
 position = Vector2(360, 234)

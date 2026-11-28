@@ -10,7 +10,7 @@
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_lty3j")
-SubScene = "res://场景(C#)/任务栏.tscn面.tscn"
+SubScene = "res://场景(C#)/任务栏.tscn"
 metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
 
 [node name="Button" type="Button" parent="." unique_id=323777181]
