@@ -412,6 +412,10 @@ public partial class TestBattleSubMenuScene : SubMenuScene
     private static VBoxContainer _suggestList;
     private static bool _suppressNextTextChanged;
 
+    private static readonly LineEdit.TextChangedEventHandler _textChangedHandler = OnAcquireTextChanged;
+    private static readonly Control.GuiInputEventHandler _lineEditGuiInputHandler = OnAcquireLineEditGuiInput;
+    private static LineEdit _boundEdit;
+
     private static void SetupAcquireUI()
     {
         _acquiredContainer = instance.GetNode<Node>("%卡牌");
@@ -422,13 +426,12 @@ public partial class TestBattleSubMenuScene : SubMenuScene
             BindClickable(acquire, OnAcquireClick);
 
         var edit = instance.GetNodeOrNull<LineEdit>("%获得卡牌");
-        if (edit != null)
+        if (edit != null && edit != _boundEdit)
         {
             edit.SelectAllOnFocus = true;
-            edit.TextChanged -= OnAcquireTextChanged;
-            edit.TextChanged += OnAcquireTextChanged;
-            edit.GuiInput -= OnAcquireLineEditGuiInput;
-            edit.GuiInput += OnAcquireLineEditGuiInput;
+            edit.TextChanged += _textChangedHandler;
+            edit.GuiInput += _lineEditGuiInputHandler;
+            _boundEdit = edit;
         }
 
         EnsureSuggestPanel();
@@ -436,7 +439,10 @@ public partial class TestBattleSubMenuScene : SubMenuScene
 
     private static void EnsureSuggestPanel()
     {
-        if (_suggestPanel != null && GodotObject.IsInstanceValid(_suggestPanel)) return;
+        if (_suggestLayer != null && GodotObject.IsInstanceValid(_suggestLayer)
+            && _suggestPanel != null && GodotObject.IsInstanceValid(_suggestPanel)
+            && _suggestList != null && GodotObject.IsInstanceValid(_suggestList))
+            return;
 
         _suggestLayer = new CanvasLayer { Layer = 128 };
         instance.AddChild(_suggestLayer);
