@@ -109,8 +109,10 @@ public class PlayerBox
             }
         }
 
-        _stuffCard(row1, BattleSubMenuScene.GetCardsPos(host).Y);
-        _stuffCard(row2, BattleSubMenuScene.GetCardsPos(host).Y + 193f * 0.56f * 0.75f);
+        var test = TestBattleSubMenuScene.Opening;
+
+        _stuffCard(row1, test ? TestBattleSubMenuScene.GetCardsPos(host).Y : BattleSubMenuScene.GetCardsPos(host).Y);
+        _stuffCard(row2, (test ? TestBattleSubMenuScene.GetCardsPos(host).Y : BattleSubMenuScene.GetCardsPos(host).Y) + 193f * 0.56f * 0.75f);
 
         var plantSide = host == PlayerManager.GetPlayer(Camp.Plant);
         var player2 = (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant));
@@ -145,7 +147,10 @@ public class PlayerBox
         if (n == 0) return;
 
         float totalW = n * cardW;
-        float startX = BattleSubMenuScene.GetCardsPos(host).X - totalW / 2f;
+
+        var test = TestBattleSubMenuScene.Opening;
+
+        float startX =(test ? TestBattleSubMenuScene.GetCardsPos(host).X : BattleSubMenuScene.GetCardsPos(host).X) - totalW / 2f;
 
         for (int i = 0; i < n; i++)
         {
@@ -192,7 +197,9 @@ public class PlayerBox
 
         float gap = n <= 1 ? baseGap : Mathf.Max(minGap, baseGap / n);
 
-        float centerX = BattleSubMenuScene.GetCardsPos(enemy).X;
+        var test = TestBattleSubMenuScene.Opening;
+
+        float centerX = test ? TestBattleSubMenuScene.GetCardsPos(enemy).X : BattleSubMenuScene.GetCardsPos(enemy).X;
         float startX = centerX - (n - 1) * gap / 2f;
 
         for (int i = 0; i < n; i++)
@@ -200,7 +207,7 @@ public class PlayerBox
             var node = NodeCard.GetNode(layoutCards[i]);
             if (node == null) continue;
 
-            var pos = new Vector2(startX + i * gap, BattleSubMenuScene.GetCardsPos(enemy).Y)
+            var pos = new Vector2(startX + i * gap, test ? TestBattleSubMenuScene.GetCardsPos(enemy).Y : BattleSubMenuScene.GetCardsPos(enemy).Y)
                     - new Vector2(0.5f * 100f * 0.75f, 0);
             node.BindOrigin(pos);
             node.BringToFront();

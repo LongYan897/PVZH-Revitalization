@@ -102,4 +102,48 @@ public partial class Main : Node
         TargetRegistry.Clear();
         CardCmd.Clear();
     }
+
+    private readonly System.Text.StringBuilder _cheatBuffer = new();
+    private const string CheatCode = "tx2ex3sx4tx5";
+    private bool _cheatTriggered;
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (_cheatTriggered) return;
+        if (@event is not InputEventKey key) return;
+        if (!key.Pressed || key.Echo) return;
+        if (key.Unicode == 0) return;
+
+        char ch = char.ToLowerInvariant((char)key.Unicode);
+        if (ch < 0x20) return;
+
+        _cheatBuffer.Append(ch);
+        if (_cheatBuffer.Length > CheatCode.Length)
+            _cheatBuffer.Remove(0, _cheatBuffer.Length - CheatCode.Length);
+
+        if (_cheatBuffer.Length != CheatCode.Length) return;
+        if (_cheatBuffer.ToString() != CheatCode) return;
+
+        _cheatBuffer.Clear();
+        _cheatTriggered = true;
+        Callable.From(TryEnterTestBattle).CallDeferred();
+    }
+
+    private void TryEnterTestBattle()
+    {
+        try
+        {
+            var menu = GetNodeOrNull<SubMenu>("%TestBattle");
+            if (menu == null)
+            {
+                GD.PushError("[Cheat] Main 下未找到 %TestBattle");
+                return;
+            }
+            SceneManager.JumpToSub(menu);
+        }
+        finally
+        {
+            _cheatTriggered = false;
+        }
+    }
 }

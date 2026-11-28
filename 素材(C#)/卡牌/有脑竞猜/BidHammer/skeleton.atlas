@@ -1,0 +1,13 @@
+skeleton.png
+size:380,230
+filter:Linear,Linear
+pma:true
+bitt
+bounds:238,76,140,152
+hammer (1)
+bounds:2,2,229,45
+offsets:0,0,236,45
+hammer (2)
+bounds:2,49,179,234
+offsets:0,1,179,236
+rotate:90

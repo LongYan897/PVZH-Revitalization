@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bvn8rbu1nyu8h"]
+
+[ext_resource type="Texture2D" uid="uid://btffc6hqhls3v" path="res://素材/ui/英雄图片/cornerimage_Hugegantigus.png" id="1_f6360"]
+[ext_resource type="Script" uid="uid://dugfxhm0h06t8" path="res://脚本(C#)/辅助类/InputNineRect.cs" id="2_di5x2"]
+
+[node name="Hero" type="NinePatchRect" unique_id=1874065416]
+custom_minimum_size = Vector2(180, 180)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1180.0
+offset_bottom = -620.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("1_f6360")
+script = ExtResource("2_di5x2")
+metadata/_custom_type_script = "uid://dugfxhm0h06t8"

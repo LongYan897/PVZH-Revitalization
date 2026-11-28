@@ -242,7 +242,7 @@ public partial class NodeRoad : Control, ITarget
 
         line.Modulate = _colortgBox.Default;
         line.Visible = true;
-        line.Scale = new();
+        line.Scale = new(_iColli1Scale.X,0);
 
         _tweenTargeted = CreateTween().BindNode(line);
         _tweenTargeted.TweenProperty(line, "scale", _iColli1Scale, 0.15f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quad);

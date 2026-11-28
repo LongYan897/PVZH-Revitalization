@@ -155,7 +155,7 @@ public class CardModel
     /// 获取战斗的中心
     /// </summary>
     /// <returns></returns>
-    public static Vector2 CenterForCard() => BattleSubMenuScene.Center;
+    public static Vector2 CenterForCard() => TestBattleSubMenuScene.Opening ? TestBattleSubMenuScene.Center : BattleSubMenuScene.Center;
 
     /// <summary>
     /// 初始化卡牌基类

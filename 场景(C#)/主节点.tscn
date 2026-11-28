@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://cmokbn4rntjp7" path="res://场景(C#)/主界面按钮/返回按钮.tscn" id="21_otykl"]
 [ext_resource type="PackedScene" uid="uid://5hwxyxyj6q0i" path="res://场景(C#)/主界面按钮/活动.tscn" id="21_quj4d"]
 [ext_resource type="PackedScene" uid="uid://cli3vkcien6u5" path="res://场景(C#)/主界面按钮/图鉴.tscn" id="21_sjdq6"]
+[ext_resource type="Script" uid="uid://ccc6dm65mtnlc" path="res://脚本(C#)/场景/子场景/SubMenu.cs" id="22_otykl"]
 [ext_resource type="PackedScene" uid="uid://gopjysvuqotu" path="res://场景(C#)/主界面按钮/卡包.tscn" id="22_sjdq6"]
 [ext_resource type="PackedScene" uid="uid://dyxb552oiab4" path="res://场景(C#)/主界面按钮/好友.tscn" id="23_otykl"]
 
@@ -310,3 +311,20 @@ follow_viewport_enabled = true
 unique_name_in_owner = true
 script = ExtResource("20_1pb50")
 metadata/_custom_type_script = "uid://dpy81oq8meuvd"
+
+[node name="TestBattle" type="Control" parent="." unique_id=1770388668]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("22_otykl")
+SubScene = "res://场景(C#)/测试战斗场景.tscn"
+ShowLoading = false
+IsPersistNess = true
+metadata/_custom_type_script = "uid://ccc6dm65mtnlc"
+
+[node name="Button" type="Button" parent="TestBattle" unique_id=2070565893]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0

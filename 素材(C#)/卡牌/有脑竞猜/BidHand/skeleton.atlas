@@ -1,0 +1,25 @@
+skeleton.png
+size:471,551
+filter:Linear,Linear
+hand (1)
+bounds:135,121,47,128
+hand (2)
+bounds:0,6,90,89
+rotate:90
+hand (3)
+bounds:0,96,153,135
+rotate:90
+hand (4)
+bounds:89,8,57,88
+ticket (2)
+bounds:0,249,302,207
+rotate:90
+ticket (3)
+bounds:207,0,275,264
+rotate:90
+ticket (4)
+bounds:146,44,77,54
+offsets:1,0,78,54
+rotate:90
+ticket (8)
+bounds:207,275,257,276

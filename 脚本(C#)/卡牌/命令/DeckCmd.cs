@@ -17,7 +17,7 @@ public static class DeckCmd
 {
     private static readonly Dictionary<int, (CardModel cannioncial, NodeCard node, CardModel replacement, bool refreshed)> freshedCards = new();
 
-    public static async Task HintFresh()
+    public static async Task HintFresh(bool test = false)
     {
         CardCmd.PushStop();
         freshedCards.Clear();
@@ -27,7 +27,7 @@ public static class DeckCmd
             if (player?.Status == null) return;
             var initCards = player.Status.DrawCard(4);
             var prepareCards = player.Status.DrawCard(4);
-            var loc = BattleSubMenuScene.GetFreshLocation();
+            var loc = test ? TestBattleSubMenuScene.GetFreshLocation() : BattleSubMenuScene.GetFreshLocation();
 
             var pending = new List<(int index, CardModel card, Task<NodeCard> task)>();
             var count = Math.Min(initCards.Count, prepareCards.Count);
@@ -56,7 +56,7 @@ public static class DeckCmd
                 freshedCards[pending[i].index] = (pending[i].card, node, prepareCards[pending[i].index - 1], false);
             }
         }
-        await BattleSubMenuScene.GetFreshTask();
+        await (test ? TestBattleSubMenuScene.GetFreshTask() : BattleSubMenuScene.GetFreshTask());
     }
 
     public static async Task FreshIndex(int index)

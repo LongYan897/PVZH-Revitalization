@@ -281,7 +281,7 @@ public partial class Fighter : Control, ITarget, IAttackable
 
         if (!IsHiding)
         {
-            await PlayAnimation("die", false);
+            await PlayAnimation(["die","death"], false);
 
             if (Model.Camp == Camp.Plant)
             {

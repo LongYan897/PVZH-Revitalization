@@ -11,11 +11,11 @@ namespace Play;
 public static class PlayerManager
 {
     /// <summary>
-    /// 玩家1(植物方)
+    /// 玩家1
     /// </summary>
     private static Player P1;
     /// <summary>
-    /// 玩家2(僵尸方)
+    /// 玩家2
     /// </summary>
     private static Player P2;
     /// <summary>

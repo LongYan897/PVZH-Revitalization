@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://y51tpicjidpc"
+path="res://.godot/imported/skeleton.atlas-d5c334a487338afb48c9dd3af83e9bc4.spatlas"
+
+[deps]
+
+source_file="res://素材(C#)/卡牌/有脑竞猜/BidHand/skeleton.atlas"
+dest_files=["res://.godot/imported/skeleton.atlas-d5c334a487338afb48c9dd3af83e9bc4.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

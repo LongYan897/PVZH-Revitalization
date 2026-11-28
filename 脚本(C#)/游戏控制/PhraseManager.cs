@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Phrases;
 
@@ -129,6 +130,7 @@ public static class PhraseManager
             Phrase += 1;
         }
         string ext = myTurn ? !isTurnCostNotEnough ? "Yellow" : "Green" : "";
+        var test = TestBattleSubMenuScene.Opening;
         await Task.WhenAll(spine.SetAnimationTask(0, isBattle ? $"{entr}BackCardTurn" : Phrase switch
         {
             Phrase.Plant => $"{entr}{ext}MovePlantTurn",
@@ -136,7 +138,7 @@ public static class PhraseManager
             Phrase.Fight => $"{entr}{ext}MoveAttackTurn",
             Phrase.Zombie => $"{entr}StartZombieTurn",
             _ => ""
-        }), BattleSubMenuScene.Hint(Phrase));
+        }),test ? TestBattleSubMenuScene.Hint(Phrase) : BattleSubMenuScene.Hint(Phrase));
         if (Phrase == Phrase.Zombie && isAuto)
         {
             isTurnCostNotEnough = false;
@@ -236,6 +238,15 @@ public static class PhraseManager
             await spine.SetAnimationTask(0, loop, true);
         CardCmd.PopStop();
     }
+    private static bool IsOpen = false;
+    public static void OpenPress()
+    {
+        IsOpen = true;
+    }
+    public static void ClosePress()
+    {
+        IsOpen = false;
+    }
     private static async void PressedNextPhrase(Button button)
     {
         if (IsProcessing) return;
@@ -253,6 +264,7 @@ public static class PhraseManager
     }
     private static bool CanPress()
     {
+        if (IsOpen) return IsOpen;
         var plantSide = PlayerManager.HostPlayer == PlayerManager.GetPlayer(Camp.Plant);
         return plantSide
             ? Phrase == Phrase.Plant
@@ -310,7 +322,7 @@ public static class PhraseManager
         (plantSide ? PlayerManager.GetPlayer(Camp.Zombie) : PlayerManager.GetPlayer(Camp.Plant)).Status.Hero.Cost.Gain(_turn, Variable.VariableReason.Self, null)
         );
 
-        await BattleSubMenuScene.Hint(Phrase.Zombie);
+        await (TestBattleSubMenuScene.Opening ? TestBattleSubMenuScene.Hint(Phrase.Zombie) : BattleSubMenuScene.Hint(Phrase.Zombie));
         await HintAi();
     }
 

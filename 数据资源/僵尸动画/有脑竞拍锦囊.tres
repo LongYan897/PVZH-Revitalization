@@ -1,0 +1,8 @@
+[gd_resource type="SpineSkeletonDataResource" format=3 uid="uid://dnsavof4yaryd"]
+
+[ext_resource type="SpineAtlasResource" uid="uid://y51tpicjidpc" path="res://素材(C#)/卡牌/有脑竞猜/BidHand/skeleton.atlas" id="1_a4gin"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://b6eew6apyr1em" path="res://素材(C#)/卡牌/有脑竞猜/BidHand/skeleton.skel" id="2_2agje"]
+
+[resource]
+atlas_res = ExtResource("1_a4gin")
+skeleton_file_res = ExtResource("2_2agje")

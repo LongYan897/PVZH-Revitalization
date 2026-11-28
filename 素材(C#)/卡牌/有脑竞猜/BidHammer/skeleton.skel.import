@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.skel"
+type="SpineSkeletonFileResource"
+uid="uid://e2cmojqkhmpt"
+path="res://.godot/imported/skeleton.skel-f279229b7e80aa18587b41937d557022.spskel"
+
+[deps]
+
+source_file="res://素材(C#)/卡牌/有脑竞猜/BidHammer/skeleton.skel"
+dest_files=["res://.godot/imported/skeleton.skel-f279229b7e80aa18587b41937d557022.spskel"]
+
+[params]
+

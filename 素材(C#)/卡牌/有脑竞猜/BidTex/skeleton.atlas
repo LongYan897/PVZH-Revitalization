@@ -1,0 +1,24 @@
+skeleton.png
+size:1790,412
+filter:Linear,Linear
+pma:true
+ticket (1)
+bounds:2,2,327,408
+ticket (2)
+bounds:1583,110,300,205
+offsets:0,1,302,207
+rotate:90
+ticket (3)
+bounds:1318,136,274,263
+offsets:0,0,275,264
+rotate:90
+ticket (4)
+bounds:1318,57,77,54
+offsets:1,0,78,54
+rotate:90
+ticket (5)
+bounds:331,2,327,408
+ticket (6)
+bounds:660,2,327,408
+ticket (7)
+bounds:989,2,327,408

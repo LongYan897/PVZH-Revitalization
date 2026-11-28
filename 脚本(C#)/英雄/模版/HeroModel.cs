@@ -86,10 +86,10 @@ public abstract class HeroModel
         {
             if (after - before > 0)
             {
-                await BattleSubMenuScene.PlayCostGain(PlayerManager.GetFromHero(this), delta);
+                await (TestBattleSubMenuScene.Opening ? TestBattleSubMenuScene.PlayCostGain(PlayerManager.GetFromHero(this), delta) : BattleSubMenuScene.PlayCostGain(PlayerManager.GetFromHero(this), delta));
             }
             else if (after - before < 0)
-                await BattleSubMenuScene.PlayCostLose(PlayerManager.GetFromHero(this), delta);
+                await (TestBattleSubMenuScene.Opening ? TestBattleSubMenuScene.PlayCostLose(PlayerManager.GetFromHero(this), delta) : BattleSubMenuScene.PlayCostLose(PlayerManager.GetFromHero(this), delta));
         }
     }
     private async void PlayAnimation(string name, bool returnToIdle, int track = 0)
@@ -126,7 +126,7 @@ public abstract class HeroModel
         PlayAnimation("hit", true);
         if (amount > Health.Current)
             amount = Health.Current;
-        await BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield);
+        await (TestBattleSubMenuScene.Opening ? TestBattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield) : BattleSubMenuScene.PlayHurt(PlayerManager.GetFromHero(this), amount, shield));
         if (shield + Shield.Current >= 8)
         {
             await Shield.Reset(null);
@@ -141,7 +141,7 @@ public abstract class HeroModel
 
         if (Health.Current <= 0)
         {
-            await BattleSubMenuScene.Win(PlayerManager.GetPlayer(Camp.Plant() ? Camp.Zombie : Camp.Plant));
+            await (TestBattleSubMenuScene.Opening ? TestBattleSubMenuScene.Win(PlayerManager.GetPlayer(Camp.Plant() ? Camp.Zombie : Camp.Plant)) : BattleSubMenuScene.Win(PlayerManager.GetPlayer(Camp.Plant() ? Camp.Zombie : Camp.Plant)));
         }
     }
     /// <summary>
@@ -156,7 +156,7 @@ public abstract class HeroModel
         if (amount <= 0) return;
         if (amount > Shield.Current)
             amount = Shield.Current;
-        await BattleSubMenuScene.PlayLoseShield(PlayerManager.GetFromHero(this), amount);
+        await (TestBattleSubMenuScene.Opening ? TestBattleSubMenuScene.PlayLoseShield(PlayerManager.GetFromHero(this),amount) : BattleSubMenuScene.PlayLoseShield(PlayerManager.GetFromHero(this), amount));
         await Shield.Lose(amount, reason, cardModel);
     }
     /// <summary>
