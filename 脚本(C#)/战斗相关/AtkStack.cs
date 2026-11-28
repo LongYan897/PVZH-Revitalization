@@ -153,6 +153,22 @@ public class AtkStack
     public List<IAttackable> Targets { get; private set; }
 
     /// <summary>
+    /// 这一发伤害的目标里是否包含指定卡牌。<br/>
+    /// <see cref="Timing.ModifyCardDamage"/> 等时点会把同一个 AtkStack 广播给场上所有卡，
+    /// </summary>
+    public bool TargetsCard(CardModel card)
+    {
+        if (card is not FighterCardModel fighter) return false;
+
+        foreach (var target in Targets)
+        {
+            if (ReferenceEquals(target.InferAsCard(), fighter))
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// 所处的道路
     /// </summary>
     public Road Road { get; init; }

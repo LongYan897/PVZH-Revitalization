@@ -24,7 +24,7 @@
   "AllDancer.Frame": "res://素材(C#)/卡包/官方卡组封面/Recipe_ElectricBoogaloo_R1.png",
   "AllDancer.Rarity": "Init",
   "AllDancer.Cards": [
-    { "迪斯科僵尸": 4 },
+    { "栅栏僵尸": 4 },
     { "伴舞僵尸": 4 }
   ]
 }
